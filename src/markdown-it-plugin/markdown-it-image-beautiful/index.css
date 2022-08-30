@@ -1,0 +1,21 @@
+.md-image img{
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.md-expand .md-hiden{
+    display: inline;
+    color: #C7C5C5;
+}
+
+.md-expand .md-hiden .md-link-url{
+    color: #5b808d;
+    outline: none;
+}
+
+.md-expand .md-hiden .md-info{
+    color: rgb(170, 95, 0);
+    outline: none;
+}

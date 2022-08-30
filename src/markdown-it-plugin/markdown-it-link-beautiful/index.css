@@ -1,0 +1,16 @@
+.md-link-a{
+    color: #4183C4;
+}
+
+.md-hiden{
+    display: none;
+}
+
+.md-expand .md-hiden.md-link-url{
+    color: #5b808d;
+}
+
+.md-expand .md-hiden{
+    display: inline;
+    color: #C7C5C5;
+}

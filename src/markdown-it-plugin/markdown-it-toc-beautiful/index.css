@@ -1,0 +1,45 @@
+.markdown-it-toc-beautiful p{
+    margin: 0;
+    padding: 0 20px;
+}
+
+.md-toc-tip{
+    font-weight: 700;
+}
+
+.md-toc-item{
+    display: block;
+}
+
+.md-toc-item a{
+    color: #4183C4;
+}
+
+
+
+.md-toc-h1 {
+    margin-left: 0;
+    font-weight: 700;
+}
+
+.md-toc-h2 {
+    margin-left: 2em;
+}
+
+.md-toc-h3 {
+    margin-left: 3.5em;
+}
+
+.md-toc-h4 {
+    margin-left: 5em;
+}
+
+.md-toc-h5 {
+    margin-left: 6.5em;
+}
+
+.md-toc-h6 {
+    margin-left: 8em;
+}
+
+

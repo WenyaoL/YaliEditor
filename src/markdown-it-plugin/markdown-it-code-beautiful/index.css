@@ -1,0 +1,85 @@
+.md-code-tooltip{
+  position: relative;
+}
+
+.tooltip-input{
+  position: relative;
+  float: right;
+  box-shadow: 0 1px 1px 0 rgb(0 28 36 / 30%);
+  border-top: 1px solid #eef2f2;
+  width: 140px;
+  height: 20px;
+  max-width: 140px;
+  max-height: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: large;
+  text-align: center;
+    
+  }
+
+  .tooltip-input:empty:before {
+    content: attr(placeholder);
+    color: gray;
+  }
+  
+  .markdown-it-code-beautiful{
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  .suggest {
+    overflow-y: auto;
+    width: 178px;
+    position: absolute;
+    top: 22px;
+    right: 0px;
+    z-index: 2;
+    max-height: 150px;
+    border: 1px solid #999;
+    background: #fff;
+    display: none;
+  }
+
+  .suggest::-webkit-scrollbar
+{
+    width:5px;
+    height:8px;
+    background-color:#F5F5F5;
+}
+
+.suggest::-webkit-scrollbar-track
+{
+    -webkit-box-shadow:inset 0 0 6px rgba(255,255,255,1);
+    border-radius:5px;
+    background-color:#F5F5F5;
+}
+
+.suggest::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    background-color: rgb(204, 201, 201);
+}
+
+  .suggest ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  .suggest ul li {
+    padding: 3px;
+    font-size: 17px;
+    line-height: 25px;
+    cursor: pointer;
+  }
+
+  .suggest ul li.activate {
+    background-color: #e5e5e5;
+  }
+
+  .suggest ul li:hover {
+    background-color: #e5e5e5;
+  }
