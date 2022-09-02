@@ -3,20 +3,20 @@
     <el-container>
       <el-aside width="25%"><file-tree/></el-aside>
       <el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />
-      <el-main><mark-it-show-area :content="this.$store.state.applicationContext.content"/></el-main>
+      <el-main><markdown-it-show :content="this.$store.state.applicationContext.content"/></el-main>
     </el-container>
   </div>
 </template>
 
 <script>
-import FileTree from '@/components/content-area/FileTree.vue'
-import MarkItShowArea from "@/components/markdown-it-panel/MarkItShowArea.vue"
+import FileTree from '@/components/filetree-panel/FileTree.vue'
+import MarkdownItShow from "@/components/markdown-it-panel/MarkdownItShow.vue"
 //import 'highlight.js/styles/vs2015.css'
 export default {
     name:"FolderView",
     components:{
       FileTree,
-      MarkItShowArea
+      MarkdownItShow
     }
 }
 </script>

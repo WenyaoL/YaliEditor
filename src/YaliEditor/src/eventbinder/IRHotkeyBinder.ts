@@ -30,7 +30,7 @@ class IRHotkeyBinder implements BaseEventBinder{
             "ctrl+4": this.headingKey,
             "ctrl+5": this.headingKey,
             "ctrl+6": this.headingKey,
-            //"ctrl+z": this.undoKey,
+            "ctrl+z": this.undoKey,
         }
     }
 
@@ -40,8 +40,18 @@ class IRHotkeyBinder implements BaseEventBinder{
      */
     undoKey(event: KeyboardEvent & { target: HTMLElement }){
         console.log("触发undo快捷键");
-        
+        const r = rangy.getSelection().getRangeAt(0)
+        let start = r.startContainer
+        if(start.nodeType === 3){
+            start = start.parentElement;
+        }
+        let e = start as HTMLElement
+        //来自代码的不处理
+        if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
+            return
+        }
         this.editor.ir.undo()
+        //this.editor.ir.renderer.codemirrorManager.refreshEditorView(this.editor.ir.rootElement)
     }
 
 
@@ -261,6 +271,7 @@ class IRHotkeyBinder implements BaseEventBinder{
             //删除一个节点的
             if(r.getNodes().length==1){
                 r.deleteContents()
+                this.editor.ir.addUndo()
             }
 
             //删除多个节点的
@@ -272,11 +283,12 @@ class IRHotkeyBinder implements BaseEventBinder{
                 if(startElement === endElement){
                     //删除内容
                     r.deleteContents()
-                    if(!this.renderNode(startElement,r)) return;
+                    if(!this.renderNode(startElement,r)){
+                        this.editor.ir.addUndo()
+                        return;
+                    }
                     r.collapseToPoint(r.startContainer.firstChild,startOffset)
                     rangy.getSelection().setSingleRange(r)
-                    
-                    
                 }else{
                     //起始和结束容器不一样的情况
                     //删除内容
@@ -289,6 +301,7 @@ class IRHotkeyBinder implements BaseEventBinder{
                     //重新渲染结束容器
                     this.renderNode(endElement,r)
                 }
+                this.editor.ir.addUndo()
                 return
             }
 
@@ -327,6 +340,7 @@ class IRHotkeyBinder implements BaseEventBinder{
         //回车键处理
         if(event.key === "Enter"){
             this.enterKey(event)
+            this.editor.ir.addUndo()
             //this.editor.ir.addUndo()
             return ;
         }
@@ -371,6 +385,7 @@ class IRHotkeyBinder implements BaseEventBinder{
                     r.deleteContents()
                     r.insertNode(document.createElement("br"))
                     //this.editor.ir.addUndo()
+                    this.editor.ir.addUndo()
                     return
                 }
                 //删除元数据类
@@ -386,7 +401,9 @@ class IRHotkeyBinder implements BaseEventBinder{
                     if(e){
                         e.getElementsByTagName("a")[0].href = start.innerText
                     }
+                    this.editor.ir.addUndo()
                 }
+                
             }
             
             return ;

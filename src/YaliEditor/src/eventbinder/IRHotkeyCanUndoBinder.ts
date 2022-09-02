@@ -5,10 +5,7 @@ import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
 import log from "../util/loging";
-import { DeleteBlockCommand, DeleteInlineCommand, DeleteTextCommand } from "../ir/IRUndoManager";
-
-
-
+import { DeleteBlockCommand, DeleteInlineCommand, DeleteTextCommand, EnterCommand } from "../undo/IRUndoManager";
 
 
 
@@ -125,68 +122,14 @@ class IRHotkeyCanUndoBinder implements BaseEventBinder{
      */
 
     enterKey(event: KeyboardEvent & { target: HTMLElement }){
-        const r = rangy.getSelection().getRangeAt(0)
-        let start =  r.startContainer
-        
-        const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
-        if(e.tagName === "PRE"){
-            //代码块不处理
-            return;
-        }
-        const p = '<p md-inline="paragraph"><br></p>'
-        if(r.endOffset === 0){
-            r.collapseBefore(e)
-            rangy.getSelection().setSingleRange(r)
-            document.execCommand("insertHTML",false,p)
-            event.preventDefault()
-        }else{
-            r.collapseAfter(e)
-            rangy.getSelection().setSingleRange(r)
-            document.execCommand("insertHTML",false,p)
-            event.preventDefault()
-        }
+        this.editor.ir.execute(new EnterCommand(this.editor))
+        event.preventDefault()
     }
-
-    /**
-     * 重新渲染某一节点
-     */
-    renderNode(element:HTMLElement,r:RangyRange){
-        if(!element) return false;
-        const turndown = this.editor.ir.parser.turndown(element.outerHTML)
-        const res = this.editor.ir.renderer.render(turndown)
-        
-        if(!res) return false;
-        //临时div
-        const div = document.createElement("div")
-        div.innerHTML = res;
-        
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-            //翻译出的是MD_INLINE块
-            //删除原本整个MD_INLINE块
-            r.selectNode(element)
-            rangy.getSelection().setSingleRange(r)
-            document.execCommand("delete")
-            //在插入
-            document.execCommand("insertHTML",false,res)
-        }
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_BLOCK)){
-            //翻译出的是MD_BLOCK块
-            //删除原本整个MD_INLINE块
-            r.selectNode(element)
-            rangy.getSelection().setSingleRange(r)
-            document.execCommand("delete")
-            //在插入文本节点
-            document.execCommand("insertHTML",false,div.firstElementChild.textContent)
-        }
-        return true;
-    }
-
     /**
      * 删除键处理
      * @param event 
      */
     deleteKey(event: KeyboardEvent & { target: HTMLElement }){
-        
         const r = rangy.getSelection().getRangeAt(0)
         let start = r.startContainer
         let end =  r.endContainer
@@ -196,13 +139,13 @@ class IRHotkeyCanUndoBinder implements BaseEventBinder{
                 start = start.parentElement;
             }
             let e = start as HTMLElement
-
             //删除元数据类
             if(e.classList.contains(CONSTANTS.CLASS_MD_META)){
                 //元数据类更改，应该影响内容的展示和标签的实际功能
-                return;
+                this.editor.ir.execute(new DeleteTextCommand(this.editor))
+                event.preventDefault()
+                return 
             }
-
             //删除隐藏类
             if(e.classList.contains(CONSTANTS.CLASS_MD_HIDEN)){
                 //寻找行级模块
@@ -217,16 +160,13 @@ class IRHotkeyCanUndoBinder implements BaseEventBinder{
                 }
                 if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
                     r.selectNode(e)
-                    //r.setStart(e,0)
                     r.setStartBefore(e)
                     r.setEndAfter(e)
                     rangy.getSelection().setSingleRange(r)
-                    //rangy.getSelection().deleteFromDocument();
                     event.preventDefault()
                 }
                 return;
             }
-
             //删除代码
             if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
                 //来自代码块的操作，获取到的是已经删除后的代码
@@ -245,29 +185,36 @@ class IRHotkeyCanUndoBinder implements BaseEventBinder{
                 }
                 return;
             }
-
             return ;
         }else{
             event.preventDefault()
             //删除一个节点的
             if(r.getNodes().length==1){
-                this.editor.ir.execute(new DeleteTextCommand())
+                this.editor.ir.execute(new DeleteTextCommand(this.editor))
+                return 
             }
 
             //删除多个节点的
             if(r.getNodes().length>1){
                 let startElement = findClosestByAttribute(start,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
                 let endElement = findClosestByAttribute(end,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
+                if(startElement!=null && endElement!=null){
+                    //两个都同为一个md-inline
+                    if(startElement === endElement){
+                        this.editor.ir.execute(new DeleteInlineCommand(this.editor),startElement,r)
+                        return ;
+                    }else{//不为同一个md-inline
+                        this.editor.ir.execute(new DeleteBlockCommand(this.editor),startElement,endElement,r)
+                    }
+                }
+                
+
                 if(!startElement) startElement = findClosestByAttribute(start,CONSTANTS.ATTR_MD_BLOCK,"",this.editor.ir.getRootElementClassName())
                 if(!endElement)endElement = findClosestByAttribute(end,CONSTANTS.ATTR_MD_BLOCK,"",this.editor.ir.getRootElementClassName())
                 
-                let startOffset = r.startOffset
-                //相同的情况
-                if(startElement === endElement){
-                    this.editor.ir.execute(new DeleteInlineCommand(this.editor),startElement,r)
-                }else{
-                    this.editor.ir.execute(new DeleteBlockCommand(this.editor),startElement,endElement,r)
-                }
+                //两个都同为一个md-block
+                this.editor.ir.execute(new DeleteBlockCommand(this.editor),startElement,endElement,r)
+
                 return
             }
 

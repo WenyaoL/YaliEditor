@@ -10,7 +10,8 @@ export default createStore({
       preview:"",  
       tree:[],   //当前文件树
       isSave:true
-    }
+    },
+    editModel:"ir"
   },
   getters: {
 
@@ -32,16 +33,11 @@ export default createStore({
       console.log("设置编辑器==",payload);
       state.viewEditor = payload
     },
-    initApplication(state,context){
-      const application = state.applicationContext
-      //加载可加载部分
-      application.content = context.content
-      application.filePath = context.filePath
-      application.title = context.title
-      application.tree = context.tree
-    },
     updateFileState(state,flag){
       state.applicationContext.isSave = flag
+    },
+    updateEditModel(state,model){
+      state.editModel = model
     },
     updateApplicationContext(state,context){
       if(isEmpty(context)) return 

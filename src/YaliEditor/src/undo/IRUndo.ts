@@ -18,9 +18,12 @@ class IRUndo{
     redoStack: patch_obj[][];
     undoStack: patch_obj[][];
 
-    constructor(){
+    editor:YaLiEditor;
+    constructor(editor:YaLiEditor,origin:string){
+        this.editor = editor
+
         this.hasUndo = false;
-        this.lastText = "";
+        this.lastText = origin;
         this.redoStack = [];
         this.undoStack = [];
 
@@ -28,27 +31,43 @@ class IRUndo{
     }
 
     /**
+     * 设置栈会起源状态
+     * @param origin 
+     */
+    setOrigin(origin:string){
+        this.lastText = origin;
+        this.hasUndo = false;
+        this.redoStack = [];
+        this.undoStack = [];
+    }
+
+    /**
      * undo 操作
      */
-    public undo(editor:YaLiEditor){
+    public undo(){
+
+        
         const patch = this.undoStack.pop()
         this.redoStack.push(patch);
         if(!patch) return;
 
         //对当前状态应用补丁，将其回退到上一状态
+        console.log(this.lastText);
         const res = this.dmp.patch_apply(patch,this.lastText)
+        console.log(res);
+        
         //重新设置last
         this.lastText = res[0]
         //跟新编译器当前文本
-        editor.ir.rootElement.innerHTML = res[0]
-
-
+        this.editor.ir.rootElement.innerHTML = res[0]
+        //刷新视图
+        this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
     }
 
     /**
      * redo 操作
      */
-    public redo(editor:YaLiEditor){
+    public redo(){
         const patch = this.redoStack.pop()
         //重新放回undo
         this.undoStack.push(patch)
@@ -67,22 +86,31 @@ class IRUndo{
         //重新设置last
         this.lastText = res[0]
         //跟新编译器当前文本
-        editor.ir.rootElement.innerHTML = res[0]
+        this.editor.ir.rootElement.innerHTML = res[0]
     }
 
-    public addUndo(editor:YaLiEditor){
-
+    public addUndo(){
+        const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
+        //移除动态的
+        const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
+        for (let index = 0; index < preList.length; index++) {
+            const element = preList[index];
+            element.innerHTML = ""
+        }
+        
+        
         //当前状态到上一状态的不同
-       const diff = this.dmp.diff_main(editor.ir.rootElement.innerHTML,this.lastText)
+       const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
+       console.log(diff);
        //生成补丁
-       const patch = this.dmp.patch_make(editor.ir.rootElement.innerHTML,diff)
-       
+       const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
+       console.log(patch);
        if(patch.length === 0) return;
         
         
 
        //跟新lastText为当前状态
-       this.lastText = editor.ir.rootElement.innerHTML;
+       this.lastText = cloneRoot.innerHTML;
        this.undoStack.push(patch)
        if(this.undoStack.length>this.stackSize){
         this.undoStack.shift();

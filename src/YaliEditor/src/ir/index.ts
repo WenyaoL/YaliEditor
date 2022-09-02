@@ -8,23 +8,26 @@ import turndown from '../../../turndown-plugin'
 import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
-import IRUndo from "./IRUndo";
+import IRUndo from "../undo/IRUndo";
 import IRHotkeyCanUndoBinder from "../eventbinder/IRHotkeyCanUndoBinder";
-import { Command, IRUndoManager } from "./IRUndoManager";
+import { Command, IRUndoManager } from "../undo/IRUndoManager";
 import IRInputCanUndoBinder from "../eventbinder/IRInputCanUndoBinder";
+import TurndownParser from "../../../turndown-plugin";
 
 
 class IR{
 
     public editor:YaLiEditor;
     public renderer:MarkdownBeautiful;
-    public parser:TurndownService
+    public parser:TurndownParser;
     public rootElement:HTMLElement;
 
     public binderList:BaseEventBinder[];
 
     //public undo:IRUndo
-    public undoManager:IRUndoManager
+    //public undoManager:IRUndoManager
+    public undoManager:IRUndo
+
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -36,15 +39,17 @@ class IR{
         this.rootElement = divElement;
 
         this.renderer = new MarkdownBeautiful();
-        this.parser = turndown;
+        this.parser = new TurndownParser(this.editor);
         //this.undo = new IRUndo();
-        this.undoManager = new IRUndoManager();
+        //this.undoManager = new IRUndoManager();
+        this.undoManager = new IRUndo(this.editor,"")
         this.binderList = [];
         this.binderList.push(new CommonEventBinder());
-        this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))
-        //this.binderList.push(new IRInputBinder(this.editor))
-        this.binderList.push(new IRInputCanUndoBinder(this.editor))
-        //this.binderList.push(new IRHotkeyBinder(this.editor));
+        
+        this.binderList.push(new IRInputBinder(this.editor))
+        //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))
+        //this.binderList.push(new IRInputCanUndoBinder(this.editor))
+        this.binderList.push(new IRHotkeyBinder(this.editor));
         this.binderList.push(new IRSelectBinder(this.editor));
 
         this.bindEvent(this.rootElement);
@@ -59,8 +64,13 @@ class IR{
     }
 
     public execute(command:Command,...args:any[]){
-        this.undoManager.execute(command,...args)
+        //this.undoManager.execute(command,...args)
     }
+
+    public addUndo(){
+        this.undoManager.addUndo()
+    }
+
     /**
      * bind all event
      * @param element 
@@ -81,13 +91,26 @@ class IR{
     }
     /**
      * render markdown
+     * load editor origin state
      * 渲染markdown
      * @param src render markdown string
      */
-    public render(src:string){
+    public load(src:string){
         const res = this.renderer.md.render(src)
-        this.rootElement.innerHTML = res
+        if(res === ''){
+            this.rootElement.innerHTML = '<p md-block="paragraph"><br></p>'
+        }else{
+            this.rootElement.innerHTML = res
+        }
+        this.undoManager.setOrigin(this.rootElement.innerHTML)
         this.renderer.initEditorView(this.rootElement)
+    }
+
+    /**
+     * 获取markdown文本
+     */
+    public getMarkdown(){
+       return this.parser.turndown(this.rootElement)
     }
 
     public getRootElementClassName(){

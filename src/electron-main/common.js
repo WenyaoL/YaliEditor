@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { argv } from 'process';
 import { app, protocol, BrowserWindow,Menu,dialog} from 'electron'
-
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 
 export const CAN_READ_EXTENSION = ['.md','.txt','.markdown','.mkd','.mdown','.mkdn']
 
@@ -68,6 +68,7 @@ export async function openFile(filePath){
 
 export function loadRenderApplicationContext(){
     const applicationContext = createRenderApplicationContext()
+    console.log("argv=====",argv);
     if(argv.length == 2){
         const filePath = argv[1]
         //标题

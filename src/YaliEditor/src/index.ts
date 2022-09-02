@@ -32,8 +32,12 @@ class YaLiEditor {
 
     }
 
-    public render(src:string){
-        this.ir.render(src)
+    public render(src:string){    
+        this.ir.load(src)
+    }
+
+    public getMarkdownText(){
+        return this.ir.getMarkdown()
     }
 }
 

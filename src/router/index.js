@@ -2,8 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import FileContentView from '../views/FileContentView'
 import FolderView from '../views/FolderView'
-import TestPanle from '../views/TestPanle'
-import YaLiTestPanle from '../views/YaLiTestPanle'
+import DesignDashboard from '../views/DesignDashboard'
 const routes = [
   {
     path: '/',
@@ -24,14 +23,9 @@ const routes = [
     component: FolderView
   },
   {
-    path: '/test',
-    name: 'testPanle',
-    component: TestPanle
-  },
-  {
-    path: '/testYaLi',
-    name: 'testYaLi',
-    component: YaLiTestPanle
+    path: '/designDashboard',
+    name: 'designDashboard',
+    component: DesignDashboard
   },
 ]
 

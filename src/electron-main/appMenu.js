@@ -3,7 +3,7 @@ import { BrowserWindow, Menu,ipcMain,dialog} from 'electron'
 import common from './common'
 import path from 'path'
 export default {
-    build(win){
+    build(){
         var template = [
             {
                 label:'文件(F)',
@@ -213,6 +213,7 @@ export default {
         
         var m = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(m)
+        
     }
 }
 

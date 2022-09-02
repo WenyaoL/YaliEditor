@@ -16,10 +16,10 @@ export default {
     onMounted(()=>{
       const store = useStore()
       loadAll(store)
-      window.electronAPI.loadRenderApplicationContext().then(payload=>{
-        console.log(payload);
+      /*window.electronAPI.loadRenderApplicationContext().then(payload=>{
+        console.log("加载到的初始上下文",payload);
         store.commit('initApplication',payload.applicationContext)
-      })
+      })*/
     })
   }
 }

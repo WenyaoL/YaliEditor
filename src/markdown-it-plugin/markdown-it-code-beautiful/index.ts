@@ -134,12 +134,23 @@ class CodemirrorManager{
      * 重新跟新视图状态
      */
     refreshEditorView(root:HTMLElement){
+        console.log("刷新视图");
+
         setTimeout(() => {
             const elements = root.getElementsByClassName("markdown-it-code-beautiful")
             for (let index = 0; index < this.allView.length; index++) {
                 const viewInfo = this.allView[index]
-                
+                //销毁原视图
+                viewInfo.view.destroy()
+                //得到最新状态
+                viewInfo.stateInfo.state = viewInfo.view.state
+                //将数据重新放入缓存
+                this.allStateCache.push(viewInfo.stateInfo)
             }
+            //刷新视图
+            this.allView = []
+            //重新初始化视图
+            this.initEditorView(root)
         })
     }
 
@@ -159,6 +170,7 @@ class CodemirrorManager{
                     state: cache.state,
                     parent: element,
                 })
+                
                 //view.lineWrapping = true;
                 this.allView.push(new CodemirrorEditorView(element,view,cache));
                 element.setAttribute("contenteditable","false");
@@ -224,7 +236,30 @@ class CodemirrorManager{
 
     }
 
+    getViewInfo(uuid:string){
+        const idx = this.allView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
+        if(idx>=0){
+            return this.allView.at(idx)
+        }
+        return null
+    }
 
+    /**
+     * 获取指定id的文本信息
+     * @param uuid 
+     */
+    getTextValue(uuid:string){
+        const viewInfo = this.getViewInfo(uuid)
+        
+        if(viewInfo){
+            let res = viewInfo.stateInfo.state.doc.toString()
+            return res;
+        }else{
+            console.log("发现undif,uuid为:",uuid);
+            return ''
+        }
+            
+    }
 
     /**
      * 给markdown-it的高亮器插件，使得markdown-it能使用codemirror作为代码编辑器

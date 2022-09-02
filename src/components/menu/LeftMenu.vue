@@ -19,7 +19,7 @@
       <template #title>选项</template>
     </el-menu-item>
 
-    <el-menu-item index="4"  route="/testYaLi">
+    <el-menu-item index="4"  route="/designDashboard">
       <el-icon><setting /></el-icon>
       <template #title>设置</template>
     </el-menu-item>

@@ -17,7 +17,6 @@ import string from 'string'
 
 
 export default {
-    name:"MarkItShowArea",
     props:{
         content: String
     },

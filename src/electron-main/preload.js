@@ -8,8 +8,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     //--------------------------------------调用（invoke）-----------------------------------
     //渲染进程请求读取文件内容
     readFile: async (payload) => ipcRenderer.invoke('readFile',payload),
-    //渲染进程请求加载上下文
-    loadRenderApplicationContext: async () => ipcRenderer.invoke('loadRenderApplicationContext'),
     //渲染进程请求打开文件保存信息框
     openSaveMsgDialog: () => ipcRenderer.invoke('openSaveMsgDialog'),
     //渲染进程请求主进程保存文件
@@ -20,7 +18,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     
 
     //--------------------------------------监听（listener）-----------------------------------
-    //渲染进程加载Content
+    //渲染进程加载上下文
     updateApplicationContext: (callback) => ipcRenderer.on('updateApplicationContext',callback),
     //渲染进程捕获content提交给主进程
     catchContent: (callback) => ipcRenderer.on('catchContent',callback),

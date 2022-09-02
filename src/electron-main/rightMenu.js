@@ -8,6 +8,7 @@ export default {
             }
         ]
         var rightm = electron.Menu.buildFromTemplate(rightTemplate)
+        
         win.webContents.on('context-menu',(e)=>{
             e.preventDefault()
             rightm.popup({window:win})

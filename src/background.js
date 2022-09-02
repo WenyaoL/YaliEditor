@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow,Menu, ipcMain, dialog} from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import appMenu  from '@/electron-main/appMenu'
 import rightMenu  from '@/electron-main/rightMenu'
+import {loadRenderApplicationContext} from '@/electron-main/common'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import { request } from 'http'
 import loadIPCHandle from './electron-main/ipmMainLoad'
@@ -37,18 +38,16 @@ async function createWindow() {
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
-    // Load the index.html when not in development
     win.loadURL('app://./index.html')
     //win.loadURL('app://./home')
   }
   //加载菜单 load Menu
-  appMenu.build(win)
-  rightMenu.build(win)
+  appMenu.build()
+  //rightMenu.build(win)
 
 
 }
@@ -66,6 +65,8 @@ app.on('activate', () => {
 })
 
 app.on('ready', async () => {
+  
+
   //加载ipchandle
   loadIPCHandle.load()
 
@@ -74,6 +75,9 @@ app.on('ready', async () => {
     const url = request.url.substring(8)
     callback(decodeURI(path.normalize(url)))
   })
+  //应用打开的第一个文件应该去加载数据
+  const renderApplicationContext =  loadRenderApplicationContext()
+  win.webContents.send("updateApplicationContext",renderApplicationContext)
   isReady = true;
 
 })
@@ -87,7 +91,6 @@ app.on('open-file',async (event,path)=>{
   if(isReady){
 
   }
-
 })
 
 

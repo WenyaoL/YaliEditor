@@ -12313,13 +12313,6 @@
   "resolved" "https://registry.npmmirror.com/vary/-/vary-1.1.2.tgz"
   "version" "1.1.2"
 
-"vditor@^3.8.17":
-  "integrity" "sha512-itaVyNwC/+xjOsTaDZKGy4BGhEcmZWkCDKaMyIH7rcbojw2H29Vg/FV1MNPcNyjZ6mvmcNlS6oZT1drDnAVFMQ=="
-  "resolved" "https://registry.npmmirror.com/vditor/-/vditor-3.8.17.tgz"
-  "version" "3.8.17"
-  dependencies:
-    "diff-match-patch" "^1.0.5"
-
 "verror@1.10.0":
   "integrity" "sha512-ZZKSmDAEFOijERBLkmYfJ+vmk3w+7hOLYDNkRCuRuMJGEmqYNCNLyBBFwWKVMhfwaEF3WOd0Zlw86U/WC/+nYw=="
   "resolved" "https://registry.npmmirror.com/verror/-/verror-1.10.0.tgz"

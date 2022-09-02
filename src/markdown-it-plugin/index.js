@@ -43,6 +43,10 @@ class MarkdownBeautiful{
     this.codemirrorManager.initEditorView(rootElement)
   }
 
+  refreshEditorView(rootElement){
+    this.codemirrorManager.refreshEditorView(rootElement)
+  }
+
   render(src){
     return this.md.render(src)
   }

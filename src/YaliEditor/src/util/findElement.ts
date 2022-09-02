@@ -33,7 +33,7 @@ export const findClosestByTop = (element: Node,topClassName: string) => {
     if (!element) {
         return null;
     }
-    if (element.nodeType === 3) {
+    if (element.nodeType === 3) { 
         element = element.parentElement;
     }
     let e = element as HTMLElement;

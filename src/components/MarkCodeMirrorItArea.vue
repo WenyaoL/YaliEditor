@@ -2,23 +2,23 @@
   <div class="common-layout" style="height:100%;">
     <el-container>
           <el-aside width="50%">
-            <code-mirror-area/>
+            <code-mirror-show/>
           </el-aside>
       <!--<el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />-->
-      <el-main><mark-it-show-area :content="this.$store.state.applicationContext.content"/></el-main>
+      <el-main><markdown-it-show :content="this.$store.state.applicationContext.content"/></el-main>
     </el-container>
   </div>
 </template>
 
 <script>
-import MarkItShowArea from "@/components/markdown-it-panel/MarkItShowArea.vue"
-import CodeMirrorArea from "@/components/content-area/CodeMirrorArea.vue"
+import MarkdownItShow from "@/components/markdown-it-panel/MarkdownItShow.vue"
+import CodeMirrorShow from "@/components/codemirror-panel/CodeMirrorShow.vue"
 
 export default {
     name: "MarkCodeMirrorItArea",
     components:{
-        MarkItShowArea,
-        CodeMirrorArea
+        MarkdownItShow,
+        CodeMirrorShow,
     }
 }
 </script>
