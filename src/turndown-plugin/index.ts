@@ -8,7 +8,10 @@ class TurndownParser{
 
   constructor(editor:YaLiEditor){
     this.editor = editor
-    this.turndownService = new TurndownService({headingStyle:"atx"})
+    this.turndownService = new TurndownService({
+      headingStyle:"atx",
+      emDelimiter:'*'
+    })
     this.initCodeRule()
     this.initImgRule()
     this.initMathjaxRule()
@@ -16,6 +19,7 @@ class TurndownParser{
     this.initCodemirrorRule(this.editor)
     this.initLinkRule()
     this.initInineCodeRule()
+    this.initFontRule()
   }
 
   /**
@@ -141,6 +145,25 @@ class TurndownParser{
             return node.textContent
         }
     })
+  }
+
+  initFontRule(){
+    //删除线
+    this.turndownService.addRule('md-font-del',{
+      filter:['del', 's'],
+      replacement:(content, node, options) =>{
+            return '~~' + content + '~~'
+        }
+    })
+
+    //下划线
+    this.turndownService.addRule('md-font-underline',{
+      filter:'u',
+      replacement:(content, node, options) =>{
+            return '<u>' + content + '</u>'
+        }
+    })    
+
   }
 
   turndown(src:string | TurndownService.Node){

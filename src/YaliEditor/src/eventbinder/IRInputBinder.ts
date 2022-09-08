@@ -14,10 +14,8 @@ class IRInputBinder implements BaseEventBinder{
     bindInputEvent(element: HTMLElement){
         element.addEventListener("input",(event: InputEvent) => {
             if(event.inputType==="deleteContentBackward"){
-                console.log("触发删除");
                 return;
             }
-            console.log("触发源数据修改");
             //来自md-meta输入是需要跟新对应标签的src
             const r = rangy.getSelection().getRangeAt(0)
             let start =  r.startContainer as HTMLElement
@@ -49,7 +47,6 @@ class IRInputBinder implements BaseEventBinder{
             //查看输入是否能符合语法，生成html块
 
             //添加undo
-            console.log("输入处理");
         })
     }
 

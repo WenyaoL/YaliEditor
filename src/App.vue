@@ -16,6 +16,8 @@ export default {
     onMounted(()=>{
       const store = useStore()
       loadAll(store)
+      window.electronAPI.loadFonts()
+
       /*window.electronAPI.loadRenderApplicationContext().then(payload=>{
         console.log("加载到的初始上下文",payload);
         store.commit('initApplication',payload.applicationContext)
@@ -33,13 +35,16 @@ body{
   height: 100%;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
+  font-family:  Arial,"sourcehansans",sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   height: 100%;
 }
+
+
 
 nav {
   padding: 30px;

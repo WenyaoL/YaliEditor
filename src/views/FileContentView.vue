@@ -1,19 +1,14 @@
 <template>
-
-  <mark-code-mirror-it-area v-if="this.$store.state.model === 'sv'"/>
-  <ya-li-editor v-else/>
+  <ir-markdown v-if="this.$store.state.editModel == 'IR'"/>
+  <sv-markdown v-else-if="this.$store.state.editModel == 'SV'"/>
+  <only-markdown v-else/>
 </template>
 
-<script>
-import MarkCodeMirrorItArea from '@/components/MarkCodeMirrorItArea.vue'
-import YaLiEditor from '@/components/yaliEditor-panel/YaliEditor.vue'
-export default {
-    name:"FileContentView",
-    components:{
-        MarkCodeMirrorItArea,
-        YaLiEditor
-    }
-}
+<script setup>
+import SvMarkdown from '@/components/SvMarkdown.vue'
+import OnlyMarkdown from '@/components/OnlyMarkdown.vue'
+import IrMarkdown from '@/components/IrMarkdown.vue'
+
 </script>
 
 <style>

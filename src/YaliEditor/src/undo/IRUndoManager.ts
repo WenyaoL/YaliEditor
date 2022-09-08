@@ -3,7 +3,21 @@ import Constants from "../constants"
 import rangy from "rangy";
 import { findClosestByAttribute, findClosestByTop } from "../util/findElement";
 
-
+/**
+ * IR模式下的Undo redo功能提供管理器
+ * 将执行操作抽象成一条条Command，实际操作使用的是document.execCommand
+ * 将一系列的document.execCommand操作封装在一个命令Command接口类中
+ * 根据用户的操作执行对应的命令，并将命令加入undo压栈中
+ * 当用户执行undo操作时，将栈中命令弹出并执行该Command的undo方法，对操作进行undo
+ * 直接undo使用的是document.execCommand("undo")
+ * 
+ * 
+ * 注意：本类已经弃用，因为document.execCommand执行的操作与浏览器自身的有关，
+ * 不同的浏览器有不同的操作。并且document.execCommand执行的操作难以预测，
+ * 为了对这些操作进行统一，需要大量的浏览器行为修正的代码，不利于维护，所有选择弃用该模块。
+ * 
+ * 
+ */
 export interface Command{
     //命令的名称
     name:string;
@@ -277,7 +291,9 @@ export class DeleteCodemirrorCommand implements Command{
     }
 }
 
-
+/**
+ * 回车键处理命令
+ */
 export class EnterCommand implements Command{
     name: string;
     editor:YaLiEditor;
@@ -372,7 +388,9 @@ export class EnterCommand implements Command{
 }
 
 
-
+/**
+ * 空命令
+ */
 export class EmptyCommand implements Command{
     name: string;
     execute() {}

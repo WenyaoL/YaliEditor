@@ -1,45 +1,60 @@
 <template>
-  <el-row class="demo-autocomplete text-center">
-    <el-col :span="4" class="optionsText"> 编辑模式 </el-col>
-    <el-col :span="4">
-      <el-select v-model="editModel" class="m-2" placeholder="Select">
+<el-form :model="seting" 
+          label-width="auto"
+          label-position="top">
+
+  <el-form-item label="编辑模式">
+      <el-select v-model="seting.editModel" class="m-2" placeholder="Select" @change="editModelChange">
         <el-option
           v-for="item in editModels"
           :key="item.value"
           :value="item.value"
         />
       </el-select>
-    </el-col>
-  </el-row>
-  <el-row class="demo-autocomplete text-center">
-    <el-col :span="4" class="optionsText"> sv模式下的代码高亮器 </el-col>
-    <el-col :span="4">
-      <el-select v-model="codeHightLight" class="m-2" placeholder="Select">
+  </el-form-item>
+
+  <el-form-item label="SV模式下的代码高亮器">
+      <el-select v-model="seting.codeHightLight" class="m-2" placeholder="Select" @change="editModelChange">
         <el-option
           v-for="item in codeHightLights"
           :key="item.value"
           :value="item.value"
         />
       </el-select>
-    </el-col>
-  </el-row>
+  </el-form-item>
+
+</el-form>
+
 </template>
 
 <script  lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive} from "vue";
 import { useStore } from "vuex";
-
 const store = useStore();
+
+const seting = reactive({
+  editModel:store.state.editModel,
+  codeHightLight:''
+})
+
+
 const editModel = ref(store.state.editModel);
 const codeHightLight = ref('')
 const editModels = [
-    {value: "ir",},
-    {value: "sv",},
+    {value: "IR",},
+    {value: "SV",},
+    {value: "ONLY",},
 ];
 const codeHightLights = [
     {value: "vscode2015",},
     {value: "sv",},
 ]
+
+function editModelChange(val){
+  store.commit("updateEditModel",val)
+}
+
+
 </script>
 
 <style>

@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 import {isEmpty} from '@/utils/common'
 export default createStore({
   state: {
-    viewEditor:null, //渲染进程的视图编辑器
+    viewEditor:null, //渲染进程的视图编辑器 （SV ONLY模式下的编辑器）
     applicationContext:{   //上下文
       title:"undefine",
       filePath: null,   //文件路径
@@ -11,7 +11,11 @@ export default createStore({
       tree:[],   //当前文件树
       isSave:true
     },
-    editModel:"ir"
+    editModel:"IR",  //编辑模式
+    fonts:{        //jsPDF加载的字体数据
+      normal:'',
+      bold:''  
+    }
   },
   getters: {
 
@@ -49,6 +53,9 @@ export default createStore({
       if(context.isSave) application.isSave = context.isSave
       if(!isEmpty(context.tree))application.tree = context.tree
       if(context.preview) application.preview = context.preview
+    },
+    initFonts(state,context){
+      state.fonts = context
     }
   },
   actions: {

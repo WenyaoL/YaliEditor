@@ -205,6 +205,21 @@ export function createFileTree(dirPath,tree){
     })
 }
 
+/**
+ * 读取字体文件
+ */
+export async function readFontFile(){
+    const fontsPath = path.join(__dirname,  "fonts/SourceHanSans-normal");
+    const fontsPath2 = path.join(__dirname,  "fonts/SourceHanSans-bold");
+    
+    console.log("读取字体文件",fontsPath);
+    const normal =  await openFile(fontsPath)
+    const bold = await openFile(fontsPath2)
+    return {
+        normal:normal,
+        bold:bold
+    }
+}
 
 
 
@@ -226,4 +241,5 @@ export default {
     openFileTreeSync,
     filterFileTree,
     createFileTree,
+    readFontFile
 }

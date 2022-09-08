@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import FileContentView from '../views/FileContentView'
 import FolderView from '../views/FolderView'
 import DesignDashboard from '../views/DesignDashboard'
+import TestPanle from '../views/TestPanle'
+
 const routes = [
   {
     path: '/',
@@ -27,6 +29,11 @@ const routes = [
     name: 'designDashboard',
     component: DesignDashboard
   },
+  {
+    path: '/test',
+    name: 'testPanle',
+    component: TestPanle
+  }
 ]
 
 const router = createRouter({

@@ -88,6 +88,10 @@ class CodemirrorManager{
             },
             '&':{
                 font: "16px Arial, monospace ",  //字体
+            },
+            '.cm-scroller':{
+                "border-radius": "3px",
+                "background-color":"#f6f6f6"
             }
         })
         //初始化默认插件
@@ -97,6 +101,7 @@ class CodemirrorManager{
             customTheme,
             EditorView.lineWrapping,
             EditorView.updateListener.of((viewUpdate) => { // 默认自带的监听器
+                
                 if (viewUpdate.docChanged && viewUpdate.state.doc.length === 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","true")
                     
@@ -130,6 +135,31 @@ class CodemirrorManager{
         this.allStateCache = [];
         
     }
+
+    /**
+     * 同步方式刷新视图
+     */
+     refreshEditorViewSyn(root:HTMLElement){
+        const elements = root.getElementsByClassName("markdown-it-code-beautiful")
+        for (let index = 0; index < this.allView.length; index++) {
+            
+            const viewInfo = this.allView[index]
+
+            //销毁原视图
+            viewInfo.view.destroy()
+            
+            //得到最新状态
+            viewInfo.stateInfo.state = viewInfo.view.state
+            //将数据重新放入缓存
+            this.allStateCache.push(viewInfo.stateInfo)
+        }
+        //刷新视图
+        this.allView = []
+        //重新初始化视图
+        this.initEditorViewSyn(root)
+     }
+
+
     /**
      * 重新跟新视图状态
      */
@@ -139,9 +169,12 @@ class CodemirrorManager{
         setTimeout(() => {
             const elements = root.getElementsByClassName("markdown-it-code-beautiful")
             for (let index = 0; index < this.allView.length; index++) {
+                
                 const viewInfo = this.allView[index]
+
                 //销毁原视图
                 viewInfo.view.destroy()
+                
                 //得到最新状态
                 viewInfo.stateInfo.state = viewInfo.view.state
                 //将数据重新放入缓存
@@ -155,44 +188,52 @@ class CodemirrorManager{
     }
 
     /**
+     * 同步的方式初始化编辑器
+     * 注意：请确保语言包已经加载完成，否则有可以导致某些编辑模块无法使用语言包
+     * @param root 
+     */
+    initEditorViewSyn(root:HTMLElement){
+        const elements = root.getElementsByClassName("markdown-it-code-beautiful")
+        for (let index = 0; index < this.allStateCache.length; index++) {
+            const cache = this.allStateCache[index];
+            //根据id识别
+            const element:Element = elements.namedItem(cache.editor_uuid)
+            let view = new EditorView({
+                state: cache.state,
+                parent: element,
+            })
+            
+            //view.lineWrapping = true;
+            this.allView.push(new CodemirrorEditorView(element,view,cache));
+            element.setAttribute("contenteditable","false");
+
+            const tooltip = document.createElement("div")
+            
+            //tooltip.classList.add("md-hiden")
+
+            element.appendChild(tooltip)
+            tooltip.classList.add("md-code-tooltip");
+            //tooltip.classList.add("md-hiden")
+            tooltip.setAttribute("spellcheck","false");
+            tooltip.setAttribute("editor-uuid",cache.editor_uuid)
+            new SearchSuggestUI().bindSearchSuggest(tooltip,this.langCanLoad)
+            tooltip.children[0].textContent = cache.lang
+
+            tooltip.children[0].addEventListener("keyup",(event)=>{
+               this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
+            })
+        }
+        this.refreshCache();
+    }
+
+    /**
      * init Editor
      * @param root 
      */
     initEditorView(root:HTMLElement){
         //将刷新事件加入事件列表，因为要等列表前面的语言包加载事件执行完，才能刷新
         setTimeout(() => {
-            const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-            for (let index = 0; index < this.allStateCache.length; index++) {
-                const cache = this.allStateCache[index];
-                //根据id识别
-                const element:Element = elements.namedItem(cache.editor_uuid)
-                let view = new EditorView({
-                    state: cache.state,
-                    parent: element,
-                })
-                
-                //view.lineWrapping = true;
-                this.allView.push(new CodemirrorEditorView(element,view,cache));
-                element.setAttribute("contenteditable","false");
-
-                const tooltip = document.createElement("div")
-                
-                //tooltip.classList.add("md-hiden")
-
-                element.appendChild(tooltip)
-                tooltip.classList.add("md-code-tooltip");
-                
-                tooltip.setAttribute("spellcheck","false");
-                tooltip.setAttribute("editor-uuid",cache.editor_uuid)
-                new SearchSuggestUI().bindSearchSuggest(tooltip,this.langCanLoad)
-                tooltip.children[0].textContent = cache.lang
-
-                tooltip.children[0].addEventListener("keyup",(event)=>{
-                   this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
-                })
-            }
-    
-            this.refreshCache();
+            this.initEditorViewSyn(root)
         });
     }
 

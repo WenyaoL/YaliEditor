@@ -1,6 +1,7 @@
 
 import {updateLine,updateBlock,updateMulLine} from '@/codemirror-main/codeCommon'
-
+import html2canvas from 'html2canvas'
+import {jsPDF} from 'jspdf'
 
 
 //-------------------------------内容加载处理------------------------------
@@ -40,6 +41,76 @@ function loadContentListener(store){
     //创建文件树
     window.electronAPI.createFileTree((event, payload)=>{
         store.commit('updateTree',payload.tree)
+    })
+
+    //window.electronAPI.initFonts初始化字体 数据
+    window.electronAPI.initFonts((event, fonts)=>{
+        console.log(fonts);
+        store.commit('initFonts',fonts)
+    })
+
+    window.electronAPI.exportPDF((event, fonts)=>{
+        //保存PDF
+        let root = document.getElementById("YaliEditor")
+        const doc = new jsPDF({
+            unit:'px',
+            orientation: 'p', 
+            format: 'a4' 
+        })
+        doc.addFileToVFS('sourcehansans-normal.ttf',store.state.fonts.normal)
+        doc.addFileToVFS('sourcehansans-bold.ttf',store.state.fonts.bold)
+        doc.addFont('sourcehansans-normal.ttf','sourcehansans', 'normal')
+        doc.addFont('sourcehansans-bold.ttf','sourcehansans', 'bold')
+        doc.setFont('sourcehansans', 'normal');
+        doc.setFont('sourcehansans', 'bold');
+    
+        console.log(doc.getFontList());
+        //root.insertAdjacentHTML('afterbegin','<style>*{font-family:  Arial,sans-serif, serif,"sourcehansans";}</style>')
+        let el = root.cloneNode(true)
+        //给模块赋予字体
+        let cList = el.children
+        for (let index = 0; index < cList.length; index++) {
+            const element = cList[index]
+            element.style.fontFamily = "sourcehansans"
+        }
+        //给编辑器赋予字体
+        let content = el.getElementsByClassName("cm-content")
+        for (let index = 0; index < content.length; index++) {
+            const element = content[index];
+            element.style.fontFamily = "sourcehansans"
+            
+        }
+
+        el.insertAdjacentHTML('afterbegin','<style>*{font-family:sourcehansans;}</style>')
+
+        let mathDom = el.getElementsByClassName("markdown-it-mathjax-beautiful")
+        for (let index = 0; index < mathDom.length; index++) {
+            const element = mathDom[index];
+            element.remove()
+        }
+
+        let gutters = el.getElementsByClassName("cm-gutterElement")
+        for (let index = 0; index < gutters.length; index++) {
+            const element = gutters[index]
+            element.style.fontFamily = "sourcehansans"
+            if(element.style.height === "14px"){
+                element.style.height = "22.4px"
+            }
+            
+        }
+
+        doc.html(el.innerHTML, {
+            jsPDF:doc,
+            margin:[10,1000,10,30],
+            width:400,
+            windowWidth:1200
+        }).save('chinese-html.pdf').then(o=>{
+            //回复原来字体
+            /*setTimeout(()=>{
+                root.removeChild(root.firstChild)
+            })*/
+            
+        });
     })
 
     //测试

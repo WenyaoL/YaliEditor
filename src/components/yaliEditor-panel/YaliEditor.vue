@@ -10,6 +10,7 @@ import {ref,onMounted,onUnmounted,onBeforeUnmount,watch} from 'vue'
 import {useStore} from 'vuex'
 import YaLiEditor from '@/YaliEditor/src'
 
+
 export default {
   props: {
     content: String
@@ -44,9 +45,14 @@ export default {
 }
 
 .write{
+    font-family:  Arial,"sourcehansans",sans-serif;
     max-width: 860px;
     margin: 0 auto;
     padding: 30px;
     padding-bottom: 100px;
+}
+
+h1,h2,h3,h4,h5,h6,p{
+  font-family:  Arial,"sourcehansans",sans-serif;
 }
 </style>

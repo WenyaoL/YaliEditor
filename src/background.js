@@ -10,6 +10,8 @@ import { request } from 'http'
 import loadIPCHandle from './electron-main/ipmMainLoad'
 import path from 'path'
 
+
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 let win;
@@ -48,7 +50,6 @@ async function createWindow() {
   //加载菜单 load Menu
   appMenu.build()
   //rightMenu.build(win)
-
 
 }
 

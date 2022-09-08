@@ -3,8 +3,7 @@ import YaLiEditor from "..";
 import CommonEventBinder from "../eventbinder/commonEventBinder";
 import MarkdownIt from "markdown-it/lib";
 import { BaseEventBinder } from "../../types";
-import TurndownService from "turndown";
-import turndown from '../../../turndown-plugin'
+
 import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
@@ -13,27 +12,38 @@ import IRHotkeyCanUndoBinder from "../eventbinder/IRHotkeyCanUndoBinder";
 import { Command, IRUndoManager } from "../undo/IRUndoManager";
 import IRInputCanUndoBinder from "../eventbinder/IRInputCanUndoBinder";
 import TurndownParser from "../../../turndown-plugin";
+import { DOMObserver } from "../state/domobserver";
 
 
+
+/**
+ * IR模式下的控制面板
+ */
 class IR{
-
+    //编辑器
     public editor:YaLiEditor;
+    //渲染器
     public renderer:MarkdownBeautiful;
+    //解析器
     public parser:TurndownParser;
+    //IR面板挂载的dom
     public rootElement:HTMLElement;
-
+    //事件binder列表
     public binderList:BaseEventBinder[];
 
     //public undo:IRUndo
     //public undoManager:IRUndoManager
+    //undo redo 管理器
     public undoManager:IRUndo
 
+    public observer:DOMObserver;
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
         const divElement = document.createElement("div");
         divElement.className = "YaLi-ir";
         divElement.setAttribute("contenteditable","true");
+        divElement.setAttribute("spellcheck","false")
         divElement.setAttribute("tabindex","1");
         this.editor.rootElement.appendChild(divElement);
         this.rootElement = divElement;
@@ -43,6 +53,7 @@ class IR{
         //this.undo = new IRUndo();
         //this.undoManager = new IRUndoManager();
         this.undoManager = new IRUndo(this.editor,"")
+
         this.binderList = [];
         this.binderList.push(new CommonEventBinder());
         
@@ -53,14 +64,18 @@ class IR{
         this.binderList.push(new IRSelectBinder(this.editor));
 
         this.bindEvent(this.rootElement);
+
+        this.observer = new DOMObserver(this.rootElement,this.editor)
+        
     }
 
     public undo(){
-        this.undoManager.undo()
+        //在undo期间屏蔽监控
+        this.observer.ignore(this.undoManager.undo,this.undoManager)
     }
 
     public redo(){
-        this.undoManager.redo()
+        this.observer.ignore(this.undoManager.redo,this.undoManager)
     }
 
     public execute(command:Command,...args:any[]){
@@ -71,6 +86,8 @@ class IR{
         this.undoManager.addUndo()
     }
 
+
+    
     /**
      * bind all event
      * @param element 
@@ -96,6 +113,7 @@ class IR{
      * @param src render markdown string
      */
     public load(src:string){
+        this.observer.stop()
         const res = this.renderer.md.render(src)
         if(res === ''){
             this.rootElement.innerHTML = '<p md-block="paragraph"><br></p>'
@@ -104,6 +122,9 @@ class IR{
         }
         this.undoManager.setOrigin(this.rootElement.innerHTML)
         this.renderer.initEditorView(this.rootElement)
+        setTimeout(()=>{
+            this.observer.start()
+        })
     }
 
     /**

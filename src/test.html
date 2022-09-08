@@ -5,8 +5,19 @@
   <title>JS Bin</title>
 </head>
 <body>
-<ol contenteditable oninput="">
-  <li>Press enter and look at the console</li>
-</ol>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+	<script src='../../dist/jspdf.debug.js'></script>
+    <script src="./assets/sourcehansans-normal-normal.js"></script>
+<script>
+    var doc = new jsPDF({ orientation: 'p', format: 'a4' });
+		doc.setFont('sourcehansanscn-normal', 'normal');
+		doc.setFontSize(20);
+		doc.html(document.body, {
+			callback: function (newDoc) {
+				newDoc.save('chinese-html.pdf')
+			}
+		});
+</script>
+
 </body>
 </html>

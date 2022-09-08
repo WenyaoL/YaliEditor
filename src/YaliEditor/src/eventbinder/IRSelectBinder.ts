@@ -4,8 +4,15 @@ import { findClosestByAttribute } from "../util/findElement";
 import rangy from "rangy";
 import log from "../util/loging";
 
+declare global {  //设置全局属性
+  interface Window {  //window对象属性
+    electronAPI: any;   //加入对象
+  }
+}
+
 class IRSelectBinder implements BaseEventBinder{
 
+  //当前被选中的md-inline原生
     private selectedInlineMdElement = null;
     private selectedBlockMdElement = null;
 
@@ -20,7 +27,17 @@ class IRSelectBinder implements BaseEventBinder{
      * @param e 
      * @returns 
      */
-    updateMdElement(e: HTMLElement){
+    updateMdElement(e: HTMLElement,isBlock:boolean = false){
+        if(isBlock){
+          if(this.selectedBlockMdElement !== null){
+            this.selectedBlockMdElement.classList.remove("md-expand")
+          }
+          this.selectedBlockMdElement = e;
+          this.selectedBlockMdElement.classList.add("md-expand")
+          return ;
+
+        }
+
         if(this.selectedInlineMdElement !== null){
             this.selectedInlineMdElement.classList.remove("md-expand")
         }
@@ -29,9 +46,24 @@ class IRSelectBinder implements BaseEventBinder{
         return ;
     }
 
+    ctrlKeyClick(event: MouseEvent & { target: HTMLElement }){
+      const topClassName = this.editor.ir.getRootElementClassName()
+      let e = findClosestByAttribute(event.target,"md-inline","",topClassName)
+      if(!e) return 
+      const inlineType = e.getAttribute("md-inline")
+      if(inlineType == 'link'){
+        const a = e.getElementsByTagName("a").item(0)
+        //通过浏览器打开页面
+        window.electronAPI.openURL({url:a.href})
+      }
+    }
     
     bindClick(element: HTMLElement){
-      element.addEventListener("click", (event: Event & { target: HTMLElement }) => {
+      element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
+
+        if(event.ctrlKey){
+          this.ctrlKeyClick(event)
+        }
 
         const r = rangy.getSelection().getRangeAt(0)
         console.log(r);
@@ -54,6 +86,12 @@ class IRSelectBinder implements BaseEventBinder{
           if(inlineType === "img"){
             this.updateMdElement(e)
           }
+
+          if(inlineType === "link"){
+            this.updateMdElement(e)
+          }
+        }else{
+          this.updateMdElement(e,true)
         }
 
         //event.preventDefault();
@@ -62,7 +100,7 @@ class IRSelectBinder implements BaseEventBinder{
       })
     }
 
-    bindSelectstartEvent(element: HTMLElement){
+    /*bindSelectstartEvent(element: HTMLElement){
         element.addEventListener("selectstart", (event: Event & { target: HTMLElement }) => {
 
             
@@ -88,12 +126,12 @@ class IRSelectBinder implements BaseEventBinder{
             
           },false)
 
-    }
+    }*/
 
     bindEvent(element: HTMLElement): void {
 
 
-        this.bindSelectstartEvent(element)
+        //this.bindSelectstartEvent(element)
         this.bindClick(element)
     }
 

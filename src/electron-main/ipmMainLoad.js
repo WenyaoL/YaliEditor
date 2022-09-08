@@ -1,6 +1,11 @@
-import { ipcMain,dialog,BrowserWindow } from "electron";
+import { ipcMain,dialog,BrowserWindow,shell } from "electron";
 
 import common from "./common";
+//import {font} from "@/assets/sourcehansans-normal-normal"
+var context = {
+    fonts:null
+}
+
 
 function load(){
 
@@ -30,6 +35,22 @@ function load(){
             common.saveFile(path,applicationContext.content)
         }
     })
+
+    //处理渲染进程的字体加载请求
+    ipcMain.on('loadFonts',(event,payload)=>{
+        console.log("加载字体");
+        //字体数据
+        //event.reply('initFonts',context['fonts'])
+        if(context['fonts']){
+            event.reply('initFonts',context['fonts'])
+            return
+        }
+        common.readFontFile().then(data=>{
+            context['fonts'] = data
+            event.reply('initFonts',data)
+        })
+    })
+
 
 
     //-------------------------注册处理器 handle-------------------------
@@ -62,7 +83,7 @@ function load(){
         return {applicationContext:applicationContext}
     })
 
-    //弹窗文件保存提醒框
+    //弹窗文件保存提醒框（弃用）
     ipcMain.handle('openSaveMsgDialog',(event,payload)=>{
         return dialog.showMessageBoxSync(BrowserWindow.getFocusedWindow(),{
             title:"保存",
@@ -70,6 +91,13 @@ function load(){
             buttons:["保存","丢弃"]
         })
     })
+
+
+    ipcMain.handle('openURL',(event,payload)=>{
+        shell.openExternal(payload.url)
+    })
+
+    
 
 }
 

@@ -87,11 +87,14 @@ class IRHotkeyBinder implements BaseEventBinder{
                     
                     const div = document.createElement('div')
                     div.innerHTML = res;
+                    
+                    if(!text || text == "\n" || text.length == 0) div.firstElementChild.innerHTML = "<br>"
                     //插入新的
-                    const node = div.childNodes[0]
+                    const node = div.firstElementChild as HTMLElement
                     r.insertNode(node)
                     r.collapseToPoint(node,1)
                     rangy.getSelection().setSingleRange(r)
+                    node.click()
                     return ; 
                 }
 
@@ -106,26 +109,29 @@ class IRHotkeyBinder implements BaseEventBinder{
                 r.insertNode(p)
                 r.collapseToPoint(p,1)
                 rangy.getSelection().setSingleRange(r)
+                p.click()
             }else{
                 //不存在head
                 //生成元素
                 const turndown = this.editor.ir.parser.turndown(e.outerHTML)
                 const pre = "#".repeat(parseInt(event.key)) + " "
                 const res = this.editor.ir.renderer.render(pre+turndown)
-        
+                
                 const div = document.createElement('div')
                 div.innerHTML = res;
-        
+                
+                if(!turndown) div.firstElementChild.innerHTML = "<br>"
+                
                 //删除
                 r.selectNode(e)
                 r.deleteContents()
                 //插入新的
-                const node = div.childNodes[0]
+                const node = div.childNodes[0] as HTMLElement
                 r.insertNode(node)
                 r.collapseToPoint(node,1)
                 rangy.getSelection().setSingleRange(r)
                 //rangy.getSelection().collapseToEnd()
-
+                node.click()
             }
     }
 
@@ -271,7 +277,7 @@ class IRHotkeyBinder implements BaseEventBinder{
             //删除一个节点的
             if(r.getNodes().length==1){
                 r.deleteContents()
-                this.editor.ir.addUndo()
+                //this.editor.ir.addUndo()
             }
 
             //删除多个节点的
@@ -284,7 +290,7 @@ class IRHotkeyBinder implements BaseEventBinder{
                     //删除内容
                     r.deleteContents()
                     if(!this.renderNode(startElement,r)){
-                        this.editor.ir.addUndo()
+                        //this.editor.ir.addUndo()
                         return;
                     }
                     r.collapseToPoint(r.startContainer.firstChild,startOffset)
@@ -301,7 +307,7 @@ class IRHotkeyBinder implements BaseEventBinder{
                     //重新渲染结束容器
                     this.renderNode(endElement,r)
                 }
-                this.editor.ir.addUndo()
+                //this.editor.ir.addUndo()
                 return
             }
 
@@ -340,7 +346,7 @@ class IRHotkeyBinder implements BaseEventBinder{
         //回车键处理
         if(event.key === "Enter"){
             this.enterKey(event)
-            this.editor.ir.addUndo()
+            //this.editor.ir.addUndo()
             //this.editor.ir.addUndo()
             return ;
         }
@@ -358,6 +364,7 @@ class IRHotkeyBinder implements BaseEventBinder{
         const f:Function =  this.defaultKeyMap[key]
         if(f){
             f.call(this,event)
+            event.preventDefault()
             //this.editor.ir.addUndo()
         }
       })
@@ -385,7 +392,6 @@ class IRHotkeyBinder implements BaseEventBinder{
                     r.deleteContents()
                     r.insertNode(document.createElement("br"))
                     //this.editor.ir.addUndo()
-                    this.editor.ir.addUndo()
                     return
                 }
                 //删除元数据类
@@ -401,7 +407,7 @@ class IRHotkeyBinder implements BaseEventBinder{
                     if(e){
                         e.getElementsByTagName("a")[0].href = start.innerText
                     }
-                    this.editor.ir.addUndo()
+                    //this.editor.ir.addUndo()
                 }
                 
             }

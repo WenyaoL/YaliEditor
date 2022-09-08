@@ -12,9 +12,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     openSaveMsgDialog: () => ipcRenderer.invoke('openSaveMsgDialog'),
     //渲染进程请求主进程保存文件
     invokeSave:(payload) => ipcRenderer.invoke('saveFile',payload),
-    //--------------------------------------发送（send）-----------------------------------
-    
+    //openURL打开一个url链接
+    openURL:(payload) => ipcRenderer.invoke('openURL',payload),
 
+    //--------------------------------------发送（send）-----------------------------------
+    //渲染检查请求加载Fonts
+    loadFonts:(payload) => ipcRenderer.send('loadFonts',payload),
     
 
     //--------------------------------------监听（listener）-----------------------------------
@@ -35,7 +38,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     //渲染进程监听保存文件（回传上下文）
     saveFile: (callback) => ipcRenderer.on('saveFile',callback),
 
-    
+    //加载字体数据(监听loadFonts返回的异步数据)
+    initFonts:(callback) => ipcRenderer.on('initFonts',callback),
+
+    //监听导出PDF
+    exportPDF:(callback) => ipcRenderer.on('exportPDF',callback),
 
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),

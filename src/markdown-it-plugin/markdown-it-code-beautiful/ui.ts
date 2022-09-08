@@ -26,6 +26,7 @@ class SearchSuggestUI{
 
         this.inputE = document.createElement("div")
         this.inputE.classList.add("tooltip-input")
+        
         this.inputE.setAttribute("contenteditable","true");
         this.inputE.setAttribute("placeholder","选择语言")
         this.inputE.setAttribute("oninput","codeSearchSuggest()")
@@ -36,10 +37,7 @@ class SearchSuggestUI{
         this.suggest.appendChild(this.suggestList)
         this.suggest.style.display="none"
 
-        document["codeSearchSuggest"] = function(){
-            console.log("haha");
-            
-        }
+        
     }
 
     /**
@@ -55,6 +53,7 @@ class SearchSuggestUI{
 
         this.inputE = document.createElement("div")
         this.inputE.classList.add("tooltip-input")
+        this.inputE.classList.add("md-hiden")
         this.inputE.setAttribute("contenteditable","true");
         this.inputE.setAttribute("placeholder","选择语言")
 

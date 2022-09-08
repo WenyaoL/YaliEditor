@@ -46,15 +46,16 @@ class IRUndo{
      */
     public undo(){
 
+        console.log("触发undo");
         
         const patch = this.undoStack.pop()
         this.redoStack.push(patch);
         if(!patch) return;
 
         //对当前状态应用补丁，将其回退到上一状态
-        console.log(this.lastText);
+
         const res = this.dmp.patch_apply(patch,this.lastText)
-        console.log(res);
+
         
         //重新设置last
         this.lastText = res[0]
@@ -90,6 +91,7 @@ class IRUndo{
     }
 
     public addUndo(){
+        
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
@@ -102,6 +104,7 @@ class IRUndo{
         //当前状态到上一状态的不同
        const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
        console.log(diff);
+       
        //生成补丁
        const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
        console.log(patch);
@@ -123,6 +126,45 @@ class IRUndo{
        
        //添加undo应该舍弃掉redo里面的
        this.redoStack=[]
+    }
+
+    /**
+     * 对当前undo栈的栈帧历史进行调整，
+     * 将当前状态更改合并到最后一次更改中
+     * 1 <- 2(last)
+     * 1 <- 2 <- 3(now)
+     * 合并成:
+     * 1 <- 3(now)
+     */
+    adjust(){
+        const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
+        //移除动态的
+        const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
+        for (let index = 0; index < preList.length; index++) {
+            const element = preList[index];
+            element.innerHTML = ""
+        }
+
+        const nowText = cloneRoot.innerHTML
+        console.log(this.undoStack.length);
+        //获取上上一个状态
+        const lastPatch = this.undoStack.pop()
+        const res = this.dmp.patch_apply(lastPatch,this.lastText)
+
+        //当前状态到上上一状态的不同
+        const diff = this.dmp.diff_main(nowText,res[0])
+       //生成补丁
+        const patch = this.dmp.patch_make(nowText,diff)
+
+        //无效合并
+        if(patch.length === 0) {
+            this.undoStack.push(lastPatch)
+            return;
+        }
+
+        //跟新lastText为当前状态
+       this.lastText = nowText;
+       this.undoStack.push(patch)
     }
 }
 

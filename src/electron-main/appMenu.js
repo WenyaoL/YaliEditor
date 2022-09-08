@@ -70,11 +70,10 @@ export default {
                             BrowserWindow.getFocusedWindow().webContents.send('saveFile',{path:select.filePath})
                         }
                     },{
-                        label:'关闭',
-                        accelerator:'ctrl+w',
-                        click:()=>{
-                            BrowserWindow.getFocusedWindow().close()
-                        }
+                        label:'导出',
+                        submenu:[{label:'pdf', click:()=>{
+                            BrowserWindow.getFocusedWindow().webContents.send('exportPDF')
+                        }},]
                     },{
                         label:'加载',
                         accelerator:'ctrl+l',
@@ -96,7 +95,13 @@ export default {
                                 isSave:true
                               })
                         }
-                    }
+                    },{
+                        label:'关闭',
+                        accelerator:'ctrl+w',
+                        click:()=>{
+                            BrowserWindow.getFocusedWindow().close()
+                        }
+                    },
                 ]
             },
             {
@@ -109,7 +114,6 @@ export default {
                     {label:'全选', role: 'selectall', accelerator:'ctrl+a'},
                     {label:'撤销', role: 'undo', accelerator:'ctrl+z'},
                 ]
-
             },
             {
                 label:'段落(P)',

@@ -44,7 +44,7 @@ class MarkdownBeautiful{
   }
 
   refreshEditorView(rootElement){
-    this.codemirrorManager.refreshEditorView(rootElement)
+    this.codemirrorManager.refreshEditorViewSyn(rootElement)
   }
 
   render(src){
