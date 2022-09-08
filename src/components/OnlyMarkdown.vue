@@ -1,5 +1,7 @@
 <template>
-  <code-mirror-show/>
+  <div class="write">
+    <code-mirror-show/>
+  </div>
 </template>
 
 <script setup>

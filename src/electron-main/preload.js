@@ -43,6 +43,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     //监听导出PDF
     exportPDF:(callback) => ipcRenderer.on('exportPDF',callback),
+    //监听导出图片
+    exportIMG:(callback) => ipcRenderer.on('exportIMG',callback),
 
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),

@@ -71,9 +71,10 @@ export default {
                         }
                     },{
                         label:'导出',
-                        submenu:[{label:'pdf', click:()=>{
-                            BrowserWindow.getFocusedWindow().webContents.send('exportPDF')
-                        }},]
+                        submenu:[
+                            {label:'pdf', click:()=>{BrowserWindow.getFocusedWindow().webContents.send('exportPDF')}},
+                            {label:'png', click:()=>{BrowserWindow.getFocusedWindow().webContents.send('exportIMG')}},
+                        ]
                     },{
                         label:'加载',
                         accelerator:'ctrl+l',

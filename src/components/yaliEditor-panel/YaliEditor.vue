@@ -1,7 +1,5 @@
 <template>
-  <div class="write">
-    <div id="YaliEditor" ref="ccode"></div>
-  </div>
+  <div id="YaliEditor" ref="ccode"></div>
 </template>
 
 
@@ -44,15 +42,5 @@ export default {
   outline: none;
 }
 
-.write{
-    font-family:  Arial,"sourcehansans",sans-serif;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 30px;
-    padding-bottom: 100px;
-}
 
-h1,h2,h3,h4,h5,h6,p{
-  font-family:  Arial,"sourcehansans",sans-serif;
-}
 </style>

@@ -1,6 +1,7 @@
 
 import {updateLine,updateBlock,updateMulLine} from '@/codemirror-main/codeCommon'
 import html2canvas from 'html2canvas'
+import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
 
 
@@ -49,7 +50,7 @@ function loadContentListener(store){
         store.commit('initFonts',fonts)
     })
 
-    window.electronAPI.exportPDF((event, fonts)=>{
+    window.electronAPI.exportPDF(()=>{
         //保存PDF
         let root = document.getElementById("YaliEditor")
         const doc = new jsPDF({
@@ -112,6 +113,29 @@ function loadContentListener(store){
             
         });
     })
+
+    window.electronAPI.exportIMG(()=>{
+        //导出图片快照
+        const write = document.getElementsByClassName("write")
+        const e = write.item(0)
+        let gutters = e.getElementsByClassName("cm-gutterElement")
+        for (let index = 0; index < gutters.length; index++) {
+            const element = gutters[index]
+            if(element.style.height === "14px"){
+                element.style.height = "22.4px"
+            }
+            
+        }
+
+        html2canvas(e,{
+            height:e.scrollHeight,
+            width:e.scrollWidth,
+            scale:3
+        }).then(cva=>{
+            Canvas2Image.saveAsPNG(cva, e.scrollWidth+100, e.scrollHeight,document.title.replace("*",''))
+        })
+    })
+
 
     //测试
     window.electronAPI.test((event,payload)=>{

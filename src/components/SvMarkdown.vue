@@ -5,7 +5,11 @@
             <code-mirror-show/>
           </el-aside>
       <!--<el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />-->
-      <el-main><markdown-it-show :content="this.$store.state.applicationContext.content"/></el-main>
+      <el-main>
+        <div class="write">
+        <markdown-it-show :content="this.$store.state.applicationContext.content"/>
+        </div>
+      </el-main>
     </el-container>
   </div>
 </template>
