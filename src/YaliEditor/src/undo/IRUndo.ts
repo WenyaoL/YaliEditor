@@ -1,5 +1,18 @@
 import {diff_match_patch,patch_obj} from 'diff-match-patch';
 import YaLiEditor from '..';
+import rangy from 'rangy';
+
+class History{
+    //补丁(历史补丁)
+    public patch: patch_obj[];
+    //光标记录
+    public bookMark:any;
+
+    constructor(patch:patch_obj[],bookMark?:any){
+        this.patch = patch
+        this.bookMark = bookMark
+    }
+}
 
 /**
  * IR模式下的undo处理器
@@ -14,9 +27,11 @@ class IRUndo{
     hasUndo:boolean;
     //记录最后一次文本
     lastText: string;
+    //记录最后一次的光标位置
+    lastBookMark: any;
 
-    redoStack: patch_obj[][];
-    undoStack: patch_obj[][];
+    redoStack: History[];
+    undoStack: History[];
 
     editor:YaLiEditor;
     constructor(editor:YaLiEditor,origin:string){
@@ -39,6 +54,9 @@ class IRUndo{
         this.hasUndo = false;
         this.redoStack = [];
         this.undoStack = [];
+        console.log(rangy);
+        
+        //this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
     }
 
     /**
@@ -48,35 +66,38 @@ class IRUndo{
 
         console.log("触发undo");
         
-        const patch = this.undoStack.pop()
-        this.redoStack.push(patch);
-        if(!patch) return;
-
+        const history = this.undoStack.pop()
+        if(!history) return;
+        this.redoStack.push(history);
         //对当前状态应用补丁，将其回退到上一状态
 
-        const res = this.dmp.patch_apply(patch,this.lastText)
+        const res = this.dmp.patch_apply(history.patch,this.lastText)
 
         
         //重新设置last
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
+        //重新设置光标
+        rangy.getSelection().moveToBookmark(history.bookMark)
+        this.lastBookMark = history.bookMark
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
+        //刷新disable的视图
+        this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
     }
 
     /**
      * redo 操作
      */
     public redo(){
-        const patch = this.redoStack.pop()
+        const history = this.redoStack.pop()
+        if(!history) return;
         //重新放回undo
-        this.undoStack.push(patch)
+        this.undoStack.push(history)
 
-
-        if(!patch) return;
         //复制并反转补丁
-        const redoPatch = this.dmp.patch_deepCopy(patch).reverse()
+        const redoPatch = this.dmp.patch_deepCopy(history.patch).reverse()
         redoPatch.forEach((patch) => {
             patch.diffs.forEach((diff) => {
                 diff[0] = -diff[0];
@@ -88,6 +109,8 @@ class IRUndo{
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
+        rangy.getSelection().moveToBookmark(history.bookMark)
+        this.lastBookMark = history.bookMark
     }
 
     public addUndo(){
@@ -99,22 +122,22 @@ class IRUndo{
             const element = preList[index];
             element.innerHTML = ""
         }
-        
-        
+
         //当前状态到上一状态的不同
-       const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
-       console.log(diff);
-       
+        const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
        //生成补丁
-       const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
-       console.log(patch);
-       if(patch.length === 0) return;
+        const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
+        if(patch.length === 0) return;
+
         
         
+        //创建历史记录
+        const history = new History(patch,this.lastBookMark)
+        console.log(history);
 
        //跟新lastText为当前状态
        this.lastText = cloneRoot.innerHTML;
-       this.undoStack.push(patch)
+       this.undoStack.push(history)
        if(this.undoStack.length>this.stackSize){
         this.undoStack.shift();
        }
@@ -137,6 +160,7 @@ class IRUndo{
      * 1 <- 3(now)
      */
     adjust(){
+        if(this.undoStack.length<=0) return
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
@@ -147,9 +171,10 @@ class IRUndo{
 
         const nowText = cloneRoot.innerHTML
         console.log(this.undoStack.length);
-        //获取上上一个状态
-        const lastPatch = this.undoStack.pop()
-        const res = this.dmp.patch_apply(lastPatch,this.lastText)
+        
+        //获取上一个历史状态（1<-2）
+        const lastHistory = this.undoStack.pop()
+        const res = this.dmp.patch_apply(lastHistory.patch,this.lastText)
 
         //当前状态到上上一状态的不同
         const diff = this.dmp.diff_main(nowText,res[0])
@@ -158,14 +183,19 @@ class IRUndo{
 
         //无效合并
         if(patch.length === 0) {
-            this.undoStack.push(lastPatch)
+            this.undoStack.push(lastHistory)
             return;
         }
 
+
         //跟新lastText为当前状态
-       this.lastText = nowText;
-       this.undoStack.push(patch)
+        this.lastText = nowText;
+        const bookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+        this.lastBookMark = bookMark;
+        this.undoStack.push(new History(patch,lastHistory.bookMark))
     }
+
+
 }
 
 export default IRUndo;

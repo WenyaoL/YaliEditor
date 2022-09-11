@@ -45,12 +45,16 @@ class CodemirrorEditorView{
     public view:EditorView;
     //封装的视图信息
     public stateInfo:CodemirrorEditorState;
+    //于视图捆绑的选择控件
+    public suggestUI:SearchSuggestUI;
 
     constructor(element:Element,view:EditorView,stateInfo:CodemirrorEditorState){
         this.element = element;
         this.view = view;
         this.stateInfo = stateInfo;
     }
+
+
 }
 
 
@@ -67,6 +71,9 @@ class CodemirrorManager{
     //默认插件
     public codemirrorPlugin:Extension[];
     
+    //暂时不可用视图
+    public allDisableView: CodemirrorEditorView[] = [];
+
     //每个视图都安装的监听器
     public viewlistener:(update: ViewUpdate)=>void;
 
@@ -158,14 +165,30 @@ class CodemirrorManager{
         //重新初始化视图
         this.initEditorViewSyn(root)
      }
-
+    
+     /**
+      * 刷新指定dom元素下的所有Disable的视图，使其enable
+      * @param root 
+      */
+    refreshDisableEditorViewSyn(root:HTMLElement){
+        const elements = root.getElementsByClassName("markdown-it-code-beautiful")
+        for (let index = 0; index < this.allDisableView.length; index++) {
+            const viewInfo = this.allDisableView[index]
+            
+            const e = elements.namedItem(viewInfo.stateInfo.editor_uuid)
+            if(!e) continue;
+            //
+            e.appendChild(viewInfo.view.dom)
+            e.appendChild(viewInfo.suggestUI.root)
+            this.viewEnable(viewInfo.stateInfo.editor_uuid)
+        }
+    }
 
     /**
      * 重新跟新视图状态
      */
     refreshEditorView(root:HTMLElement){
         console.log("刷新视图");
-
         setTimeout(() => {
             const elements = root.getElementsByClassName("markdown-it-code-beautiful")
             for (let index = 0; index < this.allView.length; index++) {
@@ -204,7 +227,8 @@ class CodemirrorManager{
             })
             
             //view.lineWrapping = true;
-            this.allView.push(new CodemirrorEditorView(element,view,cache));
+            const viewInfo = new CodemirrorEditorView(element,view,cache)
+            this.allView.push(viewInfo);
             element.setAttribute("contenteditable","false");
 
             const tooltip = document.createElement("div")
@@ -216,7 +240,9 @@ class CodemirrorManager{
             //tooltip.classList.add("md-hiden")
             tooltip.setAttribute("spellcheck","false");
             tooltip.setAttribute("editor-uuid",cache.editor_uuid)
-            new SearchSuggestUI().bindSearchSuggest(tooltip,this.langCanLoad)
+            const suggest = new SearchSuggestUI()
+            suggest.bindSearchSuggest(tooltip,this.langCanLoad)
+            viewInfo.suggestUI = suggest
             tooltip.children[0].textContent = cache.lang
 
             tooltip.children[0].addEventListener("keyup",(event)=>{
@@ -243,12 +269,29 @@ class CodemirrorManager{
     viewDestroy(uuid:string){
         if(this.allView.length <=0) return ;
         const idx = this.allView.map(view=>view.stateInfo.editor_uuid).indexOf(uuid)
+        if(idx==-1) return
         const viewInfo =  this.allView.at(idx);
         viewInfo.view.destroy()
         this.allView.splice(idx,1)
-        console.log(this.allView.length);
-        
     }
+
+    viewDisable(uuid:string){
+        if(this.allView.length <=0) return ;
+        const idx = this.allView.map(view=>view.stateInfo.editor_uuid).indexOf(uuid)
+        if(idx==-1) return
+        const viewInfo = this.allView.splice(idx, 1).at(0)
+        this.allDisableView.push(viewInfo)
+    }
+
+    viewEnable(uuid:string){
+        if(this.allDisableView.length<=0) return;
+        const idx = this.allDisableView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
+        if(idx==-1) return
+        const viewInfo = this.allDisableView.splice(idx,1).at(0)
+        this.allView.push(viewInfo)
+    }
+
+
 
     updatedLang(lang:string,uuid:string){
         

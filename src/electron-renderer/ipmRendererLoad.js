@@ -1,9 +1,9 @@
 
-import {updateLine,updateBlock,updateMulLine} from '@/codemirror-main/codeCommon'
+import {updateLine,updateBlock,updateMulLine} from '@/codemirror-plugin/codeCommon'
 import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
-
+import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/codeFix'
 
 //-------------------------------内容加载处理------------------------------
 function loadContentListener(store){
@@ -90,15 +90,7 @@ function loadContentListener(store){
             element.remove()
         }
 
-        let gutters = el.getElementsByClassName("cm-gutterElement")
-        for (let index = 0; index < gutters.length; index++) {
-            const element = gutters[index]
-            element.style.fontFamily = "sourcehansans"
-            if(element.style.height === "14px"){
-                element.style.height = "22.4px"
-            }
-            
-        }
+        fixCodemirrorGutterStyle(el)
 
         doc.html(el.innerHTML, {
             jsPDF:doc,
@@ -118,14 +110,8 @@ function loadContentListener(store){
         //导出图片快照
         const write = document.getElementsByClassName("write")
         const e = write.item(0)
-        let gutters = e.getElementsByClassName("cm-gutterElement")
-        for (let index = 0; index < gutters.length; index++) {
-            const element = gutters[index]
-            if(element.style.height === "14px"){
-                element.style.height = "22.4px"
-            }
-            
-        }
+        fixCodemirrorGutterStyle(e)
+
 
         html2canvas(e,{
             height:e.scrollHeight,
@@ -134,6 +120,28 @@ function loadContentListener(store){
         }).then(cva=>{
             Canvas2Image.saveAsPNG(cva, e.scrollWidth+100, e.scrollHeight,document.title.replace("*",''))
         })
+    })
+
+    window.electronAPI.exportHTML(()=>{
+        const write = document.getElementsByClassName("write").item(0)
+        const clone = write.cloneNode(true)
+        fixCodemirrorGutterStyle(clone)
+        const styles = document.head.getElementsByTagName("style")
+        let style = ''
+        for (let index = 0; index < styles.length; index++) {
+            const element = styles[index];
+            style += element.outerHTML
+        }
+
+        //导出HTML
+        window.electronAPI.saveHTMLFile({
+           style: style,
+           html:clone.outerHTML
+        })
+       //doc.body.innerHTML = write.outerHTML
+
+
+       
     })
 
 

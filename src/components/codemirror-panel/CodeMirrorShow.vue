@@ -21,15 +21,13 @@ import { useStore } from 'vuex';
 import {EditorSelection,Compartment,Prec} from "@codemirror/state"
 import {EditorView,keymap} from "@codemirror/view"
 import {defaultKeymap,indentWithTab} from '@codemirror/commands'
-import { getCurrentInstance} from '@vue/runtime-core'
-import { javascript } from '@codemirror/lang-javascript'
+
 import {markdown} from "@codemirror/lang-markdown"
 import {languages} from "@codemirror/language-data"
 import { oneDark } from '@codemirror/theme-one-dark'
-import {codeCompletions} from '@/codemirror-main/codeCompletions'
-import {toTypeStr} from '@/codemirror-main/common'
-import {updateBlock} from '@/codemirror-main/codeCommon'
-import { myDarkHighlightStyle,myHighlightStyle} from '@/codemirror-main/codeStyle/codeMirrorHlight'
+import {codeCompletions} from '@/codemirror-plugin/codeCompletions'
+import {updateBlock} from '@/codemirror-plugin/codeCommon'
+
 import {syntaxHighlighting,defaultHighlightStyle} from "@codemirror/language"
 
 export default {
@@ -48,12 +46,10 @@ export default {
       defaultKeymap
       const keys =[
         {key: "Shift-Ctrl-k",run() { 
-          console.log("codemirror事件传播到这");
           updateBlock(store.state.viewEditor,{type:"codeblock"}); 
           return true
         }},
         {key: "Shift-Ctrl-m",run() { 
-          console.log("codemirror事件传播到这");
           updateBlock(store.state.viewEditor,{type:"mathblock"}); 
           return true
         }}

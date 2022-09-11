@@ -1,9 +1,7 @@
 /**
- * 毛的办法，只能自己写控件了
+ * 选择控件
  * @author liangwy
  */
-
-
 class SearchSuggestUI{
 
     public root:HTMLElement;
@@ -13,32 +11,7 @@ class SearchSuggestUI{
     public searchList:string[];
     public selectedIndex:number;
     
-    /**
-     * 静态的方式bind
-     * @param element 
-     * @param searchList 
-     */
-    bindSearchSuggestByStatic(element:HTMLElement,searchList:string[]){
-        this.root = element;
-        this.suggest = document.createElement("div")
-        this.suggest.classList.add("suggest")
-        this.suggestList = document.createElement("ul")
 
-        this.inputE = document.createElement("div")
-        this.inputE.classList.add("tooltip-input")
-        
-        this.inputE.setAttribute("contenteditable","true");
-        this.inputE.setAttribute("placeholder","选择语言")
-        this.inputE.setAttribute("oninput","codeSearchSuggest()")
-        this.root.appendChild(this.inputE)
-        this.root.appendChild(this.suggest)
-
-        this.searchList = searchList;
-        this.suggest.appendChild(this.suggestList)
-        this.suggest.style.display="none"
-
-        
-    }
 
     /**
      * 动态的方式bind

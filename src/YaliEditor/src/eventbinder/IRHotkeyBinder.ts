@@ -5,13 +5,14 @@ import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
 import log from "../util/loging";
+import CommonEventBinder from "./commonEventBinder";
 
 
 
 
 
 
-class IRHotkeyBinder implements BaseEventBinder{
+class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
 
 
@@ -22,7 +23,8 @@ class IRHotkeyBinder implements BaseEventBinder{
 
 
     constructor(editor:YaLiEditor) {
-        this.editor = editor;
+        super(editor)
+        //this.editor = editor;
         this.defaultKeyMap = {
             "ctrl+1": this.headingKey,
             "ctrl+2": this.headingKey,
@@ -51,7 +53,8 @@ class IRHotkeyBinder implements BaseEventBinder{
             return
         }
         this.editor.ir.undo()
-        //this.editor.ir.renderer.codemirrorManager.refreshEditorView(this.editor.ir.rootElement)
+
+        
     }
 
 
@@ -154,6 +157,7 @@ class IRHotkeyBinder implements BaseEventBinder{
         if(r.endOffset === 0){
             r.collapseBefore(e)
             const p = document.createElement("p")
+            p.setAttribute("md-block","paragraph")
             p.innerHTML = "<br>"
             r.insertNode(p)
 
@@ -162,6 +166,7 @@ class IRHotkeyBinder implements BaseEventBinder{
             r.collapseAfter(e)
             const p = document.createElement("p")
             p.innerHTML = "<br>"
+            p.setAttribute("md-block","paragraph")
             r.insertNode(p)
             //光标选择聚焦新元素
             rangy.getSelection().collapse(p,0)
@@ -213,6 +218,7 @@ class IRHotkeyBinder implements BaseEventBinder{
         let end =  r.endContainer
         //单一的删除
         if(rangy.getSelection().isCollapsed){
+            this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
             if(start.nodeType === 3){
                 start = start.parentElement;
             }
@@ -238,12 +244,9 @@ class IRHotkeyBinder implements BaseEventBinder{
                 }
                 if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
                     r.selectNode(e)
-                    //r.setStart(e,0)
                     r.setStartBefore(e)
                     r.setEndAfter(e)
-                    //r.setStartBefore(e)
-                    //r.setEndAfter(e)
-                    //r.setStart(e,0)
+
                     rangy.getSelection().setSingleRange(r)
                     //rangy.getSelection().deleteFromDocument();
                     log("选择行级模块",rangy.getSelection().getRangeAt(0).startContainer,this.editor.options.options.isTestModel)
@@ -260,12 +263,13 @@ class IRHotkeyBinder implements BaseEventBinder{
                     /*if(e.innerText.length==1 && e.innerText == "\n"){}*/
                     if(e.hasAttribute("ready-destroy")){
                         const parent = e.parentElement
-                        this.editor.ir.renderer.codemirrorManager.viewDestroy(e.parentElement.id)
+                        this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
+                        r.setStartBefore(parent)
                         parent.remove()
-                        //console.log(e.parentElement);
-                        //e.parentElement.parentElement.removeChild(e.parentElement)
+                        
+                        rangy.getSelection().setSingleRange(r)
+                        event.preventDefault()
                     }
-                    e.parentElement
                     e.setAttribute("ready-destroy","1")
                 }
                 return;
@@ -334,8 +338,6 @@ class IRHotkeyBinder implements BaseEventBinder{
     bindKeydownEvent(element: HTMLElement){
 
         element.addEventListener("keydown",(event: KeyboardEvent & { target: HTMLElement }) => {
-
-
 
         // 非目录键不处理
         if (!this.isTargetKey(event)) {
@@ -417,9 +419,12 @@ class IRHotkeyBinder implements BaseEventBinder{
     }
 
     bindEvent(element: HTMLElement): void {
-
+        super.bindEvent(element)
+        
         this.bindKeydownEvent(element)
         this.bindKeyupEvent(element)
+
+        
     }
     
 

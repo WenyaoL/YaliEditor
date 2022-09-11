@@ -36,7 +36,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
 #YaliEditor{
   text-align: left;
   outline: none;

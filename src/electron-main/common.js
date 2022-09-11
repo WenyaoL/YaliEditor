@@ -23,7 +23,15 @@ export function openFileDirDialogSync(){
 }
 
 //save dialog 
-export function saveFileDialog(){
+export function saveFileDialog(filter){
+
+
+    if(filter){
+        return dialog.showSaveDialog({
+            filters:filter
+        })
+    }
+
     return dialog.showSaveDialog({
         filters:[{name:'markdown',extensions:['md']}]
     })
@@ -135,7 +143,7 @@ export function openFileDirSync(dirPath){
     const data = fs.readdirSync(dirPath).map(fileName => {
         return path.join(dirPath, fileName)
       })
-    console.log(data);
+    return data;
 }
 
 export function isFile(path){

@@ -11,7 +11,7 @@ import {languages} from "@codemirror/language-data"
 //import {tags} from "@lezer/highlight"
 //import {HighlightStyle} from "@codemirror/language"
 import {syntaxHighlighting,defaultHighlightStyle} from "@codemirror/language"
-import {myHighlightStyle} from "@/codemirror-main/codeStyle/codeStyle"
+import {myHighlightStyle} from "@/codemirror-plugin/codeStyle/codeStyle"
 
 export default {
     name:"MarkCodeMirrorArea",

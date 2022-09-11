@@ -17,21 +17,21 @@ export class DOMObserver{
         this.dom = dom;
         this.editor = editor;
         //修改分组延时
-        this.groupDelayTime = 800;
+        this.groupDelayTime = 300;
         this.lastChange = Date.now()
 
         this.observer = new MutationObserver(mutations => {
-
+            
+            
             let mut = mutations.at(0)
             let e = mut.target as HTMLElement
             if(e.nodeType == 3){
+                
                 e = e.parentElement
             }
-            if(e.classList.contains("cm-line") ||
-                e.classList.contains("cm-cursorLayer")||
-                e.classList.contains("cm-content")){
-                    this.lastChange=Date.now()
-                    return 
+            if(e.className.search(/cm-.*/)>=0){
+                this.lastChange=Date.now()
+                return 
             }
 
             //
@@ -69,10 +69,19 @@ export class DOMObserver{
         }
         this.delayTimer = window.setTimeout(()=>{
             this.editor.ir.undoManager.adjust()
-        },500)
+        },300)
     }
 
     flush(){
+        if(this.delayTimer>0) return
+        //记录修改
+        this.editor.ir.addUndo()
+    }
+
+    /**
+     * 强制刷新
+     */
+    forceFlush(){
         //记录修改
         this.editor.ir.addUndo()
     }

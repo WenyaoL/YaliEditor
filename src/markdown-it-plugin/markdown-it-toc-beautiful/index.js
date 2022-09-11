@@ -89,7 +89,7 @@ export default function(md) {
     };
 
     md.renderer.rules.toc_open = function(tokens, index) {
-        return '<div class="markdown-it-toc-beautiful" contenteditable="false">';
+        return '<div class="markdown-it-toc-beautiful" md-block="toc" contenteditable="false">';
     };
 
     md.renderer.rules.toc_close = function(tokens, index) {

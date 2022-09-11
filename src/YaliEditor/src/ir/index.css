@@ -1,5 +1,13 @@
 .YaLi-ir{
     outline: none;
+    padding-bottom:50px
+}
+
+.YaLi-ir::after{
+    content: "";
+    font-size: 0;
+    display: block;
+    height: 0;
 }
 
 .YaLi-ir h1,.YaLi-ir h2,.YaLi-ir h3,.YaLi-ir h4,.YaLi-ir h5{

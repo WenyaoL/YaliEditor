@@ -60,25 +60,32 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-
+        this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
         }
 
-        const r = rangy.getSelection().getRangeAt(0)
-        console.log(r);
-        console.log(r.collapsed);
+
         
         
         const topClassName = this.editor.ir.getRootElementClassName()
 
         let isInline = true;
-            let e = findClosestByAttribute(event.target,"md-inline","",topClassName)
-            if(!e){
-              e = findClosestByAttribute(event.target,"md-block","",topClassName)
-              isInline = false;
+        let e = findClosestByAttribute(event.target,"md-inline","",topClassName)
+        if(!e){
+          e = findClosestByAttribute(event.target,"md-block","",topClassName)
+          isInline = false;
         }
-
+        if(!e){
+          const lastE = event.target.lastElementChild
+          if(!lastE) return 
+          if(lastE.tagName === "P" && (lastE.textContent.length==0 || lastE.textContent == "\n")){
+            return
+          }else{
+            event.target.insertAdjacentHTML("beforeend",'<p md-block="paragraph"><br></p>')
+            return
+          }
+        }
 
         if(isInline){
           const inlineType = e.getAttribute("md-inline")

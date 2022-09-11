@@ -1,6 +1,7 @@
 import { ipcMain,dialog,BrowserWindow,shell } from "electron";
 
 import common from "./common";
+import path from 'path'
 //import {font} from "@/assets/sourcehansans-normal-normal"
 var context = {
     fonts:null
@@ -48,6 +49,25 @@ function load(){
         common.readFontFile().then(data=>{
             context['fonts'] = data
             event.reply('initFonts',data)
+        })
+    })
+
+    ipcMain.on("saveHTMLFile",(event,payload)=>{
+        const templatePath = path.join(__dirname,  "templateHTML/TEM.html");
+        const cssDirPath = path.join(__dirname,  "css");
+        let html = common.openFileSync(templatePath)
+        let cssPath = common.openFileDirSync(cssDirPath).filter(str=>{
+            if(str.search(/app.*css$/i)>-1) return true
+            return false
+        })[0]
+        let css= common.openFileSync(cssPath)
+        let style = '<style>'+css+'</style>'
+        style += style+payload.style
+        html = html.replace("${STYLE}",style).replace("${CONTENT}",payload.html)
+
+        common.saveFileDialog([{name:'markdown',extensions:['html']}]).then(res=>{
+            if(res.canceled) return
+            common.saveFile(res.filePath,html)
         })
     })
 

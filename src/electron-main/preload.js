@@ -18,7 +18,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     //--------------------------------------发送（send）-----------------------------------
     //渲染检查请求加载Fonts
     loadFonts:(payload) => ipcRenderer.send('loadFonts',payload),
-    
+    //渲染进程提交要保存的dom元素的字符串，通过模板生成HTML文件
+    saveHTMLFile:(payload) => ipcRenderer.send('saveHTMLFile',payload),
 
     //--------------------------------------监听（listener）-----------------------------------
     //渲染进程加载上下文
@@ -45,6 +46,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     exportPDF:(callback) => ipcRenderer.on('exportPDF',callback),
     //监听导出图片
     exportIMG:(callback) => ipcRenderer.on('exportIMG',callback),
+    //监听导出HTML
+    exportHTML:(callback) => ipcRenderer.on('exportHTML',callback),
 
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),

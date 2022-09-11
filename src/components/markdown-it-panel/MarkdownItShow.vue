@@ -12,7 +12,6 @@ import MarkdownIt from 'markdown-it';
 // 引入个性化的vs2015样式
 //import 'highlight.js/styles/vs2015.css'
 import md from '@/markdown-it-plugin/def'
-import string from 'string'
 
 
 
@@ -21,15 +20,9 @@ export default {
         content: String
     },
     setup(){
-      const legacySlugify = s => string(s).slugify().toString()
-
       const render = (text)=>{
-        
         return md.render(text)
       }
-      onMounted(() => {
-        
-      })
       return{
         render
       }

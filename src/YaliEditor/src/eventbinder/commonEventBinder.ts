@@ -3,14 +3,18 @@ import YaLiEditor from "..";
 
 class CommonEventBinder implements BaseEventBinder{
     public composingLock:boolean = false;
-    constructor() {}
-    editor: YaLiEditor;
     
+    public editor: YaLiEditor;
+    constructor(editor:YaLiEditor) {
+        this.editor = editor
+    }
     public bindCompositionstartEvent(element: HTMLElement){
         //输入前触发（打拼英时，触发顺序compositionstart compositionend）
         element.addEventListener("compositionstart", (event: InputEvent) => {
             //上锁，代表在用打字
             this.composingLock = true;
+
+            this.editor.ir.observer.stop()
         });
 
     }
@@ -20,6 +24,9 @@ class CommonEventBinder implements BaseEventBinder{
         element.addEventListener("compositionend", (event: InputEvent) => {
             //解锁，打字结束
             this.composingLock = false;
+
+            this.editor.ir.observer.start()
+            this.editor.ir.observer.forceFlush()
         });
     }
 

@@ -55,7 +55,7 @@ class IR{
         this.undoManager = new IRUndo(this.editor,"")
 
         this.binderList = [];
-        this.binderList.push(new CommonEventBinder());
+        //this.binderList.push(new CommonEventBinder());
         
         this.binderList.push(new IRInputBinder(this.editor))
         //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))
