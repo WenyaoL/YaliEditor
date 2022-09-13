@@ -35,6 +35,12 @@ export function toTypeStr(oldStr,payload){
             console.log("创建list块")
             newStr = "> "+oldStr
             break;
+        case "codeline":
+            newStr = "`"+oldStr+"`"
+            break;
+        case "deleteline":
+            newStr = "~~"+oldStr+"~~"
+            break;      
         default:
             newStr=oldStr
     }

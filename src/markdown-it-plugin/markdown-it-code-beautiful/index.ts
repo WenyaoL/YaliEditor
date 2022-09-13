@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @since 2022/8/8
+ */
 import {EditorState,type Extension, Compartment} from "@codemirror/state"
 import {EditorView, keymap,ViewUpdate} from "@codemirror/view"
 import {defaultKeymap,indentWithTab} from "@codemirror/commands"
@@ -134,13 +138,48 @@ class CodemirrorManager{
         this.codemirrorPlugin.push(EditorView.updateListener.of(this.viewlistener))
     }   
 
+
     /**
      * refresh cache
      * 刷新缓存
      */
-    refreshCache(){
-        this.allStateCache = [];
-        
+    refreshStateCache(elements:HTMLCollectionOf<Element>){
+
+        this.allStateCache = this.allStateCache.filter(cache=>{
+
+            //根据id识别
+            const element:Element = elements.namedItem(cache.editor_uuid)
+            
+            let view = new EditorView({
+                state: cache.state,
+                parent: element,
+            })
+            
+            //view.lineWrapping = true;
+            const viewInfo = new CodemirrorEditorView(element,view,cache)
+            this.allView.push(viewInfo);
+            element.setAttribute("contenteditable","false");
+
+            const tooltip = document.createElement("div")
+            
+            //tooltip.classList.add("md-hiden")
+
+            element.appendChild(tooltip)
+            tooltip.classList.add("md-code-tooltip");
+            //tooltip.classList.add("md-hiden")
+            tooltip.setAttribute("spellcheck","false");
+            tooltip.setAttribute("editor-uuid",cache.editor_uuid)
+            const suggest = new SearchSuggestUI()
+            suggest.bindSearchSuggest(tooltip,this.langCanLoad)
+            viewInfo.suggestUI = suggest
+            tooltip.children[0].textContent = cache.lang
+
+            tooltip.children[0].addEventListener("keyup",(event)=>{
+               this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
+            })
+            return false
+        })
+
     }
 
     /**
@@ -177,9 +216,6 @@ class CodemirrorManager{
             
             const e = elements.namedItem(viewInfo.stateInfo.editor_uuid)
             if(!e) continue;
-            //
-            e.appendChild(viewInfo.view.dom)
-            e.appendChild(viewInfo.suggestUI.root)
             this.viewEnable(viewInfo.stateInfo.editor_uuid)
         }
     }
@@ -217,39 +253,8 @@ class CodemirrorManager{
      */
     initEditorViewSyn(root:HTMLElement){
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-        for (let index = 0; index < this.allStateCache.length; index++) {
-            const cache = this.allStateCache[index];
-            //根据id识别
-            const element:Element = elements.namedItem(cache.editor_uuid)
-            let view = new EditorView({
-                state: cache.state,
-                parent: element,
-            })
-            
-            //view.lineWrapping = true;
-            const viewInfo = new CodemirrorEditorView(element,view,cache)
-            this.allView.push(viewInfo);
-            element.setAttribute("contenteditable","false");
-
-            const tooltip = document.createElement("div")
-            
-            //tooltip.classList.add("md-hiden")
-
-            element.appendChild(tooltip)
-            tooltip.classList.add("md-code-tooltip");
-            //tooltip.classList.add("md-hiden")
-            tooltip.setAttribute("spellcheck","false");
-            tooltip.setAttribute("editor-uuid",cache.editor_uuid)
-            const suggest = new SearchSuggestUI()
-            suggest.bindSearchSuggest(tooltip,this.langCanLoad)
-            viewInfo.suggestUI = suggest
-            tooltip.children[0].textContent = cache.lang
-
-            tooltip.children[0].addEventListener("keyup",(event)=>{
-               this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
-            })
-        }
-        this.refreshCache();
+        //刷新状态缓存池
+        this.refreshStateCache(elements);
     }
 
     /**
@@ -280,6 +285,8 @@ class CodemirrorManager{
         const idx = this.allView.map(view=>view.stateInfo.editor_uuid).indexOf(uuid)
         if(idx==-1) return
         const viewInfo = this.allView.splice(idx, 1).at(0)
+        //跟新视图状态
+        viewInfo.stateInfo.state = viewInfo.view.state
         this.allDisableView.push(viewInfo)
     }
 
@@ -287,11 +294,19 @@ class CodemirrorManager{
         if(this.allDisableView.length<=0) return;
         const idx = this.allDisableView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
         if(idx==-1) return
+        
         const viewInfo = this.allDisableView.splice(idx,1).at(0)
         this.allView.push(viewInfo)
     }
 
+    viewFocus(uuid:string){
+        
+        if(this.allView.length<=0) return;
+        const idx = this.allView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
+        if(idx==-1) return
 
+        this.allView.at(idx).view.focus()
+    }
 
     updatedLang(lang:string,uuid:string){
         

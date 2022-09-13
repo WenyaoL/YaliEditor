@@ -1,3 +1,6 @@
+import Constants from "../constants";
+
+
 /**
  * find  the closest element 
  * 查找最近的元素
@@ -82,3 +85,23 @@ export const findClosestByAttribute = (element: Node, attr: string, value: strin
     return null;
 };
 
+
+/**
+ * 查找IR模式下的最近的元素节点
+ * @param element 
+ */
+export const findClosest = (element: Node,stopClassName: string)=>{
+    if (!element) {
+        return null;
+    }
+    let e = element
+    e = findClosestByAttribute(e,Constants.ATTR_MD_INLINE,"",stopClassName)
+    if(!e) findClosestByAttribute(e,Constants.ATTR_MD_BLOCK,"",stopClassName)
+    if(!e) findClosestByTop(e,stopClassName)
+    return e
+}
+
+
+export const findClosestMdBlock = (element: Node)=>{
+    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)
+}

@@ -1,6 +1,10 @@
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
-import { findClosestByAttribute,findClosestByClassName,findClosestByTop} from "../util/findElement";
+import { findClosestByAttribute,
+        findClosestByClassName,
+        findClosestByTop,
+        findClosestMdBlock,
+} from "../util/findElement";
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
@@ -16,127 +20,11 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
 
 
-    public editor:YaLiEditor;
-
-    //快捷键映射表
-    public defaultKeyMap:Object;
-
-
     constructor(editor:YaLiEditor) {
         super(editor)
-        //this.editor = editor;
-        this.defaultKeyMap = {
-            "ctrl+1": this.headingKey,
-            "ctrl+2": this.headingKey,
-            "ctrl+3": this.headingKey,
-            "ctrl+4": this.headingKey,
-            "ctrl+5": this.headingKey,
-            "ctrl+6": this.headingKey,
-            "ctrl+z": this.undoKey,
-        }
-    }
-
-    /**
-     * 撤销操作
-     * @param event 
-     */
-    undoKey(event: KeyboardEvent & { target: HTMLElement }){
-        console.log("触发undo快捷键");
-        const r = rangy.getSelection().getRangeAt(0)
-        let start = r.startContainer
-        if(start.nodeType === 3){
-            start = start.parentElement;
-        }
-        let e = start as HTMLElement
-        //来自代码的不处理
-        if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
-            return
-        }
-        this.editor.ir.undo()
-
-        
     }
 
 
-    /**
-     * 标题快捷键
-     * @param event 
-     */
-    headingKey(event: KeyboardEvent & { target: HTMLElement }){
-           
-            const r = rangy.getSelection().getRangeAt(0)
-            
-            const start =  r.startContainer
-
-            let e = findClosestByAttribute(start,"md-block","",this.editor.ir.getRootElementClassName())
-
-            if(!e){
-                e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
-            }   
-            
-            //判断是否已经是heading
-            if(e.getAttribute("md-block") === "heading"){
-                
-                //已经是heading
-                //判断是否为相同
-                if(e.tagName.charAt(1) != event.key){
-                    //删除现有的
-                    const text = e.innerText
-                    r.selectNode(e)
-                    r.deleteContents()
-                    //改成对应的
-                    const pre = "#".repeat(parseInt(event.key)) + " "
-                    let res = this.editor.ir.renderer.render(pre+text)
-                    
-                    const div = document.createElement('div')
-                    div.innerHTML = res;
-                    
-                    if(!text || text == "\n" || text.length == 0) div.firstElementChild.innerHTML = "<br>"
-                    //插入新的
-                    const node = div.firstElementChild as HTMLElement
-                    r.insertNode(node)
-                    r.collapseToPoint(node,1)
-                    rangy.getSelection().setSingleRange(r)
-                    node.click()
-                    return ; 
-                }
-
-                //删除现有的
-                const text = e.innerText
-                r.selectNode(e)
-                r.deleteContents()
-
-                //相同撤销
-                const p = document.createElement("p")
-                p.innerText = text;
-                r.insertNode(p)
-                r.collapseToPoint(p,1)
-                rangy.getSelection().setSingleRange(r)
-                p.click()
-            }else{
-                //不存在head
-                //生成元素
-                const turndown = this.editor.ir.parser.turndown(e.outerHTML)
-                const pre = "#".repeat(parseInt(event.key)) + " "
-                const res = this.editor.ir.renderer.render(pre+turndown)
-                
-                const div = document.createElement('div')
-                div.innerHTML = res;
-                
-                if(!turndown) div.firstElementChild.innerHTML = "<br>"
-                
-                //删除
-                r.selectNode(e)
-                r.deleteContents()
-                //插入新的
-                const node = div.childNodes[0] as HTMLElement
-                r.insertNode(node)
-                r.collapseToPoint(node,1)
-                rangy.getSelection().setSingleRange(r)
-                //rangy.getSelection().collapseToEnd()
-                node.click()
-            }
-    }
 
 
     /**
@@ -146,36 +34,36 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
      */
 
     enterKey(event: KeyboardEvent & { target: HTMLElement }){
-        const r = rangy.getSelection().getRangeAt(0)
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0)
         let start =  r.startContainer
+        r.commonAncestorContainer
+        //const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
+
+        const e = findClosestMdBlock(start)
+        console.log(start);
         
-        const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
         if(e.tagName === "PRE"){
             //代码块不处理
             return;
         }
-        if(r.endOffset === 0){
-            r.collapseBefore(e)
-            const p = document.createElement("p")
-            p.setAttribute("md-block","paragraph")
-            p.innerHTML = "<br>"
-            r.insertNode(p)
+        //光标是否聚合（坍塌）
+        if(!r.collapsed) r.deleteContents()
 
-            event.preventDefault()
-        }else{
-            r.collapseAfter(e)
-            const p = document.createElement("p")
-            p.innerHTML = "<br>"
-            p.setAttribute("md-block","paragraph")
-            r.insertNode(p)
-            //光标选择聚焦新元素
-            rangy.getSelection().collapse(p,0)
-            event.preventDefault()
+        r.setEndAfter(e);
+        //剪切
+        let content = r.extractContents()
+        let block = content.children.item(0)
+        if(block.textContent.length===0){
+            block.innerHTML = "<br>"
         }
-        
-        
+        r.collapseAfter(e);
+        r.insertNode(content);
+        r.collapseToPoint(e.nextElementSibling,0)
+        sel.setSingleRange(r);
+        event.preventDefault()
 
-
+        
     }
 
     /**
@@ -265,9 +153,9 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
                         const parent = e.parentElement
                         this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
                         r.setStartBefore(parent)
+                        rangy.getSelection().setSingleRange(r)
                         parent.remove()
                         
-                        rangy.getSelection().setSingleRange(r)
                         event.preventDefault()
                     }
                     e.setAttribute("ready-destroy","1")
@@ -343,7 +231,7 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         if (!this.isTargetKey(event)) {
             return false;
         }
-
+        
         
         //回车键处理
         if(event.key === "Enter"){
@@ -361,14 +249,8 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         }
 
         //快捷键处理
-        const key = toKeyText(event)
-        
-        const f:Function =  this.defaultKeyMap[key]
-        if(f){
-            f.call(this,event)
-            event.preventDefault()
-            //this.editor.ir.addUndo()
-        }
+
+        this.editor.ir.hotkeyProcessor.execute(event)
       })
     
     }
@@ -420,7 +302,7 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
     bindEvent(element: HTMLElement): void {
         super.bindEvent(element)
-        
+
         this.bindKeydownEvent(element)
         this.bindKeyupEvent(element)
 

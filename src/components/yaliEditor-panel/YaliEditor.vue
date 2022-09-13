@@ -21,6 +21,7 @@ export default {
         isTestModel:true
       })
       yali.render(store.state.applicationContext.content)
+      store.commit('setYaliEditor',yali)
     })
     watch(()=>store.state.applicationContext.content,(newValue)=>{
       yali.render(newValue)

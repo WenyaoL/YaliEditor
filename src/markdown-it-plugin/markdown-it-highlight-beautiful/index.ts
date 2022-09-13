@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @since 2022/8/20
+ */
 import hljs from 'highlight.js';
 // 引入默认样式
 import 'highlight.js/scss/default.scss'

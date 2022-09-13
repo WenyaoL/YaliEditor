@@ -1,7 +1,21 @@
+/**
+ * @author liangwenyao
+ * @since 2022/8/15
+ */
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token";
 import type Renderer from "markdown-it/lib/renderer";
 
+
+/**
+ * 链接open标签渲染
+ * @param tokens 
+ * @param idx 
+ * @param options 
+ * @param env 
+ * @param slf 
+ * @returns 
+ */
 function linkOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
     const token = tokens[idx]
 

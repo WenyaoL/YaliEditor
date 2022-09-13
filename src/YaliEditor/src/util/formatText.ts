@@ -15,25 +15,24 @@ export const toImgElementText = (info:string,src:string)=>{
 }
 
 export function toKeyText(event: KeyboardEvent){
-    let res = ""
+    let strs = []
+
     if(event.ctrlKey){
-        res += "ctrl"
+        strs.push("ctrl")
     }
     
     if(event.shiftKey){
-        res +="+"
-        res += "shift"
+        strs.push("shift")
+
     }
 
     if(event.altKey){
-        res +="+"
-        res += "alt"
+        strs.push("alt")
     }
 
     if(event.key){
-        res +="+"
-        res += event.key
+        strs.push(event.key.toLowerCase())
     }
 
-    return res
+    return strs.join("+")
 }

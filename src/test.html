@@ -3,21 +3,15 @@
 <head>
   <meta charset="utf-8">
   <title>JS Bin</title>
+
 </head>
 <body>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-	<script src='../../dist/jspdf.debug.js'></script>
-    <script src="./assets/sourcehansans-normal-normal.js"></script>
-<script>
-    var doc = new jsPDF({ orientation: 'p', format: 'a4' });
-		doc.setFont('sourcehansanscn-normal', 'normal');
-		doc.setFontSize(20);
-		doc.html(document.body, {
-			callback: function (newDoc) {
-				newDoc.save('chinese-html.pdf')
-			}
-		});
-</script>
+	<div id="COS" contenteditable="true">123</div>
 
+	<script>
+		document.getElementById("COS").addEventListener("keydown",(event)=>{
+			console.log(event);
+		})
+	</script>
 </body>
 </html>

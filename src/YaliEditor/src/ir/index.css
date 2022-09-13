@@ -13,3 +13,18 @@
 .YaLi-ir h1,.YaLi-ir h2,.YaLi-ir h3,.YaLi-ir h4,.YaLi-ir h5{
     position: relative;
 }
+
+.YaLi-ir p:empty::after{
+    content: '\200B';
+}
+
+.YaLi-ir code{
+    border: 1px solid #e7eaed;
+    color: #00f;
+    background-color: #f7f7f7;
+    font-size:large;
+}
+
+.YaLi-ir u{
+    color: palevioletred;
+}

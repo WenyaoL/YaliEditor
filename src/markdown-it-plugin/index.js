@@ -13,7 +13,7 @@ import './index.css'
 
 
 class MarkdownBeautiful{
-  
+  //代码面板管理器,通过MarkdownBeautiful渲染的代码块，将会被codemirrorManager管理
   codemirrorManager;
   md;
 
@@ -45,6 +45,11 @@ class MarkdownBeautiful{
 
   refreshEditorView(rootElement){
     this.codemirrorManager.refreshEditorViewSyn(rootElement)
+  }
+
+  refreshStateCache(rootElement){
+    const elements = rootElement.getElementsByClassName("markdown-it-code-beautiful")
+    this.codemirrorManager.refreshStateCache(elements)
   }
 
   render(src){

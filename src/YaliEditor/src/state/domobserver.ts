@@ -22,13 +22,12 @@ export class DOMObserver{
 
         this.observer = new MutationObserver(mutations => {
             
-            
             let mut = mutations.at(0)
             let e = mut.target as HTMLElement
             if(e.nodeType == 3){
-                
                 e = e.parentElement
             }
+
             if(e.className.search(/cm-.*/)>=0){
                 this.lastChange=Date.now()
                 return 
@@ -45,7 +44,7 @@ export class DOMObserver{
             
             
             console.log("记录");
-            this.flush()
+            this.forceFlush()
             this.lastChange = Date.now()
 
         });

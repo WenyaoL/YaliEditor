@@ -2,6 +2,9 @@ import {diff_match_patch,patch_obj} from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
 
+/**
+ * 历史记录
+ */
 class History{
     //补丁(历史补丁)
     public patch: patch_obj[];
@@ -54,7 +57,6 @@ class IRUndo{
         this.hasUndo = false;
         this.redoStack = [];
         this.undoStack = [];
-        console.log(rangy);
         
         //this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
     }
@@ -81,10 +83,10 @@ class IRUndo{
         //重新设置光标
         rangy.getSelection().moveToBookmark(history.bookMark)
         this.lastBookMark = history.bookMark
-        //刷新视图
-        this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //刷新disable的视图
         this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
+        //刷新视图
+        this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
     }
 
     /**
@@ -195,7 +197,12 @@ class IRUndo{
         this.undoStack.push(new History(patch,lastHistory.bookMark))
     }
 
-
+    /**
+     * update bookmark
+     */
+    updateBookmark(){
+        this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+    }
 }
 
 export default IRUndo;

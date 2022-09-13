@@ -3,6 +3,7 @@ import {isEmpty} from '@/utils/common'
 export default createStore({
   state: {
     viewEditor:null, //渲染进程的视图编辑器 （SV ONLY模式下的编辑器）
+    yaliEditor:null,
     applicationContext:{   //上下文
       title:"undefine",
       filePath: null,   //文件路径
@@ -34,8 +35,10 @@ export default createStore({
       state.applicationContext.filePath = payload
     },
     setViewEditor(state,payload){
-      console.log("设置编辑器==",payload);
       state.viewEditor = payload
+    },
+    setYaliEditor(state,payload){
+      state.yaliEditor = payload
     },
     updateFileState(state,flag){
       state.applicationContext.isSave = flag

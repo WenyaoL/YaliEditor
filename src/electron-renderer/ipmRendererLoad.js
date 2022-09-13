@@ -159,20 +159,51 @@ function loadViewEditorListener(store){
     window.electronAPI.createLine((event,payload)=>{
         //标题快捷键信息处理
         //payload.level
-        updateLine(store.state.viewEditor,payload)
+        //根据模式进行匹配
+        if(store.state.editModel == "IR"){
+
+        }else if(store.state.editModel == "SV"){
+            updateLine(store.state.viewEditor,payload)
+        }else{
+            updateLine(store.state.viewEditor,payload)
+        }
+        
+
+
     })
     
     window.electronAPI.createType((event,payload)=>{
         //字体快捷键信息处理
-        updateBlock(store.state.viewEditor,payload)
+        if(store.state.editModel == "IR"){
+            
+        }else if(store.state.editModel == "SV"){
+            updateBlock(store.state.viewEditor,payload)
+        }else{
+            updateBlock(store.state.viewEditor,payload)
+        }
+        
     })
     
     window.electronAPI.createBlock((event,payload)=>{
-        updateBlock(store.state.viewEditor,payload)
+
+        if(store.state.editModel == "IR"){
+            
+        }else if(store.state.editModel == "SV"){
+            updateBlock(store.state.viewEditor,payload)
+        }else{
+            updateBlock(store.state.viewEditor,payload)
+        }
     })
       
     window.electronAPI.createMulLine((event,payload)=>{
-        updateMulLine(store.state.viewEditor,payload)
+
+        if(store.state.editModel == "IR"){
+            
+        }else if(store.state.editModel == "SV"){
+            updateMulLine(store.state.viewEditor,payload)
+        }else{
+            updateMulLine(store.state.viewEditor,payload)
+        }
     })
 }
 

@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @since 2022/8/19
+ */
 import type MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token";
 import Renderer from "markdown-it/lib/renderer";
