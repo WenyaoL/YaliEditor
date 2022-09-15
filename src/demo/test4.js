@@ -10,9 +10,9 @@ console.log(data);*/
 import MarkdownIt from 'markdown-it'
 import path from 'path';
 import fs from 'fs'
-import {highlighter} from "./codemirror-main/codeStyle/codeStyle"
-import toc from "./markdown-it-plugin/markdown-it-toc-beautiful"
-import mathjax3 from './markdown-it-plugin/markdown-it-mathjax-beautiful'
+import {highlighter} from "../codemirror-plugin/codeStyle/codeStyle"
+import toc from "../markdown-it-plugin/markdown-it-toc-beautiful"
+//import mathjax3 from '../markdown-it-plugin/markdown-it-mathjax-beautiful'
 import TurndownService from 'turndown';
 
 const options = {
@@ -27,9 +27,9 @@ let data = fs.readFileSync(path.normalize('C:/Users/liangwy/Desktop/测试文件
 let linuxData = data.replaceAll("\r\n","\n")
 let windowData = data
 
-const md = new MarkdownIt(options)
-        .use(mathjax3)
-        .use(toc);
+const md = new MarkdownIt(options).use(toc);
+        //.use(mathjax3)
+        
 
 let linuxTokens = md.parse(linuxData)
 let windowTokens = md.parse(windowData)

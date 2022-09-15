@@ -44,18 +44,22 @@ body{
   height: 100%;
 }
 
-
-
-nav {
-  padding: 30px;
+::-webkit-scrollbar
+{
+    width:5px;
+    background-color:#F5F5F5;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow:inset 0 0 6px rgba(255,255,255,1);
+    border-radius:5px;
+    background-color:#F5F5F5;
 }
 
-nav a.router-link-exact-active {
-  color: #42b983;
+::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    background-color: rgb(204, 201, 201);
 }
 </style>

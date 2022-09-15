@@ -60,7 +60,7 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-        this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+        this.editor.ir.undoManager.updateBookmark()
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
         }

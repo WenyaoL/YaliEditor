@@ -26,7 +26,18 @@ module.exports = defineConfig({
     electronBuilder: {
       //nodeIntegration: true,
       contextIsolation: true,
-      preload: 'src/electron-main/preload.js'
+      preload: 'src/electron-main/preload.js',
+      builderOptions: {
+        /*extraResources: {
+          from: './public',
+          to:'./'
+        },*/
+        win:{
+          icon: './yali.png'
+        }
+      }
+      
+
     }
   }
 })

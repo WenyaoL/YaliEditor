@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
       "baseUrl": ".",
-      //"outDir": "./build/markdown-it-plugin/markdown-it-mathjax-beautiful",
+      //"outDir": "./build/",
+      //"noEmit": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      //"noEmit": true,
       "strict": false,
+      "strictNullChecks": false, 
       "allowJs": true,
       "sourceMap": true,
       "esModuleInterop": true,
@@ -17,11 +18,12 @@
       },
     },
     "include": [
-      //"src/markdown-it-plugin/markdown-it-mathjax-beautiful/*"
-      "src/**/*"
+      "src/**/*",
+      //"src/markdown-it-plugin/**/*"
     ],
     "exclude": [
       "node_modules",
+      //"src/main.ts",
     ],
     "files": [
       "./shims-vue.d.ts"

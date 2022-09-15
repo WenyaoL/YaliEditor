@@ -4,12 +4,15 @@ import { findClosestByAttribute,
         findClosestByClassName,
         findClosestByTop,
         findClosestMdBlock,
+        findClosestMdInline,
+        IRfindClosestLi
 } from "../util/findElement";
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
 import log from "../util/loging";
 import CommonEventBinder from "./commonEventBinder";
+import { strToElement } from "../util/inspectElement";
 
 
 
@@ -39,9 +42,40 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         let start =  r.startContainer
         r.commonAncestorContainer
         //const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
+        //优先处理行级块
+        let e = findClosestMdInline(start)
+        //如果是链接
+        if(e && e.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK){
+            e = findClosestMdBlock(start)
+            //后半块处理
+            r.setEndAfter(e);
+            //剪切
+            let content = r.extractContents()
+            //重新渲染
+            let link = this.editor.ir.reRenderElement(content.firstElementChild)
+            content.replaceChildren(strToElement(link))
+            r.collapseAfter(e);
+            r.insertNode(content);
+            r.collapseToPoint(e.nextElementSibling,0)
+            //给光标打标志
+            const bookMark = sel.getBookmark(e.nextElementSibling)
 
-        const e = findClosestMdBlock(start)
-        console.log(start);
+            //前半块处理
+            r.selectNode(e)
+            //剪切
+            content = r.extractContents()
+            //重新渲染
+            link = this.editor.ir.reRenderElement(content.firstElementChild)
+            content.replaceChildren(strToElement(link))
+            r.insertNode(content);
+            sel.moveToBookmark(bookMark)
+            event.preventDefault()
+            return
+        }
+
+
+        e = findClosestMdBlock(start)
+
         
         if(e.tagName === "PRE"){
             //代码块不处理
@@ -50,9 +84,58 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         //光标是否聚合（坍塌）
         if(!r.collapsed) r.deleteContents()
 
+        //光标是否在li上
+        let li = IRfindClosestLi(e)
+        if(li) {
+            e = li;
+            r.setEndAfter(e);
+            //剪切
+            let content = r.extractContents()
+            //剪切导致li空缺
+            if(e.tagName === "LI" && e.childElementCount===0){
+                //插入P标签
+                e.insertAdjacentHTML("beforeend",'<p md-block="paragraph"></p>')
+            }
+            r.collapseAfter(e);
+            r.insertNode(content);
+            r.collapseToPoint(e.nextElementSibling,0)
+            sel.setSingleRange(r);
+            event.preventDefault()
+            return
+        }
+        
+        //光标在标签上
+        //if(e.getAttribute(CONSTANTS.ATTR_MD_BLOCK) === )
+        //光标在图片上
+
+        //是否在一般标签的头部
+        if(r.endOffset === 0){
+            r.collapseBefore(e)
+            const p = document.createElement("p")
+            p.setAttribute("md-block","paragraph")
+            p.innerHTML = "<br>"
+            r.insertNode(p)
+            event.preventDefault()
+            return
+        }
+
+
         r.setEndAfter(e);
         //剪切
         let content = r.extractContents()
+        //剪切出的长度为0，证明在尾部
+        if(content.textContent.length ===0){
+            r.collapseAfter(e)
+            const p = document.createElement("p")
+            p.innerHTML = "<br>"
+            p.setAttribute("md-block","paragraph")
+            r.insertNode(p)
+            //光标选择聚焦新元素
+            rangy.getSelection().collapse(p,0)
+            event.preventDefault()
+            return
+        }
+
         let block = content.children.item(0)
         if(block.textContent.length===0){
             block.innerHTML = "<br>"
@@ -62,8 +145,6 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         r.collapseToPoint(e.nextElementSibling,0)
         sel.setSingleRange(r);
         event.preventDefault()
-
-        
     }
 
     /**
@@ -236,15 +317,12 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         //回车键处理
         if(event.key === "Enter"){
             this.enterKey(event)
-            //this.editor.ir.addUndo()
-            //this.editor.ir.addUndo()
             return ;
         }
 
         //删除键处理,回退键
         if(event.key === "Backspace"){
             this.deleteKey(event)
-            //this.editor.ir.addUndo()
             return ;
         }
 

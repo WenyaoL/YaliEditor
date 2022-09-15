@@ -29,6 +29,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 1000,
     height: 618,
+    icon:path.join(__static,"yali.png"),
     webPreferences: {
       webSecurity:false,
       //nodeIntegration:true,

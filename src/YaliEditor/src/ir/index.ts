@@ -133,6 +133,11 @@ class IR{
     public getRootElementClassName(){
         return this.rootElement.className
     }
+
+    public reRenderElement(element:Element) {
+        let turndown = this.parser.turndown(element.outerHTML)
+        return this.renderer.render(turndown)
+    }
 }
 
 export default IR;

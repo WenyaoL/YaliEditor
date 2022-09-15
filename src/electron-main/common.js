@@ -76,7 +76,6 @@ export async function openFile(filePath){
 
 export function loadRenderApplicationContext(){
     const applicationContext = createRenderApplicationContext()
-    console.log("argv=====",argv);
     if(argv.length == 2){
         const filePath = argv[1]
         //标题
@@ -116,6 +115,7 @@ export function openNewWindow(title){
         width: 1000,
         height: 618,
         title:title,
+        icon:path.join(__static,"yali.png"),
         webPreferences: {
           webSecurity:false,
           //nodeIntegration:true,
@@ -217,8 +217,8 @@ export function createFileTree(dirPath,tree){
  * 读取字体文件
  */
 export async function readFontFile(){
-    const fontsPath = path.join(__dirname,  "fonts/SourceHanSans-normal");
-    const fontsPath2 = path.join(__dirname,  "fonts/SourceHanSans-bold");
+    const fontsPath = path.join(__static,  "fonts/SourceHanSans-normal");
+    const fontsPath2 = path.join(__static,  "fonts/SourceHanSans-bold");
     
     console.log("读取字体文件",fontsPath);
     const normal =  await openFile(fontsPath)

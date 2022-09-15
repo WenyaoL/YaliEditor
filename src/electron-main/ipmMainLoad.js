@@ -53,8 +53,8 @@ function load(){
     })
 
     ipcMain.on("saveHTMLFile",(event,payload)=>{
-        const templatePath = path.join(__dirname,  "templateHTML/TEM.html");
-        const cssDirPath = path.join(__dirname,  "css");
+        const templatePath = path.join(__static,  "templateHTML/TEM.html");
+        const cssDirPath = path.join(__static,  "css");
         let html = common.openFileSync(templatePath)
         let cssPath = common.openFileDirSync(cssDirPath).filter(str=>{
             if(str.search(/app.*css$/i)>-1) return true

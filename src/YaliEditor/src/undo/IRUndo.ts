@@ -30,7 +30,7 @@ class IRUndo{
     hasUndo:boolean;
     //记录最后一次文本
     lastText: string;
-    //记录最后一次的光标位置
+    //记录最后一次的光标位置(记录的是在codemirror代码块移除前的位置)
     lastBookMark: any;
 
     redoStack: History[];
@@ -80,13 +80,14 @@ class IRUndo{
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
-        //重新设置光标
-        rangy.getSelection().moveToBookmark(history.bookMark)
+        
         this.lastBookMark = history.bookMark
         //刷新disable的视图
         this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
+        //重新设置光标
+        rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
     /**
@@ -111,12 +112,17 @@ class IRUndo{
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
-        rangy.getSelection().moveToBookmark(history.bookMark)
         this.lastBookMark = history.bookMark
+
+        //刷新disable的视图
+        this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
+        //刷新视图
+        this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
+        //重新设置光标
+        rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
     public addUndo(){
-        
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
@@ -148,7 +154,6 @@ class IRUndo{
        }else{
         this.hasUndo = false;
        }
-       
        //添加undo应该舍弃掉redo里面的
        this.redoStack=[]
     }

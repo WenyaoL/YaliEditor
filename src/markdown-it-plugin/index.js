@@ -6,6 +6,7 @@ import emoji from 'markdown-it-emoji'
 import markdownItMeta from './markdown-it-meta'
 import link  from './markdown-it-link-beautiful'
 import highlighter from './markdown-it-highlight-beautiful'
+import list from './markdown-it-list-beautiful'
 import CodemirrorManager from './markdown-it-code-beautiful'
 import imgplugin from './markdown-it-image-beautiful'
 
@@ -28,6 +29,7 @@ class MarkdownBeautiful{
     })
     //.use(require('markdown-it-mathjax3'))
     .use(mathjax)
+    .use(list)
     .use(emoji)
     //.use(require('markdown-it-abbr'))
     //.use(require('markdown-it-footnote'))

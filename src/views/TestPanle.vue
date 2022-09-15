@@ -2,7 +2,7 @@
 <div >
     <el-button type="primary" @click="savePDF()">保存pdf</el-button>
     <ir-markdown ref="markdown"/>
-    
+    <img src="/yali.png"/>
 </div>
 
 </template>
@@ -26,9 +26,7 @@ const store = useStore();
 function savePDF(){
     
     console.log(markdown.value.$el);
-    console.log("测试121");
-    /*doc.text('尼玛', 10, 10)
-    doc.save("123.pdf")*/
+
     doc.addFileToVFS('sourcehansans-normal.ttf',store.state.fonts.normal)
     
     doc.addFont('sourcehansans-normal.ttf','sourcehansans','normal')

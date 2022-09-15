@@ -142,7 +142,11 @@ class TurndownParser{
         return flag;
         },
         replacement:(content, node, options) =>{
-            return node.textContent
+            node = node as HTMLElement
+            //获取A标签
+            const a = node.getElementsByTagName("a").item(0)
+            if(!a) return ''
+            return '['+a.textContent+']('+a.href+')';
         }
     })
   }

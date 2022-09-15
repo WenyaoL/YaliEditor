@@ -1,8 +1,15 @@
 import YaLiEditor from '..'
-import { findClosestByAttribute,findClosestByClassName,findClosestByTop, findClosestMdBlock} from "../util/findElement";
+import { findClosestByAttribute,
+    findClosestByClassName,
+    findClosestByTop, 
+    findClosestMdBlock, 
+    IRfindClosestParagraph,
+    IRfindClosestLi, 
+    IRfindClosestList} from "../util/findElement";
 import Constants from "../constants";
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
+import IR from '.';
 
 class HotkeyProcessor{
     //编辑器
@@ -22,11 +29,15 @@ class HotkeyProcessor{
             "ctrl+6": this.headingKey,
             "ctrl+z": this.undoKey,
             "ctrl+b": this.blodKey,
+            "ctrl+[": this.reduceIndentKey,
+            "ctrl+]": this.addIndentKey,
             "ctrl+shift+k": this.codeblockKey,
             "ctrl+shift+~": this.codelineKey,
             "ctrl+shift+`": this.codelineKey,
             "ctrl+shift+%": this.deletelineKey,
-            "ctrl+shift+5": this.deletelineKey
+            "ctrl+shift+5": this.deletelineKey,
+            "ctrl+shift+{":this.listKey,
+            "ctrl+shift+}":this.unlistKey,
         }
     }
 
@@ -238,6 +249,143 @@ class HotkeyProcessor{
             r.insertNode(content)
             sel.setSingleRange(r);
         }
+    }
+
+    /**
+     * 添加缩进
+     * @param event 
+     */
+    addIndentKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        let li = IRfindClosestLi(start)
+        if(!li) return
+        let list = IRfindClosestList(li)
+        //是否有前兄弟节点
+        if(li.previousElementSibling){
+            let sibling = li.previousElementSibling
+            let siblingChild:HTMLElement|null = sibling.getElementsByTagName("ol").item(0)
+            if(!siblingChild) siblingChild = sibling.getElementsByTagName("ul").item(0)
+
+
+
+            //根据兄弟节点是否有儿子进行决策
+            if(!siblingChild){//兄弟节点没有儿子列表
+                //给兄弟节点创建儿子
+                siblingChild = document.createElement(list.tagName.toLowerCase())
+                sibling.appendChild(siblingChild)
+            }
+
+            //判断当前节点是否有儿子节点
+            let liChild:HTMLElement|null = li.getElementsByTagName("ol").item(0)
+            if(!liChild) liChild = li.getElementsByTagName("ul").item(0)
+
+            const bookmark = sel.getBookmark(li)
+            if(liChild){//当前节点有儿子节点
+                siblingChild.appendChild(li)
+                for (let index = 0; index < liChild.childElementCount; index++) {
+                    const element = liChild.children.item(index)
+                    siblingChild.appendChild(element)
+                }
+                liChild.remove()
+                sel.moveToBookmark(bookmark)
+            }else{//当前节点没有儿子节点
+                siblingChild.appendChild(li)
+                sel.moveToBookmark(bookmark)
+            }
+
+        }
+        
+    }
+
+    /**
+     * 减少缩进
+     * @param event 
+     */
+    reduceIndentKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+        
+        let li = IRfindClosestLi(start)
+        if(!li) return
+        let list = IRfindClosestList(li)
+        //是否有上级列表
+        if(list?.parentElement?.tagName === "LI"){
+            let parentLi =  list.parentElement
+            
+            //判断是否有儿子节点
+            let liChild:HTMLElement|null = li.getElementsByTagName("ol").item(0)
+            if(!liChild) liChild = li.getElementsByTagName("ul").item(0)
+            //没有儿子并且有下兄弟节点
+            if(!liChild && li.nextElementSibling){
+                //创建儿子
+                liChild = document.createElement(list.tagName.toLowerCase())
+                li.appendChild(liChild)
+            }
+
+            //兄弟节点变儿子节点
+            let sibling = li.nextElementSibling
+            while(sibling){
+                liChild?.appendChild(sibling)
+                sibling = li.nextElementSibling
+            } 
+            let bookmark = sel.getBookmark(li)
+            parentLi.insertAdjacentElement("afterend",li)
+
+            if(list.children.length === 0) list.remove()
+            sel.moveToBookmark(bookmark)
+        }
+        
+    }
+
+    /**
+     * 有序列表快捷键
+     * @param event 
+     */
+    listKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        let p = IRfindClosestParagraph(start)
+        if(!p) return 
+        //重新渲染该节点
+        let turndown = this.editor.ir.parser.turndown(p)
+        turndown = "1. " + turndown;
+        console.log(turndown);
+        
+        let res = this.editor.ir.renderer.render(turndown)
+        const div = document.createElement("div")
+        div.innerHTML = res
+        r.selectNode(p)
+        r.deleteContents()
+        
+        r.insertNode(div.firstElementChild)
+    }
+
+    /**
+     * 无序列表快捷键
+     * @param event 
+     */
+    unlistKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        let p = IRfindClosestParagraph(start)
+        if(!p) return 
+        //重新渲染该节点
+        let turndown = this.editor.ir.parser.turndown(p)
+        turndown = "* " + turndown;
+        let res = this.editor.ir.renderer.render(turndown)
+        const div = document.createElement("div")
+        div.innerHTML = res
+        r.selectNode(p)
+        r.deleteContents()
+        r.insertNode(div.firstElementChild)
     }
 
 

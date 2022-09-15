@@ -39,6 +39,9 @@ class YaLiEditor {
     public getMarkdownText(){
         return this.ir.getMarkdown()
     }
+
+
+    
 }
 
 export default YaLiEditor;

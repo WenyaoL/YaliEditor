@@ -26,6 +26,25 @@ export const findClosestByClassName = (element: Node|null, className: string,sto
     return null;
 };
 
+export const findClosestByTagName = (element: Node|null, tagName: string,stopClassName: string)=>{
+    if (!element || !stopClassName) {
+        return null;
+    }
+    if (element.nodeType === 3) {
+        element = element.parentElement;
+    }
+    let e = element as HTMLElement;
+    while (e && !e.classList.contains(stopClassName)) {
+        if (e.tagName === tagName) {
+            return e;
+        } else {
+            e = e.parentElement;
+        }
+    }
+    return null;
+}
+
+
 /**
  * 找到顶层元素
  * @param element 
@@ -104,4 +123,22 @@ export const findClosest = (element: Node,stopClassName: string)=>{
 
 export const findClosestMdBlock = (element: Node)=>{
     return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)
+}
+
+export const findClosestMdInline = (element: Node)=>{
+    return findClosestByAttribute(element,Constants.ATTR_MD_INLINE,"",Constants.IR_CLASS_NAME)
+}
+
+export const IRfindClosestLi = (element: Node)=>{
+    return findClosestByTagName(element,"LI",Constants.IR_CLASS_NAME)
+}
+
+export const IRfindClosestList = (element: Node)=>{
+    let e = findClosestByTagName(element,"OL",Constants.IR_CLASS_NAME)
+    if(!e) e = findClosestByTagName(element,"UL",Constants.IR_CLASS_NAME)
+    return e;
+}
+
+export const IRfindClosestParagraph = (element: Node)=>{
+    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_PARAGRAPH,Constants.IR_CLASS_NAME)
 }
