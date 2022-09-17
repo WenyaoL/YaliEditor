@@ -1,5 +1,5 @@
 <p align="center">
- <img width="100px" src="./public/yali.png" align="center" alt="GitHub Readme Stats" />
+ <img width="100px" src="../public/yali.png" align="center" alt="GitHub Readme Stats" />
  <h2 align="center">YaliEditor</h2>
  <p align="center">A simple real-time rendering markdown editor!</p>
 </p>
@@ -26,6 +26,7 @@
   </p>
 
 
+
 <p align="center">This project is still in the development stage! Like this project? Please suggest your needs to help it improve!
 </p>
 
@@ -33,7 +34,7 @@
 # YaliEditor
 
 - [介绍](#介绍)
-  - [ IR实时渲染模式](# IR实时渲染模式)
+  - [IR实时渲染模式](#IR实时渲染模式)
 
   - [SV分屏模式](#SV分屏模式)
 
@@ -41,7 +42,7 @@
 
   - [文件夹预览](#文件夹预览)
 
-  - [Project setup](#Project setup)
+  - [Project setup](#project-setup)
 
 ## 介绍
 
@@ -51,25 +52,25 @@ YaliEditor是一款轻量级的实时渲染markdown编辑器，支持markdown纯
 
 ### IR实时渲染模式
 
-![163](./docs/imgs/163.png)
+![163](./imgs/163.png)
 
 
 
 ### SV分屏模式
 
-![164](./docs/imgs/164.png)
+![164](./imgs/164.png)
 
 
 
 ### Only源代码模式
 
-![165](./docs/imgs/165.png)
+![165](./imgs/165.png)
 
 
 
 ### 文件夹预览
 
-![166](./docs/imgs/166.png)
+![166](./imgs/166.png)
 
 
 
