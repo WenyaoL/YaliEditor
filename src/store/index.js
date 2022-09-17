@@ -51,7 +51,10 @@ export default createStore({
       const application = state.applicationContext
       //更新上下文
       if(context.filePath) application.filePath = context.filePath
-      if(context.title) application.title = context.title
+      if(context.title){
+        application.title = context.title
+        document.title = context.title
+      } 
       if(context.content) application.content = context.content
       if(context.isSave) application.isSave = context.isSave
       if(!isEmpty(context.tree))application.tree = context.tree

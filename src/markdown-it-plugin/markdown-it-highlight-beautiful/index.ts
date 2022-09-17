@@ -4,7 +4,7 @@
  */
 import hljs from 'highlight.js';
 // 引入默认样式
-import 'highlight.js/scss/default.scss'
+//import 'highlight.js/scss/default.scss'
 // 引入个性化的vs2015样式
 //import 'highlight.js/styles/vs2015.css'
 export const highlighter = (str:string,lang:string)=>{

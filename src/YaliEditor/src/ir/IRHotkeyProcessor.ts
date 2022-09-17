@@ -10,6 +10,8 @@ import Constants from "../constants";
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
+import { divide } from 'lodash';
+
 
 class HotkeyProcessor{
     //编辑器
@@ -32,6 +34,7 @@ class HotkeyProcessor{
             "ctrl+[": this.reduceIndentKey,
             "ctrl+]": this.addIndentKey,
             "ctrl+shift+k": this.codeblockKey,
+            "ctrl+shift+q": this.quoteKey,
             "ctrl+shift+~": this.codelineKey,
             "ctrl+shift+`": this.codelineKey,
             "ctrl+shift+%": this.deletelineKey,
@@ -46,7 +49,6 @@ class HotkeyProcessor{
      * @param event 
      */
     undoKey(event: KeyboardEvent){
-        console.log("触发undo快捷键");
         const r = rangy.getSelection().getRangeAt(0)
         let start:HTMLElement|Node|null = r.startContainer
         if(start.nodeType === 3){
@@ -238,10 +240,7 @@ class HotkeyProcessor{
             content = r.extractContents()
             let str = content.textContent
             str = pre+str+suf
-            console.log(str);
-            
             const res = this.editor.ir.renderer.render(str)
-            console.log(res);
             const div = document.createElement("div")
             div.innerHTML = res
             
@@ -355,7 +354,6 @@ class HotkeyProcessor{
         //重新渲染该节点
         let turndown = this.editor.ir.parser.turndown(p)
         turndown = "1. " + turndown;
-        console.log(turndown);
         
         let res = this.editor.ir.renderer.render(turndown)
         const div = document.createElement("div")
@@ -374,20 +372,80 @@ class HotkeyProcessor{
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
+        const end = r.endContainer
 
-        let p = IRfindClosestParagraph(start)
-        if(!p) return 
+        //判断是否已经是li
+        IRfindClosestLi(start)
+
+
+        let startP = IRfindClosestParagraph(start)
+        let endP = IRfindClosestParagraph(end)
+
+        r.setStartBefore(startP)
+        r.setEndAfter(endP)
+
+        let content =r.extractContents()
+        
+        let div = document.createElement("div")
+        div.appendChild(content)
+
         //重新渲染该节点
-        let turndown = this.editor.ir.parser.turndown(p)
-        turndown = "* " + turndown;
+        let turndown = this.editor.ir.parser.turndown(div.innerHTML)
+        
+        //切割行
+        let split = turndown.split("\n")
+        
+        split = split.map(row=>{
+            if(row.length==0) return row
+            return "* " + row
+        })
+        
+        turndown = split.join("\n")
+
+        
         let res = this.editor.ir.renderer.render(turndown)
-        const div = document.createElement("div")
         div.innerHTML = res
-        r.selectNode(p)
+        
         r.deleteContents()
         r.insertNode(div.firstElementChild)
     }
 
+    /**
+     * 引用快捷键
+     * @param event 
+     */
+    quoteKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+        const end = r.endContainer
+
+        //判断是否对li进行引用
+        let li = IRfindClosestLi(start)
+        if(li){
+            r.setStart(li,0)
+            r.setEndAfter(li.lastElementChild)
+            let content = r.extractContents()
+    
+            let quote = document.createElement("blockquote")
+            quote.appendChild(content)
+            r.insertNode(quote)
+            return
+        }
+
+        let startE = findClosestMdBlock(start)
+        let endE = findClosestMdBlock(end)
+        
+
+        r.setStartBefore(startE)
+        r.setEndAfter(endE)
+        let content = r.extractContents()
+    
+        let quote = document.createElement("blockquote")
+        quote.appendChild(content)
+        r.insertNode(quote)
+        
+    }
 
     execute(event: KeyboardEvent){
         const k = toKeyText(event)

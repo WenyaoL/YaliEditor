@@ -11,6 +11,7 @@ import MarkdownIt from 'markdown-it';
 //import 'highlight.js/scss/default.scss'
 // 引入个性化的vs2015样式
 //import 'highlight.js/styles/vs2015.css'
+import 'highlight.js/scss/github.scss'
 import md from '@/markdown-it-plugin/def'
 
 
@@ -52,13 +53,14 @@ div{
 // 添加行号样式
 ::v-deep pre.hljs::-webkit-scrollbar
 {
-    width:3px;
-    height:8px;
+    
+    height:3px;
     background-color:#F5F5F5;
+    //background-color:white
 }
 ::v-deep pre.hljs::-webkit-scrollbar-track
 {
-    -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
+    //-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
     border-radius:5px;
     background-color:#F5F5F5;
 }
@@ -86,6 +88,7 @@ div{
   position: relative;
   overflow: auto;
   font-size: 13.5px;
+  border: 1px solid #e7eaed;
   //max-height: 210px;
   code{
     margin-left: 8px;

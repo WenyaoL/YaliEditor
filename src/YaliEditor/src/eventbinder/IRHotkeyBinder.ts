@@ -218,7 +218,7 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
                     rangy.getSelection().setSingleRange(r)
                     //rangy.getSelection().deleteFromDocument();
-                    log("选择行级模块",rangy.getSelection().getRangeAt(0).startContainer,this.editor.options.options.isTestModel)
+                    //log("选择行级模块",rangy.getSelection().getRangeAt(0).startContainer,this.editor.options.options.isTestModel)
                     event.preventDefault()
                 }
                 return;

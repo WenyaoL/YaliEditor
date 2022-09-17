@@ -2,6 +2,9 @@
   position: relative;
 }
 
+pre.markdown-it-code-beautiful{
+  border: 1px solid #e7eaed;
+}
 
 .md-expand .md-hiden.tooltip-input{
   color: black;

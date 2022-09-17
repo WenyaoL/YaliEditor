@@ -1,6 +1,6 @@
 import MarkdownBeautiful from "../../../markdown-it-plugin";
 import YaLiEditor from "..";
-import { BaseEventBinder } from "../../types";
+import { BaseEventBinder, IROptions } from "../../types";
 import HotkeyProcessor from './IRHotkeyProcessor'
 import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
@@ -19,6 +19,9 @@ import { DOMObserver } from "../state/domobserver";
 class IR{
     //编辑器
     public editor:YaLiEditor;
+    //IR面板的设置
+    public options:IROptions
+
     //渲染器
     public renderer:MarkdownBeautiful;
     //解析器
@@ -37,6 +40,10 @@ class IR{
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
+        this.options = this.editor.options.ir
+    }
+
+    public init(){
         const divElement = document.createElement("div");
         divElement.className = "YaLi-ir";
         divElement.setAttribute("contenteditable","true");
@@ -45,7 +52,7 @@ class IR{
         this.editor.rootElement.appendChild(divElement);
         this.rootElement = divElement;
 
-        this.renderer = new MarkdownBeautiful();
+        this.renderer = new MarkdownBeautiful(this.editor);
         this.parser = new TurndownParser(this.editor);
         //this.undo = new IRUndo();
         //this.undoManager = new IRUndoManager();
@@ -62,7 +69,6 @@ class IR{
         this.bindEvent(this.rootElement);
 
         this.observer = new DOMObserver(this.rootElement,this.editor)
-        
     }
 
     public undo(){
@@ -110,7 +116,7 @@ class IR{
      */
     public load(src:string){
         this.observer.stop()
-        const res = this.renderer.md.render(src)
+        const res = this.renderer.render(src)
         if(res === ''){
             this.rootElement.innerHTML = '<p md-block="paragraph"><br></p>'
         }else{

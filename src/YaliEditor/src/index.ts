@@ -15,13 +15,16 @@ class YaLiEditor {
     public ir : IR;
     
 
-    constructor(id: string | HTMLElement, options?: YaLiEditorOptions){
+    constructor(id: string | HTMLElement, options?: EditorOptions){
         this.version = _YALI_VERSION;
 
         if (typeof id === "string") {
             id = document.getElementById(id);
         }
-        this.options = new EditorOptions(options)
+        //默认选项
+        let defalutOptions = EditorOptions.defalut()
+        //合并
+        this.options = defalutOptions.merge(options)
         
         this.init(id,this.options)
     }
@@ -29,7 +32,7 @@ class YaLiEditor {
     private init(id: HTMLElement, options: EditorOptions){
         this.rootElement = id;
         this.ir = new IR(this);
-
+        this.ir.init()
     }
 
     public render(src:string){    

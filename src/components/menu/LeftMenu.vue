@@ -15,8 +15,8 @@
       <template #title>文件夹</template>
     </el-menu-item>
     <el-menu-item index="3" route="/test">
-      <el-icon><icon-menu /></el-icon>
-      <template #title>选项</template>
+      <el-icon><QuestionFilled /></el-icon>
+      <template #title>关于</template>
     </el-menu-item>
 
     <el-menu-item index="4"  route="/designDashboard">
@@ -32,6 +32,7 @@ import {
   Menu as IconMenu,
   Folder,
   Setting,
+  QuestionFilled
 } from '@element-plus/icons-vue'
 
 export default {
@@ -40,7 +41,8 @@ export default {
       Document,
       IconMenu,
       Folder,
-      Setting
+      Setting,
+      QuestionFilled
     },
     data(){
         return {

@@ -1,6 +1,6 @@
 <template>
 
-    <el-tree :data="applicationContext.tree" :props="props" @node-click="nodeClick">
+  <el-tree :data="applicationContext.tree" :props="props" @node-click="nodeClick">
     <template #default="{ node,data}">
       <el-icon v-if="isFile(data)"><document /></el-icon>
       <el-icon v-else><folder /></el-icon>

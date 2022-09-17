@@ -4,13 +4,16 @@
  */
 import {EditorState,type Extension, Compartment} from "@codemirror/state"
 import {EditorView, keymap,ViewUpdate} from "@codemirror/view"
-import {defaultKeymap,indentWithTab} from "@codemirror/commands"
-import {basicSetup} from "codemirror"
+import {indentWithTab} from "@codemirror/commands"
+import {basicSetup,minimalSetup} from "codemirror"
 import {languages} from "@codemirror/language-data"
 import {LanguageDescription} from "@codemirror/language"
 import { javascript } from '@codemirror/lang-javascript'
 import SearchSuggestUI from './ui'
 import { v4 as uuidv4 } from 'uuid';
+import {noLineNumberBasicSetup,gutterBasicSetup} from '@/codemirror-plugin/codeStyle/codePlugin'
+import YaLiEditor from "@/YaliEditor/src"
+
 
 
 /**
@@ -69,6 +72,9 @@ class CodemirrorEditorView{
  */
 class CodemirrorManager{
     //编辑器
+    public editor:YaLiEditor
+
+    //codemirror编辑器面板
     private allStateCache:CodemirrorEditorState[] = [];
     //编辑器视图
     public allView :CodemirrorEditorView[] = [];
@@ -91,11 +97,12 @@ class CodemirrorManager{
 
 
 
-    constructor(){
-
+    constructor(editor:YaLiEditor){
+        this.editor = editor
         const customTheme = EditorView.theme({
             '&.cm-editor.cm-focused': {
                 outline: "none"   //移除外边框线
+                
             },
             '&':{
                 font: "16px Arial, monospace ",  //字体
@@ -105,10 +112,12 @@ class CodemirrorManager{
                 "background-color":"#f6f6f6"
             }
         })
+
         //初始化默认插件
-        this.codemirrorPlugin = [
-            basicSetup,
-            keymap.of([indentWithTab]),
+        this.codemirrorPlugin = this.editor.ir.options.codemirrorPlugins.concat([
+            //minimalSetup,
+            //gutterBasicSetup,
+            //keymap.of([indentWithTab]),
             customTheme,
             EditorView.lineWrapping,
             EditorView.updateListener.of((viewUpdate) => { // 默认自带的监听器
@@ -121,7 +130,8 @@ class CodemirrorManager{
                     viewUpdate.view.dom.setAttribute("is-empty","false")
                 }
             })
-        ]
+        ])
+        
 
 
         /*if (viewUpdate.docChanged && viewUpdate.changes.newLength === 0) {

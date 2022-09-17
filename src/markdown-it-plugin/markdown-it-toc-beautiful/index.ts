@@ -2,38 +2,44 @@
 
 'use strict';
 
+import MarkdownIt from "markdown-it";
+import StateBlock from "markdown-it/lib/rules_block/state_block";
+import StateCore from "markdown-it/lib/rules_core/state_core";
 import Token from "markdown-it/lib/token";
 
-export default function(md) {
+
+
+
+export default function(md:MarkdownIt) {
 
     var TOC_REGEXP = /@?\[toc\](?:\((?:\s+)?([^\)]+)(?:\s+)?\)?)?(?:\s+?)?$/im;
     var TOC_DEFAULT = 'Table of Contents';
-    var gstate;
+    var gstate:StateCore;
+    let found:boolean = false;
 
-    function toc(state, silent) {
-        //console.log("state===>",state);
-        //存在换行符，并且换行符在[toc]前面
-        /*while (state.src.indexOf('\n') >= 0 && state.src.indexOf('\n') < state.src.indexOf('[toc]')) {
-            
-            if (state.tokens.slice(-1)[0].type === 'softbreak') {
-                state.src = state.src.split('\n').slice(1).join('\n');
-                state.pos = 0;
-            }
-        }*/
-        var token;
-
-        // trivial rejections
-        //if (state.src.charCodeAt(state.pos) !== 0x5B /* [ */ ) {
-        //    return false;
-        //}
-
+    function toc(state: StateBlock,startLine: number,endLine: number,silent: boolean) 
+    {
+        let pos = state.bMarks[startLine] + state.tShift[startLine],
+            max = state.eMarks[startLine];
         
-        var match = TOC_REGEXP.exec(state.src);
+        
+        // trivial rejections
+        if (state.src.charCodeAt(pos) !== 0x5B /* [ */  && state.src.charCodeAt(pos)!== 0x40 /*@*/) {
+            return false;
+        }
 
+        let token:Token;
+        let content = state.src.substring(pos,max)
+        console.log(content);
+        
+        //查找
+        var match:RegExpExecArray|string[] = TOC_REGEXP.exec(content);
         
         if (!match) {
             return false;
         }
+        console.log(match);
+        
         match = match.filter(function(m) {
             return m;
         });
@@ -49,27 +55,23 @@ export default function(md) {
 
         token = state.push('toc_body', '', 0);
         var label = TOC_DEFAULT;
-        if (match.length > 1) {
+        if (match.length >= 1) {
             label = match.pop();
         }
         token.content = label;
 
         token = state.push('toc_close', 'toc', -1);
 
-        var offset = 0;
-        var newline = state.src.indexOf('\n');
-        if (newline !== -1) {
-            offset = state.pos + newline;
-        } else {
-            offset = state.pos + state.posMax + 1;
-        }
-        state.pos = offset;
-
+        state.line++
+        //标志为找到，避免重复寻找
+        found=true
         return true;
     }
 
 
-    var makeSafe = function(label) {
+
+
+    var makeSafe = function(label:string) {
         return label.replace(/[^\w\s]/gi, '').split(' ').join('_');
     };
 
@@ -122,7 +124,8 @@ export default function(md) {
         let res = []
 
         //处理toc-tip
-        let tip ='<div class="md-toc-tip">'+'<span>目录</span>'+'</div>';
+        let svg = '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-029747aa=""><path fill="currentColor" d="M352 192V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64H96a32 32 0 0 1 0-64h256zm64 0h192v-64H416v64zM192 960a32 32 0 0 1-32-32V256h704v672a32 32 0 0 1-32 32H192zm224-192a32 32 0 0 0 32-32V416a32 32 0 0 0-64 0v320a32 32 0 0 0 32 32zm192 0a32 32 0 0 0 32-32V416a32 32 0 0 0-64 0v320a32 32 0 0 0 32 32z"></path></svg>'
+        let tip ='<div class="md-toc-tip">'+'<span>目录</span><button class="toc-delete" onclick="TOC_DELETE()"><span>'+svg+'</button></span></div>';
         res.push(tip)
 
         //处理缩进
@@ -131,7 +134,7 @@ export default function(md) {
             var item = [];
             item = item.concat([
             '<span class="',getHeadingClass(indent),' md-toc-item ">'
-            ,'<a href="#', heading.anchor, '">', heading.content, 
+            ,'<a to-href="', heading.anchor, '">', heading.content, 
             '</a></span>'])
             return item.join('');
         });
@@ -143,7 +146,26 @@ export default function(md) {
 
     md.core.ruler.push('grab_state', function(state) {
         gstate = state;
+        //重置标志
+        found=false
     });
 
-    md.inline.ruler.after('emphasis', 'toc', toc);
+    //md.inline.ruler.after('emphasis', 'toc', toc);
+    //md.block.ruler.before('paragraph','toc',toc)
+    md.block.ruler.before('paragraph','toc',toc)
+
+    document.addEventListener("click",(event:MouseEvent &{target:Element})=>{
+        //如果点击的是目录
+        if(event.target.tagName == "A" && event.target.hasAttribute("to-href")){
+            let href = event.target.getAttribute("to-href")
+            document.getElementById(href).scrollIntoView({behavior: "smooth"})
+            }
+    })
+
+    const win:any = window
+    win.TOC_DELETE=()=>{
+        let toc = document.getElementsByClassName("markdown-it-toc-beautiful").item(0)
+        if(toc) toc.remove()
+    }
+
 };

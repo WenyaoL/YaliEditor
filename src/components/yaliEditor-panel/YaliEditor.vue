@@ -17,9 +17,7 @@ export default {
     const store = useStore();
     let yali:YaLiEditor = null;
     onMounted(()=>{
-      yali = new YaLiEditor("YaliEditor",{
-        isTestModel:true
-      })
+      yali = new YaLiEditor("YaliEditor")
       yali.render(store.state.applicationContext.content)
       store.commit('setYaliEditor',yali)
     })

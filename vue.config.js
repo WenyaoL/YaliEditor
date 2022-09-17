@@ -33,7 +33,7 @@ module.exports = defineConfig({
           to:'./'
         },*/
         win:{
-          icon: './yali.png'
+          icon: './public/yali.png'
         }
       }
       
