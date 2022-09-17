@@ -30,52 +30,50 @@
 </p>
 
 
-
 # YaliEditor
 
-- [Introduction](#Introduction)
-  - [IR real-time rendering mode](#IR real-time rendering mode)
+- [介绍](#介绍)
+  - [ IR实时渲染模式](# IR实时渲染模式)
 
-  - [SV split screen mode](#SV split screen mode)
+  - [SV分屏模式](#SV分屏模式)
 
-  - [Only source code mode](#Only source code mode)
+  - [Only源代码模式](#Only源代码模式)
 
-  - [Folder Preview](#Folder Preview)
+  - [文件夹预览](#文件夹预览)
 
   - [Project setup](#Project setup)
 
+## 介绍
 
-## Introduction
+YaliEditor是一款轻量级的实时渲染markdown编辑器，支持markdown纯代码模式，SV分屏模式，和IR实时渲染模式。
 
-YaliEditor is a lightweight real-time rendering markdown editor that supports markdown pure code mode, SV split screen mode, and IR real-time rendering mode.
+**该项目还处于开发阶段**
 
-**The project is still in the development stage**
-
-### IR real-time rendering mode
+### IR实时渲染模式
 
 ![163](./docs/imgs/163.png)
 
 
 
-### SV split screen mode
+### SV分屏模式
 
 ![164](./docs/imgs/164.png)
 
 
 
-### Only source code mode
+### Only源代码模式
 
 ![165](./docs/imgs/165.png)
 
 
 
-### Folder Preview
+### 文件夹预览
 
 ![166](./docs/imgs/166.png)
 
 
 
-### Project setup
+## Project setup
 
 ```shell
 #clone project
@@ -87,6 +85,8 @@ npm run install
 #build
 npm run electron:build
 ```
+
+
 
 
 

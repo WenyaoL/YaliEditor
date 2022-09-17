@@ -16,6 +16,11 @@
     cursor: pointer;
 }
 
+.el-icon-delete:before {
+    font-family:element-icons!important;
+    content: "\E611";
+}
+
 h1.md-expand::before{
     color: #ddd;
     border: 1px solid;
