@@ -34,15 +34,15 @@
 # YaliEditor
 
 - [Introduction](#Introduction)
-  - [IR real-time rendering mode](#IR real-time rendering mode)
+  - [IR real-time rendering mode](\#ir-real-time-rendering-mode)
 
-  - [SV split screen mode](#SV split screen mode)
+  - [SV split screen mode](#sv-split-screen-mode)
 
-  - [Only source code mode](#Only source code mode)
+  - [Only source code mode](#only-source-code-mode)
 
-  - [Folder Preview](#Folder Preview)
+  - [Folder Preview](#folder-Preview)
 
-  - [Project setup](#Project setup)
+  - [Project setup](#project-setup)
 
 
 ## Introduction
