@@ -1,8 +1,6 @@
 <template>
 <div >
-    <img src="/yali.png"/>
 </div>
-
 </template>
 
 <script setup lang="ts">

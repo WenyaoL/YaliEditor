@@ -322,6 +322,9 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
         //删除键处理,回退键
         if(event.key === "Backspace"){
+            //event.preventDefault()
+            //event.stopPropagation()
+            //event.cancelBubble=true
             this.deleteKey(event)
             return ;
         }
@@ -329,7 +332,7 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         //快捷键处理
 
         this.editor.ir.hotkeyProcessor.execute(event)
-      })
+      },true)
     
     }
     

@@ -6,7 +6,6 @@ import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
 import IRUndo from "../undo/IRUndo";
-import { Command, IRUndoManager } from "../undo/IRUndoManager";
 
 import TurndownParser from "../../../turndown-plugin";
 import { DOMObserver } from "../state/domobserver";
@@ -80,12 +79,9 @@ class IR{
         this.observer.ignore(this.undoManager.redo,this.undoManager)
     }
 
-    public execute(command:Command,...args:any[]){
-        //this.undoManager.execute(command,...args)
-    }
 
     public addUndo(){
-        this.undoManager.addUndo()
+        this.undoManager.addIRHistory()
     }
 
 

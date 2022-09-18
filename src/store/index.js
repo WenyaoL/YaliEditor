@@ -23,6 +23,7 @@ export default createStore({
   },
   mutations: {
     updateContent(state,payload){
+      console.log("跟新文本内容");
       state.applicationContext.content = payload
     },
     updateTree(state,payload){

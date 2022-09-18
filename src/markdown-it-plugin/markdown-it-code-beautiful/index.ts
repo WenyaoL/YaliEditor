@@ -11,7 +11,7 @@ import {LanguageDescription} from "@codemirror/language"
 import { javascript } from '@codemirror/lang-javascript'
 import SearchSuggestUI from './ui'
 import { v4 as uuidv4 } from 'uuid';
-import {noLineNumberBasicSetup,gutterBasicSetup} from '@/codemirror-plugin/codeStyle/codePlugin'
+import {noLineNumberBasicSetup,gutterBasicSetup,myHistorySetup} from '@/codemirror-plugin/codeStyle/codePlugin'
 import YaLiEditor from "@/YaliEditor/src"
 
 
@@ -115,12 +115,11 @@ class CodemirrorManager{
 
         //初始化默认插件
         this.codemirrorPlugin = this.editor.ir.options.codemirrorPlugins.concat([
-            //minimalSetup,
-            //gutterBasicSetup,
-            //keymap.of([indentWithTab]),
+            
             customTheme,
             EditorView.lineWrapping,
             EditorView.updateListener.of((viewUpdate) => { // 默认自带的监听器
+                
                 
                 if (viewUpdate.docChanged && viewUpdate.state.doc.length === 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","true")
@@ -128,6 +127,7 @@ class CodemirrorManager{
                 }
                 if (viewUpdate.docChanged && viewUpdate.state.doc.length > 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","false")
+                    
                 }
             })
         ])
@@ -387,6 +387,9 @@ class CodemirrorManager{
         //封装扩展，以便修改
         let compartment = new Compartment()
         let languageExtension = null;
+        //
+        let historyExtension = myHistorySetup(this.editor,uuid);
+        
         const languageDescriptions = LanguageDescription.matchLanguageName(languages, lang, true);
 
         //Is it exist languageDescription
@@ -394,7 +397,7 @@ class CodemirrorManager{
         if(!languageDescriptions){
             let startState = EditorState.create({
                 doc: str,
-                extensions:this.codemirrorPlugin.concat([compartment.of([])])
+                extensions:this.codemirrorPlugin.concat([compartment.of([]),historyExtension])
             })
             this.allStateCache.push(new CodemirrorEditorState(uuid,startState,compartment,lang))
             return pre.outerHTML;
@@ -408,7 +411,7 @@ class CodemirrorManager{
             languageDescriptions.load().then(s=>{
                 support = s
                 languageExtension = compartment.of(support)
-                let combineExtension = this.codemirrorPlugin.concat([languageExtension]) 
+                let combineExtension = this.codemirrorPlugin.concat([languageExtension,historyExtension]) 
                 let startState = EditorState.create({
                     doc: str,
                     extensions:combineExtension,
@@ -419,7 +422,7 @@ class CodemirrorManager{
         }else{
             //语言已加载情况
             languageExtension = compartment.of(support)
-            let combineExtension = this.codemirrorPlugin.concat([languageExtension]) 
+            let combineExtension = this.codemirrorPlugin.concat([languageExtension,historyExtension]) 
             let startState = EditorState.create({
                 doc: str,
                 extensions:combineExtension

@@ -56,9 +56,9 @@ class HotkeyProcessor{
         }
         let e = start as HTMLElement
         //来自代码的不处理
-        if(e.classList.contains(Constants.CODEMIRROR_LINE)){
+        /*if(e.classList.contains(Constants.CODEMIRROR_LINE)){
             return
-        }
+        }*/
         this.editor.ir.undo()
     }
     

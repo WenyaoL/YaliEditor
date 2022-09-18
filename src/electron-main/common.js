@@ -99,7 +99,7 @@ export function loadRenderApplicationContext(){
 
 
 export function saveFile(filePath,data){
-
+    console.log("保存路径",filePath);
     fs.writeFile(filePath,data,'utf8',err=>{
         if(err) console.log(err)
     })

@@ -28,7 +28,7 @@ export class DOMObserver{
                 e = e.parentElement
             }
 
-            if(e.className.search(/cm-.*/)>=0){
+            if(e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0){
                 this.lastChange=Date.now()
                 return 
             }

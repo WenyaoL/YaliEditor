@@ -6,6 +6,7 @@ import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 import { Extension } from '@codemirror/state';
+import {myHistory,myHistoryKeymap} from '@/codemirror-plugin/codePlugin/history'
 
 
 /**
@@ -46,6 +47,27 @@ const noLineNumberBasicSetup: Extension = /*@__PURE__*/(() => [
 ])();;
 
 
+const myHistorySetup:(editor: any,uuid:string) => Extension = /*@__PURE__*/((editor,uuid) => [
+    myHistory({
+        editor:editor,
+        uuid:uuid
+    }),
+    keymap.of([
+        ...myHistoryKeymap,
+    ])
+]);
+
+const myMinimalSetup:Extension = /*@__PURE__*/(() => [
+    highlightSpecialChars(),
+
+    drawSelection(),
+    syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+    keymap.of([
+        ...defaultKeymap,
+    ])
+])();
+
+
 export{
-    noLineNumberBasicSetup,gutterBasicSetup
+    noLineNumberBasicSetup,gutterBasicSetup,myMinimalSetup,myHistorySetup
 }

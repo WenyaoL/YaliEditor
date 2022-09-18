@@ -20,7 +20,7 @@ function loadContentListener(store){
         //回传信息
         if(payload){
             console.log('触发另存为');
-            //回传上下文,设置另存路径
+            //回传上下文,设置另存路径(另存为)
             
             event.sender.send('saveFile',{
                 applicationContext:JSON.stringify(applicationContext),
@@ -28,6 +28,11 @@ function loadContentListener(store){
             })
         }else{
             //保存按键
+            if(store.state.editModel == "IR"){
+                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+            }
+            
+
             //回传上下文
             event.sender.send('saveFile',{
                 applicationContext:JSON.stringify(applicationContext),
@@ -46,7 +51,6 @@ function loadContentListener(store){
 
     //window.electronAPI.initFonts初始化字体 数据
     window.electronAPI.initFonts((event, fonts)=>{
-        console.log(fonts);
         store.commit('initFonts',fonts)
     })
 
@@ -65,7 +69,7 @@ function loadContentListener(store){
         doc.setFont('sourcehansans', 'normal');
         doc.setFont('sourcehansans', 'bold');
     
-        console.log(doc.getFontList());
+
         //root.insertAdjacentHTML('afterbegin','<style>*{font-family:  Arial,sans-serif, serif,"sourcehansans";}</style>')
         let el = root.cloneNode(true)
         //给模块赋予字体

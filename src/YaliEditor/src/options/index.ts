@@ -10,9 +10,11 @@ import imgplugin from '@/markdown-it-plugin/markdown-it-image-beautiful'
 import link  from '@/markdown-it-plugin/markdown-it-link-beautiful'
 
 import {basicSetup,minimalSetup} from "codemirror"
-import {noLineNumberBasicSetup,gutterBasicSetup} from '@/codemirror-plugin/codeStyle/codePlugin'
+import {noLineNumberBasicSetup,gutterBasicSetup,myMinimalSetup} from '@/codemirror-plugin/codeStyle/codePlugin'
 import {EditorView, keymap,ViewUpdate} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
+
+
 
 export class EditorOptions {
     public yali: YaLiEditorOptions;
@@ -54,7 +56,7 @@ export class EditorOptions {
                 {plugin: link}
             ],
             codemirrorPlugins:[
-                minimalSetup,
+                myMinimalSetup,
                 //gutterBasicSetup,
                 keymap.of([indentWithTab]),
             ]
