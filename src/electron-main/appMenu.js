@@ -200,6 +200,11 @@ export default {
                                     .webContents
                                     .send('createType',{type:"underline"})
                     }},
+                    {label:'斜体', accelerator:'ctrl+i',click:()=>{
+                        BrowserWindow.getFocusedWindow()
+                                    .webContents
+                                    .send('createType',{type:"italic"})
+                    }},
                     {label:'代码', accelerator:'ctrl+shift+`',click:()=>{
                         BrowserWindow.getFocusedWindow()
                                     .webContents

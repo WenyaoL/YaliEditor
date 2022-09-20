@@ -40,7 +40,10 @@ export function toTypeStr(oldStr,payload){
             break;
         case "deleteline":
             newStr = "~~"+oldStr+"~~"
-            break;      
+            break;
+        case "italic":      
+            newStr = "*"+oldStr+"*"
+            break;
         default:
             newStr=oldStr
     }

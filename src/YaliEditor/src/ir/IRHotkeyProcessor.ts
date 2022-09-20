@@ -33,6 +33,8 @@ class HotkeyProcessor{
             "ctrl+6": this.headingKey,
             "ctrl+z": this.undoKey,
             "ctrl+b": this.blodKey,
+            "ctrl+i": this.italicKey,
+            "ctrl+u": this.underlineKey,
             "ctrl+[": this.reduceIndentKey,
             "ctrl+]": this.addIndentKey,
             "ctrl+shift+k": this.codeblockKey,
@@ -151,7 +153,7 @@ class HotkeyProcessor{
     /**
      * 代码块快捷键
      */
-    codeblockKey(event: KeyboardEvent){
+    codeblockKey(event: KeyboardEvent|null){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
@@ -254,7 +256,7 @@ class HotkeyProcessor{
      * 小代码块快捷键
      * @param event 
      */
-    codelineKey(event: KeyboardEvent){
+    codelineKey(event: KeyboardEvent|null){
         this.blockKey(event,"`","`")
     }
 
@@ -262,17 +264,24 @@ class HotkeyProcessor{
      * 
      * @param event 
      */
-    deletelineKey(event: KeyboardEvent){
+    deletelineKey(event: KeyboardEvent|null){
         this.blockKey(event,"~~","~~")
     }
 
-    blodKey(event: KeyboardEvent){
+    blodKey(event: KeyboardEvent|null){
         this.blockKey(event,"**","**")
         
     }
 
+    underlineKey(event: KeyboardEvent|null){
+        this.blockKey(event,"<u>","</u>")
+    }
 
-    blockKey(event: KeyboardEvent,pre:string,suf:string){
+    italicKey(event: KeyboardEvent|null){
+        this.blockKey(event,"*","*")
+    }
+
+    blockKey(event: KeyboardEvent|null,pre:string,suf:string){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
@@ -389,7 +398,7 @@ class HotkeyProcessor{
      * 有序列表快捷键
      * @param event 
      */
-    listKey(event: KeyboardEvent){
+    listKey(event: KeyboardEvent|null){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
@@ -413,7 +422,7 @@ class HotkeyProcessor{
      * 无序列表快捷键
      * @param event 
      */
-    unlistKey(event: KeyboardEvent){
+    unlistKey(event: KeyboardEvent|null){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer

@@ -1,5 +1,7 @@
 import IR from "../ir";
 
+
+
 /**
  * 转换成IR模式的跟新
  * line type update
@@ -28,6 +30,7 @@ export function updateLineIR(ir:IR,payload:any){
  *      ->  ****
  * abc  ->  '''abc'''
  * abc  ->  `abc`
+ * 代码块，代码，粗体，下划线，斜体，等
  * @param ir 
  * @param payload 
  */
@@ -36,38 +39,40 @@ export function updateBlockIR(ir:IR,payload:any){
     let keyboardEvent:KeyboardEvent;
     switch(payload.type){
         case "blod":
+            ir.hotkeyProcessor.blodKey(null)
             break;
         case "codeblock":
-            keyboardEvent = new KeyboardEvent("keydown",{
-                ctrlKey:true,
-                shiftKey:true,
-                code:"KeyK"
-            })
-            ir.hotkeyProcessor.codeblockKey(keyboardEvent)
+            ir.hotkeyProcessor.codeblockKey(null)
             break;
         case "codeline":
-            keyboardEvent = new KeyboardEvent("keydown",{
-                ctrlKey:true,
-                shiftKey:true,
-                code:"Backquote",
-                key:"~"
-            })
-            ir.hotkeyProcessor.codelineKey(keyboardEvent)
+            ir.hotkeyProcessor.codelineKey(null)
             break;
         case "deleteline":
-            keyboardEvent = new KeyboardEvent("keydown",{
-                ctrlKey:true,
-                shiftKey:true,
-                key:"5"
-            })
-            ir.hotkeyProcessor.deletelineKey(keyboardEvent)
+            ir.hotkeyProcessor.deletelineKey(null)
+            break;
+        case "underline":
+            ir.hotkeyProcessor.underlineKey(null)
+            break;
+        case "italic":
+            ir.hotkeyProcessor.italicKey(null)
             break;
     }
 }
 
-
-export function updateMulLineIR(){
-
+/**
+ * line type update
+ * to add text at the top of lines. such as :
+ * line1      - line1
+ * line2  ->  - line2
+ * line3      - line3
+ * 有序列表，无序列表
+ */
+export function updateMulLineIR(ir:IR,payload:any){
+    if(payload.type == "unlist"){ //无序列表
+        ir.hotkeyProcessor.unlistKey(null)
+    }else if(payload.type == "list"){
+        ir.hotkeyProcessor.listKey(null)
+    }
 }
 
 

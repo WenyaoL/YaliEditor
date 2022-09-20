@@ -6,17 +6,38 @@
 
 </head>
 <body>
-	<h1 id="activiti6_0" md-block="heading">activiti6工作流开发（二）–流程控制</h1>
-	<p md-block="paragraph">
-		<div></div>
-	</p>
+
 
 
 	<div id="COS" contenteditable="true">123</div>
+	<div id="COS2" style="height: 600px;" contenteditable="true">123</div>
 	<script>
 		document.getElementById("COS").addEventListener("keydown",(event)=>{
 			console.log(event);
 		})
+
+		document.getElementById("COS2").addEventListener("dragenter", (event) => {
+  			console.log("拖入");
+			
+		})
+		/*document.getElementById("COS2").addEventListener("dragover", (event) => {
+  			event.preventDefault()
+			//console.log(event.dataTransfer);
+		})*/
+		document.getElementById("COS2").addEventListener("dragleave", (event) => {
+  			console.log("拖出");
+		})
+		document.getElementById("COS2").addEventListener("drop", (event) => {
+  			console.log("放下");
+			console.log(event.dataTransfer.files);
+			event.preventDefault()
+			//console.log(event);
+		})
+
+		document.getElementById("COS2").addEventListener("drag", (event) => {
+  			console.log("dragging");
+		})
+
 	</script>
 
 	<style>

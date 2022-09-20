@@ -12,7 +12,7 @@ import IRUndo from "../undo/IRUndo";
 import TurndownParser from "../../../turndown-plugin";
 import { DOMObserver } from "../state/domobserver";
 import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
-
+import IRDragBinder from '../eventbinder/IRDragBinder'
 
 
 /**
@@ -71,7 +71,7 @@ class IR{
         this.binderList.push(new IRInputBinder(this.editor));
         this.binderList.push(new IRHotkeyBinder(this.editor));
         this.binderList.push(new IRSelectBinder(this.editor));
-
+        this.binderList.push(new IRDragBinder(this.editor))
         this.bindEvent(this.rootElement);
 
         this.observer = new DOMObserver(this.rootElement,this.editor)

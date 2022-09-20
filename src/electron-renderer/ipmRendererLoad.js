@@ -18,6 +18,10 @@ function loadContentListener(store){
     
     //保存文件回传处理
     window.electronAPI.saveFile((event,payload)=>{
+        //IR模式需要提前转换文本
+        if(store.state.editModel == "IR"){
+            store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+        }
         //回传信息
         if(payload){
             console.log('触发另存为');
@@ -29,10 +33,6 @@ function loadContentListener(store){
             })
         }else{
             //保存按键
-            if(store.state.editModel == "IR"){
-                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
-            }
-            
 
             //回传上下文
             event.sender.send('saveFile',{
