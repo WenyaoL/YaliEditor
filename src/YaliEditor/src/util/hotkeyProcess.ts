@@ -32,6 +32,7 @@ export function updateLineIR(ir:IR,payload:any){
  * @param payload 
  */
 export function updateBlockIR(ir:IR,payload:any){
+
     let keyboardEvent:KeyboardEvent;
     switch(payload.type){
         case "blod":
@@ -53,6 +54,25 @@ export function updateBlockIR(ir:IR,payload:any){
             })
             ir.hotkeyProcessor.codelineKey(keyboardEvent)
             break;
-        case "":
+        case "deleteline":
+            keyboardEvent = new KeyboardEvent("keydown",{
+                ctrlKey:true,
+                shiftKey:true,
+                key:"5"
+            })
+            ir.hotkeyProcessor.deletelineKey(keyboardEvent)
+            break;
     }
+}
+
+
+export function updateMulLineIR(){
+
+}
+
+
+export default {
+    updateLineIR,
+    updateBlockIR,
+    updateMulLineIR
 }

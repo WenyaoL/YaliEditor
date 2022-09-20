@@ -193,6 +193,17 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
             }
             let e = start as HTMLElement
 
+            //删除最后的字符
+            if(e.textContent.length == 0 || e.textContent == "\n"){
+                console.log("删除最后字符");
+
+                if(e.parentElement.tagName == "LI"){
+
+                }
+            }
+            
+            
+
             //删除元数据类
             if(e.classList.contains(CONSTANTS.CLASS_MD_META)){
                 //元数据类更改，应该影响内容的展示和标签的实际功能
@@ -316,16 +327,15 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         
         //回车键处理
         if(event.key === "Enter"){
+            
             this.enterKey(event)
             return ;
         }
 
         //删除键处理,回退键
         if(event.key === "Backspace"){
-            //event.preventDefault()
-            //event.stopPropagation()
-            //event.cancelBubble=true
-            this.deleteKey(event)
+            this.editor.ir.deletekeyProcessor.execute(event)
+            //this.deleteKey(event)
             return ;
         }
 

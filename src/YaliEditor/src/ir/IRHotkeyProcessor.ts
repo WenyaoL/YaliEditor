@@ -6,6 +6,8 @@ import { findClosestByAttribute,
     IRfindClosestParagraph,
     IRfindClosestLi, 
     IRfindClosestList} from "../util/findElement";
+
+import { getAllHeading } from '../util/inspectElement';
 import Constants from "../constants";
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
@@ -41,6 +43,7 @@ class HotkeyProcessor{
             "ctrl+shift+5": this.deletelineKey,
             "ctrl+shift+{":this.listKey,
             "ctrl+shift+}":this.unlistKey,
+            "ctrl+shift+t":this.tocKey
         }
     }
 
@@ -206,6 +209,48 @@ class HotkeyProcessor{
     }
 
     /**
+     * 标题生成 markdown-it-toc-beautiful
+     * @param event 
+     */
+    tocKey(event: KeyboardEvent){
+
+        
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        const top = findClosestByTop(start,this.editor.ir.getRootElementClassName())
+        if(!top) return
+        r.collapseBefore(top)
+        const root = this.editor.ir.rootElement
+        
+        //构建toc
+        let res:string[] = []
+        let svg = '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-029747aa=""><path fill="currentColor" d="M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32zm192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32z"></path></svg>'
+        //svg = '<i class="el-icon-delete"></i>'
+        let tip ='<div class="md-toc-tip md-hiden">'+'<span>目录</span><button class="toc-delete" onclick="TOC_DELETE()"><span>'+svg+'</button></span></div>';
+        res.push(tip)
+        
+        res.push("<p>")
+        const headings = getAllHeading(root)
+        for (let index = 0; index < headings.length; index++) {
+            const element = headings[index];
+            let head = '<span class="md-toc-h'+ element.level +' md-toc-item ">' + '<a to-href="'+element.id+'">'+ element.content+'</a></span>'
+            res.push(head)
+        }
+        res.push("</p>")
+
+        let div = document.createElement("div")
+        div.innerHTML = res.join("")
+        div.className = "markdown-it-toc-beautiful"
+        div.setAttribute(Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_TOC)
+        div.contentEditable = "false"
+
+        r.insertNode(div)
+        
+    }
+
+    /**
      * 小代码块快捷键
      * @param event 
      */
@@ -217,7 +262,7 @@ class HotkeyProcessor{
      * 
      * @param event 
      */
-     deletelineKey(event: KeyboardEvent){
+    deletelineKey(event: KeyboardEvent){
         this.blockKey(event,"~~","~~")
     }
 

@@ -1,5 +1,6 @@
 
-import {updateLine,updateBlock,updateMulLine} from '@/codemirror-plugin/codeCommon'
+import {updateLine,updateBlock,updateMulLine,createToc} from '@/codemirror-plugin/codeCommon'
+import {updateLineIR,updateBlockIR,updateMulLineIR} from '@/YaliEditor/src/util/hotkeyProcess' 
 import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
@@ -101,7 +102,7 @@ function loadContentListener(store){
             margin:[10,1000,10,30],
             width:400,
             windowWidth:1200
-        }).save('chinese-html.pdf').then(o=>{
+        }).save('undefine.pdf').then(o=>{
             //回复原来字体
             /*setTimeout(()=>{
                 root.removeChild(root.firstChild)
@@ -160,12 +161,13 @@ function loadContentListener(store){
 
 //---------------------------viewEditor处理-----------------------------------
 function loadViewEditorListener(store){
+    //单行创建，如：h1
     window.electronAPI.createLine((event,payload)=>{
         //标题快捷键信息处理
         //payload.level
         //根据模式进行匹配
         if(store.state.editModel == "IR"){
-
+            updateLineIR(store.state.yaliEditor.ir,payload)
         }else if(store.state.editModel == "SV"){
             updateLine(store.state.viewEditor,payload)
         }else{
@@ -176,10 +178,12 @@ function loadViewEditorListener(store){
 
     })
     
+    //字体创建
     window.electronAPI.createType((event,payload)=>{
+
         //字体快捷键信息处理
         if(store.state.editModel == "IR"){
-            
+            updateBlockIR(store.state.yaliEditor.ir,payload)
         }else if(store.state.editModel == "SV"){
             updateBlock(store.state.viewEditor,payload)
         }else{
@@ -188,27 +192,44 @@ function loadViewEditorListener(store){
         
     })
     
+    //块级创建，如:代码块，字体块等
     window.electronAPI.createBlock((event,payload)=>{
 
         if(store.state.editModel == "IR"){
-            
+            updateBlockIR(store.state.yaliEditor.ir,payload)
         }else if(store.state.editModel == "SV"){
             updateBlock(store.state.viewEditor,payload)
         }else{
             updateBlock(store.state.viewEditor,payload)
         }
     })
-      
+    
+    //多行创建 如,列表
     window.electronAPI.createMulLine((event,payload)=>{
+
+        if(store.state.editModel == "IR"){
+            updateMulLineIR(store.state.yaliEditor.ir,payload)
+        }else if(store.state.editModel == "SV"){
+            updateMulLine(store.state.viewEditor,payload)
+        }else{
+            updateMulLine(store.state.viewEditor,payload)
+        }
+    })
+
+    //创建标题
+    window.electronAPI.createToc(()=>{
 
         if(store.state.editModel == "IR"){
             
         }else if(store.state.editModel == "SV"){
-            updateMulLine(store.state.viewEditor,payload)
+            createToc(store.state.viewEditor)
         }else{
-            updateMulLine(store.state.viewEditor,payload)
+            createToc(store.state.viewEditor)
         }
+
     })
+
+    
 }
 
 

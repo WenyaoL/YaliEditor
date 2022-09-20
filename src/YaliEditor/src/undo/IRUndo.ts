@@ -39,7 +39,7 @@ class IRUndo{
     stackSize = 100;
 
     hasUndo:boolean;
-    //记录最后一次文本
+    //记录最后一次文本(不包含codemirror的代码的文本)
     lastText: string;
     //记录最后一次的光标位置(记录的是在codemirror代码块移除前的位置)
     lastBookMark: any;
@@ -198,10 +198,26 @@ class IRUndo{
      * 1 <- 2(last)
      * 1 <- 2 <- 3(now)
      * 合并成:
-     * 1 <- 3(now)
+     * 1 <- 3(last)
+     * 
+     * 1(last)
+     * 1 <- 2(now)
+     * 强制刷新
+     * 1 <- 2(last)
+     * 
+     * 1 <- 2(codemirrorHistory)
+     * 1 <- 2(codemirrorHistory) <- 3(now)
+     * 强制刷新
+     * 1 <- 2(codemirrorHistory) <- 3(last)
      */
     adjust(){
         if(this.undoStack.length<=0) return
+
+        if(this.undoStack.length == 1){
+            this.addIRHistory()
+            return
+        }
+
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
@@ -215,6 +231,11 @@ class IRUndo{
         
         //获取上一个历史状态（1<-2）
         const lastHistory = this.undoStack.pop()
+        if(lastHistory.type == HistoryType.CodemirrorHistory){
+            this.undoStack.push(lastHistory)
+            this.addIRHistory()
+            return
+        }
         const res = this.dmp.patch_apply(lastHistory.patch,this.lastText)
 
         //当前状态到上上一状态的不同

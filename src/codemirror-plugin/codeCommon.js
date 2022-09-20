@@ -14,17 +14,13 @@ export function updateBlock(editView,payload){
     const state = editView.state
     
     if(state.selection.main.empty){
-        console.log("进入分支一");
         const newStr = toTypeStr('',payload)
-        console.log(newStr)
         editView.dispatch(state.replaceSelection(newStr))
     }else{
-        console.log("进入分支二");
         const from = state.selection.main.from
         const to = state.selection.main.to
         const oldStr = state.sliceDoc(from,to)
         const newStr = toTypeStr(oldStr,payload)
-        console.log(newStr)
         editView.dispatch(state.replaceSelection(newStr))
     }
 }
@@ -101,7 +97,12 @@ export function updateOrderedLine(editView){
     editView.dispatch({changes:{from:lineFrom,to:lineTo,insert:Text.of(arr)}})
 }
 
+export function createToc(editView,payload){
+    const state = editView.state
+    const from = state.selection.main.from
+    const to = state.selection.main.to
+    editView.dispatch({changes:{from:from,to:to,insert:"[toc]"}})
+}
 
 
-
-export default {updateLine,updateBlock,updateMulLine,updateOrderedLine}
+export default {updateLine,updateBlock,updateMulLine,updateOrderedLine,createToc}

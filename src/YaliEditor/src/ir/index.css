@@ -49,8 +49,9 @@
 
 .YaLi-ir code{
     border: 1px solid #e7eaed;
-    color: #00f;
-    background-color: #f7f7f7;
+    border-radius: 3px;
+    color: #e83e8c;
+    background-color: #f6f6f6;
     font-size:large;
 }
 

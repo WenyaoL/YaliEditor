@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     invokeSave:(payload) => ipcRenderer.invoke('saveFile',payload),
     //openURL打开一个url链接
     openURL:(payload) => ipcRenderer.invoke('openURL',payload),
+    //打开帮助文档
+    openHelpDocumentation:()=> ipcRenderer.invoke('openHelpDocumentation'),
 
     //--------------------------------------发送（send）-----------------------------------
     //渲染检查请求加载Fonts
@@ -34,6 +36,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     createBlock: (callback) => ipcRenderer.on('createBlock',callback),
     //渲染进程绑定多行渲染快捷键(多行式快捷键)
     createMulLine: (callback) => ipcRenderer.on('createMulLine',callback),
+    //渲染进程绑定标题生成快捷键(toc)
+    createToc: (callback) => ipcRenderer.on('createToc',callback),
     //文件树创建
     createFileTree: (callback) => ipcRenderer.on('createFileTree',callback),
     //渲染进程监听保存文件（回传上下文）

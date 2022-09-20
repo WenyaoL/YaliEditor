@@ -1,11 +1,10 @@
 <template>
-    <div class="markShow" v-html="render(content)" >
+    <div class="markShow" ref="markShow" v-html="render(content)" >
     </div>
 </template>
 
-<script>
-import {onMounted} from 'vue';
-import MarkdownIt from 'markdown-it';
+<script lang="ts">
+import {onMounted,ref} from 'vue';
 //import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
 // 引入默认样式
 //import 'highlight.js/scss/default.scss'
@@ -21,11 +20,26 @@ export default {
         content: String
     },
     setup(){
+      const markShow =  ref(null)
       const render = (text)=>{
         return md.render(text)
       }
+
+      onMounted(()=>{
+
+        
+        markShow.value.addEventListener("click",(ev: MouseEvent & { target: HTMLElement })=>{
+          ev.preventDefault()
+          if(ev.ctrlKey && ev.target.tagName =="A"){
+            window.electronAPI.openURL({url:ev.target.getAttribute("href")})
+            ev.preventDefault()
+          }
+        })
+      })
+
       return{
-        render
+        render,
+        markShow
       }
     }
 }

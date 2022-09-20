@@ -73,6 +73,7 @@ function load(){
 
 
 
+
     //-------------------------注册处理器 handle-------------------------
     //处理读取文件内容
     ipcMain.handle('readFile',(event,payload)=>{
@@ -117,8 +118,12 @@ function load(){
         shell.openExternal(payload.url)
     })
 
-    
+    ipcMain.handle("openHelpDocumentation",()=>{
+        return common.openFileSync(path.join(__static,"docs/Help.md"))
+    })
 
+
+    
 }
 
 export {load}

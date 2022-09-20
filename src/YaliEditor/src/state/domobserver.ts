@@ -1,4 +1,5 @@
 import { HtmlHTMLAttributes } from "vue";
+import {createParagraph} from '../util/inspectElement'
 import YaLiEditor from "..";
 
 export class DOMObserver{
@@ -21,15 +22,16 @@ export class DOMObserver{
         this.lastChange = Date.now()
 
         this.observer = new MutationObserver(mutations => {
-            
+            if(this.editor.ir.rootElement.childElementCount == 0){
+                this.editor.ir.rootElement.append(createParagraph())
+            }
             let mut = mutations.at(0)
             let e = mut.target as HTMLElement
             if(e.nodeType == 3){
                 e = e.parentElement
             }
-
-            if(e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0){
-                this.lastChange=Date.now()
+            
+            if(e && e.className && (e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0)){
                 return 
             }
 
@@ -68,7 +70,23 @@ export class DOMObserver{
         }
         this.delayTimer = window.setTimeout(()=>{
             this.editor.ir.undoManager.adjust()
+            this.delayTimer = -1;
         },300)
+    }
+
+    adjustNow(){
+        if(this.delayTimer>0){
+            clearTimeout(this.delayTimer)
+            this.editor.ir.undoManager.adjust()
+            this.delayTimer = -1;
+        }
+    }
+
+    forceAdjust(){
+        if(this.delayTimer>0){
+            clearTimeout(this.delayTimer)
+        }
+        this.editor.ir.undoManager.adjust()
     }
 
     flush(){

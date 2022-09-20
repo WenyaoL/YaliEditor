@@ -5,18 +5,34 @@
 
 
 
+
 pre.hljs {
     padding: 4px 2px;
     display: flex;
     position: relative;
     overflow: auto;
     font-size: 13.5px;
+    background-color: rgb(246, 246, 246);
     /*max-height: 210px;*/
-  }
+}
 
 pre.hljs code{
     margin-left: 8px;
-  }
+    background-color: white;
+    border: none;
+    color: black;
+    background-color: rgb(246, 246, 246);
+    font-size: inherit;
+}
+
+code{
+  border: 1px solid #e7eaed;
+  border-radius: 3px;
+  color: #e83e8c;
+  background-color: #f6f6f6;
+  font-size:large;
+}
+
 pre.hljs ul {
     list-style: none;
     padding-left: 0;
@@ -26,8 +42,8 @@ pre.hljs ul {
     text-align: center;
     font-weight: bold;
 
-  }
-  pre.hljs ul li {
+}
+pre.hljs ul li {
     /*list-style: decimal-leading-zero;*/
     position: relative;
     padding-left: 10px;

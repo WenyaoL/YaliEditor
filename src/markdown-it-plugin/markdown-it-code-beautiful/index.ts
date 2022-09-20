@@ -55,7 +55,7 @@ class CodemirrorEditorView{
     //于视图捆绑的选择控件
     public suggestUI:SearchSuggestUI;
 
-    constructor(element:Element,view:EditorView,stateInfo:CodemirrorEditorState){
+    constructor(element?:Element,view?:EditorView,stateInfo?:CodemirrorEditorState){
         this.element = element;
         this.view = view;
         this.stateInfo = stateInfo;
@@ -159,6 +159,10 @@ class CodemirrorManager{
 
             //根据id识别
             const element:Element = elements.namedItem(cache.editor_uuid)
+            if(!element){
+                this.allDisableView.push(new CodemirrorEditorView(null,null,cache))
+                return false
+            }
             
             let view = new EditorView({
                 state: cache.state,

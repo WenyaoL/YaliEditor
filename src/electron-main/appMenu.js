@@ -180,6 +180,11 @@ export default {
                                     .webContents
                                     .send('createMulLine',{type:"quote"})
                     }},
+                    {label:'目录', accelerator:'ctrl+shift+t',click:()=>{
+                        BrowserWindow.getFocusedWindow()
+                                    .webContents
+                                    .send('createToc')
+                    }},
                 ]
             },
             {

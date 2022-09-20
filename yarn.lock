@@ -4685,11 +4685,6 @@
   "resolved" "https://registry.npmmirror.com/clone/-/clone-1.0.4.tgz"
   "version" "1.0.4"
 
-"clone@^2.1.0":
-  "integrity" "sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w=="
-  "resolved" "https://registry.npmmirror.com/clone/-/clone-2.1.2.tgz"
-  "version" "2.1.2"
-
 "codemirror@^6.0.1", "codemirror@6.x":
   "integrity" "sha512-J8j+nZ+CdWmIeFIGXEFbFPtpiYacFMDR8GlHK3IyHQJMCaVRfGx9NT+Hxivv1ckLWPvNdZqndbr/7lVhrf/Svg=="
   "resolved" "https://registry.npmmirror.com/codemirror/-/codemirror-6.0.1.tgz"
@@ -8459,16 +8454,6 @@
   "resolved" "https://registry.npmmirror.com/markdown-it-emoji/-/markdown-it-emoji-2.0.2.tgz"
   "version" "2.0.2"
 
-"markdown-it-footnote@^3.0.3":
-  "integrity" "sha512-YZMSuCGVZAjzKMn+xqIco9d1cLGxbELHZ9do/TSYVzraooV8ypsppKNmUJ0fVH5ljkCInQAtFpm8Rb3eXSrt5w=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-footnote/-/markdown-it-footnote-3.0.3.tgz"
-  "version" "3.0.3"
-
-"markdown-it-ins@^3.0.1":
-  "integrity" "sha512-32SSfZqSzqyAmmQ4SHvhxbFqSzPDqsZgMHDwxqPzp+v+t8RsmqsBZRG+RfRQskJko9PfKC2/oxyOs4Yg/CfiRw=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-ins/-/markdown-it-ins-3.0.1.tgz"
-  "version" "3.0.1"
-
 "markdown-it-mathjax@^2.0.0":
   "integrity" "sha512-Fafv7TnMENccWYTNjMZzV4BzONPxpK9Mknr1iMEK6m7PI5a5UTCOFctPzx7Nhv81fFzYEY8WHDkSu9n43fTV9g=="
   "resolved" "https://registry.npmmirror.com/markdown-it-mathjax/-/markdown-it-mathjax-2.0.0.tgz"
@@ -8481,39 +8466,6 @@
   dependencies:
     "juice" "^8.0.0"
     "mathjax-full" "^3.2.0"
-
-"markdown-it-sub@^1.0.0":
-  "integrity" "sha512-z2Rm/LzEE1wzwTSDrI+FlPEveAAbgdAdPhdWarq/ZGJrGW/uCQbKAnhoCsE4hAbc3SEym26+W2z/VQB0cQiA9Q=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-sub/-/markdown-it-sub-1.0.0.tgz"
-  "version" "1.0.0"
-
-"markdown-it-sup@^1.0.0":
-  "integrity" "sha512-E32m0nV9iyhRR7CrhnzL5msqic7rL1juWre6TQNxsnApg7Uf+F97JOKxUijg5YwXz86lZ0mqfOnutoryyNdntQ=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-sup/-/markdown-it-sup-1.0.0.tgz"
-  "version" "1.0.0"
-
-"markdown-it-toc-and-anchor@^4.2.0":
-  "integrity" "sha512-DusSbKtg8CwZ92ztN7bOojDpP4h0+w7BVOPuA3PHDIaabMsERYpwsazLYSP/UlKedoQjOz21mwlai36TQ04EpA=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-toc-and-anchor/-/markdown-it-toc-and-anchor-4.2.0.tgz"
-  "version" "4.2.0"
-  dependencies:
-    "clone" "^2.1.0"
-    "uslug" "^1.0.4"
-
-"markdown-it-toc-asd@^1.1.5":
-  "integrity" "sha512-wW/qYhw6cVTLUUUIm3pvm1dX69feeUO1eW6T2JKXPT0LJHP6SuDZG++ufJWANAEeSh01lxV4vWnW+6mpdBYPrA=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-toc-asd/-/markdown-it-toc-asd-1.1.5.tgz"
-  "version" "1.1.5"
-
-"markdown-it-toc-gb@^1.1.1":
-  "integrity" "sha512-tzdaF+B9pBEUGJQ6pIFysjGUPpJby3zf3ZiFanTCnsJcWqoOYOSFCvior/+TKYeFXafMSvol1QWPgXyijyB8zg=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-toc-gb/-/markdown-it-toc-gb-1.1.1.tgz"
-  "version" "1.1.1"
-
-"markdown-it-toc@^1.1.0":
-  "integrity" "sha512-75GJ7xGUE/G1goCUkXiAuOk1rGMRVYrCX5sQ4rnJLZiGbUJGdTfUfyWibLA0RpRzKgfpdIncz9Z4WwN84x0OJg=="
-  "resolved" "https://registry.npmmirror.com/markdown-it-toc/-/markdown-it-toc-1.1.0.tgz"
-  "version" "1.1.0"
 
 "markdown-it@*", "markdown-it@^13.0.1":
   "integrity" "sha512-lTlxriVoy2criHP0JKRhO2VDG9c2ypWCsT237eDiLqi09rmbKoUetyGHq2uOIRoRS//kfoJckS0eUzzkDR+k2Q=="
@@ -12232,11 +12184,6 @@
   "resolved" "https://registry.npmmirror.com/universalify/-/universalify-2.0.0.tgz"
   "version" "2.0.0"
 
-"unorm@>= 1.0.0":
-  "integrity" "sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA=="
-  "resolved" "https://registry.npmmirror.com/unorm/-/unorm-1.6.0.tgz"
-  "version" "1.6.0"
-
 "unpipe@~1.0.0", "unpipe@1.0.0":
   "integrity" "sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ=="
   "resolved" "https://registry.npmmirror.com/unpipe/-/unpipe-1.0.0.tgz"
@@ -12337,13 +12284,6 @@
   "integrity" "sha512-aggiKfEEubv3UwRNqTzLInZpAOmKzwdHqEBmW/hBA/mt99eg+b4VrX6i+IRLxU8+WJYfa33rGwRseg4eElUgsQ=="
   "resolved" "https://registry.npmmirror.com/user-home/-/user-home-1.1.1.tgz"
   "version" "1.1.1"
-
-"uslug@^1.0.4":
-  "integrity" "sha512-Jrbpp/NS3TvIGNjfJT1sn3/BCeykoxR8GbNYW5lF6fUscLkbXFwj1b7m4DvIkHm8k3Qr6Co68lbTmoZTMGk/ow=="
-  "resolved" "https://registry.npmmirror.com/uslug/-/uslug-1.0.4.tgz"
-  "version" "1.0.4"
-  dependencies:
-    "unorm" ">= 1.0.0"
 
 "utf-8-validate@^5.0.2", "utf-8-validate@^5.0.9":
   "integrity" "sha512-Yek7dAy0v3Kl0orwMlvi7TPtiCNrdfHNd7Gcc/pLq4BLXqfAmd0J7OWMizUQnTTJsyjKn02mU7anqwfmUP4J8Q=="

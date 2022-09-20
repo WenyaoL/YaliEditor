@@ -12,7 +12,7 @@ import YaliEditor from '@/components/yaliEditor-panel/YaliEditor.vue'
 <style>
 .write{
     font-family:  Arial,"sourcehansans",sans-serif;
-    max-width: 860px;
+    max-width: 888px;
     margin: 0 auto;
     padding: 30px;
     padding-bottom: 100px;

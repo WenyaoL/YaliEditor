@@ -13,7 +13,7 @@
       </el-select>
   </el-form-item>
 
-  <el-form-item label="SV模式下的代码高亮器">
+  <!--<el-form-item label="SV模式下的代码高亮器">
       <el-select v-model="seting.codeHightLight" class="m-2" placeholder="Select" @change="editModelChange">
         <el-option
           v-for="item in codeHightLights"
@@ -21,7 +21,7 @@
           :value="item.value"
         />
       </el-select>
-  </el-form-item>
+  </el-form-item>-->
 
 </el-form>
 
