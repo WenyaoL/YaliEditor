@@ -3,8 +3,8 @@ import { BaseEventBinder } from "../../types";
 import { findClosestByAttribute,
         findClosestByClassName,
         findClosestByTop,
-        findClosestMdBlock,
-        findClosestMdInline,
+        IRfindClosestMdBlock,
+        IRfindClosestMdInline,
         IRfindClosestLi
 } from "../util/findElement";
 import {toKeyText} from "../util/formatText"
@@ -43,10 +43,10 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         r.commonAncestorContainer
         //const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
         //优先处理行级块
-        let e = findClosestMdInline(start)
+        let e = IRfindClosestMdInline(start)
         //如果是链接
         if(e && e.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK){
-            e = findClosestMdBlock(start)
+            e = IRfindClosestMdBlock(start)
             //后半块处理
             r.setEndAfter(e);
             //剪切
@@ -74,10 +74,12 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         }
 
 
-        e = findClosestMdBlock(start)
+        e = IRfindClosestMdBlock(start)
 
         
-        if(e.tagName === "PRE"){
+        if(e.tagName === "PRE" || e.className=="markdown-it-mathjax-beautiful"){
+            console.log("不处理");
+            
             //代码块不处理
             return;
         }
@@ -327,8 +329,8 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         
         //回车键处理
         if(event.key === "Enter"){
-            
-            this.enterKey(event)
+            this.editor.ir.enterkeyProcessor.execute(event)
+            //this.enterKey(event)
             return ;
         }
 

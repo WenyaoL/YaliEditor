@@ -121,8 +121,9 @@ class TurndownParser{
                 node.nodeName === "DIV")
       },
       replacement:function(content, node, options) {
-        if(node.childNodes.length>1){
-          const value = node.children.item(0).textContent
+        if(node.children.length>1){
+          let e = node as HTMLElement
+          const value = e.getElementsByClassName("md-mathblock-input").item(0).textContent
           return '\n$$\n'+
                 value + 
                 '\n$$\n'

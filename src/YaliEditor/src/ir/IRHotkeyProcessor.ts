@@ -2,7 +2,7 @@ import YaLiEditor from '..'
 import { findClosestByAttribute,
     findClosestByClassName,
     findClosestByTop, 
-    findClosestMdBlock, 
+    IRfindClosestMdBlock, 
     IRfindClosestParagraph,
     IRfindClosestLi, 
     IRfindClosestList} from "../util/findElement";
@@ -13,9 +13,10 @@ import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
 import { divide } from 'lodash';
+import { KeyProcessor } from './KeyProcessor';
 
 
-class HotkeyProcessor{
+class HotkeyProcessor implements KeyProcessor{
     //编辑器
     public editor:YaLiEditor;
     //快捷键映射表
@@ -158,7 +159,7 @@ class HotkeyProcessor{
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
-        let e = findClosestMdBlock(start)
+        let e = IRfindClosestMdBlock(start)
         if(!e) return
         let content:DocumentFragment,
             uuid:string;
@@ -286,7 +287,7 @@ class HotkeyProcessor{
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
-        let e = findClosestMdBlock(start)
+        let e = IRfindClosestMdBlock(start)
         if(!e) return
         let content:DocumentFragment;
 
@@ -487,8 +488,8 @@ class HotkeyProcessor{
             return
         }
 
-        let startE = findClosestMdBlock(start)
-        let endE = findClosestMdBlock(end)
+        let startE = IRfindClosestMdBlock(start)
+        let endE = IRfindClosestMdBlock(end)
         
 
         r.setStartBefore(startE)
@@ -503,7 +504,6 @@ class HotkeyProcessor{
 
     execute(event: KeyboardEvent){
         const k = toKeyText(event)
-        console.log(k);
         
         const f:Function =  this.defaultKeyMap[k]
         if(f){

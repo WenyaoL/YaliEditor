@@ -3,8 +3,9 @@ import { findClosestByAttribute, findClosestByClassName, findClosestByTop } from
 import CONSTANTS from "../constants";
 import rangy from "rangy";
 import { strToElement } from "../util/inspectElement";
+import {KeyProcessor} from './KeyProcessor'
 
-class IRDeletekeyProcessor{
+class IRDeletekeyProcessor implements KeyProcessor{
 
     public editor:YaliEditor;
 
@@ -97,6 +98,7 @@ class IRDeletekeyProcessor{
             if(!e){
                 e = findClosestByTop(e,this.editor.ir.getRootElementClassName())
             }
+            if(!e) return
             if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
                 r.selectNode(e)
                 r.setStartBefore(e)
@@ -195,7 +197,7 @@ class IRDeletekeyProcessor{
         //单一的删除
         if(rangy.getSelection().isCollapsed){
             this.deleteCollapsed(event)
-        }else{
+        }else{//范围删除
            this.deleteRang(event)
         }
     }

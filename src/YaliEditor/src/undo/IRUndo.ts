@@ -149,7 +149,6 @@ class IRUndo{
     }
 
     public addCodemirrorHistory(uuid:string){
-        console.log("添加CodemirrorHistory");
         let history = new History()
         history.type = HistoryType.CodemirrorHistory
         history.codemirrorHistory = {id:uuid}
@@ -159,11 +158,17 @@ class IRUndo{
     public addIRHistory(){
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
-        const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
+        let preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
         for (let index = 0; index < preList.length; index++) {
-            const element = preList[index];
-            element.innerHTML = ""
+            const element = preList.item(index);
+            element.innerHTML=""
         }
+        preList = cloneRoot.getElementsByClassName("md-mathblock-input")
+        for (let index = 0; index < preList.length; index++) {
+            const element = preList.item(index);
+            element.innerHTML=""
+        }
+
 
         //当前状态到上一状态的不同
         const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
@@ -227,7 +232,6 @@ class IRUndo{
         }
 
         const nowText = cloneRoot.innerHTML
-        console.log(this.undoStack.length);
         
         //获取上一个历史状态（1<-2）
         const lastHistory = this.undoStack.pop()

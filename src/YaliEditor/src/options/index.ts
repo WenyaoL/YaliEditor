@@ -1,7 +1,7 @@
 import { IROptions, YaLiEditorOptions } from "@/YaliEditor/types";
 import IRInputBinder from "../eventbinder/IRInputBinder";
 
-import mathjax from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
+//import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import list from '@/markdown-it-plugin/markdown-it-list-beautiful'
 import emoji from 'markdown-it-emoji'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
@@ -47,7 +47,7 @@ export class EditorOptions {
 
         const ir:IROptions={
             markdownItPlugins:[
-                {plugin: mathjax},
+                //{plugin: mathjax},
                 {plugin: list},
                 {plugin: emoji},
                 {plugin: toc},

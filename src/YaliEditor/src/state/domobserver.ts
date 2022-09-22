@@ -45,7 +45,7 @@ export class DOMObserver{
             }
             
             
-            console.log("记录");
+            
             this.forceFlush()
             this.lastChange = Date.now()
 

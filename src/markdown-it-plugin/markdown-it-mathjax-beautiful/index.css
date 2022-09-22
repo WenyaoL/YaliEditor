@@ -1,0 +1,13 @@
+.md-hiden .md-mathblock-input{
+    display: block;
+    color: #219;
+}
+
+.md-mathblock-input{
+    background-color: rgb(245, 245, 245);
+}
+
+.markdown-it-mathjax-beautiful.md-expand{
+    box-shadow: 0 1px 1px 0 rgba(0,29,35,0.25);
+    border-top: 1px solid #eef2f2;
+}

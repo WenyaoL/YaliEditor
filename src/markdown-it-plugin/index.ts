@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import mathjax from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
+import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
 import emoji from 'markdown-it-emoji'
 //import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
@@ -17,6 +17,7 @@ import YaLiEditor from '@/YaliEditor/src';
 class MarkdownBeautiful{
   //代码面板管理器,通过MarkdownBeautiful渲染的代码块，将会被codemirrorManager管理
   public codemirrorManager:CodemirrorManager;
+  public mathjax:Mathjax;
   public md:MarkdownIt;
   public editor:YaLiEditor
 
@@ -30,7 +31,9 @@ class MarkdownBeautiful{
       breaks:true,
       highlight: this.codemirrorManager.highlighter
     })
-    
+    this.mathjax = new Mathjax(this.editor)
+    this.md.use(this.mathjax.plugin)
+
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{
       this.md.use(mdp.plugin,mdp.options)
     })

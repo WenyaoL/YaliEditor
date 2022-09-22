@@ -121,12 +121,16 @@ export const findClosest = (element: Node,stopClassName: string)=>{
 }
 
 
-export const findClosestMdBlock = (element: Node)=>{
+export const IRfindClosestMdBlock = (element: Node)=>{
     return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)
 }
 
-export const findClosestMdInline = (element: Node)=>{
+export const IRfindClosestMdInline = (element: Node)=>{
     return findClosestByAttribute(element,Constants.ATTR_MD_INLINE,"",Constants.IR_CLASS_NAME)
+}
+
+export const IRfindClosestTop = (element: Node)=>{
+    return findClosestByTop(element,Constants.IR_CLASS_NAME)
 }
 
 export const IRfindClosestLi = (element: Node)=>{

@@ -3,6 +3,7 @@ import YaLiEditor from "..";
 import { BaseEventBinder, IROptions } from "../../types";
 import HotkeyProcessor from './IRHotkeyProcessor'
 import DeletekeyProcessor from './IRDeletekeyProcessor'
+import IREnterkeyProcessor from './IREnterkeyProcessor'
 
 import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
@@ -41,7 +42,8 @@ class IR{
     public hotkeyProcessor:HotkeyProcessor;
     //删除键处理器
     public deletekeyProcessor:IRDeletekeyProcessor
-
+    //回车键处理器
+    public enterkeyProcessor:IREnterkeyProcessor
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -64,6 +66,7 @@ class IR{
         this.undoManager = new IRUndo(this.editor,"")
         this.hotkeyProcessor = new HotkeyProcessor(this.editor)
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
+        this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
         this.binderList = [];
         //this.binderList.push(new CommonEventBinder());
         //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))

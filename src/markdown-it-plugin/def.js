@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import mathjax from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
+//import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
 import emoji from 'markdown-it-emoji'
 //import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
@@ -17,8 +17,8 @@ var md = new MarkdownIt({
     breaks:true,
     highlight: highlighter
   })
-  //.use(require('markdown-it-mathjax3'))
-  .use(mathjax)
+  .use(require('markdown-it-mathjax3'))
+  //.use(Mathjax)
   .use(emoji)
   //.use(require('markdown-it-abbr'))
   //.use(require('markdown-it-footnote'))

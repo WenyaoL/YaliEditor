@@ -19,6 +19,10 @@ import { liteAdaptor } from "mathjax-full/js/adaptors/liteAdaptor.js";
 import { RegisterHTMLHandler } from "mathjax-full/js/handlers/html.js";
 import { AllPackages } from "mathjax-full/js/input/tex/AllPackages.js";
 import juice from "juice/client";
+import YaLiEditor from "@/YaliEditor/src";
+import { v4 as uuidv4 } from 'uuid';
+import {CodemirrorEditorState,createEditorCompartment} from '../markdown-it-code-beautiful/index'
+import {EditorView} from "@codemirror/view"
 
 interface DocumentOptions {
   InputJax: TeX<unknown, unknown, unknown>;
@@ -29,6 +33,116 @@ interface ConvertOptions {
   display: boolean
 }
 
+interface MathjaxInfo{
+  //codemirror id
+  id:string;
+  //当前文本
+  content?:string;
+}
+
+class Mathjax{
+
+  editor:YaLiEditor
+
+  info:MathjaxInfo[];
+
+  constructor(editor:YaLiEditor){
+    this.editor = editor
+    this.info=[]
+  }
+
+  freshMathjax(id:string,doc:string,documentOptions:DocumentOptions,convertOptions:ConvertOptions){
+    let info = this.info.find(value=>value.id==id)
+    if(!info) return
+
+    info.content = doc
+    const e = document.getElementById(info.id)
+    //获取渲染面板
+    const panle = e.parentElement.nextElementSibling
+
+    panle.innerHTML = renderMath(doc, documentOptions, convertOptions)
+  }
+
+
+
+  plugin = (md: MarkdownIt, options: any)=>{
+    // Default options
+  
+    const documentOptions = {
+      InputJax: new TeX({ packages: AllPackages,  ...options?.tex }),
+      OutputJax: new SVG({ fontCache: 'none',  ...options?.svg })
+    }
+    const convertOptions = {
+      display: false
+    }
+  
+    // set MathJax as the renderer for markdown-it-simplemath
+    md.inline.ruler.after("escape", "math_inline", math_inline);
+    md.block.ruler.after("blockquote", "math_block", math_block, {
+      alt: ["paragraph", "reference", "blockquote", "list"],
+    });
+    md.renderer.rules.math_inline = function (tokens: Token[], idx: number) {
+      convertOptions.display = false;
+      return renderMath(tokens[idx].content, documentOptions, convertOptions)
+    };
+  
+  
+    md.renderer.rules.math_block = function (tokens: Token[], idx: number) {
+      convertOptions.display = true;
+      let res = []
+  
+      res.push('<div class="mathjax-panel">')
+      res.push(renderMath(tokens[idx].content, documentOptions, convertOptions))
+      res.push('</div>')
+      
+  
+      return res.join('')
+    };
+  
+    md.renderer.rules.math_open = (tokens: Token[], idx: number)=>{
+      let res = [],content=''
+      
+      res.push('<div class="markdown-it-mathjax-beautiful" md-block="math">')
+      
+      //hiden value
+      if(tokens[idx+1].type == "math_block"){
+        content = tokens[idx+1].content
+      }
+      let info:MathjaxInfo = {
+        id:uuidv4(),
+        content
+      }
+      this.info.push(info)
+
+      //tip
+      res.push('<div class="md-mathblock-tip md-hiden">')
+      
+      let id = 'id="'+ info.id +'"'
+      res.push('<div class="md-mathblock-input" ' ,id ,'>','</div>')
+      res.push('</div>')
+      
+      let ex = [EditorView.updateListener.of(viewupdate=>{
+        if(viewupdate.docChanged){
+          this.editor.ir.observer.ignore(()=>{
+            this.freshMathjax(info.id,viewupdate.state.doc.toString(),documentOptions,convertOptions)
+          },this)
+        }
+        
+      })]
+      let editorState = CodemirrorEditorState.of(info.id,info.content,this.editor,ex)
+      
+
+      this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
+      return  res.join('')
+    }
+  
+    md.renderer.rules.math_close = function(tokens: Token[], idx: number){
+      return "</div>"
+    }
+  };
+}
+
+
 function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {
   const adaptor = liteAdaptor();
   RegisterHTMLHandler(adaptor);
@@ -38,9 +152,8 @@ function renderMath(content: string, documentOptions: DocumentOptions, convertOp
   );
   const stylesheet = adaptor.outerHTML(documentOptions.OutputJax.styleSheet(mathDocument) as any)
   const mathJax = juice(html+stylesheet)
-  const value = '<span style="display:none">'+content.replace('\n','')+'</span>'
-  const res = '<div class="markdown-it-mathjax-beautiful">' + value + mathJax + '</div>'
-  return res;
+
+  return mathJax;
 }
 
 // Test if potential opening or closing delimieter
@@ -200,7 +313,10 @@ function math_block(
 
   state.line = next + 1;
 
-  const token = state.push("math_block", "math", 0);
+  let token = state.push('math_open', 'math', 1);
+  token.attrPush(["md-block","math"])
+
+  token = state.push("math_block", "math", 0);
   token.block = true;
   token.content =
     (firstLine && firstLine.trim() ? firstLine + "\n" : "") +
@@ -208,34 +324,14 @@ function math_block(
     (lastLine && lastLine.trim() ? lastLine : "");
   token.map = [start, state.line];
   token.markup = "$$";
+
+  token = state.push('math_close', 'math', -1);
+
   return true;
 }
 
-function plugin(md: MarkdownIt, options: any) {
-  // Default options
 
-  const documentOptions = {
-    InputJax: new TeX({ packages: AllPackages,  ...options?.tex }),
-    OutputJax: new SVG({ fontCache: 'none',  ...options?.svg })
-  }
-  const convertOptions = {
-    display: false
-  }
 
-  // set MathJax as the renderer for markdown-it-simplemath
-  md.inline.ruler.after("escape", "math_inline", math_inline);
-  md.block.ruler.after("blockquote", "math_block", math_block, {
-    alt: ["paragraph", "reference", "blockquote", "list"],
-  });
-  md.renderer.rules.math_inline = function (tokens: Token[], idx: number) {
-    convertOptions.display = false;
-    return renderMath(tokens[idx].content, documentOptions, convertOptions)
-  };
-  md.renderer.rules.math_block = function (tokens: Token[], idx: number) {
-    convertOptions.display = true;
-    return renderMath(tokens[idx].content, documentOptions, convertOptions)
-  };
-};
-
-plugin.default = plugin
-export = plugin
+export {
+  Mathjax
+}
