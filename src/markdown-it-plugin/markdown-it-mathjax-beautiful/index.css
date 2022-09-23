@@ -7,7 +7,11 @@
     background-color: rgb(245, 245, 245);
 }
 
-.markdown-it-mathjax-beautiful.md-expand{
+.markdown-it-mathjax-beautiful.md-focus{
     box-shadow: 0 1px 1px 0 rgba(0,29,35,0.25);
     border-top: 1px solid #eef2f2;
+}
+
+.md-focus .md-mathblock-tip{
+    display: block;
 }

@@ -95,6 +95,8 @@ export class DOMObserver{
         this.editor.ir.addUndo()
     }
 
+
+
     /**
      * 强制刷新
      */

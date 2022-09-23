@@ -3,8 +3,20 @@
 @import './markdown-it-image-beautiful/index.css';
 @import './markdown-it-code-beautiful/index.css';
 @import './markdown-it-mathjax-beautiful/index.css';
+@import './markdown-it-table-beautiful/index.scss';
 
+// Required
+//@import "/node_modules/bootstrap/scss/functions";
+//@import "/node_modules/bootstrap/scss/variables";
+//@import "/node_modules/bootstrap/scss/maps";
+//@import "/node_modules/bootstrap/scss/mixins";
+//@import "/node_modules/bootstrap/scss/root";
 
+//$theme-colors: map-remove($theme-colors, "info", "light", "dark");
+
+// Optional
+//@import "/node_modules/bootstrap/scss/tables";
+//@import "/node_modules/bootstrap/scss/bootstrap.scss";
 
 pre.hljs {
     padding: 4px 2px;

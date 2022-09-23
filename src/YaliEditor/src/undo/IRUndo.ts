@@ -156,6 +156,7 @@ class IRUndo{
     }
 
     public addIRHistory(){
+        
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         let preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")

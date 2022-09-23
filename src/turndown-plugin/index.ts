@@ -1,6 +1,6 @@
 import YaLiEditor from '@/YaliEditor/src';
 import TurndownService from 'turndown';
-
+import tableRule from './table'
 
 class TurndownParser{
   turndownService:TurndownService;
@@ -20,6 +20,8 @@ class TurndownParser{
     this.initLinkRule()
     this.initInineCodeRule()
     this.initFontRule()
+    this.turndownService.use(tableRule)
+    //this.initTableRule()
   }
 
   /**
@@ -170,6 +172,17 @@ class TurndownParser{
         }
     })    
 
+  }
+
+  initTableRule(){
+    this.turndownService.addRule('md-table',{
+      filter:['table'],
+        replacement:(content, node, options) =>{
+          let table = node as HTMLElement
+
+            return "这是table"
+        }
+    })
   }
 
   turndown(src:string | TurndownService.Node){

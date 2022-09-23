@@ -14,6 +14,7 @@ import TurndownParser from "../../../turndown-plugin";
 import { DOMObserver } from "../state/domobserver";
 import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
 import IRDragBinder from '../eventbinder/IRDragBinder'
+import IRFocusProcessor from "./IRFocusProcessor";
 
 
 /**
@@ -44,6 +45,9 @@ class IR{
     public deletekeyProcessor:IRDeletekeyProcessor
     //回车键处理器
     public enterkeyProcessor:IREnterkeyProcessor
+    //光标选中处理器
+    public focueProcessor:IRFocusProcessor
+
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -67,6 +71,7 @@ class IR{
         this.hotkeyProcessor = new HotkeyProcessor(this.editor)
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
         this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
+        this.focueProcessor = new IRFocusProcessor(this.editor)
         this.binderList = [];
         //this.binderList.push(new CommonEventBinder());
         //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))

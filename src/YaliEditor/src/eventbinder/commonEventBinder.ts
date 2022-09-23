@@ -10,7 +10,10 @@ class CommonEventBinder implements BaseEventBinder{
     }
     public bindCompositionstartEvent(element: HTMLElement){
         //输入前触发（打拼英时，触发顺序compositionstart compositionend）
-        element.addEventListener("compositionstart", (event: InputEvent) => {
+        element.addEventListener("compositionstart", (event: InputEvent & {target:HTMLElement}) => {
+            
+            if(event.target.classList.contains("cm-content")) return
+
             //上锁，代表在用打字
             this.composingLock = true;
 
@@ -21,7 +24,8 @@ class CommonEventBinder implements BaseEventBinder{
 
     public bindCompositionendEvent(element: HTMLElement){
         //输入后触发
-        element.addEventListener("compositionend", (event: InputEvent) => {
+        element.addEventListener("compositionend", (event: InputEvent & {target:HTMLElement}) => {
+            if(!this.composingLock) return
             //解锁，打字结束
             this.composingLock = false;
 

@@ -8347,6 +8347,11 @@
     "juice" "^8.0.0"
     "mathjax-full" "^3.2.0"
 
+"markdown-it-multimd-table@^4.2.0":
+  "integrity" "sha512-wFpb8TSQ9josQrAlOg1toEAHHSGYQZ4krBKfpejPQ+lq3oudnxCNW4S6gYMcRbkrtrfX/ND2njr4belnKt3fBg=="
+  "resolved" "https://registry.npmmirror.com/markdown-it-multimd-table/-/markdown-it-multimd-table-4.2.0.tgz"
+  "version" "4.2.0"
+
 "markdown-it@^13.0.1":
   "integrity" "sha512-lTlxriVoy2criHP0JKRhO2VDG9c2ypWCsT237eDiLqi09rmbKoUetyGHq2uOIRoRS//kfoJckS0eUzzkDR+k2Q=="
   "resolved" "https://registry.npmmirror.com/markdown-it/-/markdown-it-13.0.1.tgz"
@@ -11876,6 +11881,11 @@
   "integrity" "sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg=="
   "resolved" "https://registry.npmmirror.com/tunnel/-/tunnel-0.0.6.tgz"
   "version" "0.0.6"
+
+"turndown-plugin-gfm@^1.0.2":
+  "integrity" "sha512-vwz9tfvF7XN/jE0dGoBei3FXWuvll78ohzCZQuOb+ZjWrs3a0XhQVomJEb2Qh4VHTPNRO4GPZh0V7VRbiWwkRg=="
+  "resolved" "https://registry.npmmirror.com/turndown-plugin-gfm/-/turndown-plugin-gfm-1.0.2.tgz"
+  "version" "1.0.2"
 
 "turndown@^7.1.1":
   "integrity" "sha512-BEkXaWH7Wh7e9bd2QumhfAXk5g34+6QUmmWx+0q6ThaVOLuLUqsnkq35HQ5SBHSaxjSfSM7US5o4lhJNH7B9MA=="

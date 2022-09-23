@@ -3,6 +3,11 @@
     padding: 0 20px;
 }
 
+
+.markdown-it-toc-beautiful.md-focus .md-toc-tip{
+    display: block;
+}
+
 .md-toc-tip{
     font-weight: 700;
 }
@@ -19,12 +24,9 @@
     cursor: pointer;
 }
 
-.el-icon-delete:before {
-    font-family:element-icons!important;
-    content: "\E611";
-}
 
-h1.md-expand::before{
+
+h1.md-focus::before{
     color: #ddd;
     border: 1px solid;
     border-radius: 3px;
@@ -41,7 +43,7 @@ h1.md-expand::before{
     content: "h1";
 }
 
-h2.md-expand::before{
+h2.md-focus::before{
     color: #ddd;
     border: 1px solid;
     border-radius: 3px;
@@ -58,7 +60,7 @@ h2.md-expand::before{
     content: "h2";
 }
 
-h3.md-expand::before{
+h3.md-focus::before{
     color: #ddd;
     border: 1px solid;
     border-radius: 3px;
@@ -75,7 +77,7 @@ h3.md-expand::before{
     content: "h3";
 }
 
-h4.md-expand::before{
+h4.md-focus::before{
     color: #ddd;
     border: 1px solid;
     border-radius: 3px;
@@ -92,7 +94,7 @@ h4.md-expand::before{
     content: "h4";
 }
 
-h5.md-expand::before{
+h5.md-focus::before{
     color: #ddd;
     border: 1px solid;
     border-radius: 3px;

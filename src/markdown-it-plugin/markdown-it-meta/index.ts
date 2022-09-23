@@ -47,12 +47,19 @@ function paragraphOpen(tokens:Token[], idx:number, options:Object, env:Object, s
   return slf.renderToken(tokens, idx, options);
 }
 
+function blockquoteOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    const token = tokens[idx]
+    token.attrPush(["md-block","blockquote"])
+    return slf.renderToken(tokens, idx, options);
+}
+
 function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.code_inline = codeInline;
     md.renderer.rules.code_block = codeBlock;
     md.renderer.rules.strong_open = strongOpen;
     md.renderer.rules.em_open = emOpen;
     md.renderer.rules.paragraph_open = paragraphOpen;
+    md.renderer.rules.blockquote_open = blockquoteOpen;
 }
 
 export default plugin;

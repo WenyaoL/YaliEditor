@@ -8,7 +8,8 @@ import link  from './markdown-it-link-beautiful'
 import highlighter from './markdown-it-highlight-beautiful'
 //import '@/markdown-it-plugin/markdown-it-toc-beautiful/index.css'
 //import './markdown-it-link-beautiful/index.css'
-import './index.css'
+import './index.scss'
+import table from './markdown-it-table-beautiful'
 
 var md = new MarkdownIt({
     html: true,
@@ -26,6 +27,13 @@ var md = new MarkdownIt({
   .use(toc)
   .use(markdownItMeta)
   .use(link)
+  .use(table,{
+    multiline:  true,
+    rowspan:    false,
+    headerless: true,
+    multibody:  true,
+    aotolabel:  true,
+  })
 
 
 export default md;

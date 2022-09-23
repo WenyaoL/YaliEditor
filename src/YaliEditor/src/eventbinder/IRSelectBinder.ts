@@ -13,8 +13,8 @@ declare global {  //设置全局属性
 class IRSelectBinder implements BaseEventBinder{
 
   //当前被选中的md-inline原生
-    private selectedInlineMdElement = null;
-    private selectedBlockMdElement = null;
+  private selectedInlineMdElement = null;
+  private selectedBlockMdElement = null;
 
     public editor:YaLiEditor;
 
@@ -60,12 +60,18 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
+        
+        let sel = rangy.getSelection()
+        let r = sel.getRangeAt(0)
         this.editor.ir.undoManager.updateBookmark()
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
         }
 
-
+        if(event.target.tagName == "IMG"){
+          r.collapseAfter(event.target.previousElementSibling?.lastElementChild)
+          sel.setSingleRange(r)
+        }
         
         
         const topClassName = this.editor.ir.getRootElementClassName()
@@ -87,7 +93,8 @@ class IRSelectBinder implements BaseEventBinder{
           }
         }
 
-        if(isInline){
+        this.editor.ir.focueProcessor.updateFocusElementByStart(event.target)
+        /*if(isInline){
           const inlineType = e.getAttribute("md-inline")
           
           if(inlineType === "img"){
@@ -99,7 +106,7 @@ class IRSelectBinder implements BaseEventBinder{
           }
         }else{
           this.updateMdElement(e,true)
-        }
+        }*/
 
         //event.preventDefault();
 
