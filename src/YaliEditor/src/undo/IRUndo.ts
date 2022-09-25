@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import {diff_match_patch,patch_obj} from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
@@ -98,6 +102,8 @@ class IRUndo{
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
         rangy.getSelection().moveToBookmark(history.bookMark)
+
+        
     }   
 
     /**
@@ -180,8 +186,9 @@ class IRUndo{
         
         
         //创建历史记录
-        const history = new History(patch,this.lastBookMark)
-
+        //const history = new History(patch,this.lastBookMark)
+        
+        const history = new History(patch,this.editor.ir.focueProcessor.getModifyBeforeBookmark())
 
        //跟新lastText为当前状态
        this.lastText = cloneRoot.innerHTML;
@@ -219,10 +226,10 @@ class IRUndo{
     adjust(){
         if(this.undoStack.length<=0) return
 
-        if(this.undoStack.length == 1){
+        /*if(this.undoStack.length == 1){
             this.addIRHistory()
             return
-        }
+        }*/
 
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
@@ -257,8 +264,9 @@ class IRUndo{
 
         //跟新lastText为当前状态
         this.lastText = nowText;
-        const bookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
-        this.lastBookMark = bookMark;
+        //const bookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+        
+        this.lastBookMark = this.editor.ir.focueProcessor.getModifyBeforeBookmark();
         this.undoStack.push(new History(patch,lastHistory.bookMark))
     }
 

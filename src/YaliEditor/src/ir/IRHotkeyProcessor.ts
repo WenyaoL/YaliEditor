@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaLiEditor from '..'
 import { findClosestByAttribute,
     findClosestByClassName,
@@ -9,7 +13,7 @@ import { findClosestByAttribute,
 
 import { getAllHeading } from '../util/inspectElement';
 import Constants from "../constants";
-import {toKeyText} from "../util/formatText"
+import {toKeyText,createTableStr} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
 import { divide } from 'lodash';
@@ -73,8 +77,8 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     headingKey(event: KeyboardEvent){
-           
-        const r = rangy.getSelection().getRangeAt(0)
+        const sel = this.editor.ir.focueProcessor.sel
+        const r = sel.getRangeAt(0)
         
         const start =  r.startContainer
 
@@ -110,7 +114,7 @@ class HotkeyProcessor implements KeyProcessor{
 
                 r.insertNode(node)
                 r.collapseToPoint(node,1)
-                rangy.getSelection().setSingleRange(r)
+                sel.setSingleRange(r)
                 node.click()
                 return ; 
             }
@@ -125,7 +129,7 @@ class HotkeyProcessor implements KeyProcessor{
             p.innerText = text;
             r.insertNode(p)
             r.collapseToPoint(p,1)
-            rangy.getSelection().setSingleRange(r)
+            sel.setSingleRange(r)
             p.click()
         }else{
             //不存在head
@@ -145,7 +149,7 @@ class HotkeyProcessor implements KeyProcessor{
 
             r.insertNode(node)
             r.collapseToPoint(node,1)
-            rangy.getSelection().setSingleRange(r)
+            sel.setSingleRange(r)
             //rangy.getSelection().collapseToEnd()
             node.click()
         }
@@ -155,7 +159,7 @@ class HotkeyProcessor implements KeyProcessor{
      * 代码块快捷键
      */
     codeblockKey(event: KeyboardEvent|null){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -218,7 +222,7 @@ class HotkeyProcessor implements KeyProcessor{
     tocKey(event: KeyboardEvent){
 
         
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -283,7 +287,7 @@ class HotkeyProcessor implements KeyProcessor{
     }
 
     blockKey(event: KeyboardEvent|null,pre:string,suf:string){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -310,7 +314,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     addIndentKey(event: KeyboardEvent){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -359,7 +363,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     reduceIndentKey(event: KeyboardEvent){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         
@@ -400,7 +404,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     listKey(event: KeyboardEvent|null){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -424,7 +428,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     unlistKey(event: KeyboardEvent|null){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         const end = r.endContainer
@@ -470,7 +474,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     quoteKey(event: KeyboardEvent){
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         const end = r.endContainer
@@ -502,15 +506,61 @@ class HotkeyProcessor implements KeyProcessor{
         
     }
 
+    /**
+     * 
+     * @param row 
+     * @param col 
+     */
+    tableCreate(row:number,col:number){
+        //修改动作前的跟新
+        this.editor.ir.focueProcessor.updateBeforeModify()
+        const sel = this.editor.ir.focueProcessor.sel
+        //sel.moveToBookmark(this.editor.ir.focueProcessor.bookmark)
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        
+        let e = IRfindClosestMdBlock(start)
+        if(!e) return
+
+        if(!r.collapsed) r.deleteContents()
+
+        r.setEndAfter(e)
+        let content = r.extractContents()
+        let format = createTableStr(row,col)
+        let dom = this.editor.ir.renderer.render(format)
+        content.firstElementChild?.insertAdjacentHTML("beforebegin",dom)
+        let th = content.firstElementChild.getElementsByTagName("th")[0]
+        r.collapseAfter(e)
+        r.insertNode(content)
+
+        //光标重新聚焦表格上
+        r.collapseToPoint(th,0)
+
+        sel.setSingleRange(r)
+        
+    }   
+
+
+    /**
+     * 执行
+     * @param event 
+     */
     execute(event: KeyboardEvent){
         const k = toKeyText(event)
         
         const f:Function =  this.defaultKeyMap[k]
         if(f){
+            //修改动作前的跟新
+            this.editor.ir.focueProcessor.updateBeforeModify()
             f.call(this,event)
-            this.editor.ir.undoManager.updateBookmark()
+            //this.editor.ir.undoManager.updateBookmark()
             event.preventDefault()
+            return true
         }
+
+
+        return false
     }
 }
 

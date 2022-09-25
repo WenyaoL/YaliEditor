@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { BrowserWindow, Menu,ipcMain,dialog} from 'electron'
 //import { openFile,openFileDialog,openNewWindow,loadUrl} from './common'
 import common from './common'
@@ -185,6 +189,11 @@ export default {
                                     .webContents
                                     .send('createToc')
                     }},
+                    {label:'创建表格', click:()=>{
+                        BrowserWindow.getFocusedWindow()
+                                    .webContents
+                                    .send('createTable')
+                    }}
                 ]
             },
             {
@@ -220,6 +229,9 @@ export default {
             {
                 label:'关于(A)',
                 submenu:[
+                    {label:'作者',click:()=>{
+                        BrowserWindow.getFocusedWindow().webContents.send("openAuthorDetails")
+                    }},
                     {label:'打开开发者工具',click:()=>{
                         BrowserWindow.getFocusedWindow().webContents.openDevTools()
                     }},

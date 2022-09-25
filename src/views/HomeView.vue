@@ -1,5 +1,7 @@
 <template>
   <div class="common-layout home">
+    <dialog-tip id="dialog-tip" :displayButton="false"/>
+
     <el-container>
       <el-aside width="70px">
         <left-menu />
@@ -12,13 +14,14 @@
 
 <script>
 // @ is an alias to /src
-import LeftMenu from '@/components/menu/LeftMenu.vue'
-
+import LeftMenu from '@/components/menu/LeftMenu.vue';
+import DialogTip from '@/components/dialog-panel/DialogTip.vue';
 import {onMounted} from 'vue'
 export default {
   name: 'HomeView',
   components: {
-    LeftMenu
+    LeftMenu,
+    DialogTip
   },
   setup(){
     onMounted(() => {

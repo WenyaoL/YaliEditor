@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { findClosestByAttribute } from "./findElement";
 import Constants from '../constants'
 
@@ -53,3 +57,5 @@ export function getAllHeading(root:HTMLElement){
 
   return res
 }
+
+

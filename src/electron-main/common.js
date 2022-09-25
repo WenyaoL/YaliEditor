@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import fs from 'fs'
 import path from 'path'
 import { argv } from 'process';

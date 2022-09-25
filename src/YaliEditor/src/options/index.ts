@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { IROptions, YaLiEditorOptions } from "@/YaliEditor/types";
 import IRInputBinder from "../eventbinder/IRInputBinder";
 

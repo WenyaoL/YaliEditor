@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { ipcMain,dialog,BrowserWindow,shell } from "electron";
 
 import common from "./common";

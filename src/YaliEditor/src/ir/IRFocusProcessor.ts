@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { findClosestByAttribute,
     findClosestByClassName,
     findClosestByTop,
@@ -14,7 +18,17 @@ class IRFocusProcessor{
   private selectedInlineMdElement:HTMLElement|null = null;
   private selectedBlockMdElement:HTMLElement|null = null;
 
-  editor:YaLiEditor
+
+  public editor:YaLiEditor
+  public sel:RangySelection
+  //当前位置的bookmark
+  private bookmark:any;
+  private lastBookmark:any;
+
+  //修改操作之前的bookmark
+  private modifyBeforeBookmark:any;
+
+
   constructor(editor:YaLiEditor){
     this.editor = editor
   }
@@ -40,6 +54,35 @@ class IRFocusProcessor{
   updateFocusElement(){
     let sel = rangy.getSelection()
     this.updateFocusElementByStart(sel.getRangeAt(0).startContainer)
+  }
+
+
+  updateBookmark(){
+    this.sel = rangy.getSelection()
+    this.lastBookmark = this.bookmark
+    this.bookmark = this.sel.getBookmark(this.editor.ir.rootElement) 
+
+  }
+
+  updateBeforeModify(){
+    
+    this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement) 
+  }
+
+  updateAfterModify(){
+
+  }
+
+  getBookmark(){
+    return this.bookmark
+  }
+
+  getLastBookmark(){
+    return this.lastBookmark
+  }
+
+  getModifyBeforeBookmark(){
+    return this.modifyBeforeBookmark
   }
 }
 

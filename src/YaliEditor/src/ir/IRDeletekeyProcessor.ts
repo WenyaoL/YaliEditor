@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaliEditor from '../index'
 import { findClosestByAttribute, 
     findClosestByClassName, 
@@ -239,6 +243,8 @@ class IRDeletekeyProcessor implements KeyProcessor{
 
 
     public execute(event: KeyboardEvent & { target: HTMLElement }){
+        //修改动作前的跟新
+        this.editor.ir.focueProcessor.updateBeforeModify()
         this.deleteKey(event)
     }
 

@@ -150,12 +150,18 @@ function loadContentListener(store){
     })
 
 
+    window.electronAPI.openAuthorDetails(()=>{
+        document.getElementById("dialog-author-details-button").click()
+    })
+
     //测试
     window.electronAPI.test((event,payload)=>{
         console.log('测试，接收数据==',payload);
     })
 
 }
+
+
 
 
 
@@ -229,7 +235,10 @@ function loadViewEditorListener(store){
 
     })
 
-    
+    //创建表格
+    window.electronAPI.createTable(()=>{
+        document.getElementById("dialog-form-button").click()
+    })
 }
 
 

@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { BaseEventBinder } from "@/YaliEditor/types";
 import YaLiEditor from "..";
 
@@ -13,7 +17,7 @@ class CommonEventBinder implements BaseEventBinder{
         element.addEventListener("compositionstart", (event: InputEvent & {target:HTMLElement}) => {
             
             if(event.target.classList.contains("cm-content")) return
-
+            this.editor.ir.focueProcessor.updateBeforeModify()
             //上锁，代表在用打字
             this.composingLock = true;
 

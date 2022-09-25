@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import {findClosestByAttribute} from '../util/findElement'
 import rangy from 'rangy'
 import { BaseEventBinder } from '../../types';
@@ -13,6 +17,8 @@ class IRInputBinder implements BaseEventBinder{
 
     bindInputEvent(element: HTMLElement){
         element.addEventListener("input",(event: InputEvent) => {
+            this.editor.ir.focueProcessor.updateBookmark()
+
             if(event.inputType==="deleteContentBackward"){
                 return;
             }
@@ -46,13 +52,20 @@ class IRInputBinder implements BaseEventBinder{
 
             //查看输入是否能符合语法，生成html块
 
-            //添加undo
+            
         })
     }
 
+    bindBeforeInputEvent(element: HTMLElement){
+        element.addEventListener('beforeinput',(event: InputEvent) => {
+            if(event.isComposing) return
+            this.editor.ir.focueProcessor.updateBeforeModify()
+        })
+    }
 
     bindEvent(element: HTMLElement): void {
         this.bindInputEvent(element);
+        this.bindBeforeInputEvent(element);
     }
 
 }

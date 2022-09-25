@@ -1,3 +1,9 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
+
+
 import MarkdownBeautiful from "../../../markdown-it-plugin";
 import YaLiEditor from "..";
 import { BaseEventBinder, IROptions } from "../../types";
@@ -16,7 +22,7 @@ import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
 import IRDragBinder from '../eventbinder/IRDragBinder'
 import IRFocusProcessor from "./IRFocusProcessor";
 
-
+import rangy from "rangy";
 /**
  * IR模式下的控制面板
  */
@@ -83,6 +89,8 @@ class IR{
         this.bindEvent(this.rootElement);
 
         this.observer = new DOMObserver(this.rootElement,this.editor)
+
+        
     }
 
     public undo(){
@@ -137,7 +145,9 @@ class IR{
         this.renderer.initEditorView(this.rootElement)
         setTimeout(()=>{
             this.observer.start()
-        })
+            this.focus()
+            
+        },1000)
     }
 
     /**
@@ -154,6 +164,15 @@ class IR{
     public reRenderElement(element:Element) {
         let turndown = this.parser.turndown(element.outerHTML)
         return this.renderer.render(turndown)
+    }
+
+    public focus(){
+        let e = this.rootElement.firstElementChild as HTMLElement
+        window.getSelection().collapse(e,0)
+        document.getSelection().collapse(e,0)
+        rangy.getSelection().refresh()
+        e.focus()
+        
     }
 }
 

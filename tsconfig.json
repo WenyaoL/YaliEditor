@@ -26,6 +26,6 @@
       //"src/main.ts",
     ],
     "files": [
-      "./shims-vue.d.ts"
+      "./src/shims-vue.d.ts"
     ]
 }

@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { KeyProcessor } from "./KeyProcessor";
 import Constants from "../constants";
 import { findClosestByAttribute,
@@ -20,15 +24,18 @@ class IREnterkeyProcessor implements KeyProcessor{
     }
 
     isNotHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
+        //光标是否在公式块里面
         if(block && block.tagName === "PRE") return true
         
+        //光标是否在math块里面
         if(top && top.classList.contains("markdown-it-mathjax-beautiful")) return true;
-        
+
+
     }
 
     inlineHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
         let e = inline;
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
 
         //如果是链接
@@ -65,7 +72,7 @@ class IREnterkeyProcessor implements KeyProcessor{
 
     blockHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
         let e = block;
-        const sel = rangy.getSelection()
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
 
         //光标是否聚合（坍塌）
@@ -90,6 +97,13 @@ class IREnterkeyProcessor implements KeyProcessor{
             
             return true
         }
+
+        //光标是否在table表格里面
+        if(block?.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TABLE){ 
+            return true
+        }
+
+
 
         //是否在一般标签的头部
         if(r.endOffset === 0){
@@ -125,7 +139,10 @@ class IREnterkeyProcessor implements KeyProcessor{
 
 
     execute(event: KeyboardEvent) {
-        const sel = rangy.getSelection()
+        //修改动作前的跟新
+        this.editor.ir.focueProcessor.updateBeforeModify()
+
+        const sel = this.editor.ir.focueProcessor.sel
         const r = sel.getRangeAt(0).cloneRange()
         let start =  r.startContainer
         let inline = IRfindClosestMdInline(start)

@@ -93,10 +93,6 @@ function image(tokens:Token[], idx:number, options:Object, env:Object, slf: Rend
 function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.image = image
     md.renderer.rules.html_block = htmlBlock
-    document["markdown_it_image_beautiful_func"] = function(){
-      console.log("测试");
-      
-    }
     
     //md.block.ruler.disable("html_block")
 }

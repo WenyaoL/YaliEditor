@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 const {contextBridge,ipcRenderer} = require('electron')
 
 console.log('加载预加载脚本');
@@ -38,6 +42,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     createMulLine: (callback) => ipcRenderer.on('createMulLine',callback),
     //渲染进程绑定标题生成快捷键(toc)
     createToc: (callback) => ipcRenderer.on('createToc',callback),
+    //渲染进程创建表格(Table)
+    createTable: (callback) => ipcRenderer.on('createTable',callback),
+    
     //文件树创建
     createFileTree: (callback) => ipcRenderer.on('createFileTree',callback),
     //渲染进程监听保存文件（回传上下文）
@@ -52,6 +59,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     exportIMG:(callback) => ipcRenderer.on('exportIMG',callback),
     //监听导出HTML
     exportHTML:(callback) => ipcRenderer.on('exportHTML',callback),
+
+    //开口作者详情窗口
+    openAuthorDetails:(callback) => ipcRenderer.on('openAuthorDetails',callback),
 
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),

@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { YaLiEditorOptions } from '../types';
 import {_YALI_VERSION} from './constants'
 import IR from './ir';
@@ -37,13 +41,16 @@ class YaLiEditor {
 
     public render(src:string){    
         this.ir.load(src)
+        
     }
 
     public getMarkdownText(){
         return this.ir.getMarkdown()
     }
 
-
+    public focus(){
+        this.ir.focus()
+    }
     
 }
 

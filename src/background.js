@@ -44,6 +44,7 @@ async function createWindow() {
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
+    //win.loadURL(path.join(__static,"index.html"))
     win.loadURL('app://./index.html')
     //win.loadURL('app://./home')
   }

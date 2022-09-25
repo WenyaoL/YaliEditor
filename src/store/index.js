@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { createStore } from 'vuex'
 import {isEmpty} from '@/utils/common'
 export default createStore({

@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import {HighlightStyle} from "@codemirror/language"
 import {tags} from "@lezer/highlight"
 

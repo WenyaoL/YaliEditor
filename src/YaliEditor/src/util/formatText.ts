@@ -1,4 +1,7 @@
-
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 
 export const toImgText = (info:string,src:string)=>{
     "![" + info +"](" + src + ")"
@@ -36,3 +39,22 @@ export function toKeyText(event: KeyboardEvent){
 
     return strs.join("+")
 }
+
+export function createTableStr(row:number,col:number){
+    let res:string[] = []
+    row = row+1
+
+    
+    for (let i = 0; i<row; i++) {
+        let str = '|      '
+        if(i==1) str = '| ---- '
+        
+        for (let j = 0; j < col; j++) {
+            res.push(str)
+        }
+        res.push('|\n')
+    }
+    return res.join('')
+    
+    
+  }

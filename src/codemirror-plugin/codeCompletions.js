@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import {CompletionContext} from "@codemirror/autocomplete"
 
 /**

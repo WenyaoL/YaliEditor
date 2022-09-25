@@ -1,8 +1,11 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
 import { findClosestByAttribute } from "../util/findElement";
 import rangy from "rangy";
-import log from "../util/loging";
 
 declare global {  //设置全局属性
   interface Window {  //window对象属性
@@ -27,7 +30,7 @@ class IRSelectBinder implements BaseEventBinder{
      * @param e 
      * @returns 
      */
-    updateMdElement(e: HTMLElement,isBlock:boolean = false){
+    /*updateMdElement(e: HTMLElement,isBlock:boolean = false){
         if(isBlock){
           if(this.selectedBlockMdElement !== null){
             this.selectedBlockMdElement.classList.remove("md-expand")
@@ -44,7 +47,7 @@ class IRSelectBinder implements BaseEventBinder{
         this.selectedInlineMdElement = e;
         this.selectedInlineMdElement.classList.add("md-expand")
         return ;
-    }
+    }*/
 
     ctrlKeyClick(event: MouseEvent & { target: HTMLElement }){
       const topClassName = this.editor.ir.getRootElementClassName()
@@ -60,8 +63,8 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-        
-        let sel = rangy.getSelection()
+        this.editor.ir.focueProcessor.updateBookmark()
+        let sel = this.editor.ir.focueProcessor.sel
         let r = sel.getRangeAt(0)
         this.editor.ir.undoManager.updateBookmark()
         if(event.ctrlKey){
@@ -94,53 +97,11 @@ class IRSelectBinder implements BaseEventBinder{
         }
 
         this.editor.ir.focueProcessor.updateFocusElementByStart(event.target)
-        /*if(isInline){
-          const inlineType = e.getAttribute("md-inline")
-          
-          if(inlineType === "img"){
-            this.updateMdElement(e)
-          }
-
-          if(inlineType === "link"){
-            this.updateMdElement(e)
-          }
-        }else{
-          this.updateMdElement(e,true)
-        }*/
-
-        //event.preventDefault();
 
         return true;
       })
     }
 
-    /*bindSelectstartEvent(element: HTMLElement){
-        element.addEventListener("selectstart", (event: Event & { target: HTMLElement }) => {
-
-            
-            const topClassName = this.editor.ir.getRootElementClassName()
-            const r = rangy.getSelection().getRangeAt(0)
-            const start =  r.startContainer
-            
-            
-            let isInline = true;
-            let e = findClosestByAttribute(start,"md-inline","",topClassName)
-            if(!e){
-              e = findClosestByAttribute(start,"md-block","",topClassName)
-              isInline = false;
-            }
-            
-            if(isInline){
-              const inlineType = e.getAttribute("md-inline")
-              
-              if(inlineType === "link"){
-                this.updateMdElement(e)
-              }
-            }
-            
-          },false)
-
-    }*/
 
     bindEvent(element: HTMLElement): void {
 

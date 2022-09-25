@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { createRouter, createWebHistory } from 'vue-router'
 
 import FileContentView from '../views/FileContentView'

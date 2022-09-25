@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
 import { findClosestByAttribute,
@@ -10,7 +14,7 @@ import { findClosestByAttribute,
 import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
-import log from "../util/loging";
+
 import CommonEventBinder from "./commonEventBinder";
 import { strToElement } from "../util/inspectElement";
 
@@ -27,279 +31,6 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         super(editor)
     }
 
-
-
-
-    /**
-     * 回车键处理
-     * @param event 
-     * @returns 
-     */
-
-    enterKey(event: KeyboardEvent & { target: HTMLElement }){
-        const sel = rangy.getSelection()
-        const r = sel.getRangeAt(0)
-        let start =  r.startContainer
-        r.commonAncestorContainer
-        //const e = findClosestByTop(start,this.editor.ir.getRootElementClassName())
-        //优先处理行级块
-        let e = IRfindClosestMdInline(start)
-        //如果是链接
-        if(e && e.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK){
-            e = IRfindClosestMdBlock(start)
-            //后半块处理
-            r.setEndAfter(e);
-            //剪切
-            let content = r.extractContents()
-            //重新渲染
-            let link = this.editor.ir.reRenderElement(content.firstElementChild)
-            content.replaceChildren(strToElement(link))
-            r.collapseAfter(e);
-            r.insertNode(content);
-            r.collapseToPoint(e.nextElementSibling,0)
-            //给光标打标志
-            const bookMark = sel.getBookmark(e.nextElementSibling)
-
-            //前半块处理
-            r.selectNode(e)
-            //剪切
-            content = r.extractContents()
-            //重新渲染
-            link = this.editor.ir.reRenderElement(content.firstElementChild)
-            content.replaceChildren(strToElement(link))
-            r.insertNode(content);
-            sel.moveToBookmark(bookMark)
-            event.preventDefault()
-            return
-        }
-
-
-        e = IRfindClosestMdBlock(start)
-
-        
-        if(e.tagName === "PRE" || e.className=="markdown-it-mathjax-beautiful"){
-            console.log("不处理");
-            
-            //代码块不处理
-            return;
-        }
-        //光标是否聚合（坍塌）
-        if(!r.collapsed) r.deleteContents()
-
-        //光标是否在li上
-        let li = IRfindClosestLi(e)
-        if(li) {
-            e = li;
-            r.setEndAfter(e);
-            //剪切
-            let content = r.extractContents()
-            //剪切导致li空缺
-            if(e.tagName === "LI" && e.childElementCount===0){
-                //插入P标签
-                e.insertAdjacentHTML("beforeend",'<p md-block="paragraph"></p>')
-            }
-            r.collapseAfter(e);
-            r.insertNode(content);
-            r.collapseToPoint(e.nextElementSibling,0)
-            sel.setSingleRange(r);
-            event.preventDefault()
-            return
-        }
-        
-        //光标在标签上
-        //if(e.getAttribute(CONSTANTS.ATTR_MD_BLOCK) === )
-        //光标在图片上
-
-        //是否在一般标签的头部
-        if(r.endOffset === 0){
-            r.collapseBefore(e)
-            const p = document.createElement("p")
-            p.setAttribute("md-block","paragraph")
-            p.innerHTML = "<br>"
-            r.insertNode(p)
-            event.preventDefault()
-            return
-        }
-
-
-        r.setEndAfter(e);
-        //剪切
-        let content = r.extractContents()
-        //剪切出的长度为0，证明在尾部
-        if(content.textContent.length ===0){
-            r.collapseAfter(e)
-            const p = document.createElement("p")
-            p.innerHTML = "<br>"
-            p.setAttribute("md-block","paragraph")
-            r.insertNode(p)
-            //光标选择聚焦新元素
-            rangy.getSelection().collapse(p,0)
-            event.preventDefault()
-            return
-        }
-
-        let block = content.children.item(0)
-        if(block.textContent.length===0){
-            block.innerHTML = "<br>"
-        }
-        r.collapseAfter(e);
-        r.insertNode(content);
-        r.collapseToPoint(e.nextElementSibling,0)
-        sel.setSingleRange(r);
-        event.preventDefault()
-    }
-
-    /**
-     * 重新渲染某一节点
-     */
-    renderNode(element:HTMLElement,r:RangyRange){
-        if(!element) return false;
-        const turndown = this.editor.ir.parser.turndown(element.outerHTML)
-        const res = this.editor.ir.renderer.render(turndown)
-        if(!res) return false;
-        //临时div
-        const div = document.createElement("div")
-        div.innerHTML = res;
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-            //翻译出的是MD_INLINE块
-            //删除原本整个MD_INLINE块
-            r.selectNode(element)
-            r.deleteContents()
-            //在插入
-            r.insertNode(div.firstChild)
-        }
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_BLOCK)){
-            //翻译出的是MD_BLOCK块
-            //删除原本整个MD_INLINE块
-            r.selectNode(element)
-            r.deleteContents()
-            //在插入文本节点
-            r.insertNode(document.createTextNode(div.innerText))
-        }
-        return true;
-    }
-
-    /**
-     * 删除键处理
-     * @param event 
-     */
-    deleteKey(event: KeyboardEvent & { target: HTMLElement }){
-        const r = rangy.getSelection().getRangeAt(0)
-        let start = r.startContainer
-        let end =  r.endContainer
-        //单一的删除
-        if(rangy.getSelection().isCollapsed){
-            this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
-            if(start.nodeType === 3){
-                start = start.parentElement;
-            }
-            let e = start as HTMLElement
-
-            //删除最后的字符
-            if(e.textContent.length == 0 || e.textContent == "\n"){
-                console.log("删除最后字符");
-
-                if(e.parentElement.tagName == "LI"){
-
-                }
-            }
-            
-            
-
-            //删除元数据类
-            if(e.classList.contains(CONSTANTS.CLASS_MD_META)){
-                //元数据类更改，应该影响内容的展示和标签的实际功能
-                return;
-            }
-
-            //删除隐藏类
-            if(e.classList.contains(CONSTANTS.CLASS_MD_HIDEN)){
-                //寻找行级模块
-                e = findClosestByAttribute(e,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
-                //寻找块级模块
-                if(!e){
-                    e = findClosestByAttribute(e,CONSTANTS.ATTR_MD_BLOCK,"",this.editor.ir.getRootElementClassName())
-                }
-                //选择最顶层元素
-                if(!e){
-                    e = findClosestByTop(e,this.editor.ir.getRootElementClassName())
-                }
-                if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-                    r.selectNode(e)
-                    r.setStartBefore(e)
-                    r.setEndAfter(e)
-
-                    rangy.getSelection().setSingleRange(r)
-                    //rangy.getSelection().deleteFromDocument();
-                    //log("选择行级模块",rangy.getSelection().getRangeAt(0).startContainer,this.editor.options.options.isTestModel)
-                    event.preventDefault()
-                }
-                return;
-            }
-
-            //删除代码
-            if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
-                //来自代码块的操作，获取到的是已经删除后的代码
-                e = findClosestByClassName(e,CONSTANTS.CODEMIRROR_EDITOR,this.editor.ir.getRootElementClassName())
-                if(e.getAttribute("is-empty") == "true"){
-                    /*if(e.innerText.length==1 && e.innerText == "\n"){}*/
-                    if(e.hasAttribute("ready-destroy")){
-                        const parent = e.parentElement
-                        this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
-                        r.setStartBefore(parent)
-                        rangy.getSelection().setSingleRange(r)
-                        parent.remove()
-                        
-                        event.preventDefault()
-                    }
-                    e.setAttribute("ready-destroy","1")
-                }
-                return;
-            }
-
-            return ;
-        }else{
-            event.preventDefault()
-            //删除一个节点的
-            if(r.getNodes().length==1){
-                r.deleteContents()
-                //this.editor.ir.addUndo()
-            }
-
-            //删除多个节点的
-            if(r.getNodes().length>1){
-                let startElement = findClosestByAttribute(start,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
-                let endElement = findClosestByAttribute(end,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
-                let startOffset = r.startOffset
-                //相同的情况
-                if(startElement === endElement){
-                    //删除内容
-                    r.deleteContents()
-                    if(!this.renderNode(startElement,r)){
-                        //this.editor.ir.addUndo()
-                        return;
-                    }
-                    r.collapseToPoint(r.startContainer.firstChild,startOffset)
-                    rangy.getSelection().setSingleRange(r)
-                }else{
-                    //起始和结束容器不一样的情况
-                    //删除内容
-                    r.deleteContents()
-
-                    //重新渲染起始容器
-                    this.renderNode(startElement,r)
-
-                    r.setEnd(endElement,0)
-                    //重新渲染结束容器
-                    this.renderNode(endElement,r)
-                }
-                //this.editor.ir.addUndo()
-                return
-            }
-
-            return;
-        }
-    }
 
     /**
      * 是否为目标键
@@ -330,20 +61,24 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         //回车键处理
         if(event.key === "Enter"){
             this.editor.ir.enterkeyProcessor.execute(event)
-            //this.enterKey(event)
+            this.editor.ir.focueProcessor.updateBookmark()
             return ;
         }
 
         //删除键处理,回退键
         if(event.key === "Backspace"){
             this.editor.ir.deletekeyProcessor.execute(event)
-            //this.deleteKey(event)
+            this.editor.ir.focueProcessor.updateBookmark()
             return ;
         }
 
         //快捷键处理
+        if(this.editor.ir.hotkeyProcessor.execute(event)){
+            this.editor.ir.focueProcessor.updateBookmark()
+            return ;
+        }
 
-        this.editor.ir.hotkeyProcessor.execute(event)
+        
       },true)
     
     }

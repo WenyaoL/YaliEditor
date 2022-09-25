@@ -1,3 +1,8 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
+
 import hljs from 'highlight.js';
 
 // 引入默认样式

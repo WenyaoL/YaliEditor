@@ -1,4 +1,7 @@
-
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
 import {strToElement} from '../util/inspectElement'

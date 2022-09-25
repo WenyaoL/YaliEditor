@@ -1,3 +1,8 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
+
 export const _YALI_VERSION : string =  "YaLier_1.0.0"
 
 
@@ -7,6 +12,7 @@ export const CLASS_MD_META : string = "md-meta"
 export const ATTR_MD_BLOCK : string = "md-block"
 export const ATTR_MD_BLOCK_PARAGRAPH : string = "paragraph" 
 export const ATTR_MD_BLOCK_TOC:string = "toc"
+export const ATTR_MD_BLOCK_TABLE : string = "table" 
 
 export const ATTR_MD_INLINE : string = "md-inline"
 export const ATTR_MD_INLINE_IMG : string = "img"
@@ -26,6 +32,7 @@ export default {
     ATTR_MD_BLOCK,
     ATTR_MD_BLOCK_PARAGRAPH,
     ATTR_MD_BLOCK_TOC,
+    ATTR_MD_BLOCK_TABLE,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

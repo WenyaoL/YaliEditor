@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import { HtmlHTMLAttributes } from "vue";
 import {createParagraph} from '../util/inspectElement'
 import YaLiEditor from "..";

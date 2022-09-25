@@ -1,3 +1,7 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
 import YaLiEditor from '@/YaliEditor/src';
 import TurndownService from 'turndown';
 import tableRule from './table'
