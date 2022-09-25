@@ -42,6 +42,7 @@ body{
   /*text-align: center;*/
   color: #2c3e50;
   height: 100%;
+  line-height: 1.42857143;
 }
 
 ::-webkit-scrollbar
