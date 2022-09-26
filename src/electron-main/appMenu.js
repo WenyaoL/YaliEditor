@@ -51,7 +51,8 @@ export default {
                         click: ()=>{
                             const select =common.openFileDirDialogSync()
                             if(select != undefined){
-                                const tree = common.openFileTreeSync(select[0])
+                                let tree = common.openFileTreeSync(select[0],8)
+                                tree = common.filterFileTree(tree)
                                 BrowserWindow.getFocusedWindow().webContents.send('createFileTree',{tree:tree})
                             }
                         }

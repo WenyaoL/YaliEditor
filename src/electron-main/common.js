@@ -174,23 +174,25 @@ export function verifyFile(fileName){
     return flag
 }
 
-export function openFileTreeSync(dirPath){
+export function openFileTreeSync(dirPath,deep){
 
+    if(deep==0) return []
+    
     return fs.readdirSync(dirPath).map(fileName => {
         const filePath = path.join(dirPath, fileName)
         if(isFile(filePath)){
             return {name:fileName,path:filePath}
         }else{
-            return {name:fileName,path:filePath,child:openFileTreeSync(filePath)}
+            return {name:fileName,path:filePath,child:openFileTreeSync(filePath,deep-1)}
         }
     })
 }
 
 export function filterFileTree(tree){
-    tree.filter(item=>{
+    return tree.filter(item=>{
         //文件夹向下递归
-        if(item.child != undefined){
-            filterFileTree(item.child)
+        if(item.child && item.child.length!=0){
+            item.child = filterFileTree(item.child)
             return true
         }
         //保留支持文件

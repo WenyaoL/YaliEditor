@@ -302,10 +302,17 @@ class HotkeyProcessor implements KeyProcessor{
             const res = this.editor.ir.renderer.render(str)
             const div = document.createElement("div")
             div.innerHTML = res
+            let font = div.firstElementChild.firstElementChild
             
-            content.replaceChildren(div.firstElementChild.firstElementChild)
-            r.insertNode(content)
+            r.insertNode(font)
+            r.collapseToPoint(font,1)
+
             sel.setSingleRange(r);
+            if(e.lastChild.nodeType != 3){
+                let n = document.createTextNode("")//空白符\u200c
+                e.append(n)
+            }
+            this.editor.ir.focueProcessor.updateFocusElement()
         }
     }
 
@@ -556,6 +563,7 @@ class HotkeyProcessor implements KeyProcessor{
             f.call(this,event)
             //this.editor.ir.undoManager.updateBookmark()
             event.preventDefault()
+            this.editor.ir.focueProcessor.updateFocusElement()
             return true
         }
 

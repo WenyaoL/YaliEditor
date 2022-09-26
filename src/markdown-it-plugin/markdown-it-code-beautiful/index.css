@@ -18,9 +18,9 @@ pre.markdown-it-code-beautiful{
   box-shadow: 0 1px 1px 0 rgba(0,28,36,0.33);
   border-top: 1px solid #eef2f2;
   width: 140px;
-  height: 20px;
+
   max-width: 140px;
-  max-height: 20px;
+  max-height: 25px;
   padding-left: 20px;
   padding-right: 20px;
   font-size: large;

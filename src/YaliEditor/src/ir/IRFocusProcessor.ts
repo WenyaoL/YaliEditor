@@ -37,7 +37,10 @@ class IRFocusProcessor{
    * 给定起点位置，去刷新当前选中的元素
    * @param start 
    */
-  updateFocusElementByStart(start:Node){
+  updateFocusElementByStart(start?:Node){
+
+    if(!start) start = this.sel.getRangeAt(0).startContainer
+
     if(this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     if(this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
 

@@ -3,22 +3,24 @@
     <el-container>
       <el-aside width="25%"><file-tree/></el-aside>
       <el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />
-      <el-main><markdown-it-show :content="this.$store.state.applicationContext.content"/></el-main>
+      <el-main>
+        <!--<markdown-it-show :content="this.$store.state.applicationContext.content"/>-->
+        <ir-markdown v-if="editModel == 'IR'"/>
+      </el-main>
     </el-container>
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import FileTree from '@/components/filetree-panel/FileTree.vue'
 import MarkdownItShow from "@/components/markdown-it-panel/MarkdownItShow.vue"
+import IrMarkdown from '@/components/IrMarkdown.vue'
+import {ref} from 'vue'
+import {useStore} from 'vuex'
+
 //import 'highlight.js/styles/vs2015.css'
-export default {
-    name:"FolderView",
-    components:{
-      FileTree,
-      MarkdownItShow
-    }
-}
+const store = useStore()
+const editModel = ref(store.state.editModel)
 </script>
 
 <style scoped>

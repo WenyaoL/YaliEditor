@@ -72,5 +72,11 @@ blockquote{
     margin-left: 10px;
 }
 
+p code.md-expand::before{
+    content: '`';
+}
 
+p code.md-expand::after{
+    content: '`';
+}
 
