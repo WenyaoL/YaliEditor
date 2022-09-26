@@ -122,15 +122,7 @@ class IRUndo{
 
     }
 
-    /**
-     * redo 操作
-     */
-    public redo(){
-        const history = this.redoStack.pop()
-        if(!history) return;
-        //重新放回undo
-        this.undoStack.push(history)
-
+    private IRHistoryRedo(history:History){
         //复制并反转补丁
         const redoPatch = this.dmp.patch_deepCopy(history.patch).reverse()
         redoPatch.forEach((patch) => {
@@ -152,6 +144,35 @@ class IRUndo{
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
         rangy.getSelection().moveToBookmark(history.bookMark)
+    }
+
+    private codemirrorHistoryRedo(history:History){
+        let id = history.codemirrorHistory.id
+        let keyboardEvent = new InputEvent("beforeinput",{
+            inputType:"historyRedo"
+        })
+        let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(id)
+        viewInfo.view.focus()
+        document.getElementById(id).getElementsByClassName("cm-content").item(0).dispatchEvent(keyboardEvent)
+    }
+
+    /**
+     * redo 操作
+     */
+    public redo(){
+        const history = this.redoStack.pop()
+        if(!history) return;
+        //重新放回undo
+        this.undoStack.push(history)
+
+        if(history.type == HistoryType.CodemirrorHistory){
+            this.codemirrorHistoryRedo(history)
+            return
+        }
+
+        this.IRHistoryRedo(history)
+
+        
     }
 
     public addCodemirrorHistory(uuid:string){

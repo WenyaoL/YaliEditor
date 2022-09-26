@@ -37,6 +37,7 @@ class HotkeyProcessor implements KeyProcessor{
             "ctrl+5": this.headingKey,
             "ctrl+6": this.headingKey,
             "ctrl+z": this.undoKey,
+            "ctrl+y": this.redoKey,
             "ctrl+b": this.blodKey,
             "ctrl+i": this.italicKey,
             "ctrl+u": this.underlineKey,
@@ -72,6 +73,10 @@ class HotkeyProcessor implements KeyProcessor{
         this.editor.ir.undo()
     }
     
+    redoKey(event: KeyboardEvent){
+        this.editor.ir.redo()
+    }
+
     /**
      * 标题快捷键
      * @param event 
