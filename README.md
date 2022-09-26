@@ -32,8 +32,9 @@
 
 # YaliEditor
 
+- [Download and Install](#download-and-install)
 - [Introduction](#Introduction)
-  - [IR real-time rendering mode](\#ir-real-time-rendering-mode)
+  - [IR real-time rendering mode](#ir-real-time-rendering-mode)
 
   - [SV split screen mode](#sv-split-screen-mode)
 
@@ -45,7 +46,7 @@
 
 
 
-## Install
+## Download and Install
 
 Install address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.com/WenyaoL/YaliEditor/releases)
 
