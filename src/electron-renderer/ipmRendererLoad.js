@@ -84,7 +84,6 @@ function loadContentListener(store){
         for (let index = 0; index < content.length; index++) {
             const element = content[index];
             element.style.fontFamily = "sourcehansans"
-            
         }
 
         el.insertAdjacentHTML('afterbegin','<style>*{font-family:sourcehansans;}</style>')
@@ -97,7 +96,7 @@ function loadContentListener(store){
 
         fixCodemirrorGutterStyle(el)
 
-        doc.html(el.innerHTML, {
+        doc.html(el, {
             jsPDF:doc,
             margin:[10,1000,10,30],
             width:400,

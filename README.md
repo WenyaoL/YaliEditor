@@ -30,7 +30,6 @@
 </p>
 
 
-
 # YaliEditor
 
 - [Introduction](#Introduction)
@@ -44,6 +43,15 @@
 
   - [Project setup](#project-setup)
 
+
+
+## Install
+
+Install address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.com/WenyaoL/YaliEditor/releases)
+
+Support window 64-bit
+
+Support Window 32-bit
 
 ## Introduction
 
@@ -87,6 +95,8 @@ npm run install
 #build
 npm run electron:build
 ```
+
+
 
 
 
