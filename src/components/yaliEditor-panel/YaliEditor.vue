@@ -19,6 +19,9 @@ export default {
     onMounted(()=>{
       yali = new YaLiEditor("YaliEditor")
       yali.render(store.state.applicationContext.content)
+      yali.ir.undoAddListener = (editor:YaLiEditor)=>{
+        store.commit('updateFileState',false)
+      }
       store.commit('setYaliEditor',yali)
       
     })

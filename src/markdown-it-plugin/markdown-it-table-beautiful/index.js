@@ -163,6 +163,7 @@ module.exports = function multimd_table_plugin(md, options) {
     tableToken.meta  = { sep: null, cap: null, tr: [] };
     //tableToken.attrPush(["md-block","table"])
     tableToken.attrPush(["class","table table-bordered"])
+    tableToken.attrPush(["contenteditable","true"])
     
     tableDFA.set_highest_alphabet(0x10000);
     tableDFA.set_initial_state(0x10100);
@@ -385,7 +386,7 @@ module.exports = function multimd_table_plugin(md, options) {
 
     let tip = '<div class="md-table-tip md-hiden">'+button+'</div>'
     
-    let res = '<div class="markdown-it-table-beautiful" md-block="table">' +tip+table
+    let res = '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
 
     return res
   }

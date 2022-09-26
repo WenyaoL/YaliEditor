@@ -46,6 +46,11 @@ export default createStore({
     },
     updateFileState(state,flag){
       state.applicationContext.isSave = flag
+      if(!flag && !document.title.endsWith("*")){
+        document.title = document.title+"*"
+      }else if(flag && document.title.endsWith("*")){
+        document.title = document.title.slice(0,document.title.length-1)
+      }
     },
     updateEditModel(state,model){
       state.editModel = model

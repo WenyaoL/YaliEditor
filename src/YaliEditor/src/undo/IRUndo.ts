@@ -203,6 +203,9 @@ class IRUndo{
        }
        //添加undo应该舍弃掉redo里面的
        this.redoStack=[]
+       this.editor.ir.isChange=true
+       this.editor.ir.undoAddListener(this.editor)
+
     }
 
     /**

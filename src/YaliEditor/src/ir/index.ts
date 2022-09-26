@@ -32,6 +32,10 @@ class IR{
     //IR面板的设置
     public options:IROptions
 
+    //编辑面板是否已经被修改
+    public isChange:boolean=false;
+    //addundoListener
+    public undoAddListener:(editor:YaLiEditor)=>any;
     //渲染器
     public renderer:MarkdownBeautiful;
     //解析器
