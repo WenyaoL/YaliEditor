@@ -72,12 +72,20 @@ export function updateMulLineIR(ir:IR,payload:any){
         ir.hotkeyProcessor.unlistKey(null)
     }else if(payload.type == "list"){
         ir.hotkeyProcessor.listKey(null)
+    }else if(payload.type == "quote"){
+        ir.hotkeyProcessor.quoteKey(null)
     }
 }
 
+export function createTocIR(ir:IR){
+    console.log("测试");
+    
+    ir.hotkeyProcessor.tocKey(null)
+}
 
 export default {
     updateLineIR,
     updateBlockIR,
-    updateMulLineIR
+    updateMulLineIR,
+    createTocIR,
 }

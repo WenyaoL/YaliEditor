@@ -224,7 +224,7 @@ class HotkeyProcessor implements KeyProcessor{
      * 标题生成 markdown-it-toc-beautiful
      * @param event 
      */
-    tocKey(event: KeyboardEvent){
+    tocKey(event: KeyboardEvent|null){
 
         
         const sel = this.editor.ir.focueProcessor.sel

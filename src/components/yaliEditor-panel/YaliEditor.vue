@@ -43,6 +43,9 @@ export default {
 #YaliEditor{
   text-align: left;
   outline: none;
+  position: absolute;
+  height: 100%;
+  width: 90%;
 }
 
 

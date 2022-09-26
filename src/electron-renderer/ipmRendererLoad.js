@@ -1,6 +1,6 @@
 
 import {updateLine,updateBlock,updateMulLine,createToc} from '@/codemirror-plugin/codeCommon'
-import {updateLineIR,updateBlockIR,updateMulLineIR} from '@/YaliEditor/src/util/hotkeyProcess' 
+import {updateLineIR,updateBlockIR,updateMulLineIR, createTocIR} from '@/YaliEditor/src/util/hotkeyProcess' 
 import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
@@ -225,7 +225,7 @@ function loadViewEditorListener(store){
     window.electronAPI.createToc(()=>{
 
         if(store.state.editModel == "IR"){
-            
+            createTocIR(store.state.yaliEditor.ir)
         }else if(store.state.editModel == "SV"){
             createToc(store.state.viewEditor)
         }else{

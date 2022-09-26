@@ -1,6 +1,10 @@
 .YaLi-ir{
     outline: none;
-    padding-bottom:50px
+    padding-bottom:50px;
+    position: absolute;
+    margin: auto 30px;
+    height: 100%;
+    width: 100%;
 }
 
 .YaLi-ir::after{
