@@ -45,7 +45,7 @@ export default {
   outline: none;
   position: absolute;
   height: 100%;
-  width: 90%;
+  width: 100%;
 }
 
 
