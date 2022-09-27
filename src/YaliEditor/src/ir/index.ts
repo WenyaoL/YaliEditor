@@ -21,6 +21,7 @@ import { DOMObserver } from "../state/domobserver";
 import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
 import IRDragBinder from '../eventbinder/IRDragBinder'
 import IRFocusProcessor from "./IRFocusProcessor";
+import IRArrowMoveKeyProcessor from './IRArrowMoveKeyProcessor'
 
 import rangy from "rangy";
 /**
@@ -55,6 +56,8 @@ class IR{
     public deletekeyProcessor:IRDeletekeyProcessor
     //回车键处理器
     public enterkeyProcessor:IREnterkeyProcessor
+    //键盘移动键处理器
+    public arrowMoveKeyProcessor:IRArrowMoveKeyProcessor;
     //光标选中处理器
     public focueProcessor:IRFocusProcessor
 
@@ -82,6 +85,7 @@ class IR{
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
         this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
         this.focueProcessor = new IRFocusProcessor(this.editor)
+        this.arrowMoveKeyProcessor = new IRArrowMoveKeyProcessor(this.editor)
         this.binderList = [];
         //this.binderList.push(new CommonEventBinder());
         //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))

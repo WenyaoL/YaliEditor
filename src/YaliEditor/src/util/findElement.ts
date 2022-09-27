@@ -150,3 +150,7 @@ export const IRfindClosestList = (element: Node)=>{
 export const IRfindClosestParagraph = (element: Node)=>{
     return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_PARAGRAPH,Constants.IR_CLASS_NAME)
 }
+
+export const IRfindClosestFence = (element: Node)=>{
+    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_FENCE,Constants.IR_CLASS_NAME)
+}

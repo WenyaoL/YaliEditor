@@ -82,7 +82,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     headingKey(event: KeyboardEvent){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0)
         
         const start =  r.startContainer
@@ -164,7 +164,7 @@ class HotkeyProcessor implements KeyProcessor{
      * 代码块快捷键
      */
     codeblockKey(event: KeyboardEvent|null){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -227,7 +227,7 @@ class HotkeyProcessor implements KeyProcessor{
     tocKey(event: KeyboardEvent|null){
 
         
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -292,7 +292,7 @@ class HotkeyProcessor implements KeyProcessor{
     }
 
     blockKey(event: KeyboardEvent|null,pre:string,suf:string){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -326,7 +326,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     addIndentKey(event: KeyboardEvent){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -375,7 +375,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     reduceIndentKey(event: KeyboardEvent){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         
@@ -416,7 +416,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     listKey(event: KeyboardEvent|null){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
 
@@ -440,7 +440,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     unlistKey(event: KeyboardEvent|null){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         const end = r.endContainer
@@ -486,7 +486,7 @@ class HotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     quoteKey(event: KeyboardEvent){
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
         const end = r.endContainer
@@ -526,7 +526,7 @@ class HotkeyProcessor implements KeyProcessor{
     tableCreate(row:number,col:number){
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         //sel.moveToBookmark(this.editor.ir.focueProcessor.bookmark)
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer

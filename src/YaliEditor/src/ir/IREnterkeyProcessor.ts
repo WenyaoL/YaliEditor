@@ -35,7 +35,7 @@ class IREnterkeyProcessor implements KeyProcessor{
 
     inlineHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
         let e = inline;
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
 
         //如果是链接
@@ -72,7 +72,7 @@ class IREnterkeyProcessor implements KeyProcessor{
 
     blockHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
         let e = block;
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
 
         //光标是否聚合（坍塌）
@@ -142,7 +142,7 @@ class IREnterkeyProcessor implements KeyProcessor{
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
 
-        const sel = this.editor.ir.focueProcessor.sel
+        const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange()
         let start =  r.startContainer
         let inline = IRfindClosestMdInline(start)

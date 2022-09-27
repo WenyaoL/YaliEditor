@@ -54,7 +54,7 @@ class IRFocusProcessor{
   /**
    * 根据当前光标位置刷新选中元素
    */
-  updateFocusElement(){
+  updateFocusElement(){    
     let sel = rangy.getSelection()
     this.updateFocusElementByStart(sel.getRangeAt(0).startContainer)
   }
@@ -86,6 +86,14 @@ class IRFocusProcessor{
 
   getModifyBeforeBookmark(){
     return this.modifyBeforeBookmark
+  }
+
+  getSelectedBlockMdElement(){
+    return this.selectedBlockMdElement
+  }
+
+  getSelectedInlineMdElement(){
+    return this.selectedInlineMdElement
   }
 }
 

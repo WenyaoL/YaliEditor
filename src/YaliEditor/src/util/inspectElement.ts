@@ -15,6 +15,17 @@ export const isInline = (element:Node,stopClassName:string):boolean=>{
     return isInline
 }
 
+export const isBlockMdFence = (element:Element)=>{
+
+  if(!element || !element.hasAttribute(Constants.ATTR_MD_BLOCK)) return false
+
+
+  if(element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_FENCE) return true
+  
+  return false
+
+}
+
 
 export const strToElement =(src:string)=>{
     const div = document.createElement("div")

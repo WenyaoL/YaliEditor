@@ -40,7 +40,8 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
      */
     isTargetKey(event: KeyboardEvent){
         return event.ctrlKey || event.shiftKey || event.altKey || event.key === "Enter" || event.key === "Delete"
-        || event.key === "Backspace"
+        || event.key === "Backspace" || event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft"
+        || event.key == "ArrowRight"
     }
 
 
@@ -61,24 +62,26 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         //回车键处理
         if(event.key === "Enter"){
             this.editor.ir.enterkeyProcessor.execute(event)
-            this.editor.ir.focueProcessor.updateBookmark()
             return ;
         }
 
         //删除键处理,回退键
-        if(event.key === "Backspace"){
-            this.editor.ir.deletekeyProcessor.execute(event)
-            this.editor.ir.focueProcessor.updateBookmark()
+        if(this.editor.ir.deletekeyProcessor.execute(event)){
             return ;
         }
 
+        //键盘Arrow移动键
+        if(this.editor.ir.arrowMoveKeyProcessor.execute(event)){
+            return ;
+        }
+        
         //快捷键处理
         if(this.editor.ir.hotkeyProcessor.execute(event)){
-            this.editor.ir.focueProcessor.updateBookmark()
             return ;
         }
 
         
+
       },true)
     
     }
@@ -89,7 +92,9 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
      */
     bindKeyupEvent(element: HTMLElement){
         element.addEventListener("keyup",(event: KeyboardEvent & { target: HTMLElement }) => {
-            
+            //更新焦点元素
+            this.editor.ir.focueProcessor.updateFocusElement()
+            this.editor.ir.focueProcessor.updateBookmark()
             //修复删除残留问题
             if(event.key === "Backspace"){
                 const r = rangy.getSelection().getRangeAt(0)
@@ -128,12 +133,14 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         })
     }
 
+
+
     bindEvent(element: HTMLElement): void {
         super.bindEvent(element)
 
         this.bindKeydownEvent(element)
         this.bindKeyupEvent(element)
-
+        
         
     }
     

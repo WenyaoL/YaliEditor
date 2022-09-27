@@ -243,9 +243,12 @@ class IRDeletekeyProcessor implements KeyProcessor{
 
 
     public execute(event: KeyboardEvent & { target: HTMLElement }){
+        if(event.key != "Backspace") return false
+
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
         this.deleteKey(event)
+        return true
     }
 
 }
