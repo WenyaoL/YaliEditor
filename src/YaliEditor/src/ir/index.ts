@@ -7,11 +7,11 @@
 import MarkdownBeautiful from "../../../markdown-it-plugin";
 import YaLiEditor from "..";
 import { BaseEventBinder, IROptions } from "../../types";
-import HotkeyProcessor from './IRHotkeyProcessor'
+import IRKeyBinder from './IRHotkeyProcessor'
 import DeletekeyProcessor from './IRDeletekeyProcessor'
 import IREnterkeyProcessor from './IREnterkeyProcessor'
 
-import IRHotkeyBinder from "../eventbinder/IRHotkeyBinder";
+import IRHotkeyBinder from "../eventbinder/IRKeyBinder";
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
 import IRUndo from "../undo/IRUndo";
@@ -51,7 +51,7 @@ class IR{
     //dom元素观察器
     public observer:DOMObserver;
     //快捷键处理器
-    public hotkeyProcessor:HotkeyProcessor;
+    public hotkeyProcessor:IRKeyBinder;
     //删除键处理器
     public deletekeyProcessor:IRDeletekeyProcessor
     //回车键处理器
@@ -81,7 +81,7 @@ class IR{
         //this.undo = new IRUndo();
         //this.undoManager = new IRUndoManager();
         this.undoManager = new IRUndo(this.editor,"")
-        this.hotkeyProcessor = new HotkeyProcessor(this.editor)
+        this.hotkeyProcessor = new IRKeyBinder(this.editor)
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
         this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
         this.focueProcessor = new IRFocusProcessor(this.editor)

@@ -16,14 +16,14 @@ import rangy from "rangy";
 import CONSTANTS from "../constants";
 
 import CommonEventBinder from "./commonEventBinder";
-import { strToElement } from "../util/inspectElement";
+import { strToElement,createParagraph} from "../util/inspectElement";
 
 
 
 
 
 
-class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
+class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
 
 
 
@@ -79,7 +79,6 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
         if(this.editor.ir.hotkeyProcessor.execute(event)){
             return ;
         }
-
         
 
       },true)
@@ -95,6 +94,12 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
             //更新焦点元素
             this.editor.ir.focueProcessor.updateFocusElement()
             this.editor.ir.focueProcessor.updateBookmark()
+
+            //强制让IR面板最后留一个空行
+            if(this.editor.ir.rootElement.lastElementChild.tagName != "P"){
+                this.editor.ir.rootElement.appendChild(createParagraph())
+            }
+
             //修复删除残留问题
             if(event.key === "Backspace"){
                 const r = rangy.getSelection().getRangeAt(0)
@@ -147,4 +152,4 @@ class IRHotkeyBinder extends CommonEventBinder implements BaseEventBinder{
 
 }
 
-export default IRHotkeyBinder;
+export default IRKeyBinder;
