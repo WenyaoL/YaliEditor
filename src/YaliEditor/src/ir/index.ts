@@ -3,25 +3,28 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 
-
-import MarkdownBeautiful from "../../../markdown-it-plugin";
 import YaLiEditor from "..";
 import { BaseEventBinder, IROptions } from "../../types";
-import IRKeyBinder from './IRHotkeyProcessor'
-import DeletekeyProcessor from './IRDeletekeyProcessor'
-import IREnterkeyProcessor from './IREnterkeyProcessor'
+import { DOMObserver } from "../state/domobserver";
+import IRUndo from "../undo/IRUndo";
+//翻译解析
+import TurndownParser from "../../../turndown-plugin";
+import MarkdownBeautiful from "../../../markdown-it-plugin";
 
-import IRHotkeyBinder from "../eventbinder/IRKeyBinder";
+//绑定器
 import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
-import IRUndo from "../undo/IRUndo";
-
-import TurndownParser from "../../../turndown-plugin";
-import { DOMObserver } from "../state/domobserver";
-import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
+import IRKeyBinder from "../eventbinder/IRKeyBinder";
 import IRDragBinder from '../eventbinder/IRDragBinder'
+
+//处理器
+import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
+import IRHotkeyProcessor from './IRHotkeyProcessor'
 import IRFocusProcessor from "./IRFocusProcessor";
 import IRArrowMoveKeyProcessor from './IRArrowMoveKeyProcessor'
+import IREnterkeyProcessor from './IREnterkeyProcessor'
+import IRInputProcessor from './IRInputProcessor'
+import IRTabProcessor from './IRTabkeyProcessor'
 
 import rangy from "rangy";
 /**
@@ -51,7 +54,7 @@ class IR{
     //dom元素观察器
     public observer:DOMObserver;
     //快捷键处理器
-    public hotkeyProcessor:IRKeyBinder;
+    public hotkeyProcessor:IRHotkeyProcessor;
     //删除键处理器
     public deletekeyProcessor:IRDeletekeyProcessor
     //回车键处理器
@@ -60,7 +63,10 @@ class IR{
     public arrowMoveKeyProcessor:IRArrowMoveKeyProcessor;
     //光标选中处理器
     public focueProcessor:IRFocusProcessor
-
+    //输入处理器
+    public inputProcessor:IRInputProcessor;
+    //Tab键处理器
+    public tabkeyProcessor:IRTabProcessor;
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -77,21 +83,20 @@ class IR{
         this.rootElement = divElement;
 
         this.renderer = new MarkdownBeautiful(this.editor);
-        this.parser = new TurndownParser(this.editor);
-        //this.undo = new IRUndo();
-        //this.undoManager = new IRUndoManager();
+        this.parser = new TurndownParser(this.editor);;
+
         this.undoManager = new IRUndo(this.editor,"")
-        this.hotkeyProcessor = new IRKeyBinder(this.editor)
+        this.hotkeyProcessor = new IRHotkeyProcessor(this.editor)
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
         this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
         this.focueProcessor = new IRFocusProcessor(this.editor)
         this.arrowMoveKeyProcessor = new IRArrowMoveKeyProcessor(this.editor)
+        this.inputProcessor = new IRInputProcessor(this.editor)
+        this.tabkeyProcessor = new IRTabProcessor(this.editor)
+
         this.binderList = [];
-        //this.binderList.push(new CommonEventBinder());
-        //this.binderList.push(new IRHotkeyCanUndoBinder(this.editor))
-        //this.binderList.push(new IRInputCanUndoBinder(this.editor))
         this.binderList.push(new IRInputBinder(this.editor));
-        this.binderList.push(new IRHotkeyBinder(this.editor));
+        this.binderList.push(new IRKeyBinder(this.editor));
         this.binderList.push(new IRSelectBinder(this.editor));
         this.binderList.push(new IRDragBinder(this.editor))
         this.bindEvent(this.rootElement);

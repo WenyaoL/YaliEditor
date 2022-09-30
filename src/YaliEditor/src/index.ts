@@ -7,7 +7,7 @@ import {_YALI_VERSION} from './constants'
 import IR from './ir';
 import {EditorOptions} from './options'
 
-import './ir/index.css'
+import './ir/index.scss'
 //import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
 
@@ -35,6 +35,9 @@ class YaLiEditor {
 
     private init(id: HTMLElement, options: EditorOptions){
         this.rootElement = id;
+        const div = document.createElement("div")
+        div.id = "yali-tool-tip"
+        this.rootElement.appendChild(div)
         this.ir = new IR(this);
         this.ir.init()
     }

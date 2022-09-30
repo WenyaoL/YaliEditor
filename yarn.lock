@@ -1336,6 +1336,11 @@
   "resolved" "https://registry.npmmirror.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   "version" "1.2.1"
 
+"@imengyu/vue3-context-menu@^1.1.1":
+  "integrity" "sha512-ZsGrIy9lZ5NOliMdB+do7gFtLd4lMRdNnNlWP1rZCtiF/6sdTjJQAArtUxFjhSLcSNe7YurSbTDIjnT0CkMX0g=="
+  "resolved" "https://registry.npmmirror.com/@imengyu/vue3-context-menu/-/vue3-context-menu-1.1.1.tgz"
+  "version" "1.1.1"
+
 "@jridgewell/gen-mapping@^0.1.0":
   "integrity" "sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w=="
   "resolved" "https://registry.npmmirror.com/@jridgewell/gen-mapping/-/gen-mapping-0.1.1.tgz"

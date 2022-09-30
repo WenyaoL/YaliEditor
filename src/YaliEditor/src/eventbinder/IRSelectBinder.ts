@@ -63,6 +63,8 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
+        console.log(event);
+        
         this.editor.ir.focueProcessor.updateBookmark()
         let sel = this.editor.ir.focueProcessor.sel
         let r = sel.getRangeAt(0)

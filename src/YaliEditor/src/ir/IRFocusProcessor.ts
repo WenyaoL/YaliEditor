@@ -10,6 +10,7 @@ import { findClosestByAttribute,
     IRfindClosestLi,
     IRfindClosestTop
 } from "../util/findElement";
+import Constants from "../constants";
 import rangy from "rangy";
 import YaLiEditor from "..";
 
@@ -76,6 +77,8 @@ class IRFocusProcessor{
 
   }
 
+
+
   getBookmark(){
     return this.bookmark
   }
@@ -94,6 +97,20 @@ class IRFocusProcessor{
 
   getSelectedInlineMdElement(){
     return this.selectedInlineMdElement
+  }
+
+  getSelectedBlockMdType(){
+    if(this.selectedBlockMdElement){
+      return this.selectedBlockMdElement.getAttribute(Constants.ATTR_MD_BLOCK)
+    }
+    return null
+  }
+
+  getSelectedInlineMdType(){
+    if(this.selectedInlineMdElement){
+      return this.selectedInlineMdElement.getAttribute(Constants.ATTR_MD_INLINE)
+    }
+    return null
   }
 }
 

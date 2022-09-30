@@ -17,7 +17,9 @@ class IRInputBinder implements BaseEventBinder{
 
     bindInputEvent(element: HTMLElement){
         element.addEventListener("input",(event: InputEvent) => {
-            this.editor.ir.focueProcessor.updateBookmark()
+            this.editor.ir.inputProcessor.execute(event)
+            
+            /*this.editor.ir.focueProcessor.updateBookmark()
 
             if(event.inputType==="deleteContentBackward"){
                 return;
@@ -48,7 +50,7 @@ class IRInputBinder implements BaseEventBinder{
             //一般打字不处理
             if(event.isComposing){
                 return;
-            }
+            }*/
 
             //查看输入是否能符合语法，生成html块
 

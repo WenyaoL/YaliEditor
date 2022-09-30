@@ -30,7 +30,7 @@ export const isBlockMdFence = (element:Element)=>{
 export const strToElement =(src:string)=>{
     const div = document.createElement("div")
     div.innerHTML = src
-    return div.firstChild
+    return div.firstElementChild
 }
 
 

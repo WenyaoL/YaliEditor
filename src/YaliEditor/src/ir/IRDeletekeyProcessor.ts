@@ -28,6 +28,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
         if(!element) return false;
         const turndown = this.editor.ir.parser.turndown(element.outerHTML)
         const res = this.editor.ir.renderer.render(turndown)
+        
         if(!res) return false;
         //临时div
         const div = document.createElement("div")
@@ -126,19 +127,12 @@ class IRDeletekeyProcessor implements KeyProcessor{
         if(e.classList.contains(CONSTANTS.CLASS_MD_HIDEN)){
             //寻找行级模块
             e = findClosestByAttribute(e,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
-            //寻找块级模块
-            if(!e){
-                e = findClosestByAttribute(e,CONSTANTS.ATTR_MD_BLOCK,"",this.editor.ir.getRootElementClassName())
-            }
-            //选择最顶层元素
-            if(!e){
-                e = findClosestByTop(e,this.editor.ir.getRootElementClassName())
-            }
             if(!e) return
             if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-                r.selectNode(e)
-                r.setStartBefore(e)
-                r.setEndAfter(e)
+                console.log(e);
+                r.selectNodeContents(e)
+                //r.selectNode(e)
+
 
                 rangy.getSelection().setSingleRange(r)
                 //rangy.getSelection().deleteFromDocument();
@@ -182,6 +176,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
         let start = r.startContainer
         let end =  r.endContainer
 
+        
         event.preventDefault()
         //删除一个节点的
         if(r.getNodes().length==1){
@@ -193,6 +188,9 @@ class IRDeletekeyProcessor implements KeyProcessor{
         if(r.getNodes().length>1){
             let startElement = IRfindClosestMdBlock(start)
             let endElement = IRfindClosestMdBlock(end)
+            console.log(startElement);
+            console.log(endElement);
+            
             let startOffset = r.startOffset
             //相同的情况
             if(startElement === endElement){
@@ -200,7 +198,11 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 
                 //删除内容
                 r.deleteContents()
+                console.log("删除");
+                
                 if(!this.renderNode(startElement,r)){
+                    //翻译出是空的情况
+                    startElement.innerHTML = ""
                     //this.editor.ir.addUndo()
                     return;
                 }

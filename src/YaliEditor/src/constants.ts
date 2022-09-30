@@ -10,6 +10,7 @@ export const CLASS_MD_HIDEN : string = "md-hiden"
 export const CLASS_MD_META : string = "md-meta"
 
 export const ATTR_MD_BLOCK : string = "md-block"
+export const ATTR_MD_BLOCK_HEADING : string = "heading"
 export const ATTR_MD_BLOCK_PARAGRAPH : string = "paragraph" 
 export const ATTR_MD_BLOCK_TOC:string = "toc"
 export const ATTR_MD_BLOCK_TABLE : string = "table" 
@@ -31,6 +32,7 @@ export default {
     CLASS_MD_HIDEN,
     CLASS_MD_META,
     ATTR_MD_BLOCK,
+    ATTR_MD_BLOCK_HEADING,
     ATTR_MD_BLOCK_PARAGRAPH,
     ATTR_MD_BLOCK_TOC,
     ATTR_MD_BLOCK_TABLE,

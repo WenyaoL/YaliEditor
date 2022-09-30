@@ -41,7 +41,7 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
     isTargetKey(event: KeyboardEvent){
         return event.ctrlKey || event.shiftKey || event.altKey || event.key === "Enter" || event.key === "Delete"
         || event.key === "Backspace" || event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft"
-        || event.key == "ArrowRight"
+        || event.key == "ArrowRight" || event.key === "Tab"
     }
 
 
@@ -58,6 +58,11 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
             return false;
         }
         
+        //Tab键处理
+        if(event.key === "Tab"){
+            this.editor.ir.tabkeyProcessor.execute(event)
+            return
+        }
         
         //回车键处理
         if(event.key === "Enter"){

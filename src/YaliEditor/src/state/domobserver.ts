@@ -26,6 +26,8 @@ export class DOMObserver{
         this.lastChange = Date.now()
 
         this.observer = new MutationObserver(mutations => {
+            
+            
             if(this.editor.ir.rootElement.childElementCount == 0){
                 this.editor.ir.rootElement.append(createParagraph())
             }
@@ -35,7 +37,7 @@ export class DOMObserver{
                 e = e.parentElement
             }
             
-            if(e && e.className && (e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0)){
+            if(e && e.className && e.parentElement && (e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0)){
                 return 
             }
 

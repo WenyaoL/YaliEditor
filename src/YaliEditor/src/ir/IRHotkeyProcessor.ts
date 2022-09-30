@@ -20,7 +20,7 @@ import { divide } from 'lodash';
 import { KeyProcessor } from './KeyProcessor';
 
 
-class HotkeyProcessor implements KeyProcessor{
+class IRHotkeyProcessor implements KeyProcessor{
     //编辑器
     public editor:YaLiEditor;
     //快捷键映射表
@@ -577,4 +577,4 @@ class HotkeyProcessor implements KeyProcessor{
     }
 }
 
-export default HotkeyProcessor;
+export default IRHotkeyProcessor;

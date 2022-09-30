@@ -10,32 +10,32 @@
 	
 
 	<div id="COS" contenteditable="true">123</div>
-	<div id="COS2" style="height: 600px;" contenteditable="true">123</div>
+	
 	<script>
 		document.getElementById("COS").addEventListener("keydown",(event)=>{
-			//console.log(event);
-			console.log("按下");
+			console.log(event);
+			//console.log("按下");
 		})
 
 		document.getElementById("COS").addEventListener("keypress",(event)=>{
 			//console.log(event);
-			console.log("按着");
+			//console.log("按着");
 		})
 
-		/*document.getElementById("COS").addEventListener("input",(event)=>{
-			//console.log(event);
+		document.getElementById("COS").addEventListener("input",(event)=>{
+			console.log(event);
 			console.log("输入");
-		})*/
-
-		document.getElementById("COS2").addEventListener("dragenter", (event) => {
-  			console.log("拖入");
-			
 		})
+
+		/*document.getElementById("COS2").addEventListener("dragenter", (event) => {
+  			//console.log("拖入");
+			
+		})*/
 		/*document.getElementById("COS2").addEventListener("dragover", (event) => {
   			event.preventDefault()
 			//console.log(event.dataTransfer);
 		})*/
-		document.getElementById("COS2").addEventListener("dragleave", (event) => {
+		/*document.getElementById("COS2").addEventListener("dragleave", (event) => {
   			console.log("拖出");
 		})
 		document.getElementById("COS2").addEventListener("drop", (event) => {
@@ -47,7 +47,7 @@
 
 		document.getElementById("COS2").addEventListener("drag", (event) => {
   			console.log("dragging");
-		})
+		})*/
 
 	</script>
 

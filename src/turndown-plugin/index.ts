@@ -99,6 +99,8 @@ class TurndownParser{
         return flag;
         },
         replacement:(content, node, options) =>{
+            console.log(node);
+          
             node.firstElementChild.textContent
             return node.firstElementChild.textContent
         }
