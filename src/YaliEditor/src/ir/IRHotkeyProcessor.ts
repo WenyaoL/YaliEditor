@@ -51,7 +51,7 @@ class IRHotkeyProcessor implements KeyProcessor{
             "ctrl+shift+5": this.deletelineKey,
             "ctrl+shift+{":this.listKey,
             "ctrl+shift+}":this.unlistKey,
-            "ctrl+shift+t":this.tocKey
+            "ctrl+shift+t":this.tocKey,
         }
     }
 

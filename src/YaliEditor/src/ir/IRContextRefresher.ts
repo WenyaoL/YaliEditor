@@ -35,6 +35,8 @@ class IRContextRefresher{
         this.refreshLink()
         this.refreshImg()
         this.refreshHeading()
+        this.refreshTable()
+        this.refreshToc()
     }   
 
     /**
@@ -102,7 +104,7 @@ class IRContextRefresher{
             sel.collapse(e,1)
         }else{
             //强制刷新?
-            if(force){
+            if(force){                
                 let bookmark = sel.getBookmark(block)
                 bookmark.rangeBookmarks[0].containerNode = e
                 block.replaceWith(e)
@@ -113,7 +115,28 @@ class IRContextRefresher{
         }
     }
 
+    /**
+     * 刷新table（补丁）
+     */
+    refreshTable(){
+        let root = this.ir.rootElement
 
+        let tds = root.getElementsByTagName("td")
+        for (let index = 0; index < tds.length; index++) {
+            const element = tds[index];
+            if(element.innerText== "\n"){
+                element.innerText = "";
+            }
+        }
+
+        let ths = root.getElementsByTagName("th")
+        for (let index = 0; index < ths.length; index++) {
+            const element = ths[index];
+            if(element.innerText== "\n"){
+                element.innerText = "";
+            }
+        }
+    }
 
 
     /**
@@ -158,7 +181,14 @@ class IRContextRefresher{
      */
     refreshToc(){
         let root = this.ir.rootElement
-
+        let toc = root.querySelector(".markdown-it-toc-beautiful[md-block]")
+        let as = toc.querySelectorAll("a")
+        as.forEach(a=>{
+            let href = a.getAttribute("to-href")
+            let id = "#"+href
+            let heading = root.querySelector(id)
+            a.innerText = heading.textContent
+        })
     }
 }
 

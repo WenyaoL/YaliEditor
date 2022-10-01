@@ -22,7 +22,15 @@ class IRTabkeyProcessor implements KeyProcessor{
         }
         let sel = rangy.getSelection()
         let r = sel.getRangeAt(0)
-        r.insertNode(document.createTextNode("\t"))
+        let start = r.startContainer
+        let startOff = r.startOffset
+        let endOff = r.endOffset
+        if(start.nodeType == 3){
+            start.textContent = start.textContent.slice(0,startOff)+"\u00A0\u00A0"+start.textContent.slice(endOff)
+            sel.collapse(start,startOff+2)
+        }
+        
+        //r.insertNode(document.createTextNode("f"))
         return true
     }
 

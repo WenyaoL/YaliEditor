@@ -65,12 +65,23 @@ class IRDeletekeyProcessor implements KeyProcessor{
         }
         let e = start as HTMLElement
 
-        //删除最后的字符
-        if(e.textContent.length == 0 || e.textContent == "\n"){
+        //无字符删除的情况
+        if(e.textContent.length == 0 || e.innerText == "\n"){
   
 
             if(e && e.tagName == "TD" || e.tagName == "TH"){
-                event.preventDefault()
+                if(e.previousElementSibling){
+                    let element = e.previousElementSibling
+                    let coll = 0
+                    if(element.textContent && element.textContent.length> 0) coll = 1
+                    sel.collapse(e.previousElementSibling,coll)
+                }else if(e.parentElement.previousElementSibling){
+                    let element = e.parentElement.previousElementSibling
+                    let coll = 0
+                    if(element.lastElementChild.textContent.length > 0) coll = 1
+                    sel.collapse(element.lastElementChild,coll)
+                }
+                //event.preventDefault()
                 return
             }
 
@@ -168,6 +179,21 @@ class IRDeletekeyProcessor implements KeyProcessor{
             return;
         }
 
+        //校正删除LINK
+        start = r.startContainer
+        let startOff = r.startOffset
+        //模拟字符删除
+        if(startOff==1 && start.previousSibling && start.previousSibling.nodeType==1 &&start.nodeType ==3){
+            let sib = start.previousSibling as HTMLElement
+            if(sib.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK){
+                r.setStart(start,startOff-1)
+                r.deleteContents()
+                event.preventDefault()
+                return 
+            }
+        }
+        
+        
         return ;
     }
 

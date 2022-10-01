@@ -83,7 +83,8 @@ export default function(md:MarkdownIt) {
     md.renderer.rules.heading_open = function(tokens, index,options, env, slf) {
         const token = tokens[index]
         var label = tokens[index + 1];
-        const attrs = makeSafe(label.content) + '_' + label.map[0]
+        //href属性
+        const attrs = label.content + '_' + label.map[0]
         token.attrPush(["id",attrs])
         const mdTypeAttrs = 'heading'
         token.attrPush(["md-block",mdTypeAttrs])
@@ -116,7 +117,8 @@ export default function(md:MarkdownIt) {
             if (heading.type === 'inline') {
                 headings.push({
                     level: +token.tag.substr(1, 1),
-                    anchor: makeSafe(heading.content) + '_' + heading.map[0],
+                    //href属性
+                    anchor: heading.content + '_' + heading.map[0],
                     content: heading.content
                 });
             }
