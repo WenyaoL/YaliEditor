@@ -96,17 +96,13 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
      */
     bindKeyupEvent(element: HTMLElement){
         element.addEventListener("keyup",(event: KeyboardEvent & { target: HTMLElement }) => {
-            //更新焦点元素
-            this.editor.ir.focueProcessor.updateFocusElement()
-            this.editor.ir.focueProcessor.updateBookmark()
 
-            //强制让IR面板最后留一个空行
-            if(this.editor.ir.rootElement.lastElementChild.tagName != "P"){
-                this.editor.ir.rootElement.appendChild(createParagraph())
-            }
 
+
+
+            this.editor.ir.contextRefresher.refresh()
             //修复删除残留问题
-            if(event.key === "Backspace"){
+            /*if(event.key === "Backspace"){
                 const r = rangy.getSelection().getRangeAt(0)
                 let start =  r.startContainer as HTMLElement
                 if(start.nodeType === 3){
@@ -137,7 +133,7 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
                     //this.editor.ir.addUndo()
                 }
                 
-            }
+            }*/
             
             return ;
         })

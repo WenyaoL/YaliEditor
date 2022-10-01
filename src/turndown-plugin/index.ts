@@ -25,7 +25,7 @@ class TurndownParser{
     this.initInineCodeRule()
     this.initFontRule()
     this.turndownService.use(tableRule)
-    //this.initTableRule()
+    
   }
 
   /**
@@ -99,8 +99,7 @@ class TurndownParser{
         return flag;
         },
         replacement:(content, node, options) =>{
-            console.log(node);
-          
+  
             node.firstElementChild.textContent
             return node.firstElementChild.textContent
         }
@@ -155,8 +154,20 @@ class TurndownParser{
             node = node as HTMLElement
             //获取A标签
             const a = node.getElementsByTagName("a").item(0)
+            const url = node.getElementsByClassName("md-hiden md-link-url md-meta").item(0)
+            const hides = node.getElementsByClassName("md-hiden")
             if(!a) return ''
-            return '['+a.textContent+']('+a.href+')';
+
+            let res = []
+            if(hides.item(0)) res.push(hides.item(0).textContent)
+            res.push(a.textContent)
+            if(hides.item(1)) res.push(hides.item(1).textContent)
+            if(url) res.push(url.textContent)
+            if(hides.item(3)) res.push(hides.item(3).textContent)//第四个才是括号
+
+            
+            return res.join('')
+            //return '['+a.textContent+']('+url.textContent+')';
         }
     })
   }
@@ -180,16 +191,6 @@ class TurndownParser{
 
   }
 
-  initTableRule(){
-    this.turndownService.addRule('md-table',{
-      filter:['table'],
-        replacement:(content, node, options) =>{
-          let table = node as HTMLElement
-
-            return "这是table"
-        }
-    })
-  }
 
   turndown(src:string | TurndownService.Node){
     return this.turndownService.turndown(src)

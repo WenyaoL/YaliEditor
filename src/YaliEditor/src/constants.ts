@@ -9,6 +9,9 @@ export const _YALI_VERSION : string =  "YaLier_1.0.0"
 export const CLASS_MD_HIDEN : string = "md-hiden"
 export const CLASS_MD_META : string = "md-meta"
 
+
+
+
 export const ATTR_MD_BLOCK : string = "md-block"
 export const ATTR_MD_BLOCK_HEADING : string = "heading"
 export const ATTR_MD_BLOCK_PARAGRAPH : string = "paragraph" 
@@ -19,6 +22,10 @@ export const ATTR_MD_BLOCK_FENCE : string = "fence"
 export const ATTR_MD_INLINE : string = "md-inline"
 export const ATTR_MD_INLINE_IMG : string = "img"
 export const ATTR_MD_INLINE_LINK : string = "link"
+
+
+export const SELECTOR_MD_INLINE_LINK : string = "span[md-inline=link]"
+export const SELECTOR_MD_INLINE_IMG : string = "span[md-inline=img]"
 
 export const CODEMIRROR_LINE :string = "cm-line"
 export const CODEMIRROR_CONTENT : string = "cm-content"
@@ -40,6 +47,8 @@ export default {
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,
+    SELECTOR_MD_INLINE_LINK,
+    SELECTOR_MD_INLINE_IMG,
     CODEMIRROR_LINE,
     CODEMIRROR_CONTENT,
     CODEMIRROR_EDITOR,

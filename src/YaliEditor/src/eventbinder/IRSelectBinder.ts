@@ -4,7 +4,7 @@
  */
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
-import { findClosestByAttribute } from "../util/findElement";
+import { findClosestByAttribute,IRfindClosestMdBlock} from "../util/findElement";
 import rangy from "rangy";
 
 declare global {  //设置全局属性
@@ -63,11 +63,13 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-        console.log(event);
+        //console.log(event);
         
         this.editor.ir.focueProcessor.updateBookmark()
         let sel = this.editor.ir.focueProcessor.sel
         let r = sel.getRangeAt(0)
+        
+        
         this.editor.ir.undoManager.updateBookmark()
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
@@ -80,7 +82,8 @@ class IRSelectBinder implements BaseEventBinder{
         
         
         const topClassName = this.editor.ir.getRootElementClassName()
-
+        //console.log(sel.getBookmark(IRfindClosestMdBlock(r.startContainer)));
+        
         let isInline = true;
         let e = findClosestByAttribute(event.target,"md-inline","",topClassName)
         if(!e){

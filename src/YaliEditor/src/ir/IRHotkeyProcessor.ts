@@ -16,7 +16,7 @@ import Constants from "../constants";
 import {toKeyText,createTableStr} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
-import { divide } from 'lodash';
+import {createParagraph} from '../util/inspectElement'
 import { KeyProcessor } from './KeyProcessor';
 
 
@@ -130,7 +130,8 @@ class IRHotkeyProcessor implements KeyProcessor{
             r.deleteContents()
 
             //相同撤销
-            const p = document.createElement("p")
+            const p = createParagraph()
+
             p.innerText = text;
             r.insertNode(p)
             r.collapseToPoint(p,1)

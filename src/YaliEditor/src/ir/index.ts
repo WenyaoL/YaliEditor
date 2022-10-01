@@ -25,6 +25,7 @@ import IRArrowMoveKeyProcessor from './IRArrowMoveKeyProcessor'
 import IREnterkeyProcessor from './IREnterkeyProcessor'
 import IRInputProcessor from './IRInputProcessor'
 import IRTabProcessor from './IRTabkeyProcessor'
+import IRContextRefresher from './IRContextRefresher'
 
 import rangy from "rangy";
 /**
@@ -67,6 +68,9 @@ class IR{
     public inputProcessor:IRInputProcessor;
     //Tab键处理器
     public tabkeyProcessor:IRTabProcessor;
+    //上下文刷新器
+    public contextRefresher:IRContextRefresher;
+
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -93,6 +97,7 @@ class IR{
         this.arrowMoveKeyProcessor = new IRArrowMoveKeyProcessor(this.editor)
         this.inputProcessor = new IRInputProcessor(this.editor)
         this.tabkeyProcessor = new IRTabProcessor(this.editor)
+        this.contextRefresher = new IRContextRefresher(this.editor)
 
         this.binderList = [];
         this.binderList.push(new IRInputBinder(this.editor));
