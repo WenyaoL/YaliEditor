@@ -6,6 +6,7 @@
       <el-main>
         <!--<markdown-it-show :content="this.$store.state.applicationContext.content"/>-->
         <ir-markdown v-if="editModel == 'IR'"/>
+        <markdown-it-show v-else :content="this.$store.state.applicationContext.content"/>
       </el-main>
     </el-container>
   </div>
@@ -15,6 +16,8 @@
 import FileTree from '@/components/filetree-panel/FileTree.vue'
 import MarkdownItShow from "@/components/markdown-it-panel/MarkdownItShow.vue"
 import IrMarkdown from '@/components/IrMarkdown.vue'
+
+
 import {ref} from 'vue'
 import {useStore} from 'vuex'
 
