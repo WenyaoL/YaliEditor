@@ -20,6 +20,10 @@ import {createParagraph} from '../util/inspectElement'
 import { KeyProcessor } from './KeyProcessor';
 
 
+
+
+
+
 class IRHotkeyProcessor implements KeyProcessor{
     //编辑器
     public editor:YaLiEditor;
@@ -52,6 +56,7 @@ class IRHotkeyProcessor implements KeyProcessor{
             "ctrl+shift+{":this.listKey,
             "ctrl+shift+}":this.unlistKey,
             "ctrl+shift+t":this.tocKey,
+            "ctrl+shift+m":this.mathKey
         }
     }
 
@@ -292,6 +297,13 @@ class IRHotkeyProcessor implements KeyProcessor{
         this.blockKey(event,"*","*")
     }
 
+    /**
+     * 块级渲染，可渲染各种字体等
+     * @param event 
+     * @param pre 
+     * @param suf 
+     * @returns 
+     */
     blockKey(event: KeyboardEvent|null,pre:string,suf:string){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
@@ -321,6 +333,69 @@ class IRHotkeyProcessor implements KeyProcessor{
             this.editor.ir.focueProcessor.updateFocusElement()
         }
     }
+
+    /**
+     * 数学公式渲染
+     * @param event 
+     */
+    mathKey(event: KeyboardEvent){
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0).cloneRange() as RangyRange
+        const start =  r.startContainer
+
+        let e = IRfindClosestMdBlock(start)
+        if(!e) return
+        let content:DocumentFragment,
+            uuid:string;
+        //光标聚合的
+        if(r.collapsed){
+            r.setEndAfter(e)
+            //剪切
+            content = r.extractContents()
+
+            let block = content.firstElementChild
+            if(!block) return
+            //创建codemirror编辑面板
+            const codeStr = "$$\n\n$$"
+            const res = this.editor.ir.renderer.render(codeStr)
+            //添加面板
+            block.insertAdjacentHTML("beforebegin",res)
+            if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
+            uuid = content.firstElementChild? content.firstElementChild.id:''
+
+            r.collapseAfter(e)
+            r.insertNode(content)
+            r.collapseAfter(e);
+            sel.setSingleRange(r);
+
+        }else{
+            let str = r.extractContents().textContent
+            r.setEndAfter(e)
+            content = r.extractContents()
+            
+            let block = content.firstElementChild
+            if(!block) return
+            //创建codemirror编辑面板
+            const codeStr = "$$\n"+ str +"\n$$"
+            const res = this.editor.ir.renderer.render(codeStr)
+            //添加面板
+            block.insertAdjacentHTML("beforebegin",res)
+            if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
+            uuid = content.firstElementChild? content.firstElementChild.id:''
+            
+            r.collapseAfter(e)
+            r.insertNode(content)
+
+            r.collapseAfter(e);
+            sel.setSingleRange(r);
+        }
+        
+
+        
+        this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
+        this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
+    }
+
 
     /**
      * 添加缩进
@@ -577,5 +652,8 @@ class IRHotkeyProcessor implements KeyProcessor{
         return false
     }
 }
+
+
+
 
 export default IRHotkeyProcessor;

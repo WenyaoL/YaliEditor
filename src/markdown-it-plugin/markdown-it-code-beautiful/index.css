@@ -12,13 +12,13 @@ pre.markdown-it-code-beautiful{
 }
 
 .tooltip-input{
-  position: relative;
-  float: right;
+  position: absolute;
+  z-index: 1;
   background-color: #f8f8f8;
   box-shadow: 0 1px 1px 0 rgba(0,28,36,0.33);
   border-top: 1px solid #eef2f2;
   width: 140px;
-
+  right: 0px;
   max-width: 140px;
   max-height: 25px;
   padding-left: 20px;
@@ -37,7 +37,7 @@ pre.markdown-it-code-beautiful{
   
   .markdown-it-code-beautiful{
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
 
   .suggest {

@@ -46,12 +46,21 @@ class Mathjax{
 
   info:MathjaxInfo[];
 
+  documentOptions:{
+    InputJax: TeX<unknown, unknown, unknown>;
+    OutputJax: SVG<unknown, unknown, unknown>;
+  }
+
+  convertOptions:{
+    display: boolean
+  }
+
   constructor(editor:YaLiEditor){
     this.editor = editor
     this.info=[]
   }
 
-  freshMathjax(id:string,doc:string,documentOptions:DocumentOptions,convertOptions:ConvertOptions){
+  public freshMathjax(id:string,doc:string,documentOptions:DocumentOptions,convertOptions:ConvertOptions){
     let info = this.info.find(value=>value.id==id)
     if(!info) return
 
@@ -65,14 +74,14 @@ class Mathjax{
 
 
 
-  plugin = (md: MarkdownIt, options: any)=>{
+  public plugin = (md: MarkdownIt, options: any)=>{
     // Default options
   
-    const documentOptions = {
+    this.documentOptions = {
       InputJax: new TeX({ packages: AllPackages,  ...options?.tex }),
       OutputJax: new SVG({ fontCache: 'none',  ...options?.svg })
     }
-    const convertOptions = {
+    this.convertOptions = {
       display: false
     }
   
@@ -81,18 +90,19 @@ class Mathjax{
     md.block.ruler.after("blockquote", "math_block", math_block, {
       alt: ["paragraph", "reference", "blockquote", "list"],
     });
-    md.renderer.rules.math_inline = function (tokens: Token[], idx: number) {
-      convertOptions.display = false;
-      return renderMath(tokens[idx].content, documentOptions, convertOptions)
+    md.renderer.rules.math_inline = (tokens: Token[], idx: number)=>{
+      
+      this.convertOptions.display = false;
+      return renderMath(tokens[idx].content, this.documentOptions, this.convertOptions)
     };
   
   
-    md.renderer.rules.math_block = function (tokens: Token[], idx: number) {
-      convertOptions.display = true;
+    md.renderer.rules.math_block = (tokens: Token[], idx: number)=>{
+      this.convertOptions.display = true;
       let res = []
   
       res.push('<div class="mathjax-panel">')
-      res.push(renderMath(tokens[idx].content, documentOptions, convertOptions))
+      res.push(renderMath(tokens[idx].content, this.documentOptions, this.convertOptions))
       res.push('</div>')
       
   
@@ -118,20 +128,21 @@ class Mathjax{
       res.push('<div class="md-mathblock-tip md-hiden">')
       
       let id = 'id="'+ info.id +'"'
-      res.push('<div class="md-mathblock-input" ' ,id ,'>','</div>')
+      res.push('<div class="md-mathblock-input markdown-it-code-beautiful" ' ,id ,'>','</div>')
       res.push('</div>')
       
       let ex = [EditorView.updateListener.of(viewupdate=>{
         if(viewupdate.docChanged){
           this.editor.ir.observer.ignore(()=>{
-            this.freshMathjax(info.id,viewupdate.state.doc.toString(),documentOptions,convertOptions)
+            this.freshMathjax(info.id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
           },this)
         }
-        
       })]
       let editorState = CodemirrorEditorState.of(info.id,info.content,this.editor,ex)
       
-
+      console.log("添加状态cache");
+      console.log("编辑器ID是",info.id);
+      
       this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
       return  res.join('')
     }
@@ -139,8 +150,33 @@ class Mathjax{
     md.renderer.rules.math_close = function(tokens: Token[], idx: number){
       return "</div>"
     }
-  };
+  }
+
+  /**
+   * 添加一个数学公式面板，数学公式中的代码块由codemirrorManager管理
+   * @param id 
+   * @param content 
+   */
+  public addMathjaxPanel(id:string,content:string){
+
+
+    let ex = [EditorView.updateListener.of(viewupdate=>{
+      if(viewupdate.docChanged){
+        this.editor.ir.observer.ignore(()=>{
+          this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
+        },this)
+      }
+    })]
+    let editorState = CodemirrorEditorState.of(id,content,this.editor,ex)
+    
+
+    this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
+  }
+
 }
+
+
+//---------------------------function---------------------------
 
 
 function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {

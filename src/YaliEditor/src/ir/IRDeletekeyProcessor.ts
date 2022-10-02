@@ -67,8 +67,8 @@ class IRDeletekeyProcessor implements KeyProcessor{
 
         //无字符删除的情况
         if(e.textContent.length == 0 || e.innerText == "\n"){
-  
-
+            
+            //删除的是表格
             if(e && e.tagName == "TD" || e.tagName == "TH"){
                 if(e.previousElementSibling){
                     let element = e.previousElementSibling
@@ -85,6 +85,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 return
             }
 
+            //删除的是列表
             if(e.parentElement && e.parentElement.tagName == "LI"){
                 let li = e.parentElement
                 let ol = li.parentElement
@@ -94,6 +95,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 return
             }
 
+            //删除发生在代码块旁边
             if(e.previousElementSibling && e.previousElementSibling.tagName == "PRE"){
                 let sibling =  e.previousElementSibling
                 e.remove()
@@ -104,6 +106,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 return
             }
             
+            //删除发生在公式块旁边
             if(e.previousElementSibling && e.previousElementSibling.classList.contains("markdown-it-mathjax-beautiful")){
                 let sibling =  e.previousElementSibling.getElementsByClassName("md-mathblock-input")[0]
                 e.remove()

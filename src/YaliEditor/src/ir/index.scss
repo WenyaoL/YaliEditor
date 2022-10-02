@@ -19,37 +19,56 @@
     margin-block-end: 0.67em;
 }
 
+.YaLi-ir{
+    h1{
+        font-size: 2em;
+        border-bottom: 1px solid #eee;
+    }
 
-.YaLi-ir h1{
-    font-size: 2em;
-    border-bottom: 1px solid #eee;
+    h2{
+        font-size: 1.75em;
+        border-bottom: 1px solid #eee;
+    }
+
+    h3{
+        font-size: 1.5em;
+    }
+
+    h4{
+        font-size: 1.25em;
+    }
+
+    h5{
+        font-size: 1.0em;
+    }
+
+    h6{
+        font-size: 0.8em;
+    }
 }
 
-.YaLi-ir h2{
-    font-size: 1.75em;
-    border-bottom: 1px solid #eee;
-}
 
-.YaLi-ir h3{
-    font-size: 1.5em;
-    
-}
 
-.YaLi-ir h4{
-    font-size: 1.25em;
-}
-.YaLi-ir h5{
-    font-size: 1.0em;
-}
-.YaLi-ir h6{
-    font-size: 0.8em;
-}
+
+
 
 
 .YaLi-ir{
 
+    code.md-expand::before,code.md-expand::after{
+        content: '`';
+    }
+    
+    strong.md-expand::before,strong.md-expand::after{
+        content: '**';
+    }
+
+    em.md-expand::before,em.md-expand::after{
+        content: '*';
+    }
+
     p:empty::after{
-        content: '\200B';
+        content: '\200B';/* */
     }
 
     h1:empty::after,h2:empty::after,h3:empty::after,h4:empty::after,h5:empty::after,h6:empty::after{

@@ -12,6 +12,21 @@
     border-top: 1px solid #eef2f2;
 }
 
+.markdown-it-mathjax-beautiful:not(.md-focus) .mathjax-panel:hover{
+
+    transition:background 0.5s;
+    background-color: rgb(245, 246, 247)
+}
+
+.md-mathblock-input.markdown-it-code-beautiful{
+    margin: 0;
+}
+
+
 .md-focus .md-mathblock-tip{
     display: block;
+}
+
+.mathjax-panel{
+    padding: 1px 0;
 }
