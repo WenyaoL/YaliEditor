@@ -6,7 +6,7 @@
       <el-main>
         <!--<markdown-it-show :content="this.$store.state.applicationContext.content"/>-->
         <ir-markdown v-if="editModel == 'IR'"/>
-        <markdown-it-show v-else :content="this.$store.state.applicationContext.content"/>
+        <markdown-it-show v-else :content="store.state.applicationContext.content"/>
       </el-main>
     </el-container>
   </div>
