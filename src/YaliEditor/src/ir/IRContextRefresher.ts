@@ -50,26 +50,13 @@ class IRContextRefresher{
             return
         }
 
-        /*let sel = rangy.getSelection()
-        let r = sel.getRangeAt(0)
-        let inline = this.editor.ir.focueProcessor.getSelectedInlineMdElement()
-
-        let turndown = this.editor.ir.parser.turndown(inline.outerHTML)
-
-        
-        const res = this.editor.ir.renderer.render(turndown)
-
-        
-        let e = strToElement(res).querySelector("[md-inline]")
-        e.classList.add("md-expand")
-        let bookmark = sel.getBookmark(inline)
-        bookmark.rangeBookmarks[0].containerNode = e
-        inline.replaceWith(e)
-        sel.moveToBookmark(bookmark)*/
     }
 
     /**
-     * 
+     * 刷新聚焦的块级元素，只有在标签发生转变时才对变化进行渲染
+     * 如：
+     * p  --重新翻译为markdown再重新转化为HTML--> p (该变化将不会被渲染到页面，除非使用强制刷新)
+     * p  ---->  h2  (节点发生变化，渲染到页面)
      * @returns 
      */
     refreshFocusBlock(force?:boolean){
@@ -102,6 +89,7 @@ class IRContextRefresher{
             //已经转化为新的块
             block.replaceWith(e)
             sel.collapse(e,1)
+            this.editor.ir.focueProcessor.updateFocusElement()
         }else{
             //强制刷新?
             if(force){                
@@ -177,11 +165,12 @@ class IRContextRefresher{
     }
 
     /**
-     * 刷新上下文中的表格节点
+     * 刷新上下文中的TOC节点
      */
     refreshToc(){
         let root = this.ir.rootElement
         let toc = root.querySelector(".markdown-it-toc-beautiful[md-block]")
+        if(!toc) return
         let as = toc.querySelectorAll("a")
         as.forEach(a=>{
             let href = a.getAttribute("to-href")

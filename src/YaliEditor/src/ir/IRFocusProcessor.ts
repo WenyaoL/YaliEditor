@@ -21,6 +21,7 @@ class IRFocusProcessor{
 
 
   public editor:YaLiEditor
+  //选择对象,代表选择对象在面板的最后位置
   public sel:RangySelection
   //当前位置的bookmark
   private bookmark:any;
@@ -39,7 +40,7 @@ class IRFocusProcessor{
    * @param start 
    */
   updateFocusElementByStart(start?:Node){
-
+    this.sel = rangy.getSelection()
     if(!start) start = this.sel.getRangeAt(0).startContainer
 
     if(this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
@@ -55,9 +56,10 @@ class IRFocusProcessor{
   /**
    * 根据当前光标位置刷新选中元素
    */
-  updateFocusElement(){    
-    let sel = rangy.getSelection()
-    this.updateFocusElementByStart(sel.getRangeAt(0).startContainer)
+  updateFocusElement(){
+    //跟新选择对象为最新select
+    this.sel = rangy.getSelection()
+    this.updateFocusElementByStart(this.sel.getRangeAt(0).startContainer)
   }
 
 

@@ -2,7 +2,7 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 import YaLiEditor from '../../YaliEditor/src'
 import Constants from '../../YaliEditor/src/constants'
 import rangy from 'rangy'
-import {createTableItems,createHeadItems,createImgItems} from './tipitemsCommon'
+import {createTableItems,createHeadItems,createImgItems,createParagraphItems} from './tipitemsCommon'
 
 export const exec = (editor:YaLiEditor,e: MouseEvent)=>{
 
@@ -37,7 +37,7 @@ export const exec = (editor:YaLiEditor,e: MouseEvent)=>{
             r.selectNodeContents(element.previousElementSibling)
             sel.setSingleRange(r)
         }
-        items=items.concat(createImgItems(disableCopy))
+        items=items.concat(createImgItems(disableCopy,editor))
     }
 
     //所在标题
@@ -47,11 +47,14 @@ export const exec = (editor:YaLiEditor,e: MouseEvent)=>{
 
     //所在table
     if(blockType == Constants.ATTR_MD_BLOCK_TABLE){
-        items=items.concat(createTableItems(disableCopy))
+        items=items.concat(createTableItems(disableCopy,editor))
     }
     
     
-    
+    //所在段落
+    if(blockType == Constants.ATTR_MD_BLOCK_PARAGRAPH){
+        items = items.concat(createParagraphItems(disableCopy,editor))
+    }
 
 
       ContextMenu.showContextMenu({

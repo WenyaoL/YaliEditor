@@ -27,20 +27,11 @@ export default {
   
 
     function onContextmenu(e: MouseEvent){
-      console.log(e);
-      console.log(e.target)
       let editor:YaLiEditor = store.state.yaliEditor;
       
       exec(editor,e)
-      
-      //prevent the browser's default menu
 
       e.preventDefault();
-      //shou your menu
-      
-      
-      
-
     }
     onMounted(()=>{
       yali = new YaLiEditor("YaliEditor")

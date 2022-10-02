@@ -97,44 +97,8 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
     bindKeyupEvent(element: HTMLElement){
         element.addEventListener("keyup",(event: KeyboardEvent & { target: HTMLElement }) => {
 
-
-
-
             this.editor.ir.contextRefresher.refresh()
-            //修复删除残留问题
-            /*if(event.key === "Backspace"){
-                const r = rangy.getSelection().getRangeAt(0)
-                let start =  r.startContainer as HTMLElement
-                if(start.nodeType === 3){
-                    start = start.parentElement
-                }
-
-                if(start.hasAttribute(CONSTANTS.ATTR_MD_INLINE) && start.children.length === 1 && start.children[0].tagName === "BR"){
-
-                    r.selectNode(start)
-                    r.deleteContents()
-                    r.insertNode(document.createElement("br"))
-                    //this.editor.ir.addUndo()
-                    return
-                }
-                //删除元数据类
-                if(start.classList.contains(CONSTANTS.CLASS_MD_META)){
-                    //元数据类更改，应该影响内容的展示和标签的实际功能
-                    let e = findClosestByAttribute(start,CONSTANTS.ATTR_MD_INLINE,"img",this.editor.ir.getRootElementClassName())
-                    if(e){
-                        const src = e.getElementsByClassName("md-img-url md-hiden md-meta").item(0).textContent
-                        e.getElementsByTagName("img").item(0).src =encodeURI(src) 
-                    }
-
-                    e = findClosestByAttribute(start,CONSTANTS.ATTR_MD_INLINE,"link",this.editor.ir.getRootElementClassName())
-                    if(e){
-                        e.getElementsByTagName("a")[0].href = start.innerText
-                    }
-                    //this.editor.ir.addUndo()
-                }
-                
-            }*/
-            
+        
             return ;
         })
     }

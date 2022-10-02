@@ -75,9 +75,7 @@ class IR{
     constructor(editor:YaLiEditor){
         this.editor = editor;
         this.options = this.editor.options.ir
-    }
 
-    public init(){
         const divElement = document.createElement("div");
         divElement.className = "YaLi-ir";
         divElement.setAttribute("contenteditable","true");
@@ -85,7 +83,10 @@ class IR{
         divElement.setAttribute("tabindex","1");
         this.editor.rootElement.appendChild(divElement);
         this.rootElement = divElement;
+    }
 
+    public init(){
+        
         this.renderer = new MarkdownBeautiful(this.editor);
         this.parser = new TurndownParser(this.editor);;
 

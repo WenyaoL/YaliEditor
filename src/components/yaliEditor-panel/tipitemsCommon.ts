@@ -1,6 +1,6 @@
 import YaLiEditor from "../../YaliEditor/src"
 
-export const createCommonItems=(disabled:boolean):any[]=>{
+export const createCommonItems=(disabled:boolean,editor:YaLiEditor):any[]=>{
     let items:any[]=[]
 
     if(disabled){
@@ -26,9 +26,11 @@ export const createCommonItems=(disabled:boolean):any[]=>{
             children: [
                 { 
                     label: "复制为纯文本",
+                    
 
                 },{
                     label: "复制为markdown",
+
                 }
             ],
         },
@@ -41,8 +43,8 @@ export const createCommonItems=(disabled:boolean):any[]=>{
 }
 
 
-export const createTableItems=(disabled:boolean)=>{
-    return createCommonItems(disabled).concat([
+export const createTableItems=(disabled:boolean,editor:YaLiEditor)=>{
+    return createCommonItems(disabled,editor).concat([
         { 
           label: "删除表格", 
         },
@@ -50,16 +52,92 @@ export const createTableItems=(disabled:boolean)=>{
 }
 
 
-export const createImgItems=(disabled:boolean)=>{
-    return createCommonItems(disabled).concat([
+export const createImgItems=(disabled:boolean,editor:YaLiEditor)=>{
+    return createCommonItems(disabled,editor).concat([
         { 
           label: "删除图片", 
         },
     ])
 }
 
+export const createParagraphItems=(disabled:boolean,editor:YaLiEditor)=>{
+    return createCommonItems(disabled,editor).concat([
+        { 
+          label: "段落",
+          children: [
+            { 
+                label: "一级标题",
+                onClick: () => {
+                    let key = new KeyboardEvent("keydown",{
+                        key:"1"
+                    })
+                    editor.ir.hotkeyProcessor.headingKey(key)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            },{
+                label: "二级标题",
+                onClick: () => {
+                    let key = new KeyboardEvent("keydown",{
+                        key:"2"
+                    })
+                    editor.ir.hotkeyProcessor.headingKey(key)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            },{
+                label: "三级标题",
+                onClick: () => {
+                    let key = new KeyboardEvent("keydown",{
+                        key:"3"
+                    })
+                    editor.ir.hotkeyProcessor.headingKey(key)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            },{
+                label: "四级标题",
+                onClick: () => {
+                    let key = new KeyboardEvent("keydown",{
+                        key:"4"
+                    })
+                    editor.ir.hotkeyProcessor.headingKey(key)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            },{
+                label: "五级标题",
+                onClick: () => {
+                    let key = new KeyboardEvent("keydown",{
+                        key:"5"
+                    })
+                    editor.ir.hotkeyProcessor.headingKey(key)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            }
+          ],
+        },
+        {
+           label:"插入",
+           children:[
+            { 
+                label: "代码块",
+                onClick: () => {
+                    editor.ir.hotkeyProcessor.codeblockKey(null)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            },
+            {
+                label: "公式块",
+                onClick: () => {
+                    editor.ir.hotkeyProcessor.mathKey(null)
+                    editor.ir.focueProcessor.updateBookmark()
+                }
+            }
+           ]
+        }
+    ])
+}
+
+
 export const createHeadItems=(disabled:boolean,editor:YaLiEditor)=>{
-    return createCommonItems(disabled).concat([
+    return createCommonItems(disabled,editor).concat([
         { 
             label: "标题", 
             icon: 'el-icon-more-outline',

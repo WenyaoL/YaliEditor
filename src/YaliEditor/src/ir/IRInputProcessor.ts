@@ -22,11 +22,6 @@ class IRInputProcessor{
             if(event.inputType==="deleteContentBackward"){
                 return;
             }
-
-            //来自md-meta输入是需要跟新对应标签的src
-            /*if(this.metaInput()){
-                return 
-            }*/
             
             //一般打字不处理
             if(event.isComposing){

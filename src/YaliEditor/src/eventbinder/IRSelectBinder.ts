@@ -15,9 +15,7 @@ declare global {  //设置全局属性
 
 class IRSelectBinder implements BaseEventBinder{
 
-  //当前被选中的md-inline原生
-  private selectedInlineMdElement = null;
-  private selectedBlockMdElement = null;
+
 
     public editor:YaLiEditor;
 
@@ -25,29 +23,6 @@ class IRSelectBinder implements BaseEventBinder{
       this.editor = editor;
     }
 
-    /**
-     * 跟新md class属性
-     * @param e 
-     * @returns 
-     */
-    /*updateMdElement(e: HTMLElement,isBlock:boolean = false){
-        if(isBlock){
-          if(this.selectedBlockMdElement !== null){
-            this.selectedBlockMdElement.classList.remove("md-expand")
-          }
-          this.selectedBlockMdElement = e;
-          this.selectedBlockMdElement.classList.add("md-expand")
-          return ;
-
-        }
-
-        if(this.selectedInlineMdElement !== null){
-            this.selectedInlineMdElement.classList.remove("md-expand")
-        }
-        this.selectedInlineMdElement = e;
-        this.selectedInlineMdElement.classList.add("md-expand")
-        return ;
-    }*/
 
     ctrlKeyClick(event: MouseEvent & { target: HTMLElement }){
       const topClassName = this.editor.ir.getRootElementClassName()

@@ -327,7 +327,7 @@ class IRHotkeyProcessor implements KeyProcessor{
 
             sel.setSingleRange(r);
             if(e.lastChild.nodeType != 3){
-                let n = document.createTextNode("")//空白符\u200c
+                let n = document.createTextNode("\u200c")//空白符\u200c
                 e.append(n)
             }
             this.editor.ir.focueProcessor.updateFocusElement()
@@ -595,24 +595,26 @@ class IRHotkeyProcessor implements KeyProcessor{
     }
 
     /**
-     * 
+     * 表格创建
      * @param row 
      * @param col 
      */
     tableCreate(row:number,col:number){
-        //修改动作前的跟新
-        this.editor.ir.focueProcessor.updateBeforeModify()
-        const sel = rangy.getSelection()
+
+        //获取编辑器最后更新时的选择
+        const sel = this.editor.ir.focueProcessor.sel
         //sel.moveToBookmark(this.editor.ir.focueProcessor.bookmark)
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
-
-        
         let e = IRfindClosestMdBlock(start)
+        
+        if(!e){
+            e =this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+        }
+
         if(!e) return
 
         if(!r.collapsed) r.deleteContents()
-
         r.setEndAfter(e)
         let content = r.extractContents()
         let format = createTableStr(row,col)
