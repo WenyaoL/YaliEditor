@@ -45,6 +45,28 @@
     h6{
         font-size: 0.8em;
     }
+
+    p{
+        position: relative;
+    }
+
+    p.md-focus::before{
+        color: rgb(200, 200, 200);
+        border: 1px solid;
+        border-radius: 3px;
+        position: absolute;
+        left: -1.357143rem;
+        top: 3.5px;
+        float: left;
+        font-size: 11px;
+        font-weight: 500;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        line-height: normal;
+        content: "P";
+    }
+
 }
 
 

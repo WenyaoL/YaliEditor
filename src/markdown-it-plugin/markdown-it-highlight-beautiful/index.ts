@@ -13,7 +13,7 @@ export const highlighter = (str:string,lang:string)=>{
     preCode =  hljs.highlight(str, {language: lang,ignoreIllegals: true}).value
   }
   //const preCode = hljs.highlight(str,{language:lang,ignoreIllegals:true}).value
-
+  
   let html = '<pre class="hljs">'
   //长度
   let length = 0;

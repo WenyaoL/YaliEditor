@@ -126,6 +126,8 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 this.editor.ir.focueProcessor.updateFocusElement()
                 event.preventDefault()
                 return
+            }else{
+                event.preventDefault()
             }
         }
         
@@ -143,7 +145,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
             e = findClosestByAttribute(e,CONSTANTS.ATTR_MD_INLINE,"",this.editor.ir.getRootElementClassName())
             if(!e) return
             if(e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-                console.log(e);
+
                 r.selectNodeContents(e)
                 //r.selectNode(e)
 
@@ -162,22 +164,19 @@ class IRDeletekeyProcessor implements KeyProcessor{
             e = findClosestByClassName(e,CONSTANTS.CODEMIRROR_EDITOR,this.editor.ir.getRootElementClassName())
             if(e.getAttribute("is-empty") == "true"){
                 /*if(e.innerText.length==1 && e.innerText == "\n"){}*/
-                if(e.hasAttribute("ready-destroy")){
-                    const parent = e.parentElement
-                    this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
-                    r.setStartBefore(parent)
-                    
+                const parent = e.parentElement
+                this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
+                r.setStartBefore(parent)
+                
 
-                    let p = document.createElement("p")
-                    p.setAttribute("md-block","paragraph")
-                    r.insertNode(p)
-                    r.collapseToPoint(p,0)
-                    rangy.getSelection().setSingleRange(r)
-                    parent.remove()
-                    
-                    event.preventDefault()
-                }
-                e.setAttribute("ready-destroy","1")
+                let p = document.createElement("p")
+                p.setAttribute("md-block","paragraph")
+                r.insertNode(p)
+                r.collapseToPoint(p,0)
+                rangy.getSelection().setSingleRange(r)
+                parent.remove()
+                
+                event.preventDefault()
             }
             return;
         }
@@ -205,6 +204,9 @@ class IRDeletekeyProcessor implements KeyProcessor{
         let start = r.startContainer
         let end =  r.endContainer
 
+        if(this.editor.ir.focueProcessor.getSelectedBlockMdType() == CONSTANTS.ATTR_MD_BLOCK_FENCE){
+            return
+        }
         
         event.preventDefault()
         //删除一个节点的
@@ -217,8 +219,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
         if(r.getNodes().length>1){
             let startElement = IRfindClosestMdBlock(start)
             let endElement = IRfindClosestMdBlock(end)
-            console.log(startElement);
-            console.log(endElement);
+  
             
             let startOffset = r.startOffset
             //相同的情况
@@ -227,7 +228,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 
                 //删除内容
                 r.deleteContents()
-                console.log("删除");
+            
                 
                 if(!this.renderNode(startElement,r)){
                     //翻译出是空的情况

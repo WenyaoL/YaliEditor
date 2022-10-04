@@ -166,8 +166,8 @@ export default function(md:MarkdownIt) {
             }
     })
 
-    const win:any = window
-    win.TOC_DELETE=()=>{
+    const doc:any = document
+    doc.TOC_DELETE=()=>{
         let toc = document.getElementsByClassName("markdown-it-toc-beautiful").item(0)
         if(toc) toc.remove()
     }

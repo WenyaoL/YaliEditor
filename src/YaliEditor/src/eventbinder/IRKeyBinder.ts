@@ -52,7 +52,7 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
     bindKeydownEvent(element: HTMLElement){
 
         element.addEventListener("keydown",(event: KeyboardEvent & { target: HTMLElement }) => {
-
+        
         // 非目录键不处理
         if (!this.isTargetKey(event)) {
             return false;

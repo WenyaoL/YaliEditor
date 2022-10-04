@@ -97,7 +97,7 @@ class IRUndo{
         
         this.lastBookMark = history.bookMark
         //刷新disable的视图
-        this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
+        //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
@@ -139,7 +139,7 @@ class IRUndo{
         this.lastBookMark = history.bookMark
 
         //刷新disable的视图
-        this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
+        //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标

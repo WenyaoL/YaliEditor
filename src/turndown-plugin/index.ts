@@ -76,14 +76,19 @@ class TurndownParser{
         return flag
       },
       replacement: function (content, node, options) {
+        
+        
         node = node as HTMLElement
         const uuid = node.id
         const text = editor.ir.renderer.codemirrorManager.getTextValue(uuid)
         if(!text) return ''
         const language = node.lastElementChild.getElementsByClassName("tooltip-input")[0].textContent.trim()
-
-        if(text.endsWith("\n")) return '\n```'+ language + '\n' + text +'```\n\n'
-        else return '\n```'+ language + '\n' + text +'\n```\n\n'
+        
+        if(text.endsWith("\n")) {
+          return '\n```'+ language + '\n' + text +'```\n\n'
+        }else{
+          return '\n```'+ language + '\n' + text +'\n```\n\n'
+        } 
         
       }
     })

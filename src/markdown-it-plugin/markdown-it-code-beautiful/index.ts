@@ -177,7 +177,7 @@ export class CodemirrorManager{
     public codemirrorPlugin:Extension[];
     
     //暂时不可用视图
-    public allDisableView: CodemirrorEditorView[] = [];
+    //public allDisableView: CodemirrorEditorView[] = [];
 
     //每个视图都安装的监听器
     public viewlistener:(update: ViewUpdate)=>void;
@@ -214,11 +214,11 @@ export class CodemirrorManager{
             EditorView.lineWrapping,
             EditorView.updateListener.of((viewUpdate) => { // 默认自带的监听器
                 
-                if (viewUpdate.docChanged && viewUpdate.state.doc.length === 0) {
+                if (viewUpdate.state.doc.length === 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","true")
                     
                 }
-                if (viewUpdate.docChanged && viewUpdate.state.doc.length > 0) {
+                if (viewUpdate.state.doc.length > 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","false")
                     
                 }
@@ -351,7 +351,7 @@ export class CodemirrorManager{
       * 刷新指定dom元素下的所有Disable的视图，使其enable
       * @param root 
       */
-    refreshDisableEditorViewSyn(root:HTMLElement){
+    /*refreshDisableEditorViewSyn(root:HTMLElement){
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
         for (let index = 0; index < this.allDisableView.length; index++) {
             const viewInfo = this.allDisableView[index]
@@ -360,7 +360,7 @@ export class CodemirrorManager{
             if(!e) continue;
             this.viewEnable(viewInfo.stateInfo.editor_uuid)
         }
-    }
+    }*/
 
     /**
      * 重新跟新视图状态
@@ -431,17 +431,18 @@ export class CodemirrorManager{
         const viewInfo = this.allView.splice(idx, 1).at(0)
         //跟新视图状态
         viewInfo.stateInfo.state = viewInfo.view.state
-        this.allDisableView.push(viewInfo)
+        //重新返回缓存(等待刷新)
+        this.allStateCache.push(viewInfo.stateInfo)
     }
 
-    viewEnable(uuid:string){
+    /*viewEnable(uuid:string){
         if(this.allDisableView.length<=0) return;
         const idx = this.allDisableView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
         if(idx==-1) return
         
         const viewInfo = this.allDisableView.splice(idx,1).at(0)
         this.allView.push(viewInfo)
-    }
+    }*/
 
     viewFocus(uuid:string){
         
@@ -492,7 +493,7 @@ export class CodemirrorManager{
         const viewInfo = this.getViewInfo(uuid)
         
         if(viewInfo){
-            let res = viewInfo.stateInfo.state.doc.toString()
+            let res = viewInfo.view.state.doc.toString()
             return res;
         }else{
             return ''
@@ -514,7 +515,7 @@ export class CodemirrorManager{
         const uuid = uuidv4()
         pre.id = uuid
         
-        
+
 
         //封装扩展，以便修改
         let historyExtension = myHistorySetup(this.editor,uuid);

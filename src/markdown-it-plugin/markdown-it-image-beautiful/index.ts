@@ -8,6 +8,7 @@ import Renderer from "markdown-it/lib/renderer";
 import {toImgElementText} from "../util/formatText"
 
 
+
 function htmlBlock (tokens:Token[], idx:number /*, options, env */) {
   const token =  tokens[idx];
   //适配图片
@@ -63,7 +64,7 @@ function image(tokens:Token[], idx:number, options:Object, env:Object, slf: Rend
         slf.renderInlineAsText(token.children, options, env);
     }
 
-    
+    token.attrPush(["onerror","ir_imgerror(event)"])
     const img = slf.renderToken(tokens, idx, options);
     
     const root = document.createElement("span")
@@ -95,6 +96,13 @@ function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.html_block = htmlBlock
     
     //md.block.ruler.disable("html_block")
+
+    const doc:any = document
+    doc.ir_imgerror = (event:Event)=>{
+      let img = event.target as HTMLImageElement
+      img.src = "";
+      //img.onerror = null; //防止闪图
+    }
 }
 
 export default plugin

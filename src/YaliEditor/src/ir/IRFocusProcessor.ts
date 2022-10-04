@@ -35,6 +35,15 @@ class IRFocusProcessor{
     this.editor = editor
   }
   
+
+  /**
+   * 刷新所有状态信息
+   */
+  update(){
+    this.updateFocusElement()
+    this.updateBookmark()
+  }
+
   /**
    * 给定起点位置，去刷新当前选中的元素
    * @param start 

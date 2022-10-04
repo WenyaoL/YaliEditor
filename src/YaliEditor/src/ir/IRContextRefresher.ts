@@ -47,9 +47,9 @@ class IRContextRefresher{
         let inlineType = this.editor.ir.focueProcessor.getSelectedInlineMdType()
         if(inlineType == Constants.ATTR_MD_INLINE_IMG || inlineType == Constants.ATTR_MD_INLINE_LINK){
             this.refreshFocusBlock(true)
-            return
+            return true
         }
-
+        return false
     }
 
     /**
@@ -66,13 +66,17 @@ class IRContextRefresher{
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
         if(!block) return
         let turndown = this.editor.ir.parser.turndown(block.outerHTML)
-        
+
         //P标签翻译出的markdown语法会被转义，去除头部的转义符
+        //turndown = turndown.replace(/(\\)(?=[^\\])/g,"")
+        turndown = turndown.replace(/(\\)(?=[\\\[\]\`])/g,"")
+        
         if(turndown.charAt(0) == "\\"){
             turndown = turndown.slice(1)
         }
         //转html
         const res = this.editor.ir.renderer.render(turndown)
+
 
         
         if(!block.parentElement){
@@ -84,21 +88,41 @@ class IRContextRefresher{
         //转化为dom
         let e = strToElement(res)
 
+        
         //只有发生转化为新块时才刷新
         if(e.tagName!="P" && e.textContent.length!= 0){
+
+            
             //已经转化为新的块
             block.replaceWith(e)
             sel.collapse(e,1)
             this.editor.ir.focueProcessor.updateFocusElement()
         }else{
             //强制刷新?
-            if(force){                
+            /*if(force){         
+                console.log("强制");
+                       
                 let bookmark = sel.getBookmark(block)
                 bookmark.rangeBookmarks[0].containerNode = e
                 block.replaceWith(e)
                 sel.moveToBookmark(bookmark)
                 this.editor.ir.focueProcessor.updateFocusElement()
+                return
+            }*/
+
+            if(e.textContent.length== 0){
+                return
             }
+
+            if(e?.innerHTML!=block?.innerHTML){
+                let bookmark = sel.getBookmark(block)
+                bookmark.rangeBookmarks[0].containerNode = e
+                block.replaceWith(e)
+                sel.moveToBookmark(bookmark)
+                this.editor.ir.focueProcessor.updateFocusElement()
+                return
+            }
+
             return
         }
     }
@@ -176,7 +200,8 @@ class IRContextRefresher{
             let href = a.getAttribute("to-href")
             let id = "#"+href
             let heading = root.querySelector(id)
-            a.innerText = heading.textContent
+            if(heading) a.innerText = heading.textContent
+            
         })
     }
 }

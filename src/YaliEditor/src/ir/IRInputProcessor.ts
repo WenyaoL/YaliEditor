@@ -30,8 +30,10 @@ class IRInputProcessor{
 
             //普通的输入需要刷新节点
             if(this.editor.ir.focueProcessor.getSelectedBlockMdType() == CONSTANTS.ATTR_MD_BLOCK_PARAGRAPH){
-                this.editor.ir.contextRefresher.refreshFocusBlock()
-                this.editor.ir.contextRefresher.refreshFocusInline()
+                if(!this.editor.ir.contextRefresher.refreshFocusInline()){
+                    this.editor.ir.contextRefresher.refreshFocusBlock()
+                }
+                
             }
             
     }
