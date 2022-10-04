@@ -10,33 +10,46 @@
 	
 
 	<div id="COS" contenteditable="true">123</div>
-	<div id="br"><br></div>
+
 	<script>
-		console.log(document.getElementById("br").textContent);
-		console.log(document.getElementById("br").innerText);
-		console.log(document.getElementById("br").innerHTML)
-
-		console.log(document.getElementById("br").textContent.length);
-		console.log(document.getElementById("br").innerText.length);
-		console.log(document.getElementById("br").innerHTML.length)
-
-		console.log(document.getElementById("br").textContent =="\n");
-		console.log(document.getElementById("br").innerText =="\n");
-		console.log(document.getElementById("br").innerHTML =="\n")
 
 		document.getElementById("COS").addEventListener("keydown",(event)=>{
-			console.log(event);
-			//console.log("按下");
+			//console.log(event);
+			console.log("按下");
 		})
 
 		document.getElementById("COS").addEventListener("keypress",(event)=>{
 			//console.log(event);
-			//console.log("按着");
+			console.log("按着");
 		})
 
 		document.getElementById("COS").addEventListener("input",(event)=>{
-			console.log(event);
+			//console.log(event);
 			console.log("输入");
+		})
+
+		document.getElementById("COS").addEventListener("change",(event)=>{
+			//console.log(event);
+			console.log("改变");
+		})
+
+		document.getElementById("COS").addEventListener("compositionstart",(event)=>{
+			//console.log(event);
+			console.log("打字前");
+		})
+
+		document.getElementById("COS").addEventListener("compositionend",(event)=>{
+			//console.log(event);
+			console.log("打字后");
+		})
+
+		document.getElementById("COS").addEventListener("compositionupdate",(event)=>{
+			//console.log(event);
+			console.log("打字中");
+		})
+
+		document.getElementById("COS").addEventListener("beforeinput",(event)=>{
+			console.log("输入前");
 		})
 
 		/*document.getElementById("COS2").addEventListener("dragenter", (event) => {

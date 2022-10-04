@@ -73,7 +73,6 @@ class IRUndo{
         this.redoStack = [];
         this.undoStack = [];
         
-        //this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
     }
 
     private codemirrorHistoryUndo(history:History){
@@ -95,7 +94,7 @@ class IRUndo{
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
         
-        this.lastBookMark = history.bookMark
+        
         //刷新disable的视图
         //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
         //刷新视图
@@ -136,7 +135,7 @@ class IRUndo{
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
-        this.lastBookMark = history.bookMark
+        
 
         //刷新disable的视图
         //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
@@ -176,6 +175,8 @@ class IRUndo{
     }
 
     public addCodemirrorHistory(uuid:string){
+        //释放修改锁
+        this.editor.ir.focueProcessor.releaseModifyLock()
         let history = new History()
         history.type = HistoryType.CodemirrorHistory
         history.codemirrorHistory = {id:uuid}
@@ -183,7 +184,8 @@ class IRUndo{
     }
 
     public addIRHistory(){
-        
+        //释放修改锁
+        this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
         //移除动态的
         let preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
@@ -207,9 +209,11 @@ class IRUndo{
         
         
         //创建历史记录
-        //const history = new History(patch,this.lastBookMark)
+        let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()
+
         
-        const history = new History(patch,this.editor.ir.focueProcessor.getModifyBeforeBookmark())
+        const history = new History(patch,mark)
+
 
        //跟新lastText为当前状态
        this.lastText = cloneRoot.innerHTML;
@@ -288,18 +292,19 @@ class IRUndo{
 
         //跟新lastText为当前状态
         this.lastText = nowText;
-        //const bookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
-        
-        this.lastBookMark = this.editor.ir.focueProcessor.getModifyBeforeBookmark();
+  
         this.undoStack.push(new History(patch,lastHistory.bookMark))
+
+        //释放修改锁
+        this.editor.ir.focueProcessor.releaseModifyLock()
     }
 
     /**
      * update bookmark
      */
-    updateBookmark(){
+    /*updateBookmark(){
         this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
-    }
+    }*/
 }
 
 export default IRUndo;

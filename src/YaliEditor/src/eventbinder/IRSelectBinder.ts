@@ -38,14 +38,15 @@ class IRSelectBinder implements BaseEventBinder{
     
     bindClick(element: HTMLElement){
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-        //console.log(event);
+
+        this.editor.ir.focueProcessor.update()
+        //console.log(this.editor.ir.focueProcessor.getBookmark());
         
-        this.editor.ir.focueProcessor.updateBookmark()
         let sel = this.editor.ir.focueProcessor.sel
         let r = sel.getRangeAt(0)
         
         
-        this.editor.ir.undoManager.updateBookmark()
+
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
         }

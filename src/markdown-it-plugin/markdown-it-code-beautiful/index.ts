@@ -197,13 +197,11 @@ export class CodemirrorManager{
         const customTheme = EditorView.theme({
             '&.cm-editor.cm-focused': {
                 outline: "none"   //移除外边框线
-                
             },
             '&':{
                 font: "16px Arial, monospace ",  //字体
             },
             '.cm-scroller':{
-                "border-radius": "3px",
                 "background-color":"#f6f6f6"
             }
         })
@@ -514,7 +512,9 @@ export class CodemirrorManager{
         pre.setAttribute("md-block","fence")
         const uuid = uuidv4()
         pre.id = uuid
-        
+        if(str.endsWith("\n")){
+            str = str.substring(0,str.length-1)
+        }
 
 
         //封装扩展，以便修改

@@ -28,6 +28,7 @@ export class DOMObserver{
         this.observer = new MutationObserver(mutations => {
             
             
+            
             if(this.editor.ir.rootElement.childElementCount == 0){
                 this.editor.ir.rootElement.append(createParagraph())
             }

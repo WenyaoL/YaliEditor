@@ -27,6 +27,8 @@ class IRFocusProcessor{
   private bookmark:any;
   private lastBookmark:any;
 
+  //修改锁(发生修改操作前应该锁上)
+  private modifyLock:boolean;
   //修改操作之前的bookmark
   private modifyBeforeBookmark:any;
 
@@ -79,13 +81,30 @@ class IRFocusProcessor{
 
   }
 
+  /**
+   * 释放修改锁
+   */
+  releaseModifyLock(){
+    this.modifyLock = false
+  }
+
+  /**
+   * 修改前更新，更新所有修改前的定位信息，并且会给对象上修改锁。
+   * 只有在一系列修改之后，才会将修改锁释放，否则将无法进行更新
+   */
   updateBeforeModify(){
+    this.sel = rangy.getSelection()
+
+    //上锁前跟新修改前的bookmark
+    if(!this.modifyLock){
+      this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
+    }
     
-    this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement) 
+    this.modifyLock = true
   }
 
   updateAfterModify(){
-
+    this.modifyLock = false
   }
 
 

@@ -140,8 +140,6 @@ class Mathjax{
       })]
       let editorState = CodemirrorEditorState.of(info.id,info.content,this.editor,ex)
       
-      console.log("添加状态cache");
-      console.log("编辑器ID是",info.id);
       
       this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
       return  res.join('')
