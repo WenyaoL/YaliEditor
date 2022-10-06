@@ -5,7 +5,7 @@
       <el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />
       <el-main>
         <!--<markdown-it-show :content="this.$store.state.applicationContext.content"/>-->
-        <ir-markdown v-if="editModel == 'IR'"/>
+        <ir-markdown v-if="editModel == 'IR'" :disableEdit="true"/>
         <markdown-it-show v-else :content="store.state.applicationContext.content"/>
       </el-main>
     </el-container>

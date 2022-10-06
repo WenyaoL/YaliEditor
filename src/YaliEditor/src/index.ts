@@ -30,6 +30,7 @@ class YaLiEditor {
         //合并
         this.options = defalutOptions.merge(options)
         
+        
         this.init(id,this.options)
     }
 
@@ -44,7 +45,21 @@ class YaLiEditor {
 
     public render(src:string){    
         this.ir.load(src)
-        
+    }
+
+    /**
+     * 将编辑器重新挂载到另一个容器中(历史记录等信息将会缓存)
+     * @param id 
+     */
+    public reMount(id: string | HTMLElement){
+        if (typeof id === "string") {
+            id = document.getElementById(id);
+        }
+        //更新设置挂载容器
+        this.rootElement = id;
+
+        //IR面板重新挂载
+        this.ir.reMount()
     }
 
     public getMarkdownText(){

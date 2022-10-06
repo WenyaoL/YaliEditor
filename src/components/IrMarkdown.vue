@@ -1,12 +1,14 @@
 <template>
   <div class="write">
-    <yali-editor/>
+    <yali-editor :disableEdit="props.disableEdit"/>
   </div>
 </template>
 
 <script setup>
 import YaliEditor from '@/components/yaliEditor-panel/YaliEditor.vue'
-
+const props = defineProps({
+  disableEdit: Boolean
+})
 </script>
 
 <style>

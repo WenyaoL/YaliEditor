@@ -14,8 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     readFile: async (payload) => ipcRenderer.invoke('readFile',payload),
     //渲染进程请求打开文件保存信息框
     openSaveMsgDialog: () => ipcRenderer.invoke('openSaveMsgDialog'),
-    //渲染进程请求主进程保存文件
-    invokeSave:(payload) => ipcRenderer.invoke('saveFile',payload),
+
     //openURL打开一个url链接
     openURL:(payload) => ipcRenderer.invoke('openURL',payload),
     //打开帮助文档
@@ -26,6 +25,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     loadFonts:(payload) => ipcRenderer.send('loadFonts',payload),
     //渲染进程提交要保存的dom元素的字符串，通过模板生成HTML文件
     saveHTMLFile:(payload) => ipcRenderer.send('saveHTMLFile',payload),
+    //渲染进程请求主进程保存文件
+    invokeSave:(payload) => ipcRenderer.send('saveFile',payload),
 
     //--------------------------------------监听（listener）-----------------------------------
     //渲染进程加载上下文

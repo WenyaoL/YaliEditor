@@ -76,9 +76,15 @@ class IR{
         this.editor = editor;
         this.options = this.editor.options.ir
 
+        //将ir容器挂载到编辑器下面
+        this.mount()
+    }
+
+    public mount(){
         const divElement = document.createElement("div");
         divElement.className = "YaLi-ir";
-        divElement.setAttribute("contenteditable","true");
+
+        if(!this.options.disableEdit) divElement.setAttribute("contenteditable","true");
         divElement.setAttribute("spellcheck","false")
         divElement.setAttribute("tabindex","1");
         this.editor.rootElement.appendChild(divElement);
@@ -109,7 +115,27 @@ class IR{
 
         this.observer = new DOMObserver(this.rootElement,this.editor)
 
-        
+        if(this.options.disableEdit) this.observer.disableObserver()
+    }
+
+
+
+    public reMount(){
+        //更新挂载节点
+        this.mount()
+        //更新事件绑定的容器
+        this.bindEvent(this.rootElement);
+        //监听新的绑定容器
+        this.observer = new DOMObserver(this.rootElement,this.editor)
+
+        this.observer.stop()
+        this.editor.ir.rootElement.innerHTML = this.undoManager.lastText
+        this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
+        setTimeout(()=>{
+            this.observer.start()
+            this.focus()
+            
+        },200)
     }
 
     public undo(){
@@ -126,7 +152,7 @@ class IR{
         this.undoManager.addIRHistory()
     }
 
-
+    
     
     /**
      * bind all event
@@ -166,8 +192,11 @@ class IR{
             this.observer.start()
             this.focus()
             
-        },1000)
+        },200)
     }
+
+
+
 
     /**
      * 获取markdown文本

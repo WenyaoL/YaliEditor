@@ -23,10 +23,6 @@ class IRContextRefresher{
      */
     refresh(){
 
-        //更新焦点元素
-        this.editor.ir.focueProcessor.updateFocusElement()
-        this.editor.ir.focueProcessor.updateBookmark()
-
         //强制让IR面板最后留一个空行
         if(this.editor.ir.rootElement.lastElementChild.tagName != "P"){
             this.editor.ir.rootElement.appendChild(createParagraph())
@@ -37,6 +33,10 @@ class IRContextRefresher{
         this.refreshHeading()
         this.refreshTable()
         this.refreshToc()
+
+        //更新焦点元素
+        this.editor.ir.focueProcessor.updateFocusElement()
+        this.editor.ir.focueProcessor.updateBookmark()
     }   
 
     /**

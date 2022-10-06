@@ -1,5 +1,5 @@
 <template>
-  <ir-markdown v-if="editModel == 'IR'"/>
+  <ir-markdown v-if="editModel == 'IR'" :disableEdit="false"/>
   <sv-markdown v-else-if="editModel == 'SV'"/>
   <only-markdown v-else/>
 </template>

@@ -11,6 +11,7 @@ export class DOMObserver{
     win: Window
     editor:YaLiEditor;
     observer: MutationObserver
+    disable:boolean
     config = { childList: true, subtree: true ,characterData: true,};
 
     groupDelayTime:number;
@@ -24,7 +25,7 @@ export class DOMObserver{
         //修改分组延时
         this.groupDelayTime = 300;
         this.lastChange = Date.now()
-
+        this.disable = false
         this.observer = new MutationObserver(mutations => {
             
             
@@ -60,6 +61,7 @@ export class DOMObserver{
     }
 
     start(){
+        if(this.disable) return
         this.lastChange = Date.now()
         this.observer.observe(this.dom,this.config)
     }
@@ -102,7 +104,10 @@ export class DOMObserver{
         this.editor.ir.addUndo()
     }
 
-
+    disableObserver(){
+        this.observer.disconnect()
+        this.disable =true
+    }
 
     /**
      * 强制刷新

@@ -21,8 +21,8 @@ import {indentWithTab} from "@codemirror/commands"
 
 
 export class EditorOptions {
-    public yali: YaLiEditorOptions;
-    public ir:IROptions
+    public yali?: YaLiEditorOptions;
+    public ir?:IROptions
     
 
     constructor(yaLiEditorOptions?:YaLiEditorOptions,
@@ -36,8 +36,9 @@ export class EditorOptions {
      */
     public merge(other:EditorOptions):EditorOptions{
         if(!other) return this
-
-        return null
+        if(other.ir) Object.assign(this.ir,other.ir)
+        if(other.yali) Object.assign(this.yali,other.yali)        
+        return this
     }
 
     /**
@@ -63,7 +64,8 @@ export class EditorOptions {
                 myMinimalSetup,
                 //gutterBasicSetup,
                 keymap.of([indentWithTab]),
-            ]
+            ],
+            disableEdit:false
         }
 
         return new EditorOptions(yali,ir)

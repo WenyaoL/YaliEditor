@@ -14,9 +14,11 @@ import {createCommonItems} from './tipitemsCommon'
 import {exec} from './utils'
 
 import {getCurrentInstance} from 'vue';
+import { EditorOptions } from '@/YaliEditor/src/options'
 export default {
   props: {
-    content: String
+    content: String,
+    disableEdit:Boolean,
   },
   setup(props,context){
     const store = useStore();
@@ -34,15 +36,21 @@ export default {
       e.preventDefault();
     }
     onMounted(()=>{
-      yali = new YaLiEditor("YaliEditor")
+      
+      yali = new YaLiEditor("YaliEditor",new EditorOptions({},{
+        disableEdit:props.disableEdit
+      }))
       yali.render(store.state.applicationContext.content)
+
       yali.ir.undoAddListener = (editor:YaLiEditor)=>{
+        console.log("触发undo监听");
+        
         store.commit('updateFileState',false)
       }
       store.commit('setYaliEditor',yali)
       
     })
-    watch(()=>store.state.applicationContext.content,(newValue)=>{
+    watch(()=>store.state.applicationContext.content,(newValue)=>{      
       yali.render(newValue)
     })
 

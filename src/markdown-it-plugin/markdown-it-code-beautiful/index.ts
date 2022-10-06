@@ -26,9 +26,11 @@ import { myHistory } from "@/codemirror-plugin/codePlugin/history"
 export const createEditorCompartment = () => {
     const compartment = new Compartment()
     const run = (extension: Extension,view: EditorView) => {
-      compartment.get(view.state)
-        ? view.dispatch({ effects: compartment.reconfigure(extension) }) // reconfigure
-        : view.dispatch({ effects: StateEffect.appendConfig.of(compartment.of(extension)) }) // inject
+        if(compartment.get(view.state)){     
+            view.dispatch({ effects: compartment.reconfigure(extension) }) // reconfigure
+        }else{
+            view.dispatch({ effects: StateEffect.appendConfig.of(compartment.of(extension)) })// inject
+        }
     }
     return { compartment, run }
   }
@@ -176,9 +178,6 @@ export class CodemirrorManager{
     //默认插件
     public codemirrorPlugin:Extension[];
     
-    //暂时不可用视图
-    //public allDisableView: CodemirrorEditorView[] = [];
-
     //每个视图都安装的监听器
     public viewlistener:(update: ViewUpdate)=>void;
 
@@ -223,11 +222,6 @@ export class CodemirrorManager{
             })
         ])
         
-
-
-        /*if (viewUpdate.docChanged && viewUpdate.changes.newLength === 0) {
-            viewUpdate.view.dom.setAttribute("isEmpty","true")
-        }*/
         this.langCanLoad = languages.map(lang=>lang.name)
         
         
@@ -257,7 +251,8 @@ export class CodemirrorManager{
 
     /**
      * refresh cache
-     * 刷新缓存
+     * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,
+     * 并一一刷新到页面上
      */
     refreshStateCache(elements:HTMLCollectionOf<Element>){
 
@@ -266,35 +261,41 @@ export class CodemirrorManager{
             
             //根据id识别
             const element:Element = elements.namedItem(cache.editor_uuid)
-           
+
+            
             
             if(!element){
                 //this.allDisableView.push(new CodemirrorEditorView(null,null,cache))
                 return true
             }
             
-
-
             let view = new EditorView({
-                state: cache.state,
                 parent: element,
+                root:document
             })
-
-            if(!cache.langCompartment){
-                cache.langCompartment = createEditorCompartment()
-                if(cache.languageDescription) cache.langCompartment.run(cache.languageDescription.support,view)
-                else cache.langCompartment.run([],view)
-                
-            }
+            view.setState(cache.state)
 
             const viewInfo = new CodemirrorEditorView(element,view,cache)
-            
-            //设置编辑状态按钮(默认打开)
-            let sw = createEditorExtensionToggler(view,[
-                    EditorView.editable.of(true),
-                    EditorState.readOnly.of(false)
-            ])
-            viewInfo.editorSwitch = sw;
+            this.allView.push(viewInfo);
+
+            if(!cache.langCompartment){
+                cache.langCompartment = createEditorCompartment()                
+                if(cache.languageDescription){
+                    cache.langCompartment.run(cache.languageDescription.support,view)
+                }else {
+                    cache.langCompartment.run([],view)
+                }
+            }
+  
+            if(!viewInfo.editorSwitch){                
+                //设置编辑状态按钮(默认打开)
+                let sw = createEditorExtensionToggler(view,[
+                        EditorView.editable.of(false),
+                        EditorState.readOnly.of(true)
+                ])
+                viewInfo.editorSwitch = sw;
+            }
+
 
             //是否需要创建建议UI
             if(cache.needSuggestUI){
@@ -309,12 +310,12 @@ export class CodemirrorManager{
                 viewInfo.suggestUI = suggest
 
                 tooltip.children[0].textContent = cache.lang
-                tooltip.children[0].addEventListener("keyup",(event)=>{
+                tooltip.children[0].addEventListener("keyup",(event)=>{                    
                     this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
                 })
             }
+
             
-            this.allView.push(viewInfo);
             element.setAttribute("contenteditable","false");
 
             return false
@@ -323,42 +324,33 @@ export class CodemirrorManager{
     }
 
     /**
-     * 同步方式刷新视图
+     * 对页面的所有视图进行销毁，将其编辑器状态重新放回缓存区
+     * 让重新刷新缓存区，重新渲染codemirror编辑器面板
+     * @param root 
      */
      refreshEditorViewSyn(root:HTMLElement){
-        const elements = root.getElementsByClassName("markdown-it-code-beautiful")
         for (let index = 0; index < this.allView.length; index++) {
             
             const viewInfo = this.allView[index]
+            //得到最新状态
+            
+            viewInfo.stateInfo.state = viewInfo.view.state
 
             //销毁原视图
             viewInfo.view.destroy()
-            
-            //得到最新状态
-            viewInfo.stateInfo.state = viewInfo.view.state
+            //viewInfo.view.dom.remove()
             //将数据重新放入缓存
             this.allStateCache.push(viewInfo.stateInfo)
         }
         //刷新视图
+        delete this.allView
         this.allView = []
         //重新初始化视图
         this.initEditorViewSyn(root)
+
      }
     
-     /**
-      * 刷新指定dom元素下的所有Disable的视图，使其enable
-      * @param root 
-      */
-    /*refreshDisableEditorViewSyn(root:HTMLElement){
-        const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-        for (let index = 0; index < this.allDisableView.length; index++) {
-            const viewInfo = this.allDisableView[index]
-            
-            const e = elements.namedItem(viewInfo.stateInfo.editor_uuid)
-            if(!e) continue;
-            this.viewEnable(viewInfo.stateInfo.editor_uuid)
-        }
-    }*/
+
 
     /**
      * 重新跟新视图状态
@@ -366,37 +358,24 @@ export class CodemirrorManager{
     refreshEditorView(root:HTMLElement){
         
         setTimeout(() => {
-            const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-            for (let index = 0; index < this.allView.length; index++) {
-                
-                const viewInfo = this.allView[index]
-
-                //销毁原视图
-                viewInfo.view.destroy()
-                
-                //得到最新状态
-                viewInfo.stateInfo.state = viewInfo.view.state
-                //将数据重新放入缓存
-                this.allStateCache.push(viewInfo.stateInfo)
-            }
-            //刷新视图
-            this.allView = []
-            //重新初始化视图
-            this.initEditorView(root)
+            this.refreshEditorViewSyn(root)
         })
     }
 
     /**
      * 同步的方式初始化编辑器
+     * 初始化codemirror编辑器，其实是去刷新状态缓存池
      * 注意：请确保语言包已经加载完成，否则有可以导致某些编辑模块无法使用语言包
      * @param root 
      */
     initEditorViewSyn(root:HTMLElement){
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-        const math = root.getElementsByClassName("md-mathblock-input")
         //刷新状态缓存池
         this.refreshStateCache(elements);
-        this.refreshStateCache(math)
+        
+        if(this.editor.ir.options.disableEdit){
+            this.disableEditAllView()
+        }
     }
 
     /**
@@ -407,6 +386,7 @@ export class CodemirrorManager{
         //将刷新事件加入事件列表，因为要等列表前面的语言包加载事件执行完，才能刷新
         setTimeout(() => {
             this.initEditorViewSyn(root)
+
         });
     }
 
@@ -433,15 +413,6 @@ export class CodemirrorManager{
         this.allStateCache.push(viewInfo.stateInfo)
     }
 
-    /*viewEnable(uuid:string){
-        if(this.allDisableView.length<=0) return;
-        const idx = this.allDisableView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
-        if(idx==-1) return
-        
-        const viewInfo = this.allDisableView.splice(idx,1).at(0)
-        this.allView.push(viewInfo)
-    }*/
-
     viewFocus(uuid:string){
         
         if(this.allView.length<=0) return;
@@ -449,6 +420,13 @@ export class CodemirrorManager{
         if(idx==-1) return
 
         this.allView.at(idx).view.focus()
+    }
+
+    disableEditAllView(){
+        this.allView.forEach(viewInof=>{
+            //关闭可编辑     
+            viewInof.editorSwitch(true)
+        })
     }
 
     updatedLang(lang:string,uuid:string){
@@ -466,7 +444,6 @@ export class CodemirrorManager{
         if(support){//已经加载
             //跟新语言包
             stateInfo.langCompartment.run(support,viewInfo.view)
-
         }else{//去加载并跟新
             languageDescriptions.load().then(s=>{
                 stateInfo.langCompartment.run(s,viewInfo.view)
@@ -501,7 +478,8 @@ export class CodemirrorManager{
 
     /**
      * 给markdown-it的高亮器插件，使得markdown-it能使用codemirror作为代码编辑器
-     * 
+     * 经过markdown-it高亮器插件处理的代码块，将会以codemirror代码编辑器状态（CodemirrorEditorState）存储在缓存区里
+     * 只有通过刷新缓存区的状态，才能将视图渲染到页面
      * @param str 
      * @param lang 
      * @returns 

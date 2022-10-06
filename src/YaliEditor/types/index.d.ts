@@ -7,7 +7,7 @@ import MarkdownIt from 'markdown-it';
  */
 interface YaLiEditorOptions {
     //是否为测试模式
-    isTestModel:boolean
+    isTestModel?:boolean
 }
 /**
  * IR控制面板选项
@@ -24,6 +24,7 @@ interface IROptions{
         options?: any
     }[]
 
+    disableEdit?:boolean
 }
 
 

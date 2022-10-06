@@ -100,6 +100,7 @@ class IRUndo{
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
+        history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
         rangy.getSelection().moveToBookmark(history.bookMark)
 
         
@@ -142,6 +143,7 @@ class IRUndo{
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
+        history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
         rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
