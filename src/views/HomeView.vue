@@ -2,9 +2,9 @@
   <div class="common-layout home">
     <dialog-tip id="dialog-tip" :displayButton="false"/>
     <el-container>
-      <el-aside :width="sideBarWidth">
+      <el-aside :width="sideBarWidth" style="transition-duration: 0.8s;">
             <el-container>
-              <el-aside width="70px">
+              <el-aside width="64px">
                 <left-menu />
               </el-aside>
               <!--这里应该渲染工具-->
@@ -13,7 +13,7 @@
               </el-main>
           </el-container>
       </el-aside>
-      <el-divider :direction="'vertical'" style="height: 100%;"/>
+      <el-divider :direction="'vertical'" style="height: 100%;width:0px;margin:0px;"/>
 
       <el-main>    
         <!---->
@@ -35,10 +35,10 @@ import FileContentView from './FileContentView.vue'
 import {onMounted,ref,watch} from 'vue'
 import {useStore} from 'vuex'
 const store = useStore()
-let sideBarWidth = ref("70px")
+let sideBarWidth = ref("64px")
 watch(()=>store.state.sideBarFold,(newValue)=>{
   if(newValue){
-    sideBarWidth.value = "70px"
+    sideBarWidth.value = "64px"
   }else{
     sideBarWidth.value = "320px"
   }
