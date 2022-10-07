@@ -28,11 +28,15 @@ class IRContextRefresher{
             this.editor.ir.rootElement.appendChild(createParagraph())
         }
 
-        this.refreshLink()
-        this.refreshImg()
-        this.refreshHeading()
-        this.refreshTable()
-        this.refreshToc()
+        //补丁类的刷新(忽略补丁监控)
+        this.ir.observer.ignore(()=>{
+            this.refreshLink()
+            this.refreshImg()
+            this.refreshHeading()
+            this.refreshTable()
+            this.refreshToc()
+        },this)
+
 
         //更新焦点元素
         this.editor.ir.focueProcessor.updateFocusElement()
@@ -100,7 +104,6 @@ class IRContextRefresher{
         }else{
             //强制刷新?
             /*if(force){         
-                console.log("强制");
                        
                 let bookmark = sel.getBookmark(block)
                 bookmark.rangeBookmarks[0].containerNode = e

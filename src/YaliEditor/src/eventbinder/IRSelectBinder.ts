@@ -40,7 +40,6 @@ class IRSelectBinder implements BaseEventBinder{
       element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
 
         this.editor.ir.focueProcessor.update()
-        //console.log(this.editor.ir.focueProcessor.getBookmark());
         
         let sel = this.editor.ir.focueProcessor.sel
         let r = sel.getRangeAt(0)
@@ -58,7 +57,6 @@ class IRSelectBinder implements BaseEventBinder{
         
         
         const topClassName = this.editor.ir.getRootElementClassName()
-        //console.log(sel.getBookmark(IRfindClosestMdBlock(r.startContainer)));
         
         let isInline = true;
         let e = findClosestByAttribute(event.target,"md-inline","",topClassName)

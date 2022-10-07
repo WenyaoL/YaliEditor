@@ -55,6 +55,8 @@ export class DOMObserver{
             
             
             this.forceFlush()
+
+            
             this.lastChange = Date.now()
 
         });

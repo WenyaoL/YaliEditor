@@ -43,7 +43,6 @@ export default {
       yali.render(store.state.applicationContext.content)
 
       yali.ir.undoAddListener = (editor:YaLiEditor)=>{
-        console.log("触发undo监听");
         
         store.commit('updateFileState',false)
       }

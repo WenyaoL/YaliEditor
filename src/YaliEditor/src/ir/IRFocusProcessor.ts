@@ -29,9 +29,10 @@ class IRFocusProcessor{
 
   //修改锁(发生修改操作前应该锁上)
   private modifyLock:boolean;
-  //修改操作之前的bookmark
+  //修改操作之前的bookmark(定位基于整个面板)
   private modifyBeforeBookmark:any;
-
+  //修改操作之前的二级bookmark(定位基于整个段落块)
+  private modifyBeforeSecondBookmark:any
 
   constructor(editor:YaLiEditor){
     this.editor = editor
@@ -93,11 +94,17 @@ class IRFocusProcessor{
    * 只有在一系列修改之后，才会将修改锁释放，否则将无法进行更新
    */
   updateBeforeModify(){
+    
     this.sel = rangy.getSelection()
 
     //上锁前跟新修改前的bookmark
     if(!this.modifyLock){
+
+      
       this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
+      this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
+
+      
     }
     
     this.modifyLock = true
@@ -119,6 +126,10 @@ class IRFocusProcessor{
 
   getModifyBeforeBookmark(){
     return this.modifyBeforeBookmark
+  }
+
+  getModifyBeforeSecondBookmark(){
+    return this.modifyBeforeSecondBookmark
   }
 
   getSelectedBlockMdElement(){

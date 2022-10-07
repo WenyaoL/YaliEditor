@@ -8,25 +8,21 @@ import FileContentView from '../views/FileContentView'
 import FolderView from '../views/FolderView'
 import DesignDashboard from '../views/DesignDashboard'
 import TestPanle from '../views/TestPanle'
+import FileTree from '@/components/filetree-panel/FileTree.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/folder'
   },
   {
     path: '/index.html',
-    redirect: '/home'
-  },
-  {
-    path: '/home',
-    name: 'home',
-    component: FileContentView 
+    redirect: '/folder'
   },
   {
     path: '/folder',
     name: 'folder',
-    component: FolderView
+    component: FileTree
   },
   {
     path: '/designDashboard',

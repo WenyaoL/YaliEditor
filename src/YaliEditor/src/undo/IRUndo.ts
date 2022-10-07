@@ -5,7 +5,7 @@
 import {diff_match_patch,patch_obj} from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
-
+import {IRfindClosestMdBlock} from '../util/findElement'
 const enum HistoryType {
     CodemirrorHistory,
     IRHistory
@@ -22,13 +22,15 @@ class History{
     public patch: patch_obj[];
     //光标记录
     public bookMark:any;
+    public secondBookMark:any;
 
     //codemirror History
     public codemirrorHistory:{id:string}
 
-    constructor(patch?:patch_obj[],bookMark?:any){
+    constructor(patch?:patch_obj[],bookMark?:any,secondBookMark?:any){
         this.patch = patch
         this.bookMark = bookMark
+        this.secondBookMark = secondBookMark
     }
 }
 
@@ -86,6 +88,7 @@ class IRUndo{
     }
 
     private IRHistoryUndo(history:History){
+        
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
 
@@ -100,9 +103,18 @@ class IRUndo{
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
+        let sel = rangy.getSelection()
+        
         history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-        rangy.getSelection().moveToBookmark(history.bookMark)
+        sel.moveToBookmark(history.bookMark)
+        let r = sel.getRangeAt(0)
+        let block = IRfindClosestMdBlock(r.startContainer)
 
+        
+        history.secondBookMark.rangeBookmarks[0].containerNode = block
+
+        //rangy.getSelection().moveToBookmark(history.bookMark)
+        //sel.moveToBookmark(history.secondBookMark)
         
     }   
 
@@ -110,8 +122,11 @@ class IRUndo{
      * undo 操作
      */
     public undo(){
+
+        
         const history = this.undoStack.pop()
         if(!history) return;
+
         this.redoStack.push(history);
         if(history.type == HistoryType.CodemirrorHistory){
             this.codemirrorHistoryUndo(history)
@@ -119,7 +134,8 @@ class IRUndo{
         }
 
         this.IRHistoryUndo(history)
-
+        //释放修改锁
+        this.editor.ir.focueProcessor.releaseModifyLock()
     }
 
     private IRHistoryRedo(history:History){
@@ -144,6 +160,8 @@ class IRUndo{
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
         history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
+        
+        
         rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
@@ -172,7 +190,8 @@ class IRUndo{
         }
 
         this.IRHistoryRedo(history)
-
+        //释放修改锁
+        this.editor.ir.focueProcessor.releaseModifyLock()
         
     }
 
@@ -212,9 +231,9 @@ class IRUndo{
         
         //创建历史记录
         let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()
-
+        let secondBookMark = this.editor.ir.focueProcessor.getModifyBeforeSecondBookmark()
         
-        const history = new History(patch,mark)
+        const history = new History(patch,mark,secondBookMark)
 
 
        //跟新lastText为当前状态
@@ -295,7 +314,7 @@ class IRUndo{
         //跟新lastText为当前状态
         this.lastText = nowText;
   
-        this.undoStack.push(new History(patch,lastHistory.bookMark))
+        this.undoStack.push(new History(patch,lastHistory.bookMark,lastHistory.secondBookMark))
 
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()

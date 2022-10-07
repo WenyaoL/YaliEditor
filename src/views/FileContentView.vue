@@ -1,6 +1,6 @@
 <template>
-  <ir-markdown v-if="editModel == 'IR'" :disableEdit="false"/>
-  <sv-markdown v-else-if="editModel == 'SV'"/>
+  <ir-markdown v-if="store.state.editModel == 'IR'" :disableEdit="false"/>
+  <sv-markdown v-else-if="store.state.editModel == 'SV'"/>
   <only-markdown v-else/>
 </template>
 

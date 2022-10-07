@@ -20,7 +20,8 @@ export default createStore({
     fonts:{        //jsPDF加载的字体数据
       normal:'',
       bold:''  
-    }
+    },
+    sideBarFold:true
   },
   getters: {
 
@@ -71,7 +72,10 @@ export default createStore({
     },
     initFonts(state,context){
       state.fonts = context
-    }
+    },
+    updateSideBarFold(state,flag){
+      state.sideBarFold = flag
+    },
   },
   actions: {
 

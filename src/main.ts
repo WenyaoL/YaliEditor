@@ -16,5 +16,6 @@ app.use(ElementPlus)
         .use(store)
         .use(router)
         .use(ContextMenu)
-        .mount('#app')
+        
 
+router.isReady().then(() => app.mount('#app'))

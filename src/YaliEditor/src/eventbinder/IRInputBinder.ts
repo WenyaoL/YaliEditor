@@ -23,6 +23,7 @@ class IRInputBinder implements BaseEventBinder{
 
     bindBeforeInputEvent(element: HTMLElement){
         element.addEventListener('beforeinput',(event: InputEvent) => {
+            
             if(event.isComposing) return
             //输入前更新修改前的位置，并对对象上修改锁
             this.editor.ir.focueProcessor.updateBeforeModify()

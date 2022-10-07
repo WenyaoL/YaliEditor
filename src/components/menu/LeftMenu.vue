@@ -6,50 +6,55 @@
     :collapse="isCollapse"
     :router="isRoute"
   > 
-    <el-menu-item index="1" route="/">
-      <el-icon><document /></el-icon>
-      <template #title>文件</template>
-    </el-menu-item>
-    <el-menu-item index="2" route="/folder">
+    <el-menu-item index="1" :route="'/folder'">
       <el-icon><folder /></el-icon>
       <template #title>文件夹</template>
     </el-menu-item>
-    <el-menu-item index="3" route="/test">
+    <el-menu-item index="2" :route="'/test'">
       <el-icon><QuestionFilled /></el-icon>
       <template #title>关于</template>
     </el-menu-item>
 
-    <el-menu-item index="4"  route="/designDashboard">
+    <el-menu-item index="3"  :route="'/designDashboard'">
       <el-icon><setting /></el-icon>
       <template #title>设置</template>
+    </el-menu-item>
+
+    <el-menu-item index="4" @click="fold">
+      <el-icon v-if="isFold"><ArrowRightBold /></el-icon>
+      <el-icon v-else><ArrowLeftBold /></el-icon>
+      <template #title>折叠</template>
     </el-menu-item>
   </el-menu>
 </template>
 
-<script>
+<script lang="ts" setup>
 import {
   Document,
   Menu as IconMenu,
   Folder,
   Setting,
-  QuestionFilled
+  QuestionFilled,
+  ArrowLeftBold,
+  ArrowRightBold
 } from '@element-plus/icons-vue'
+import {ref} from 'vue'
+import {useStore} from 'vuex'
+import router from "@/router";
 
-export default {
-    name:'LeftMenu',
-    components:{
-      Document,
-      IconMenu,
-      Folder,
-      Setting,
-      QuestionFilled
-    },
-    data(){
-        return {
-            isCollapse:true,
-            isRoute:true,
-        }
-    }
+let isCollapse = ref(true)
+let isRoute = ref(true)
+const store = useStore()
+let isFold = ref(store.state.sideBarFold)
+
+const fold = function(e){
+  isFold.value = !isFold.value
+  store.commit("updateSideBarFold",isFold.value)
+  router.push("/folder")
+}
+
+const toRoute = ()=>{
+
 }
 </script>
 
