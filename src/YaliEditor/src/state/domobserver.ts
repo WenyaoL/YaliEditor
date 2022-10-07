@@ -12,6 +12,7 @@ export class DOMObserver{
     editor:YaLiEditor;
     observer: MutationObserver
     disable:boolean
+    isObserving:boolean;
     config = { childList: true, subtree: true ,characterData: true,};
 
     groupDelayTime:number;
@@ -26,10 +27,8 @@ export class DOMObserver{
         this.groupDelayTime = 300;
         this.lastChange = Date.now()
         this.disable = false
+        this.isObserving = false
         this.observer = new MutationObserver(mutations => {
-            
-            
-            
             if(this.editor.ir.rootElement.childElementCount == 0){
                 this.editor.ir.rootElement.append(createParagraph())
             }
@@ -51,12 +50,8 @@ export class DOMObserver{
                 this.adjust()
                 return;
             }
-            
-            
-            
-            this.forceFlush()
 
-            
+            this.forceFlush()
             this.lastChange = Date.now()
 
         });
@@ -64,11 +59,14 @@ export class DOMObserver{
 
     start(){
         if(this.disable) return
+        this.isObserving = true
         this.lastChange = Date.now()
         this.observer.observe(this.dom,this.config)
     }
 
     stop() {
+
+        this.isObserving = false
         this.observer.disconnect()
     }
 
@@ -119,12 +117,24 @@ export class DOMObserver{
         this.editor.ir.addUndo()
     }
 
+    /**
+     * 在执行函数期间忽略观察
+     * 执行完函数，回复为原本状态，如：
+     * 原本状态（关）  --> 执行函数（关） --> 保持关闭（关）
+     * 原本状态（开）  --> 执行函数（关） --> 重新开启（开）
+     * @param f 
+     * @param obj 
+     * @returns 
+     */
     ignore<T>(f:()=>T,obj:any):T{
+        let flag = this.isObserving
         try{
-            this.stop()
+            if(flag) this.stop()
             return f.call(obj)
         }finally{
-            this.start()
+            if(flag){
+                this.start()
+            }
         }
     }
 }

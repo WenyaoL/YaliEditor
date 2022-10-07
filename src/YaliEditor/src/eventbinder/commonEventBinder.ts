@@ -22,6 +22,8 @@ class CommonEventBinder implements BaseEventBinder{
             this.composingLock = true;
 
             this.editor.ir.observer.stop()
+            
+            
         });
 
     }

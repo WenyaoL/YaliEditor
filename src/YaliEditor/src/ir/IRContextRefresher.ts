@@ -103,7 +103,7 @@ class IRContextRefresher{
             this.editor.ir.focueProcessor.updateFocusElement()
         }else{
             //强制刷新?
-            /*if(force){         
+            if(force){         
                        
                 let bookmark = sel.getBookmark(block)
                 bookmark.rangeBookmarks[0].containerNode = e
@@ -111,13 +111,13 @@ class IRContextRefresher{
                 sel.moveToBookmark(bookmark)
                 this.editor.ir.focueProcessor.updateFocusElement()
                 return
-            }*/
+            }
 
             if(e.textContent.length== 0){
                 return
             }
 
-            if(e?.innerHTML!=block?.innerHTML){
+            if(e?.innerHTML!=block?.innerHTML && e?.childElementCount!= block?.childElementCount){
                 let bookmark = sel.getBookmark(block)
                 bookmark.rangeBookmarks[0].containerNode = e
                 block.replaceWith(e)

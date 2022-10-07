@@ -110,7 +110,7 @@ class IREnterkeyProcessor implements KeyProcessor{
             r.collapseBefore(e)
             const p = document.createElement("p")
             p.setAttribute("md-block","paragraph")
-            p.innerHTML = "<br>"
+            //p.innerHTML = "<br>"
             r.insertNode(p)
             return true
         }
@@ -122,7 +122,7 @@ class IREnterkeyProcessor implements KeyProcessor{
         if(content.textContent?.length ===0){
             r.collapseAfter(e)
             const p = document.createElement("p")
-            p.innerHTML = "<br>"
+            //p.innerHTML = "<br>"
             p.setAttribute("md-block","paragraph")
             r.insertNode(p)
             //光标选择聚焦新元素

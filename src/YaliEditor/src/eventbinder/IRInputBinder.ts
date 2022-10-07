@@ -17,6 +17,8 @@ class IRInputBinder implements BaseEventBinder{
 
     bindInputEvent(element: HTMLElement){
         element.addEventListener("input",(event: InputEvent) => {
+            
+            
             this.editor.ir.inputProcessor.execute(event)
         })
     }

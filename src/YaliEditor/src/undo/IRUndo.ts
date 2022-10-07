@@ -109,12 +109,14 @@ class IRUndo{
         sel.moveToBookmark(history.bookMark)
         let r = sel.getRangeAt(0)
         let block = IRfindClosestMdBlock(r.startContainer)
-
-        
-        history.secondBookMark.rangeBookmarks[0].containerNode = block
+        //当光标是聚合的时候，开启二级定位，提供更加准确的定位
+        if(block && r.collapsed){
+            history.secondBookMark.rangeBookmarks[0].containerNode = block
+            sel.moveToBookmark(history.secondBookMark)
+        }
 
         //rangy.getSelection().moveToBookmark(history.bookMark)
-        //sel.moveToBookmark(history.secondBookMark)
+        
         
     }   
 
@@ -162,6 +164,7 @@ class IRUndo{
         history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
         
         
+        
         rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
@@ -205,6 +208,7 @@ class IRUndo{
     }
 
     public addIRHistory(){
+        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
