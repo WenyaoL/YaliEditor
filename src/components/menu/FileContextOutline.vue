@@ -47,6 +47,7 @@ const getHeadingStyle = (level:any)=>{
 .outline-item-4:hover,
 .outline-item-5:hover{
     text-decoration:underline;
+    background-color: rgb(238, 238, 238);
 }
 
 .outline-item-1{
