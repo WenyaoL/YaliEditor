@@ -40,10 +40,12 @@ export default {
       yali = new YaLiEditor("YaliEditor",new EditorOptions({},{
         disableEdit:props.disableEdit
       }))
+      //注册监听事件
+      yali.ir.applicationEventPublisher.subscribe("refreshedToc",(headings:any)=>{
+        store.commit("updateOutline",headings)
+      })
       yali.render(store.state.applicationContext.content)
-
       yali.ir.undoAddListener = (editor:YaLiEditor)=>{
-        
         store.commit('updateFileState',false)
       }
       store.commit('setYaliEditor',yali)

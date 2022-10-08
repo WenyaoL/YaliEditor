@@ -13,7 +13,7 @@ import { findClosestByAttribute,
 
 import { getAllHeading } from '../util/inspectElement';
 import Constants from "../constants";
-import {toKeyText,createTableStr} from "../util/formatText"
+import {toKeyText,createTableStr,toTocElementText} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
 import {createParagraph} from '../util/inspectElement'
@@ -125,7 +125,8 @@ class IRHotkeyProcessor implements KeyProcessor{
                 r.insertNode(node)
                 r.collapseToPoint(node,1)
                 sel.setSingleRange(r)
-                node.click()
+                
+                this.editor.ir.applicationEventPublisher.publish("refreshToc")
                 return ; 
             }
 
@@ -141,7 +142,8 @@ class IRHotkeyProcessor implements KeyProcessor{
             r.insertNode(p)
             r.collapseToPoint(p,1)
             sel.setSingleRange(r)
-            p.click()
+            //p.click()
+            this.editor.ir.applicationEventPublisher.publish("refreshToc")
         }else{
             //不存在head
             //生成元素
@@ -162,7 +164,8 @@ class IRHotkeyProcessor implements KeyProcessor{
             r.collapseToPoint(node,1)
             sel.setSingleRange(r)
             //rangy.getSelection().collapseToEnd()
-            node.click()
+            //node.click()
+            this.editor.ir.applicationEventPublisher.publish("refreshToc")
         }
     }
 
@@ -251,11 +254,13 @@ class IRHotkeyProcessor implements KeyProcessor{
         
         res.push("<p>")
         const headings = getAllHeading(root)
-        for (let index = 0; index < headings.length; index++) {
+        res.push(toTocElementText(headings))
+        
+        /*for (let index = 0; index < headings.length; index++) {
             const element = headings[index];
             let head = '<span class="md-toc-h'+ element.level +' md-toc-item ">' + '<a to-href="'+element.id+'">'+ element.content+'</a></span>'
             res.push(head)
-        }
+        }*/
         res.push("</p>")
 
         let div = document.createElement("div")

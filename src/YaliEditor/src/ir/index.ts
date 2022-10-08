@@ -27,6 +27,9 @@ import IRInputProcessor from './IRInputProcessor'
 import IRTabProcessor from './IRTabkeyProcessor'
 import IRContextRefresher from './IRContextRefresher'
 
+//事件发布器
+import ApplicationEventPublisher from '../event-publisher/ApplicationEventPublisher'
+
 import rangy from "rangy";
 /**
  * IR模式下的控制面板
@@ -70,7 +73,8 @@ class IR{
     public tabkeyProcessor:IRTabProcessor;
     //上下文刷新器
     public contextRefresher:IRContextRefresher;
-
+    //事件发布器
+    public applicationEventPublisher:ApplicationEventPublisher;
 
     constructor(editor:YaLiEditor){
         this.editor = editor;
@@ -92,7 +96,8 @@ class IR{
     }
 
     public init(){
-        
+        this.applicationEventPublisher = new ApplicationEventPublisher()
+
         this.renderer = new MarkdownBeautiful(this.editor);
         this.parser = new TurndownParser(this.editor);;
 
@@ -116,9 +121,13 @@ class IR{
         this.observer = new DOMObserver(this.rootElement,this.editor)
 
         if(this.options.disableEdit) this.observer.disableObserver()
+
+        this.subscribe()
     }
 
-
+    private subscribe(){
+        this.contextRefresher.subscribe()
+    }
 
     public reMount(){
         //更新挂载节点
@@ -188,6 +197,7 @@ class IR{
         }
         this.undoManager.setOrigin(this.rootElement.innerHTML)
         this.renderer.initEditorView(this.rootElement)
+        this.contextRefresher.refreshContext()
         setTimeout(()=>{
             this.observer.start()
             this.focus()

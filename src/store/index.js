@@ -14,7 +14,8 @@ export default createStore({
       content:"",
       preview:"",  
       tree:[],   //当前文件树
-      isSave:true
+      isSave:true,
+      outline:[]  //文档大纲
     },
     editModel:"IR",  //编辑模式
     fonts:{        //jsPDF加载的字体数据
@@ -76,6 +77,10 @@ export default createStore({
     updateSideBarFold(state,flag){
       state.sideBarFold = flag
     },
+    updateOutline(state,heading){
+      console.log("更新大纲");
+      state.applicationContext.outline = heading
+    }
   },
   actions: {
 

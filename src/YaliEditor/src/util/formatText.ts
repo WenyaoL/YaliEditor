@@ -17,6 +17,36 @@ export const toImgElementText = (info:string,src:string)=>{
     return pre + info + mid + src + suf
 }
 
+
+export const toTocElementText = (headings:{
+    type: string;
+    content: string;
+    id: string;
+    level: number;
+}[])=>{
+    let res:string[]=[]
+    
+
+    for (let index = 0; index < headings.length; index++) {
+        const element = headings[index];
+        let head = '<span class="md-toc-h'+ element.level +' md-toc-item ">' + '<a to-href="'+element.id+'">'+ element.content+'</a></span>'
+        res.push(head)
+    }
+    /*headings.forEach(heading=>{
+        let level = heading.tagName.charAt(1)
+        res.push('<span class="'+'md-toc-h'+level+' md-toc-item ">'
+            +'<a to-href="'+ heading.id+ '">'+ heading.textContent+ 
+            '</a></span>')
+
+    })*/
+    return res.join('')
+}
+
+export const toTocData = ()=>{
+
+}
+
+
 export function toKeyText(event: KeyboardEvent){
     let strs = []
 

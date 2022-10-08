@@ -34,6 +34,8 @@ export const CODEMIRROR_EDITOR : string = "cm-editor"
 export const IR_CLASS_NAME:string = "YaLi-ir"
 
 
+export const IR_EVENT_REFRESHTOC:string = "refreshToc"
+
 export default {
     _YALI_VERSION,
     CLASS_MD_HIDEN,
@@ -52,5 +54,6 @@ export default {
     CODEMIRROR_LINE,
     CODEMIRROR_CONTENT,
     CODEMIRROR_EDITOR,
-    IR_CLASS_NAME
+    IR_CLASS_NAME,
+    IR_EVENT_REFRESHTOC
 }

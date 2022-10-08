@@ -6,7 +6,8 @@
 import IR from '.';
 import YaliEditor from '../index'
 import Constants from '../constants';
-import { strToElement,createParagraph} from "../util/inspectElement";
+import { strToElement,createParagraph, getAllHeading} from "../util/inspectElement";
+import {toTocElementText} from "../util/formatText"
 import rangy from 'rangy';
 class IRContextRefresher{
 
@@ -16,7 +17,18 @@ class IRContextRefresher{
     constructor(editor:YaliEditor){
         this.editor = editor
         this.ir = this.editor.ir
+
+        
     }
+
+    subscribe(){
+        //订阅
+        this.ir.applicationEventPublisher.subscribe("refreshToc",()=>{
+            this.refreshToc()
+        })
+
+    }
+
 
     /**
      * 刷新
@@ -34,7 +46,7 @@ class IRContextRefresher{
             this.refreshImg()
             this.refreshHeading()
             this.refreshTable()
-            this.refreshToc()
+            //this.refreshToc()
         },this)
 
 
@@ -42,6 +54,15 @@ class IRContextRefresher{
         this.editor.ir.focueProcessor.updateFocusElement()
         this.editor.ir.focueProcessor.updateBookmark()
     }   
+
+    refreshContext(){
+        this.refreshLink()
+        this.refreshImg()
+        this.refreshHeading()
+        this.refreshTable()
+        this.refreshToc()
+    }
+
 
     /**
      * 刷新聚焦的行
@@ -197,15 +218,25 @@ class IRContextRefresher{
     refreshToc(){
         let root = this.ir.rootElement
         let toc = root.querySelector(".markdown-it-toc-beautiful[md-block]")
-        if(!toc) return
-        let as = toc.querySelectorAll("a")
-        as.forEach(a=>{
+        if(!toc){
+            this.ir.applicationEventPublisher.publish("refreshedToc",getAllHeading(root))
+            return
+        }
+        //let headings = root.querySelectorAll("h1,h2,h3,h4,h5[md-block=heading]")
+        let headings = getAllHeading(root)
+        let headText = toTocElementText(headings)
+        let p = toc.getElementsByTagName("p")[0]
+        p.innerHTML = headText
+        //let as = toc.querySelectorAll("a")
+
+        /*as.forEach(a=>{
             let href = a.getAttribute("to-href")
             let id = "#"+href
             let heading = root.querySelector(id)
             if(heading) a.innerText = heading.textContent
             
-        })
+        })*/
+        this.ir.applicationEventPublisher.publish("refreshedToc",headings)
     }
 }
 

@@ -6,21 +6,27 @@
     :collapse="isCollapse"
     :router="isRoute"
   > 
-    <el-menu-item index="1" :route="'/folder'">
+    <el-menu-item index="1" :route="'/outline'">
+      <el-icon><Notebook /></el-icon>
+      <template #title>大纲</template>
+    </el-menu-item>
+    <el-menu-item index="2" :route="'/folder'">
       <el-icon><folder /></el-icon>
       <template #title>文件夹</template>
     </el-menu-item>
-    <el-menu-item index="2" :route="'/test'">
+    <el-menu-item index="3" :route="'/test'">
       <el-icon><QuestionFilled /></el-icon>
       <template #title>关于</template>
     </el-menu-item>
 
-    <el-menu-item index="3"  :route="'/designDashboard'">
+    <el-menu-item index="4"  :route="'/designDashboard'">
       <el-icon><setting /></el-icon>
       <template #title>设置</template>
     </el-menu-item>
 
-    <el-menu-item index="4" @click="fold">
+
+
+    <el-menu-item index="5" @click="fold">
       <el-icon v-if="isFold"><ArrowRightBold /></el-icon>
       <el-icon v-else><ArrowLeftBold /></el-icon>
       <template #title>折叠</template>
@@ -36,7 +42,8 @@ import {
   Setting,
   QuestionFilled,
   ArrowLeftBold,
-  ArrowRightBold
+  ArrowRightBold,
+  Notebook
 } from '@element-plus/icons-vue'
 import {ref} from 'vue'
 import {useStore} from 'vuex'
@@ -50,7 +57,7 @@ let isFold = ref(store.state.sideBarFold)
 const fold = function(e){
   isFold.value = !isFold.value
   store.commit("updateSideBarFold",isFold.value)
-  router.push("/folder")
+  router.push("/outline")
 }
 
 const toRoute = ()=>{

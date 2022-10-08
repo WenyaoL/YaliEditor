@@ -9,6 +9,7 @@ import FolderView from '../views/FolderView'
 import DesignDashboard from '../views/DesignDashboard'
 import TestPanle from '../views/TestPanle'
 import FileTree from '@/components/filetree-panel/FileTree.vue'
+import FileOutlineView from '../views/FileOutlineView.vue'
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: '/test',
     name: 'testPanle',
     component: TestPanle
+  },
+  {
+    path: '/outline',
+    name: 'outline',
+    component: FileOutlineView
   }
 ]
 
