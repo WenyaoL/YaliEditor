@@ -10,9 +10,14 @@
 
 <script lang="ts" setup>
 import {computed} from 'vue'
-const props = defineProps({
-  outline:Array
-})
+const props = defineProps<{
+  outline:{
+    type: string;
+    content: string | null;
+    id: string;
+    level: number;
+  }[]
+}>()
 
 const getHeadingStyle = (level:any)=>{
     if(level == 1){
@@ -38,7 +43,8 @@ const getHeadingStyle = (level:any)=>{
     cursor: pointer;
     white-space: pre-wrap;
     word-break: break-all;
-    color: #4183C4;
+    margin-bottom: 3px;
+    margin-top: 3px;
 }
 
 .outline-item-1:hover,
@@ -46,8 +52,10 @@ const getHeadingStyle = (level:any)=>{
 .outline-item-3:hover,
 .outline-item-4:hover,
 .outline-item-5:hover{
+    transition-duration: 0.5s;
     text-decoration:underline;
     background-color: rgb(238, 238, 238);
+    color: #3269bc;
 }
 
 .outline-item-1{
