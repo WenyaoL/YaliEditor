@@ -17,6 +17,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let win;
 let isReady=false;
 
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -38,6 +39,13 @@ async function createWindow() {
       contextIsolation: true,
       //contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
+  })
+
+  win.on('close',(event)=>{
+    event.preventDefault()
+    win.webContents.send('closeWindow')
+    //win.close()
+    
   })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

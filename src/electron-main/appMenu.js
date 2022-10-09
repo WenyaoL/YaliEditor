@@ -6,6 +6,9 @@ import { BrowserWindow, Menu,ipcMain,dialog} from 'electron'
 //import { openFile,openFileDialog,openNewWindow,loadUrl} from './common'
 import common from './common'
 import path from 'path'
+
+
+
 export default {
     build(){
         var template = [

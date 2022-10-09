@@ -78,7 +78,6 @@ export default createStore({
       state.sideBarFold = flag
     },
     updateOutline(state,heading){
-      console.log("更新大纲");
       state.applicationContext.outline = heading
     }
   },

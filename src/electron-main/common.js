@@ -104,10 +104,20 @@ export function loadRenderApplicationContext(){
 }
 
 
-export function saveFile(filePath,data){
+export function saveFile(filePath,data,options = {closeWindow:false,win:null}){
     console.log("保存路径",filePath);
     fs.writeFile(filePath,data,'utf8',err=>{
         if(err) console.log(err)
+        if(options.closeWindow){
+            if(options.win){
+                options.win.removeAllListeners('close')
+                options.win.close()
+            }else{
+                let win = BrowserWindow.getFocusedWindow()
+                win.removeAllListeners('close')
+                win.close()
+            } 
+        }
     })
 }
 
@@ -130,6 +140,13 @@ export function openNewWindow(title){
           contextIsolation: true,
         }
     })
+
+    win.on('close',(event)=>{
+        event.preventDefault()
+        //通知渲染进程要关闭窗口了，对数据进行保存操作
+        win.webContents.send('closeWindow')
+    })
+
     return win
 }
 

@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
 import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/codeFix'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 //-------------------------------内容加载处理------------------------------
 function loadContentListener(store){
@@ -24,12 +25,11 @@ function loadContentListener(store){
         }
         //回传信息
         if(payload){
-            console.log('触发另存为');
             //回传上下文,设置另存路径(另存为)
-            
             event.sender.send('saveFile',{
                 applicationContext:JSON.stringify(applicationContext),
-                path:payload.path
+                path:payload.path,
+                closeWindow:payload.closeWindow
             })
         }else{
             //保存按键
@@ -38,6 +38,7 @@ function loadContentListener(store){
             event.sender.send('saveFile',{
                 applicationContext:JSON.stringify(applicationContext),
                 path: null,
+                closeWindow:payload.closeWindow
             })
             store.commit('updateFileState',true) //跟新文件状态为已经保存
         }
@@ -48,6 +49,43 @@ function loadContentListener(store){
     //创建文件树
     window.electronAPI.createFileTree((event, payload)=>{
         store.commit('updateTree',payload.tree)
+    })
+
+    window.electronAPI.closeWindow(()=>{
+        //IR模式需要提前转换文本
+        if(store.state.editModel == "IR"){
+            store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+        }
+
+        if(applicationContext.isSave){
+            //直接关闭窗口
+            window.electronAPI.invokeCloseWin()
+        }
+
+        //调用消息盒子提示是否要保存文件
+        ElMessageBox.confirm(
+            '是否保存更,不保存将丢弃更改',
+            '保存',
+            {
+                distinguishCancelAndClose: true,
+                confirmButtonText: '保存',
+                cancelButtonText: '丢弃',
+            }
+            ).then(() => {
+                console.log("关闭并保持文件");
+                //关闭窗口并保存文件
+                window.electronAPI.invokeSave({
+                    applicationContext:JSON.stringify(applicationContext),
+                    closeWindow:true
+                })
+
+            }).catch((action) => {
+                if(action === 'cancel'){
+                    //直接关闭窗口
+                    window.electronAPI.invokeCloseWin()
+                }
+        })
+
     })
 
     //window.electronAPI.initFonts初始化字体 数据

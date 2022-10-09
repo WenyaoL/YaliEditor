@@ -29,15 +29,18 @@ function load(){
                 //选择
                 common.saveFileDialog().then(select=>{
                     if(select.canceled) return
-                    common.saveFile(select.filePath,applicationContext.content)
+                    common.saveFile(select.filePath,
+                        applicationContext.content,
+                        {closeWindow:payload.closeWindow}
+                        )
                 })
             }else{
                 //使用上下文的路径
-                common.saveFile(applicationContext.filePath,applicationContext.content)
+                common.saveFile(applicationContext.filePath,applicationContext.content,{closeWindow:payload.closeWindow})
             }
         }else{
             //使用另存路径
-            common.saveFile(path,applicationContext.content)
+            common.saveFile(path,applicationContext.content,{closeWindow:payload.closeWindow})
         }
     })
 
@@ -75,7 +78,12 @@ function load(){
         })
     })
 
-
+    //关闭窗口
+    ipcMain.on("close-window",(event,payload)=>{
+        let win = BrowserWindow.getFocusedWindow()
+        win.removeAllListeners('close')
+        win.close()
+    })
 
 
     //-------------------------注册处理器 handle-------------------------

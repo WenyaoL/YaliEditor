@@ -27,6 +27,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     saveHTMLFile:(payload) => ipcRenderer.send('saveHTMLFile',payload),
     //渲染进程请求主进程保存文件
     invokeSave:(payload) => ipcRenderer.send('saveFile',payload),
+    //渲染进程请求关闭窗口
+    invokeCloseWin:(payload) => ipcRenderer.send('close-window',payload),
+
 
     //--------------------------------------监听（listener）-----------------------------------
     //渲染进程加载上下文
@@ -63,6 +66,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     //开口作者详情窗口
     openAuthorDetails:(callback) => ipcRenderer.on('openAuthorDetails',callback),
+
+    //关闭应用窗口监听
+    closeWindow:(callback) => ipcRenderer.on('closeWindow',callback),
 
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),

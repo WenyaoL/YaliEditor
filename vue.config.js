@@ -25,6 +25,8 @@ module.exports = defineConfig({
   pluginOptions:{
     electronBuilder: {
       //nodeIntegration: true,
+      //disableMainProcessTypescript: false,
+      //mainProcessFile:'src/background.ts',
       contextIsolation: true,
       preload: 'src/electron-main/preload.js',
       builderOptions: {
