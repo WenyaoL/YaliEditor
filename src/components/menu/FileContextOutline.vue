@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import {computed} from 'vue'
 const props = defineProps({
-  outline:[]
+  outline:Array
 })
 
 const getHeadingStyle = (level:any)=>{

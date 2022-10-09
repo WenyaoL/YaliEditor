@@ -81,6 +81,7 @@ function load(){
     //关闭窗口
     ipcMain.on("close-window",(event,payload)=>{
         let win = BrowserWindow.getFocusedWindow()
+        if(!win) return
         win.removeAllListeners('close')
         win.close()
     })

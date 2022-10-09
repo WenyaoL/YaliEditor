@@ -10,7 +10,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 //-------------------------------内容加载处理------------------------------
 function loadContentListener(store){
     const applicationContext = store.state.applicationContext
-
+    let currElMessageBox = null;
     //跟新上下文
     window.electronAPI.updateApplicationContext((event, context)=>{
         //跟新上下文
@@ -38,7 +38,6 @@ function loadContentListener(store){
             event.sender.send('saveFile',{
                 applicationContext:JSON.stringify(applicationContext),
                 path: null,
-                closeWindow:payload.closeWindow
             })
             store.commit('updateFileState',true) //跟新文件状态为已经保存
         }
@@ -62,8 +61,10 @@ function loadContentListener(store){
             window.electronAPI.invokeCloseWin()
         }
 
+        if(currElMessageBox) return
+
         //调用消息盒子提示是否要保存文件
-        ElMessageBox.confirm(
+        currElMessageBox = ElMessageBox.confirm(
             '是否保存更,不保存将丢弃更改',
             '保存',
             {
@@ -78,12 +79,13 @@ function loadContentListener(store){
                     applicationContext:JSON.stringify(applicationContext),
                     closeWindow:true
                 })
-
+                currElMessageBox = null
             }).catch((action) => {
                 if(action === 'cancel'){
                     //直接关闭窗口
                     window.electronAPI.invokeCloseWin()
                 }
+                currElMessageBox = null
         })
 
     })

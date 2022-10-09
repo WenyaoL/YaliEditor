@@ -47,7 +47,10 @@ export default {
 
         function nodeClick(data,node,event){
             if(!isFile(data)) return 
-            
+            //IR模式需要提前转换文本
+            if(store.state.editModel == "IR"){
+                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+            }
             if(applicationContext.isSave){
                 readFile(data)
                 document.getElementsByTagName("title")[0].innerText = data.name
@@ -64,12 +67,19 @@ export default {
                     ).then(() => {
                         //保存文件
                         window.electronAPI.invokeSave({applicationContext:JSON.stringify(applicationContext)})
+                        ElMessage({
+                            message: '成功保存!',
+                            type: 'success',
+                        })
                         //读取文件
                         readFile(data)
                         document.getElementsByTagName("title")[0].innerText = data.name
                     }).catch((action) => {
-                        console.log(action);
                         if(action === 'cancel'){
+                            ElMessage({
+                                message: '更改已丢弃!',
+                                type: 'warning',
+                            })
                             //读取文件,强制覆盖
                             readFile(data)
                             document.getElementsByTagName("title")[0].innerText = data.name
