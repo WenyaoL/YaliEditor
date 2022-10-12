@@ -2,24 +2,23 @@
   <el-menu
     default-active="1"
     class="el-menu-vertical-demo"
-    background-color="rgb(250, 250, 250)"
+    
     :collapse="isCollapse"
-    :router="isRoute"
   > 
-    <el-menu-item index="1" :route="'/outline'">
+    <el-menu-item index="1" @click="toRouteOutline">
       <el-icon><Notebook /></el-icon>
       <template #title>大纲</template>
     </el-menu-item>
-    <el-menu-item index="2" :route="'/folder'">
+    <el-menu-item index="2" @click="toRouteFolder">
       <el-icon><folder /></el-icon>
       <template #title>文件夹</template>
     </el-menu-item>
-    <el-menu-item index="3" :route="'/test'">
+    <el-menu-item index="3" @click="toRouteHelp">
       <el-icon><QuestionFilled /></el-icon>
       <template #title>关于</template>
     </el-menu-item>
 
-    <el-menu-item index="4"  :route="'/designDashboard'">
+    <el-menu-item index="4"  @click="toRouteDesignDashboard">
       <el-icon><setting /></el-icon>
       <template #title>设置</template>
     </el-menu-item>
@@ -27,8 +26,8 @@
 
 
     <el-menu-item index="5" @click="fold">
-      <el-icon v-if="isFold"><ArrowRightBold /></el-icon>
-      <el-icon v-else><ArrowLeftBold /></el-icon>
+      <el-icon v-show="isFold"><ArrowRightBold /></el-icon>
+      <el-icon v-show="!isFold"><ArrowLeftBold /></el-icon>
       <template #title>折叠</template>
     </el-menu-item>
   </el-menu>
@@ -54,15 +53,18 @@ let isRoute = ref(true)
 const store = useStore()
 let isFold = ref(store.state.sideBarFold)
 
-const fold = function(e){
+const fold = function(e){  
   isFold.value = !isFold.value
   store.commit("updateSideBarFold",isFold.value)
-  router.push("/outline")
+  //router.push("/outline")
 }
 
-const toRoute = ()=>{
+//手动路由，不使用组件内部的路由，避免BUG
+const toRouteOutline = ()=>router.push("/outline")
+const toRouteFolder = ()=>router.push("/folder")
+const toRouteHelp = ()=>router.push("/test")
+const toRouteDesignDashboard = ()=>router.push("/designDashboard")
 
-}
 </script>
 
 <style scoped>

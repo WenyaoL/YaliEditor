@@ -36,9 +36,13 @@ export default {
       e.preventDefault();
     }
     onMounted(()=>{
+      console.log("挂载");
+      
+      console.log(store.state.theme);
       
       yali = new YaLiEditor("YaliEditor",new EditorOptions({},{
-        disableEdit:props.disableEdit
+        disableEdit:props.disableEdit,
+        theme:store.state.theme
       }))
       //注册监听事件
       yali.ir.applicationEventPublisher.subscribe("refreshedToc",(headings:any)=>{

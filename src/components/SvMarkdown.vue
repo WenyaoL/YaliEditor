@@ -36,7 +36,7 @@ export default {
   height: 100%;
 }
 
-::v-deep ::-webkit-scrollbar
+/*::v-deep ::-webkit-scrollbar
 {
     width:5px;
     height:8px;
@@ -54,6 +54,6 @@ export default {
 {
     border-radius: 5px;
     background-color: rgb(204, 201, 201);
-}
+}*/
 
 </style>

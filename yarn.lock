@@ -1576,7 +1576,7 @@
   "resolved" "https://registry.npmmirror.com/@polka/url/-/url-1.0.0-next.21.tgz"
   "version" "1.0.0-next.21"
 
-"@popperjs/core@^2.11.5", "@popperjs/core@npm:@sxzz/popperjs-es@^2.11.7":
+"@popperjs/core@^2.11.6", "@popperjs/core@npm:@sxzz/popperjs-es@^2.11.7":
   "integrity" "sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ=="
   "resolved" "https://registry.npmmirror.com/@sxzz/popperjs-es/-/popperjs-es-2.11.7.tgz"
   "version" "2.11.7"
@@ -3936,10 +3936,10 @@
   "resolved" "https://registry.npmmirror.com/boolean/-/boolean-3.2.0.tgz"
   "version" "3.2.0"
 
-"bootstrap@^5.2.0":
-  "integrity" "sha512-qlnS9GL6YZE6Wnef46GxGv1UpGGzAwO0aPL1yOjzDIJpeApeMvqV24iL+pjr2kU4dduoBA9fINKWKgMToobx9A=="
-  "resolved" "https://registry.npmmirror.com/bootstrap/-/bootstrap-5.2.0.tgz"
-  "version" "5.2.0"
+"bootstrap@^5.2.2":
+  "integrity" "sha512-dEtzMTV71n6Fhmbg4fYJzQsw1N29hJKO1js5ackCgIpDcGid2ETMGC6zwSYw09v05Y+oRdQ9loC54zB1La3hHQ=="
+  "resolved" "https://registry.npmmirror.com/bootstrap/-/bootstrap-5.2.2.tgz"
+  "version" "5.2.2"
 
 "boxen@^5.0.0":
   "integrity" "sha512-9gYgQKXx+1nP8mP7CzFyaUARhg7D3n1dF/FnErWmu9l6JvGpNUN278h0aSb+QjoiKSWG+iZ3uHrcqk0qrY9RQQ=="

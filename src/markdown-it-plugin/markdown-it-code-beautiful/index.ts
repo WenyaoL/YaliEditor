@@ -14,6 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {noLineNumberBasicSetup,gutterBasicSetup,myHistorySetup} from '@/codemirror-plugin/codeStyle/codePlugin'
 import YaLiEditor from "@/YaliEditor/src"
 import { myHistory } from "@/codemirror-plugin/codePlugin/history"
+import { oneDark, oneDarkHighlightStyle,oneDarkTheme} from '@/codemirror-plugin/codeTheme/dark'
+import {oneLight} from '@/codemirror-plugin/codeTheme/light'
 
 /**
  * 创建一个compartment,并和对其修改的run函数
@@ -26,7 +28,7 @@ import { myHistory } from "@/codemirror-plugin/codePlugin/history"
 export const createEditorCompartment = () => {
     const compartment = new Compartment()
     const run = (extension: Extension,view: EditorView) => {
-        if(compartment.get(view.state)){     
+        if(compartment.get(view.state)){   
             view.dispatch({ effects: compartment.reconfigure(extension) }) // reconfigure
         }else{
             view.dispatch({ effects: StateEffect.appendConfig.of(compartment.of(extension)) })// inject
@@ -54,6 +56,17 @@ export const createEditorExtensionToggler = (view: EditorView, extension: Extens
     }
 }
 
+export const selectTheme = (cache: CodemirrorEditorState,view:EditorView,type:string)=>{
+    if(type == "light"){
+
+        cache.themeCompartment.run(oneLight,view)
+    }else{
+        cache.themeCompartment.run(oneDark,view)
+    }
+}
+
+
+
 export interface EditorStateOptions{
     langCompartment?:{compartment:Compartment,run:(extension: Extension,view:EditorView) => void},
     lang?:string,
@@ -61,7 +74,6 @@ export interface EditorStateOptions{
 
     languageDescription?:LanguageDescription
 }
-
 
 /**
  * 封装的EditorState
@@ -80,6 +92,10 @@ export interface EditorStateOptions{
     public languageDescription:LanguageDescription;
     //是否需要创建建议UI
     public needSuggestUI:boolean=true;
+
+    //编辑器主题
+    public themeCompartment:{compartment:Compartment,run:(extension: Extension,view:EditorView) => void};
+
 
     constructor(
         uuid:string,
@@ -100,20 +116,11 @@ export interface EditorStateOptions{
      * @param doc 
      */
     static of(id:string,doc:string,editor:YaLiEditor,extension?:Extension){
-        const customTheme = EditorView.theme({
-            '&.cm-editor.cm-focused': {
-                outline: "none"   //移除外边框线
-            },
-            '&':{
-                font: "16px Arial, monospace ",  //字体
-            },
-            '.cm-scroller':{
-                "border-radius": "3px",
-                "background-color":"#f6f6f6"
-            }
-        })
         
-        extension = extension ?  [customTheme,myHistorySetup(editor,id)].concat([extension]) : [customTheme,myHistorySetup(editor,id)]
+        let inner_extension = [ myHistorySetup(editor,id)]
+
+       
+        extension = extension ?  inner_extension.concat([extension]) : inner_extension
 
         return new CodemirrorEditorState(
             id,
@@ -148,6 +155,7 @@ export interface EditorViewOptions{
     public suggestUI:SearchSuggestUI;
     //编辑状态开关
     public editorSwitch:(targetApply?: boolean) => void;
+
 
     constructor(element?:Element,view?:EditorView,stateInfo?:CodemirrorEditorState){
         this.element = element;
@@ -184,7 +192,8 @@ export class CodemirrorManager{
     //语言包列表
     public langCanLoad:string[];
 
-
+    //theme type主题类型
+    public themeType:string="light"
 
     //编辑器是否已经加载
     public isLoaded:boolean;
@@ -193,21 +202,12 @@ export class CodemirrorManager{
 
     constructor(editor:YaLiEditor){
         this.editor = editor
-        const customTheme = EditorView.theme({
-            '&.cm-editor.cm-focused': {
-                outline: "none"   //移除外边框线
-            },
-            '&':{
-                font: "16px Arial, monospace ",  //字体
-            },
-            '.cm-scroller':{
-                "background-color":"#f6f6f6"
-            }
-        })
+        
 
         //初始化默认插件
         this.codemirrorPlugin = this.editor.ir.options.codemirrorPlugins.concat([
-            customTheme,
+            //customTheme,
+            
             EditorView.lineWrapping,
             EditorView.updateListener.of((viewUpdate) => { // 默认自带的监听器
                 
@@ -225,6 +225,15 @@ export class CodemirrorManager{
         this.langCanLoad = languages.map(lang=>lang.name)
         
         
+    }
+
+    selectTheme(theme:string){
+        
+        
+        this.themeType = theme
+        this.allView.forEach(info=>{
+            selectTheme(info.stateInfo,info.view,theme)
+        })
     }
 
     addViewUpdateListener(listener:(update: ViewUpdate)=>void){
@@ -296,6 +305,13 @@ export class CodemirrorManager{
                 viewInfo.editorSwitch = sw;
             }
 
+            //编辑器主题
+            if(!cache.themeCompartment){
+                cache.themeCompartment = createEditorCompartment()
+                selectTheme(cache,view,this.themeType);
+            }else{
+                selectTheme(cache,view,this.themeType)
+            }
 
             //是否需要创建建议UI
             if(cache.needSuggestUI){

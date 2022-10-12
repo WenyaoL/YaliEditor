@@ -121,6 +121,7 @@ class IR{
         this.observer = new DOMObserver(this.rootElement,this.editor)
 
         if(this.options.disableEdit) this.observer.disableObserver()
+        if(this.options.theme) this.renderer.codemirrorManager.themeType = this.options.theme
 
         this.subscribe()
     }
@@ -161,8 +162,11 @@ class IR{
         this.undoManager.addIRHistory()
     }
 
+    public selectTheme(theme:string){
+        this.renderer.codemirrorManager.selectTheme(theme)
+    }
     
-    
+
     /**
      * bind all event
      * @param element 

@@ -6,7 +6,7 @@
 @import "/node_modules/bootstrap/scss/mixins";
 @import "/node_modules/bootstrap/scss/root";
 
-$theme-colors: map-remove($theme-colors, "info", "light", "dark");
+//$theme-colors: map-remove($theme-colors, "info", "light", "dark");
 
 // Optional
 @import "/node_modules/bootstrap/scss/tables";

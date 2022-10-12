@@ -8,6 +8,12 @@ export default createStore({
   state: {
     viewEditor:null, //渲染进程的视图编辑器 （SV ONLY模式下的编辑器）
     yaliEditor:null,
+
+    editModel:"IR",  //编辑模式
+    sideBarFold:true,
+
+    theme:"light",
+
     applicationContext:{   //上下文
       title:"undefine",
       filePath: null,   //文件路径
@@ -17,12 +23,11 @@ export default createStore({
       isSave:true,
       outline:[]  //文档大纲
     },
-    editModel:"IR",  //编辑模式
     fonts:{        //jsPDF加载的字体数据
       normal:'',
       bold:''  
     },
-    sideBarFold:true
+    
   },
   getters: {
 
@@ -79,6 +84,10 @@ export default createStore({
     },
     updateOutline(state,heading){
       state.applicationContext.outline = heading
+    },
+    updateTheme(state,theme){
+      console.log("跟新主题");
+      state.theme = theme
     }
   },
   actions: {

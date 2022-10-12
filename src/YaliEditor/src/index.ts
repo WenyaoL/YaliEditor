@@ -9,7 +9,7 @@ import {EditorOptions} from './options'
 
 import './ir/index.scss'
 //import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.min'
+//import 'bootstrap/dist/js/bootstrap.min'
 
 
 class YaLiEditor {

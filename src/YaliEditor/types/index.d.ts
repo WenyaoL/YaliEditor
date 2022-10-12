@@ -24,7 +24,9 @@ interface IROptions{
         options?: any
     }[]
 
-    disableEdit?:boolean
+    disableEdit?:boolean;
+
+    theme?:string;
 }
 
 

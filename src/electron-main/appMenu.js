@@ -24,7 +24,9 @@ export default {
                             //加载页面 window load url
                             common.loadUrl(win)
                         }
-                    },{
+                    },
+                    {type: 'separator'},
+                    {
                         label:'打开',
                         accelerator:'ctrl+o', 
                         click:async ()=>{
@@ -59,7 +61,9 @@ export default {
                                 BrowserWindow.getFocusedWindow().webContents.send('createFileTree',{tree:tree})
                             }
                         }
-                    },{
+                    },
+                    {type: 'separator'},
+                    {
                         label:'保存',
                         accelerator:'ctrl+s',
                         click:()=>{
@@ -77,7 +81,9 @@ export default {
                             //发送catchContent事件,渲染进程会回传数据，并在主进程的监听器中处理数据保存
                             BrowserWindow.getFocusedWindow().webContents.send('saveFile',{path:select.filePath})
                         }
-                    },{
+                    },
+                    {type: 'separator'},
+                    {
                         label:'导出',
                         submenu:[
                             {label:'PDF', click:()=>{BrowserWindow.getFocusedWindow().webContents.send('exportPDF')}},
@@ -158,6 +164,7 @@ export default {
                                     .webContents
                                     .send('createLine',{type:"head",level:6})
                     }},
+                    {type: 'separator'},
                     {label:'代码块', accelerator:'ctrl+shift+k',click:()=>{
                         console.log('触发代码块快捷')
                         BrowserWindow.getFocusedWindow()
@@ -170,6 +177,7 @@ export default {
                                     .webContents
                                     .send('createBlock',{type:"mathblock"})
                     }},
+                    {type: 'separator'},
                     {label:'有序列表', accelerator:'ctrl+shift+[',click:()=>{
                         console.log('触发有序列表快捷')
                         BrowserWindow.getFocusedWindow()
@@ -182,6 +190,7 @@ export default {
                                     .webContents
                                     .send('createMulLine',{type:"unlist"})
                     }},
+                    {type: 'separator'},
                     {label:'引用', accelerator:'ctrl+shift+q',click:()=>{
                         console.log('触发引用快捷')
                         BrowserWindow.getFocusedWindow()
@@ -227,6 +236,21 @@ export default {
                         BrowserWindow.getFocusedWindow()
                                     .webContents
                                     .send('createType',{type:"deleteline"})
+                    }},
+                ]
+            },
+            {
+                label:'主题(T)',
+                submenu:[
+                    {label:'light',type: 'radio',checked: true,click:()=>{
+                        BrowserWindow.getFocusedWindow()
+                                    .webContents
+                                    .send('selectTheme',{type:"light"})
+                    }},
+                    {label:'dark',type: 'radio',click:()=>{
+                        BrowserWindow.getFocusedWindow()
+                                    .webContents
+                                    .send('selectTheme',{type:"dark"})
                     }},
                 ]
             },

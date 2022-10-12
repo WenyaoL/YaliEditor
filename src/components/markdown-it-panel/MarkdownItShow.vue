@@ -65,24 +65,6 @@ div{
 }
 
 // 添加行号样式
-::v-deep pre.hljs::-webkit-scrollbar
-{
-    
-    height:3px;
-    background-color:#F5F5F5;
-    //background-color:white
-}
-::v-deep pre.hljs::-webkit-scrollbar-track
-{
-    //-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius:5px;
-    background-color:#F5F5F5;
-}
-::v-deep pre.hljs::-webkit-scrollbar-thumb
-{
-    border-radius: 5px;
-    background-color: rgb(204, 201, 201);
-}
 ::v-deep .header-anchor{
   text-decoration: none;
   color: black;

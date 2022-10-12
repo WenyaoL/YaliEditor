@@ -43,7 +43,7 @@ export default {
       const ext = md.language.data.of({
         autocomplete: codeCompletions
       })
-      defaultKeymap
+
       const keys =[
         {key: "Shift-Ctrl-k",run() { 
           updateBlock(store.state.viewEditor,{type:"codeblock"}); 
@@ -56,7 +56,7 @@ export default {
       ]
 
       //extensions arrays false
-      const extensions = [
+      let extensions = [
         md,
         ext,
         //syntaxHighlighting(myHighlightStyle),
@@ -65,7 +65,10 @@ export default {
         keymap.of([indentWithTab]),
         basicSetup,
         EditorView.lineWrapping,
-        ]
+      ]
+      if(store.state.theme == "dark"){
+        extensions = extensions.concat([oneDark])
+      }
 
       function getContext(payload){
         store.commit('setViewEditor',payload.view)

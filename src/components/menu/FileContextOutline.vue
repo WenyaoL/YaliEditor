@@ -54,7 +54,7 @@ const getHeadingStyle = (level:any)=>{
 .outline-item-5:hover{
     transition-duration: 0.5s;
     text-decoration:underline;
-    background-color: rgb(238, 238, 238);
+    background-color:var(--yali-outline-item-hover-background-color) ;
     color: #3269bc;
 }
 

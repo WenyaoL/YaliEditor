@@ -33,6 +33,8 @@ html{
 }
 body{
   height: 100%;
+  background-color: var(--yali-background-color);
+  color: var(--yali-text-color);
 }
 #app {
   /*font-family: Avenir, Helvetica, Arial, sans-serif;*/
@@ -40,7 +42,8 @@ body{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /*text-align: center;*/
-  color: #2c3e50;
+  /*color: #2c3e50;*/
+
   height: 100%;
   line-height: 1.42857143;
 }
@@ -56,12 +59,12 @@ body{
 {
     -webkit-box-shadow:inset 0 0 6px rgba(255,255,255,1);
     border-radius:5px;
-    background-color:#F5F5F5;
+    background-color:var(--yali-scrollbar-track-background-color);
 }
 
 ::-webkit-scrollbar-thumb
 {
     border-radius: 5px;
-    background-color: rgb(204, 201, 201);
+    background-color: var(--yali-scrollbar-thumb-background-color);
 }
 </style>

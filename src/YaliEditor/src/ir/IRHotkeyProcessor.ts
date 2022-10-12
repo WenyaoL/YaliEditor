@@ -9,7 +9,8 @@ import { findClosestByAttribute,
     IRfindClosestMdBlock, 
     IRfindClosestParagraph,
     IRfindClosestLi, 
-    IRfindClosestList} from "../util/findElement";
+    IRfindClosestList,
+    IRfindClosestMdInline} from "../util/findElement";
 
 import { getAllHeading } from '../util/inspectElement';
 import Constants from "../constants";
@@ -278,7 +279,7 @@ class IRHotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     codelineKey(event: KeyboardEvent|null){
-        this.blockKey(event,"`","`")
+        this.blockKey(event,"`","`",Constants.ATTR_MD_INLINE_CODE)
     }
 
     /**
@@ -286,20 +287,20 @@ class IRHotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     deletelineKey(event: KeyboardEvent|null){
-        this.blockKey(event,"~~","~~")
+        this.blockKey(event,"~~","~~",Constants.ATTR_MD_INLINE_DELETELINE)
     }
 
     blodKey(event: KeyboardEvent|null){
-        this.blockKey(event,"**","**")
+        this.blockKey(event,"**","**",Constants.ATTR_MD_INLINE_STRONG)
         
     }
 
     underlineKey(event: KeyboardEvent|null){
-        this.blockKey(event,"<u>","</u>")
+        this.blockKey(event,'<u md-inline="underline">','</u>',Constants.ATTR_MD_INLINE_UNDERLINE)
     }
 
     italicKey(event: KeyboardEvent|null){
-        this.blockKey(event,"*","*")
+        this.blockKey(event,"*","*",Constants.ATTR_MD_INLINE_EM)
     }
 
     /**
@@ -309,14 +310,28 @@ class IRHotkeyProcessor implements KeyProcessor{
      * @param suf 
      * @returns 
      */
-    blockKey(event: KeyboardEvent|null,pre:string,suf:string){
+    blockKey(event: KeyboardEvent|null,pre:string,suf:string,type?:string){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
-
+        const end = r.endContainer
         let e = IRfindClosestMdBlock(start)
         if(!e) return
         let content:DocumentFragment;
+
+        //撤销原有字体
+        let inline = IRfindClosestMdInline(start)
+        if(start==end && inline!=null){
+            let text = inline.textContent
+            if(type==inline.getAttribute(Constants.ATTR_MD_INLINE)){
+                inline.replaceWith(text)
+                return
+            }
+            /*let previousSibling = inline.previousSibling
+            let nextSibling = inline.nextSibling
+            if(previousSibling && nextSibling && previousSibling.nodeType==3 && nextSibling.nodeType==3){
+            }*/
+        }
 
         if(!r.collapsed){
             content = r.extractContents()

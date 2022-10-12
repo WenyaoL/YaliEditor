@@ -53,6 +53,14 @@ function blockquoteOpen(tokens:Token[], idx:number, options:Object, env:Object, 
     return slf.renderToken(tokens, idx, options);
 }
 
+function sOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    const token = tokens[idx]
+    const mdTypeAttrs = 'deleteline'
+    token.attrPush(["md-inline",mdTypeAttrs])
+    return slf.renderToken(tokens, idx, options);
+}
+
+
 function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.code_inline = codeInline;
     md.renderer.rules.code_block = codeBlock;
@@ -60,6 +68,7 @@ function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.em_open = emOpen;
     md.renderer.rules.paragraph_open = paragraphOpen;
     md.renderer.rules.blockquote_open = blockquoteOpen;
+    md.renderer.rules.s_open = sOpen;
 }
 
 export default plugin;

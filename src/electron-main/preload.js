@@ -70,6 +70,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     //关闭应用窗口监听
     closeWindow:(callback) => ipcRenderer.on('closeWindow',callback),
 
+    //设置主题
+    selectTheme:(callback) => ipcRenderer.on('selectTheme',callback),
+
     //测试接口
     test:(callback)=> ipcRenderer.on('test',callback),
 })

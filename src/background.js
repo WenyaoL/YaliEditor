@@ -31,6 +31,8 @@ async function createWindow() {
     width: 1000,
     height: 618,
     icon:path.join(__static,"yali.png"),
+    //backgroundColor:'#3269bc',
+    //darkTheme:true,
     webPreferences: {
       webSecurity:false,
       //nodeIntegration:true,

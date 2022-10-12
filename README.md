@@ -31,17 +31,14 @@
 # YaliEditor
 
 - [Download and Install](#download-and-install)
-
 - [Introduction](#Introduction)
   
   - [IR real-time rendering mode](#ir-real-time-rendering-mode)
-  
   - [SV split screen mode](#sv-split-screen-mode)
-  
   - [Only source code mode](#only-source-code-mode)
-  
   - [Folder Preview](#folder-Preview)
-  
+  - [Theme](#theme)
+  - [Support export](#support-export)
   - [Project setup](#project-setup)
 
 ## Download and Install
@@ -79,6 +76,22 @@ This rendering method is significantly safer and easier to maintain than the cur
 ### Folder Preview
 
 ![166](./docs/imgs/166.png)
+
+### Theme
+
+Themes now support light and dark modes
+
+![166](./docs/imgs/167.png)
+
+![166](./docs/imgs/168.png)
+
+### Support export
+
+- Support pdf export
+
+- Support png format image export
+
+- Support html export
 
 ### Project setup
 

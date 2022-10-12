@@ -193,6 +193,13 @@ function loadContentListener(store){
         document.getElementById("dialog-author-details-button").click()
     })
 
+    window.electronAPI.selectTheme((event,payload)=>{
+        console.log(payload.type);
+        document.documentElement.className = payload.type
+        store.state.yaliEditor.ir.selectTheme(payload.type)
+        store.commit('updateTheme',payload.type)
+    })
+
     //测试
     window.electronAPI.test((event,payload)=>{
         console.log('测试，接收数据==',payload);
