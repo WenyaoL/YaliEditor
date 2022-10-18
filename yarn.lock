@@ -6653,6 +6653,11 @@
   "resolved" "https://registry.npmmirror.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz"
   "version" "1.0.1"
 
+"fuzzaldrin@^2.1.0":
+  "integrity" "sha512-zgllBYwfHR5P3CncJiGbGVPpa3iFYW1yuPaIv8DiTVRrcg5/6uETNL5zvIoKflG1aifXVUZTlIroDehw4WygGA=="
+  "resolved" "https://registry.npmmirror.com/fuzzaldrin/-/fuzzaldrin-2.1.0.tgz"
+  "version" "2.1.0"
+
 "gauge@^3.0.0":
   "integrity" "sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q=="
   "resolved" "https://registry.npmmirror.com/gauge/-/gauge-3.0.2.tgz"

@@ -26,6 +26,7 @@
     "diff-match-patch": "^1.0.5",
     "electron-store": "^8.1.0",
     "element-plus": "^2.2.9",
+    "fuzzaldrin": "^2.1.0",
     "highlight.js": "^11.6.0",
     "jspdf": "^2.5.1",
     "juice": "^8.1.0",
