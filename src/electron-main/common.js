@@ -159,7 +159,7 @@ export async function loadUrl(win){
       } else {
         createProtocol('app')
         win.loadURL('app://./index.html')
-      }
+    }
 }
 
 export function openFileDirSync(dirPath){

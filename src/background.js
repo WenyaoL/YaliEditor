@@ -9,7 +9,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import { request } from 'http'
 import loadIPCHandle from './electron-main/ipmMainLoad'
 import path from 'path'
-
+import { AppManager } from './electron-main/appManager'
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -77,16 +77,27 @@ app.on('activate', () => {
 })
 
 app.on('ready', async () => {
-  
-
   //加载ipchandle
   loadIPCHandle.load()
+  let appManager = new AppManager()
+  appManager.init()
 
-  createWindow()
+  let win = appManager.appWindow.createWindow()
+  appManager.appWindow.addWindow(win)
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    if (!process.env.IS_TEST) win.webContents.openDevTools()
+  } else {
+    createProtocol('app')
+    win.loadURL('app://./index.html')
+  }
+
   protocol.interceptFileProtocol('file', (request, callback) => {
     const url = request.url.substring(8)
     callback(decodeURI(path.normalize(url)))
   })
+  
   //应用打开的第一个文件应该去加载数据
   const renderApplicationContext =  loadRenderApplicationContext()
   win.webContents.send("updateApplicationContext",renderApplicationContext)

@@ -12,10 +12,11 @@ export default createStore({
     editModel:"IR",  //编辑模式
     sideBarFold:true,
 
-    theme:"light",
+    
 
     applicationContext:{   //上下文
-      title:"undefine",
+      theme:"light",   //主题
+      title:"undefine",  //标题
       filePath: null,   //文件路径
       content:"",
       preview:"",  
@@ -75,6 +76,7 @@ export default createStore({
       if(context.isSave) application.isSave = context.isSave
       if(!isEmpty(context.tree))application.tree = context.tree
       if(context.preview) application.preview = context.preview
+      if(context.theme) application.theme = context.theme
     },
     initFonts(state,context){
       state.fonts = context
@@ -87,7 +89,7 @@ export default createStore({
     },
     updateTheme(state,theme){
       console.log("跟新主题");
-      state.theme = theme
+      state.applicationContext.theme = theme
     }
   },
   actions: {

@@ -13,6 +13,10 @@ function loadContentListener(store){
     let currElMessageBox = null;
     //跟新上下文
     window.electronAPI.updateApplicationContext((event, context)=>{
+        if(context.theme){
+            document.documentElement.className = context.theme
+            store.state.yaliEditor.ir.selectTheme(context.theme)
+        }
         //跟新上下文
         store.commit('updateApplicationContext',context)
     })
