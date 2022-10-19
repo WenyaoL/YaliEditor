@@ -165,7 +165,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
             if(e.getAttribute("is-empty") == "true"){
                 /*if(e.innerText.length==1 && e.innerText == "\n"){}*/
                 const parent = e.parentElement
-                this.editor.ir.renderer.codemirrorManager.viewDisable(e.parentElement.id)
+                this.editor.ir.renderer.codemirrorManager.viewDestroy(e.parentElement.id)
                 r.setStartBefore(parent)
                 
 

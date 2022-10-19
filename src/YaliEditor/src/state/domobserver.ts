@@ -38,11 +38,6 @@ export class DOMObserver{
                 e = e.parentElement
             }
             
-            if(e && e.className && e.parentElement && (e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0)){
-                return 
-            }
-
-            //
             const now = Date.now()
             if(now-this.lastChange<this.groupDelayTime){       
                 this.lastChange = now

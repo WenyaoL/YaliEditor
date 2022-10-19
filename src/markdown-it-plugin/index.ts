@@ -7,7 +7,8 @@ import markdownItMeta from './markdown-it-meta'
 
 import highlighter from './markdown-it-highlight-beautiful'
 import list from './markdown-it-list-beautiful'
-import CodemirrorManager from './markdown-it-code-beautiful'
+//import CodemirrorManager from './markdown-it-code-beautiful'
+import CodemirrorManager from './markdown-it-codemirror-beautiful'
 import imgplugin from './markdown-it-image-beautiful'
 import link  from './markdown-it-link-beautiful'
 import './index.scss'
@@ -52,7 +53,7 @@ class MarkdownBeautiful{
   }
 
   initEditorView(rootElement:HTMLElement){
-    this.codemirrorManager.initEditorView(rootElement)
+    return this.codemirrorManager.initEditorView(rootElement)
   }
 
   refreshEditorView(rootElement:HTMLElement){

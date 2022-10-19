@@ -21,7 +21,7 @@ import { AllPackages } from "mathjax-full/js/input/tex/AllPackages.js";
 import juice from "juice/client";
 import YaLiEditor from "@/YaliEditor/src";
 import { v4 as uuidv4 } from 'uuid';
-import {CodemirrorEditorState,createEditorCompartment} from '../markdown-it-code-beautiful/index'
+import {CodemirrorEditorState} from '../markdown-it-codemirror-beautiful/CodemirrorEditorState'
 import {EditorView} from "@codemirror/view"
 
 interface DocumentOptions {
@@ -41,16 +41,12 @@ interface MathjaxInfo{
 }
 
 class Mathjax{
-
-  editor:YaLiEditor
-
+  editor:YaLiEditor;
   info:MathjaxInfo[];
-
   documentOptions:{
     InputJax: TeX<unknown, unknown, unknown>;
     OutputJax: SVG<unknown, unknown, unknown>;
   }
-
   convertOptions:{
     display: boolean
   }
@@ -60,10 +56,11 @@ class Mathjax{
     this.info=[]
   }
 
-  public freshMathjax(id:string,doc:string,documentOptions:DocumentOptions,convertOptions:ConvertOptions){
+  public freshMathjax(id:string,doc:string,documentOptions?:DocumentOptions,convertOptions?:ConvertOptions){
     let info = this.info.find(value=>value.id==id)
     if(!info) return
-
+    if(!documentOptions) documentOptions = this.documentOptions
+    if(!convertOptions) convertOptions = this.convertOptions
     info.content = doc
     const e = document.getElementById(info.id)
     //获取渲染面板
@@ -72,6 +69,22 @@ class Mathjax{
     panle.innerHTML = renderMath(doc, documentOptions, convertOptions)
   }
 
+  /**
+   * 添加一个数学公式面板，数学公式中的代码块由codemirrorManager管理
+   * @param id 
+   * @param content 
+   */
+  public addMathjaxPanel(id:string,content:string){
+    let ex = [EditorView.updateListener.of(viewupdate=>{
+      if(viewupdate.docChanged){
+        this.editor.ir.observer.ignore(()=>{
+          this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
+        },this)
+      }
+    })]
+    let editorState = CodemirrorEditorState.of(id,content,ex,{needSuggestUI:false})
+    this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
+  }
 
 
   public plugin = (md: MarkdownIt, options: any)=>{
@@ -138,9 +151,7 @@ class Mathjax{
           },this)
         }
       })]
-      let editorState = CodemirrorEditorState.of(info.id,info.content,this.editor,ex)
-      
-      
+      let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
       this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
       return  res.join('')
     }
@@ -149,28 +160,6 @@ class Mathjax{
       return "</div>"
     }
   }
-
-  /**
-   * 添加一个数学公式面板，数学公式中的代码块由codemirrorManager管理
-   * @param id 
-   * @param content 
-   */
-  public addMathjaxPanel(id:string,content:string){
-
-
-    let ex = [EditorView.updateListener.of(viewupdate=>{
-      if(viewupdate.docChanged){
-        this.editor.ir.observer.ignore(()=>{
-          this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
-        },this)
-      }
-    })]
-    let editorState = CodemirrorEditorState.of(id,content,this.editor,ex)
-    
-
-    this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
-  }
-
 }
 
 

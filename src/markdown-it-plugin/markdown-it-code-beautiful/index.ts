@@ -351,7 +351,6 @@ export class CodemirrorManager{
             //得到最新状态
             
             viewInfo.stateInfo.state = viewInfo.view.state
-
             //销毁原视图
             viewInfo.view.destroy()
             //viewInfo.view.dom.remove()

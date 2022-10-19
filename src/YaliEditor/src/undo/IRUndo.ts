@@ -6,17 +6,12 @@ import {diff_match_patch,patch_obj} from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
 import {IRfindClosestMdBlock} from '../util/findElement'
-const enum HistoryType {
-    CodemirrorHistory,
-    IRHistory
-}
+
 
 /**
  * 历史记录
  */
 class History{
-    //历史类型
-    public type:HistoryType;
 
     //补丁(历史补丁)
     public patch: patch_obj[];
@@ -24,8 +19,6 @@ class History{
     public bookMark:any;
     public secondBookMark:any;
 
-    //codemirror History
-    public codemirrorHistory:{id:string}
 
     constructor(patch?:patch_obj[],bookMark?:any,secondBookMark?:any){
         this.patch = patch
@@ -45,7 +38,7 @@ class IRUndo{
     stackSize = 100;
 
     hasUndo:boolean;
-    //记录最后一次文本(不包含codemirror的代码的文本)
+    //记录最后一次文本(包含codemirror的代码的文本)
     lastText: string;
     //记录最后一次的光标位置(记录的是在codemirror代码块移除前的位置)
     lastBookMark: any;
@@ -70,6 +63,7 @@ class IRUndo{
      * @param origin 
      */
     setOrigin(origin:string){
+        
         this.lastText = origin;
         this.hasUndo = false;
         this.redoStack = [];
@@ -77,21 +71,12 @@ class IRUndo{
         
     }
 
-    private codemirrorHistoryUndo(history:History){
-        let id = history.codemirrorHistory.id
-        let keyboardEvent = new InputEvent("beforeinput",{
-            inputType:"historyUndo"
-        })
-        let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(id)
-        viewInfo.view.focus()
-        document.getElementById(id).getElementsByClassName("cm-content").item(0).dispatchEvent(keyboardEvent)
-    }
 
     private IRHistoryUndo(history:History){
         
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
-
+        
         //重新设置last
         this.lastText = res[0]
         //跟新编译器当前文本
@@ -116,24 +101,16 @@ class IRUndo{
         }
 
         //rangy.getSelection().moveToBookmark(history.bookMark)
-        
-        
     }   
 
     /**
      * undo 操作
      */
     public undo(){
-
-        
         const history = this.undoStack.pop()
         if(!history) return;
 
         this.redoStack.push(history);
-        if(history.type == HistoryType.CodemirrorHistory){
-            this.codemirrorHistoryUndo(history)
-            return
-        }
 
         this.IRHistoryUndo(history)
         //释放修改锁
@@ -168,16 +145,6 @@ class IRUndo{
         rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
-    private codemirrorHistoryRedo(history:History){
-        let id = history.codemirrorHistory.id
-        let keyboardEvent = new InputEvent("beforeinput",{
-            inputType:"historyRedo"
-        })
-        let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(id)
-        viewInfo.view.focus()
-        document.getElementById(id).getElementsByClassName("cm-content").item(0).dispatchEvent(keyboardEvent)
-    }
-
     /**
      * redo 操作
      */
@@ -187,44 +154,19 @@ class IRUndo{
         //重新放回undo
         this.undoStack.push(history)
 
-        if(history.type == HistoryType.CodemirrorHistory){
-            this.codemirrorHistoryRedo(history)
-            return
-        }
-
         this.IRHistoryRedo(history)
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         
     }
 
-    public addCodemirrorHistory(uuid:string){
-        //释放修改锁
-        this.editor.ir.focueProcessor.releaseModifyLock()
-        let history = new History()
-        history.type = HistoryType.CodemirrorHistory
-        history.codemirrorHistory = {id:uuid}
-        this.undoStack.push(history)
-    }
 
     public addIRHistory(){
         
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
-        //移除动态的
-        let preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
-        for (let index = 0; index < preList.length; index++) {
-            const element = preList.item(index);
-            element.innerHTML=""
-        }
-        preList = cloneRoot.getElementsByClassName("md-mathblock-input")
-        for (let index = 0; index < preList.length; index++) {
-            const element = preList.item(index);
-            element.innerHTML=""
-        }
-
-
+        
         //当前状态到上一状态的不同
         const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
        //生成补丁
@@ -268,13 +210,6 @@ class IRUndo{
      * 
      * 1(last)
      * 1 <- 2(now)
-     * 强制刷新
-     * 1 <- 2(last)
-     * 
-     * 1 <- 2(codemirrorHistory)
-     * 1 <- 2(codemirrorHistory) <- 3(now)
-     * 强制刷新
-     * 1 <- 2(codemirrorHistory) <- 3(last)
      */
     adjust(){
         if(this.undoStack.length<=0) return
@@ -285,22 +220,12 @@ class IRUndo{
         }*/
 
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
-        //移除动态的
-        const preList =  cloneRoot.getElementsByClassName("markdown-it-code-beautiful")
-        for (let index = 0; index < preList.length; index++) {
-            const element = preList[index];
-            element.innerHTML = ""
-        }
-
+        
         const nowText = cloneRoot.innerHTML
         
         //获取上一个历史状态（1<-2）
         const lastHistory = this.undoStack.pop()
-        if(lastHistory.type == HistoryType.CodemirrorHistory){
-            this.undoStack.push(lastHistory)
-            this.addIRHistory()
-            return
-        }
+
         const res = this.dmp.patch_apply(lastHistory.patch,this.lastText)
 
         //当前状态到上上一状态的不同
@@ -324,12 +249,6 @@ class IRUndo{
         this.editor.ir.focueProcessor.releaseModifyLock()
     }
 
-    /**
-     * update bookmark
-     */
-    /*updateBookmark(){
-        this.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
-    }*/
 }
 
 export default IRUndo;

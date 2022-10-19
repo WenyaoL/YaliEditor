@@ -199,8 +199,11 @@ class IR{
         }else{
             this.rootElement.innerHTML = res
         }
-        this.undoManager.setOrigin(this.rootElement.innerHTML)
-        this.renderer.initEditorView(this.rootElement)
+        this.renderer.initEditorView(this.rootElement).then((info)=>{
+            console.log(info);
+            
+            this.undoManager.setOrigin(this.rootElement.innerHTML)
+        })
         this.contextRefresher.refreshContext()
         setTimeout(()=>{
             this.observer.start()
