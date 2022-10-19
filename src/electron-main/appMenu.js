@@ -36,7 +36,7 @@ export class AppMenu{
                     accelerator:'ctrl+n',//快捷键
                     click:()=>{
                         //open new window
-                        const win = this.manager.appWindow.createWindow(path.basename(filePath))
+                        const win = this.manager.appWindow.createWindow()
                         //const win = common.openNewWindow()
                         this.manager.appWindow.addWindow(win)
                         //加载页面 window load url

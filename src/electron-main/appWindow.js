@@ -50,7 +50,6 @@ export class AppWindow{
     
         win.on('close',(event)=>{
             event.preventDefault()
-            console.log("close中的this",this);
             this.removeWindow(win)
             //通知渲染进程要关闭窗口了，对数据进行保存操作
             win.webContents.send('closeWindow')

@@ -200,7 +200,6 @@ class IR{
             this.rootElement.innerHTML = res
         }
         this.renderer.initEditorView(this.rootElement).then((info)=>{
-            console.log(info);
             
             this.undoManager.setOrigin(this.rootElement.innerHTML)
         })
