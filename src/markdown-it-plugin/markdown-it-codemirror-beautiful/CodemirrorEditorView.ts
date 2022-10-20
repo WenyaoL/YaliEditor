@@ -2,7 +2,7 @@ import {EditorState,type Extension, Compartment,StateEffect} from "@codemirror/s
 import {EditorView, keymap,ViewUpdate} from "@codemirror/view"
 import {EditorViewOptions} from './EditorOptions'
 import {CodemirrorEditorState} from './CodemirrorEditorState'
-import SearchSuggestUI from './ui';
+
 
 /**
  * 封装的视图信息
@@ -14,8 +14,7 @@ export class CodemirrorEditorView implements EditorViewOptions{
     public view:EditorView;
     //封装的视图信息
     public stateInfo:CodemirrorEditorState;
-    //于视图捆绑的选择控件
-    public suggestUI:SearchSuggestUI;
+
     //编辑状态开关
     public editorSwitch:(targetApply?: boolean) => void;
 
@@ -27,7 +26,6 @@ export class CodemirrorEditorView implements EditorViewOptions{
     }
 
     setOptions(options:EditorViewOptions){
-        this.suggestUI = options.suggestUI
         this.editorSwitch = options.editorSwitch
     }
 }

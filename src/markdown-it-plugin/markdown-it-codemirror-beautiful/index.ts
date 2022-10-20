@@ -9,17 +9,17 @@ import {basicSetup,minimalSetup} from "codemirror"
 import {languages} from "@codemirror/language-data"
 import {LanguageDescription} from "@codemirror/language"
 import { javascript } from '@codemirror/lang-javascript'
-import SearchSuggestUI from './ui';
 import {CodemirrorEditorState} from './CodemirrorEditorState'
 import {CodemirrorEditorView} from './CodemirrorEditorView'
-
+import {mount} from './SearchInputComponent'
 import { v4 as uuidv4 } from 'uuid';
-import {noLineNumberBasicSetup,gutterBasicSetup,myHistorySetup} from '@/codemirror-plugin/codeStyle/codePlugin'
-import YaLiEditor from "@/YaliEditor/src"
-import { myHistory } from "@/codemirror-plugin/codePlugin/history"
-import { oneDark, oneDarkHighlightStyle,oneDarkTheme} from '@/codemirror-plugin/codeTheme/dark'
-import {oneLight} from '@/codemirror-plugin/codeTheme/light'
- 
+import {noLineNumberBasicSetup,gutterBasicSetup,myHistorySetup} from '@/codemirror-plugin/codeStyle/codePlugin';
+import YaLiEditor from "@/YaliEditor/src";
+import { myHistory } from "@/codemirror-plugin/codePlugin/history";
+import { oneDark, oneDarkHighlightStyle,oneDarkTheme} from '@/codemirror-plugin/codeTheme/dark';
+import {oneLight} from '@/codemirror-plugin/codeTheme/light';
+import {langCanload} from './lang' 
+
 /**
  * 创建一个compartment,并和对其修改的run函数
  * @param view 
@@ -102,7 +102,7 @@ export class CodemirrorManager{
     public viewlistener:(update: ViewUpdate)=>void;
 
     //语言包列表
-    public langCanLoad:string[];
+    public langCanLoad:{}[];
 
     //theme type主题类型
     public themeType:string="light"
@@ -132,7 +132,8 @@ export class CodemirrorManager{
             })
         ])
         
-        this.langCanLoad = languages.map(lang=>lang.name)
+        this.langCanLoad = langCanload
+        
     }
 
     selectTheme(theme:string){
@@ -224,15 +225,14 @@ export class CodemirrorManager{
                 tooltip.classList.add("md-code-tooltip");
                 //tooltip.classList.add("md-hiden")
                 tooltip.setAttribute("spellcheck","false");
-                tooltip.setAttribute("editor-uuid",cache.editor_uuid)
-                const suggest = new SearchSuggestUI()
-                suggest.bindSearchSuggest(tooltip,this.langCanLoad)
-                viewInfo.suggestUI = suggest
-
-                tooltip.children[0].textContent = cache.lang
-                tooltip.children[0].addEventListener("keyup",(event)=>{                    
-                    this.updatedLang(tooltip.children[0].textContent,cache.editor_uuid) 
+                //tooltip.setAttribute("editor-uuid",cache.editor_uuid)
+                
+                mount(tooltip,{
+                    codemirrorManager:this,
+                    editorId:cache.editor_uuid,
+                    langName:cache.lang
                 })
+
             }
 
             
@@ -249,27 +249,27 @@ export class CodemirrorManager{
      * @param root 
      */
     refreshEditorViewSyn(root:HTMLElement){
-        let lang:string,
-            editor_uuids:string[],
+        let editor_uuids:string[],
             languageDescription:LanguageDescription;
             
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
 
-        
-        //提取现有视图的所有id
-        editor_uuids = this.allView.map(viewInfo=>{
-            return viewInfo.stateInfo.editor_uuid
-        })
 
         for (let index = 0; index < elements.length; index++) {
             const element = elements[index];
             let codemirrorPlugin=this.codemirrorPlugin,
                 id = element.id,//编辑器ID
-                input = element.getElementsByClassName("tooltip-input").item(0)
+                input = element.getElementsByTagName("input").item(0),
+                lang='',
+                viewInfo:CodemirrorEditorView = null;
+            //找到现存的视图的ID
+            const idx = this.allView.findIndex(viewInfo=>viewInfo.stateInfo.editor_uuid === id)
+            if(idx>=0) viewInfo = this.allView[idx]
+            
 
             //加载语言包
             if(input){
-                lang = input.textContent
+                lang = viewInfo?.stateInfo.lang
             }else{//没有输入框证明是数学块
                 codemirrorPlugin
                 codemirrorPlugin = codemirrorPlugin.concat([EditorView.updateListener.of(viewupdate=>{
@@ -298,15 +298,12 @@ export class CodemirrorManager{
             editorState.languageDescription=languageDescription
             editorState.lang = lang
 
-            //找到现存的视图的ID
-            const idx = editor_uuids.findIndex(uuid=>uuid===id)
-            if(idx>=0){
-                const viewInfo = this.allView[idx]
+
+            if(viewInfo){
                 //销毁原视图
                 viewInfo.view.destroy()
                 //元素UI选择
                 editorState.needSuggestUI=viewInfo.stateInfo.needSuggestUI
-
             }
             //将数据重新放入缓存
             this.allStateCache.push(editorState)
@@ -414,9 +411,11 @@ export class CodemirrorManager{
         const idx = this.allView.map(view=>view.stateInfo.editor_uuid).indexOf(uuid)
         const viewInfo = this.allView[idx];
         const stateInfo = viewInfo.stateInfo
+        stateInfo.lang = lang
         if(support){//已经加载
             //跟新语言包
             stateInfo.langCompartment.run(support,viewInfo.view)
+            
         }else{//去加载并跟新
             languageDescriptions.load().then(s=>{
                 stateInfo.langCompartment.run(s,viewInfo.view)

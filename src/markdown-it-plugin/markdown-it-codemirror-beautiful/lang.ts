@@ -1,0 +1,279 @@
+export const langCanload = [{
+	"name": "C"
+}, {
+	"name": "C++"
+}, {
+	"name": "CQL"
+}, {
+	"name": "CSS"
+}, {
+	"name": "HTML"
+}, {
+	"name": "Java"
+}, {
+	"name": "JavaScript"
+}, {
+	"name": "JSON"
+}, {
+	"name": "JSX"
+}, {
+	"name": "MariaDB SQL"
+}, {
+	"name": "Markdown"
+}, {
+	"name": "MS SQL"
+}, {
+	"name": "MySQL"
+}, {
+	"name": "PHP"
+}, {
+	"name": "PLSQL"
+}, {
+	"name": "PostgreSQL"
+}, {
+	"name": "Python"
+}, {
+	"name": "Rust"
+}, {
+	"name": "SQL"
+}, {
+	"name": "SQLite"
+}, {
+	"name": "TSX"
+}, {
+	"name": "TypeScript"
+}, {
+	"name": "WebAssembly"
+}, {
+	"name": "XML"
+}, {
+	"name": "APL"
+}, {
+	"name": "PGP"
+}, {
+	"name": "ASN.1"
+}, {
+	"name": "Asterisk"
+}, {
+	"name": "Brainfuck"
+}, {
+	"name": "Cobol"
+}, {
+	"name": "C#"
+}, {
+	"name": "Clojure"
+}, {
+	"name": "ClojureScript"
+}, {
+	"name": "Closure Stylesheets (GSS)"
+}, {
+	"name": "CMake"
+}, {
+	"name": "CoffeeScript"
+}, {
+	"name": "Common Lisp"
+}, {
+	"name": "Cypher"
+}, {
+	"name": "Cython"
+}, {
+	"name": "Crystal"
+}, {
+	"name": "D"
+}, {
+	"name": "Dart"
+}, {
+	"name": "diff"
+}, {
+	"name": "Dockerfile"
+}, {
+	"name": "DTD"
+}, {
+	"name": "Dylan"
+}, {
+	"name": "EBNF"
+}, {
+	"name": "ECL"
+}, {
+	"name": "edn"
+}, {
+	"name": "Eiffel"
+}, {
+	"name": "Elm"
+}, {
+	"name": "Erlang"
+}, {
+	"name": "Esper"
+}, {
+	"name": "Factor"
+}, {
+	"name": "FCL"
+}, {
+	"name": "Forth"
+}, {
+	"name": "Fortran"
+}, {
+	"name": "F#"
+}, {
+	"name": "Gas"
+}, {
+	"name": "Gherkin"
+}, {
+	"name": "Go"
+}, {
+	"name": "Groovy"
+}, {
+	"name": "Haskell"
+}, {
+	"name": "Haxe"
+}, {
+	"name": "HXML"
+}, {
+	"name": "HTTP"
+}, {
+	"name": "IDL"
+}, {
+	"name": "JSON-LD"
+}, {
+	"name": "Jinja2"
+}, {
+	"name": "Julia"
+}, {
+	"name": "Kotlin"
+}, {
+	"name": "LESS"
+}, {
+	"name": "LiveScript"
+}, {
+	"name": "Lua"
+}, {
+	"name": "mIRC"
+}, {
+	"name": "Mathematica"
+}, {
+	"name": "Modelica"
+}, {
+	"name": "MUMPS"
+}, {
+	"name": "Mbox"
+}, {
+	"name": "Nginx"
+}, {
+	"name": "NSIS"
+}, {
+	"name": "NTriples"
+}, {
+	"name": "Objective-C"
+}, {
+	"name": "Objective-C++"
+}, {
+	"name": "OCaml"
+}, {
+	"name": "Octave"
+}, {
+	"name": "Oz"
+}, {
+	"name": "Pascal"
+}, {
+	"name": "Perl"
+}, {
+	"name": "Pig"
+}, {
+	"name": "PowerShell"
+}, {
+	"name": "Properties files"
+}, {
+	"name": "ProtoBuf"
+}, {
+	"name": "Puppet"
+}, {
+	"name": "Q"
+}, {
+	"name": "R"
+}, {
+	"name": "RPM Changes"
+}, {
+	"name": "RPM Spec"
+}, {
+	"name": "Ruby"
+}, {
+	"name": "SAS"
+}, {
+	"name": "Sass"
+}, {
+	"name": "Scala"
+}, {
+	"name": "Scheme"
+}, {
+	"name": "SCSS"
+}, {
+	"name": "Shell"
+}, {
+	"name": "Sieve"
+}, {
+	"name": "Smalltalk"
+}, {
+	"name": "Solr"
+}, {
+	"name": "SML"
+}, {
+	"name": "SPARQL"
+}, {
+	"name": "Spreadsheet"
+}, {
+	"name": "Squirrel"
+}, {
+	"name": "Stylus"
+}, {
+	"name": "Swift"
+}, {
+	"name": "sTeX"
+}, {
+	"name": "LaTeX"
+}, {
+	"name": "SystemVerilog"
+}, {
+	"name": "Tcl"
+}, {
+	"name": "Textile"
+}, {
+	"name": "TiddlyWiki"
+}, {
+	"name": "Tiki wiki"
+}, {
+	"name": "TOML"
+}, {
+	"name": "Troff"
+}, {
+	"name": "TTCN"
+}, {
+	"name": "TTCN_CFG"
+}, {
+	"name": "Turtle"
+}, {
+	"name": "Web IDL"
+}, {
+	"name": "VB.NET"
+}, {
+	"name": "VBScript"
+}, {
+	"name": "Velocity"
+}, {
+	"name": "Verilog"
+}, {
+	"name": "VHDL"
+}, {
+	"name": "XQuery"
+}, {
+	"name": "Yacas"
+}, {
+	"name": "YAML"
+}, {
+	"name": "Z80"
+}, {
+	"name": "MscGen"
+}, {
+	"name": "Xù"
+}, {
+	"name": "MsGenny"
+}]

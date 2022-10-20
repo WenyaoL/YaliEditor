@@ -258,6 +258,10 @@ class IRDeletekeyProcessor implements KeyProcessor{
         return;
     }
 
+    filter(target:HTMLElement){
+        if(target.className == "el-input__inner") return true
+    }
+
 
     /**
      * 删除键处理
@@ -265,6 +269,8 @@ class IRDeletekeyProcessor implements KeyProcessor{
      */
     deleteKey(event: KeyboardEvent & { target: HTMLElement }){
         const r = rangy.getSelection().getRangeAt(0)
+        if(this.filter(event.target)) return 
+        
         //单一的删除
         if(rangy.getSelection().isCollapsed){
             this.deleteCollapsed(event)
