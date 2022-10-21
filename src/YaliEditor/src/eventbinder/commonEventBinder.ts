@@ -16,12 +16,13 @@ class CommonEventBinder implements BaseEventBinder{
         //输入前触发（打拼英时，触发顺序compositionstart compositionend）
         element.addEventListener("compositionstart", (event: InputEvent & {target:HTMLElement}) => {
             
-            if(event.target.classList.contains("cm-content")) return
+            //if(event.target.classList.contains("cm-content")) return
             this.editor.ir.focueProcessor.updateBeforeModify()
             //上锁，代表在用打字
             this.composingLock = true;
 
             this.editor.ir.observer.stop()
+
             
             
         });

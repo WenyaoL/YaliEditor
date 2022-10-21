@@ -100,6 +100,7 @@ class IRUndo{
             sel.moveToBookmark(history.secondBookMark)
         }
 
+        this.editor.ir.focueProcessor.updateFocusElementByRoot()
         //rangy.getSelection().moveToBookmark(history.bookMark)
     }   
 

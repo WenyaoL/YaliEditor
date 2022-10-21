@@ -47,6 +47,30 @@ class IRFocusProcessor{
     this.updateBookmark()
   }
 
+  updateFocusElementByRoot(root?:HTMLElement){
+    this.sel = rangy.getSelection()
+    if(!root) root = this.editor.ir.rootElement
+    const focusElements = root.getElementsByClassName("md-focus")
+    const expandElements =  root.getElementsByClassName("md-expand")
+    const start = this.sel.getRangeAt(0).startContainer
+
+    for (let index = 0; index < focusElements.length; index++) {
+      const element = focusElements[index];
+      element.classList.remove("md-focus")
+    }
+
+    for (let index = 0; index < expandElements.length; index++) {
+      const element = expandElements[index];
+      element.classList.remove("md-expand")
+    }
+
+    this.selectedInlineMdElement = IRfindClosestMdInline(start)
+    this.selectedBlockMdElement = IRfindClosestMdBlock(start)
+
+    this.selectedInlineMdElement?.classList.add("md-expand")
+    this.selectedBlockMdElement?.classList.add("md-focus")
+  }
+
   /**
    * 给定起点位置，去刷新当前选中的元素
    * @param start 

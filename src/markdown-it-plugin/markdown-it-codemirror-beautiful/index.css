@@ -11,12 +11,13 @@ pre.markdown-it-code-beautiful{
 
 .md-focus .md-code-tooltip{
   display: block;
+  z-index: 1;
 }
   
 
     
 .markdown-it-code-beautiful{
   position: relative;
-  margin-bottom: 35px;
+  margin-bottom: 15px;
 }
   

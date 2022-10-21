@@ -69,6 +69,7 @@ export const selectTheme = (cache: CodemirrorEditorState,view:EditorView,type:st
 }
  
 export const loadLanguage = (lang:string)=>{
+    if(!lang) return
     const languageDescription = LanguageDescription.matchLanguageName(languages, lang, true);
     if(!languageDescription) return null
     if(!languageDescription.support){
