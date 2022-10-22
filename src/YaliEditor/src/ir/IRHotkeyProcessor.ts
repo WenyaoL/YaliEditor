@@ -380,14 +380,13 @@ class IRHotkeyProcessor implements KeyProcessor{
             const res = this.editor.ir.renderer.render(codeStr)
             //添加面板
             block.insertAdjacentHTML("beforebegin",res)
-            if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
-            uuid = content.firstElementChild? content.firstElementChild.id:''
+            if(!block.textContent || block.textContent.length == 0) content.removeChild(block) 
+            uuid = content.firstElementChild? content.firstElementChild.getElementsByClassName(Constants.CLASS_MD_CODE).item(0)?.id:''
 
             r.collapseAfter(e)
             r.insertNode(content)
             r.collapseAfter(e);
-            sel.setSingleRange(r);
-
+            
         }else{
             let str = r.extractContents().textContent
             r.setEndAfter(e)
@@ -401,13 +400,13 @@ class IRHotkeyProcessor implements KeyProcessor{
             //添加面板
             block.insertAdjacentHTML("beforebegin",res)
             if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
-            uuid = content.firstElementChild? content.firstElementChild.id:''
+            uuid = content.firstElementChild? content.firstElementChild.getElementsByClassName(Constants.CLASS_MD_CODE).item(0)?.id:''
             
             r.collapseAfter(e)
             r.insertNode(content)
 
             r.collapseAfter(e);
-            sel.setSingleRange(r);
+            
         }
         
 

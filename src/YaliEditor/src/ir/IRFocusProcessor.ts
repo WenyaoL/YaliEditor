@@ -47,6 +47,22 @@ class IRFocusProcessor{
     this.updateBookmark()
   }
 
+  /**
+   * 锁定给定元素为聚焦元素
+   * @param block 
+   */
+  updateFocusElementByMdblock(block?:HTMLElement){
+    this.sel = rangy.getSelection()
+    if(!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
+    if(this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
+    this.selectedBlockMdElement = block
+    this.selectedInlineMdElement?.classList.add("md-expand")
+  }
+
+  /**
+   * 给定IR面板，刷新改面板下的焦点位置
+   * @param root 
+   */
   updateFocusElementByRoot(root?:HTMLElement){
     this.sel = rangy.getSelection()
     if(!root) root = this.editor.ir.rootElement

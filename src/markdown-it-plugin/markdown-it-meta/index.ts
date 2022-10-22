@@ -14,7 +14,7 @@ function codeInline(tokens:Token[], idx:number, options:Object, env:Object, slf:
     const mdTypeAttrs = 'md-inline="code"'
     return  '<code' + slf.renderAttrs(token) +" " + mdTypeAttrs + '>' +
             escapeHtml(tokens[idx].content) +
-            '</code>';
+            '</code>\u200c';
 }
 
 function codeBlock (tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer) {
@@ -31,7 +31,11 @@ function strongOpen(tokens:Token[], idx:number, options:Object, env:Object, slf:
     const token = tokens[idx]
     const mdTypeAttrs = 'strong'
     token.attrPush(["md-inline",mdTypeAttrs])
-    return slf.renderToken(tokens, idx, options);
+    return slf.renderToken(tokens, idx, options)+'\u200c';
+}
+
+function strongClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    return slf.renderToken(tokens, idx, options)+'\u200c';
 }
 
 function emOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
@@ -40,6 +44,10 @@ function emOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Ren
     token.attrPush(["md-inline",mdTypeAttrs])
     return slf.renderToken(tokens, idx, options);
 }
+function emClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    return slf.renderToken(tokens, idx, options)+'\u200c';
+}
+
 
 function paragraphOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
   const token = tokens[idx]
@@ -60,15 +68,27 @@ function sOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Rend
     return slf.renderToken(tokens, idx, options);
 }
 
+function sClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    return slf.renderToken(tokens, idx, options)+'\u200c';
+}
+
+function text(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+    let res = slf.renderInlineAsText(tokens, options,env)
+    return '<span md-text="text">'+res+'</span>'
+}
 
 function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.code_inline = codeInline;
     md.renderer.rules.code_block = codeBlock;
     md.renderer.rules.strong_open = strongOpen;
+    md.renderer.rules.strong_close = strongClose;
     md.renderer.rules.em_open = emOpen;
+    md.renderer.rules.em_close = emClose;
     md.renderer.rules.paragraph_open = paragraphOpen;
     md.renderer.rules.blockquote_open = blockquoteOpen;
     md.renderer.rules.s_open = sOpen;
+    md.renderer.rules.s_close = sClose;
+    //md.renderer.rules.text = text
 }
 
 export default plugin;

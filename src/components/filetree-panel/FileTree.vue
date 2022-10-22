@@ -107,6 +107,7 @@ export default {
 <style scoped>
 .el-tree{
     min-width: 100%;
+    display: grid;
 }
 
 ::v-deep ::-webkit-scrollbar

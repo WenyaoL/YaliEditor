@@ -124,11 +124,9 @@ export class CodemirrorManager{
                 
                 if (viewUpdate.state.doc.length === 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","true")
-                    
                 }
                 if (viewUpdate.state.doc.length > 0) {
                     viewUpdate.view.dom.setAttribute("is-empty","false")
-                    
                 }
             })
         ])
@@ -191,6 +189,7 @@ export class CodemirrorManager{
             view.setState(cache.state)
 
             const viewInfo = new CodemirrorEditorView(element,view,cache)
+            
             this.allView.push(viewInfo);
 
             if(!cache.langCompartment){
@@ -262,24 +261,37 @@ export class CodemirrorManager{
                 id = element.id,//编辑器ID
                 input = element.getElementsByTagName("input").item(0),
                 lang='',
-                viewInfo:CodemirrorEditorView = null;
+                viewInfo:CodemirrorEditorView = null,
+                needSuggestUI=null;
             //找到现存的视图的ID
             const idx = this.allView.findIndex(viewInfo=>viewInfo.stateInfo.editor_uuid === id)
             if(idx>=0) viewInfo = this.allView[idx]
             
+            if(viewInfo){
+                //销毁原视图
+                viewInfo.view.destroy()
+                //元素UI选择
+                needSuggestUI=viewInfo.stateInfo.needSuggestUI
+            }
 
             //加载语言包
             if(input){
                 lang = viewInfo?.stateInfo.lang
             }else{//没有输入框证明是数学块
-                codemirrorPlugin
                 codemirrorPlugin = codemirrorPlugin.concat([EditorView.updateListener.of(viewupdate=>{
+                    if (viewupdate.state.doc.length === 0) {
+                        viewupdate.view.dom.setAttribute("is-empty","true")
+                    }
+                    if (viewupdate.state.doc.length > 0) {
+                        viewupdate.view.dom.setAttribute("is-empty","false")
+                    }
                     if(viewupdate.docChanged){
                       this.editor.ir.observer.ignore(()=>{
                         this.editor.ir.renderer.mathjax.freshMathjax(id,viewupdate.state.doc.toString())
                       },this.editor.ir.renderer.mathjax)
                     }
                   })])
+                needSuggestUI=false
             }
             languageDescription = loadLanguage(lang)
 
@@ -294,18 +306,16 @@ export class CodemirrorManager{
 
             
             //基于当前文本创建新的编辑器状态
-            const editorState = CodemirrorEditorState.of(id,text,codemirrorPlugin)
-            //添加语言描述
-            editorState.languageDescription=languageDescription
-            editorState.lang = lang
+            const editorState = CodemirrorEditorState.of(
+                id,
+                text,
+                codemirrorPlugin,
+                {
+                    languageDescription,
+                    lang,
+                    needSuggestUI
+                })
 
-
-            if(viewInfo){
-                //销毁原视图
-                viewInfo.view.destroy()
-                //元素UI选择
-                editorState.needSuggestUI=viewInfo.stateInfo.needSuggestUI
-            }
             //将数据重新放入缓存
             this.allStateCache.push(editorState)
             element.innerHTML=""
@@ -387,10 +397,15 @@ export class CodemirrorManager{
     viewFocus(uuid:string){
         
         if(this.allView.length<=0) return;
-        const idx = this.allView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
-        if(idx==-1) return
 
-        this.allView.at(idx).view.focus()
+        
+        const idx = this.allView.map(viewInfo=>viewInfo.stateInfo.editor_uuid).indexOf(uuid)
+
+        
+        if(idx==-1) return
+        let view = this.allView.at(idx).view
+        this.editor.ir.focueProcessor.updateFocusElementByStart(view.dom)
+        view.focus()
     }
 
     disableEditAllView(){

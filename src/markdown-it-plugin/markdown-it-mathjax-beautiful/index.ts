@@ -130,6 +130,7 @@ class Mathjax{
       //hiden value
       if(tokens[idx+1].type == "math_block"){
         content = tokens[idx+1].content
+        if(content.endsWith("\n")) content = content.substring(0,content.length-1)
       }
       let info:MathjaxInfo = {
         id:uuidv4(),
@@ -145,6 +146,12 @@ class Mathjax{
       res.push('</div>')
       
       let ex = [EditorView.updateListener.of(viewupdate=>{
+        if (viewupdate.state.doc.length === 0) {
+          viewupdate.view.dom.setAttribute("is-empty","true")
+        }
+        if (viewupdate.state.doc.length > 0) {
+          viewupdate.view.dom.setAttribute("is-empty","false")
+        }
         if(viewupdate.docChanged){
           this.editor.ir.observer.ignore(()=>{
             this.freshMathjax(info.id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)

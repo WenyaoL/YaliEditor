@@ -15,7 +15,7 @@
 .markdown-it-mathjax-beautiful:not(.md-focus) .mathjax-panel:hover{
 
     transition:background 0.5s;
-    background-color: rgb(245, 246, 247)
+    background-color: var(--yali-mathjax-hover--background-color)
 }
 
 .md-mathblock-input.markdown-it-code-beautiful{

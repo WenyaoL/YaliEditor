@@ -205,6 +205,15 @@ class TurndownParser{
 
   }
 
+  initParagraphRule(){
+    this.turndownService.addRule('md-paragraph',{
+      filter: 'p',
+      replacement: function (content) {
+        content = content.replaceAll("\u200c",'')
+        return '\n\n' + content + '\n\n'
+      }
+    })
+  }
 
   turndown(src:string | TurndownService.Node){
     return this.turndownService.turndown(src)

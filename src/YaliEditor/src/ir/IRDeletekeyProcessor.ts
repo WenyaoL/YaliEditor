@@ -161,20 +161,31 @@ class IRDeletekeyProcessor implements KeyProcessor{
         //删除代码
         if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
             //来自代码块的操作，获取到的是已经删除后的代码
+            //编辑器element
             e = findClosestByClassName(e,CONSTANTS.CODEMIRROR_EDITOR,this.editor.ir.getRootElementClassName())
+            //当前所在的块级元素
+            let md_block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
             if(e.getAttribute("is-empty") == "true"){
                 /*if(e.innerText.length==1 && e.innerText == "\n"){}*/
-                const parent = e.parentElement
-                this.editor.ir.renderer.codemirrorManager.viewDestroy(e.parentElement.id)
-                r.setStartBefore(parent)
+                let root:HTMLElement;
+                if(md_block.getAttribute(CONSTANTS.ATTR_MD_BLOCK) == CONSTANTS.ATTR_MD_BLOCK_MATH){
+                    root=md_block
+                    this.editor.ir.renderer.codemirrorManager.viewDestroy(e.parentElement.id)
+                }else{
+                    root = e.parentElement
+                    this.editor.ir.renderer.codemirrorManager.viewDestroy(e.parentElement.id)
+                    r.setStartBefore(root)
+                }
+
                 
 
                 let p = document.createElement("p")
                 p.setAttribute("md-block","paragraph")
-                r.insertNode(p)
+                root.replaceWith(p)
+                //r.insertNode(p)
                 r.collapseToPoint(p,0)
                 rangy.getSelection().setSingleRange(r)
-                parent.remove()
+                //parent.remove()
                 
                 event.preventDefault()
             }
