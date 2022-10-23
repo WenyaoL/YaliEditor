@@ -10,7 +10,8 @@ export default createStore({
     yaliEditor:null,
 
     editModel:"IR",  //编辑模式
-    sideBarFold:true,
+    sideBarFold:true, //侧边栏折叠
+    sideBarHiden:false, //侧边栏隐藏
 
     
 
@@ -83,6 +84,9 @@ export default createStore({
     },
     updateSideBarFold(state,flag){
       state.sideBarFold = flag
+    },
+    updateSideBarHiden(state,flag){
+      state.sideBarHiden = flag
     },
     updateOutline(state,heading){
       state.applicationContext.outline = heading

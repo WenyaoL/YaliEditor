@@ -50,8 +50,8 @@ module.exports = defineConfig({
             {
               target: "nsis", // 输出目录的方式
               arch: [ // 这个意思是打出来32 bit + 64 bit的包，但是要注意：这样打包出来的安装包体积比较大，所以建议直接打32的安装包。
-              //"x64",
-              "ia32"
+              "x64",
+              //"ia32"
               ]
             }
             ]

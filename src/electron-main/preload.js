@@ -64,8 +64,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     //监听导出HTML
     exportHTML:(callback) => ipcRenderer.on('exportHTML',callback),
 
-    //开口作者详情窗口
+    //打口作者详情窗口
     openAuthorDetails:(callback) => ipcRenderer.on('openAuthorDetails',callback),
+    //切换编辑模式
+    checkoutEditModel:(callback) => ipcRenderer.on('checkoutEditModel',callback),
+    //隐藏/显示侧边栏
+    checkoutSidebarDisplay:(callback) => ipcRenderer.on('checkoutSidebarDisplay',callback),
 
     //关闭应用窗口监听
     closeWindow:(callback) => ipcRenderer.on('closeWindow',callback),

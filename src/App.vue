@@ -4,7 +4,6 @@
 
 <script>
 import HomeView from '@/views/HomeView.vue'
-import {loadAll} from '@/electron-renderer/ipmRendererLoad'
 import {onMounted} from 'vue'
 import { useStore } from 'vuex';
 
@@ -14,8 +13,6 @@ export default {
   },
   setup(){
     onMounted(()=>{
-      const store = useStore()
-      loadAll(store)
       window.electronAPI.loadFonts()
 
       /*window.electronAPI.loadRenderApplicationContext().then(payload=>{

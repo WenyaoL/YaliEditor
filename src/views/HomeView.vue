@@ -4,6 +4,7 @@
     <el-container>
       <el-aside :width="sideBarWidth" style="transition-duration: 0.8s;">
             <el-container>
+              <!--侧边栏菜单-->
               <el-aside width="64px">
                 <left-menu />
               </el-aside>
@@ -36,11 +37,18 @@ import {onMounted,ref,watch} from 'vue'
 import {useStore} from 'vuex'
 const store = useStore()
 let sideBarWidth = ref("64px")
-watch(()=>store.state.sideBarFold,(newValue)=>{
-  if(newValue){
-    sideBarWidth.value = "64px"
+watch(()=>[store.state.sideBarFold,store.state.sideBarHiden],([sideBarFold,sideBarHiden])=>{
+
+
+  
+  if(sideBarHiden){
+    sideBarWidth.value = '0px'
   }else{
-    sideBarWidth.value = "320px"
+    if(sideBarFold){
+      sideBarWidth.value = "64px"
+    }else{
+      sideBarWidth.value = "320px"
+    }
   }
 })
   onMounted(() => {

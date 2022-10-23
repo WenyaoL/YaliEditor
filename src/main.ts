@@ -10,7 +10,7 @@ import ContextMenu from '@imengyu/vue3-context-menu'
 import '@/assets/icon.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import './assets/theme/dark.scss'
-
+import {RendererIPMEventLoader} from './electron-renderer/RendererIPMEventLoader'
 
 const app =  createApp(App)
 
@@ -20,4 +20,8 @@ app.use(ElementPlus)
         .use(ContextMenu)
         
 
-router.isReady().then(() => app.mount('#app'))
+router.isReady().then(() => {
+        let loader =  new RendererIPMEventLoader(store)
+        loader.init()
+        app.mount('#app')
+})

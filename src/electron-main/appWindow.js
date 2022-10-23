@@ -8,8 +8,11 @@ import path from 'path'
 
 export class AppWindow{
 
+    
+
     constructor(manager){
-        this.window = []
+        //窗口映射，可携带数据
+        this.windowMap = []
         this.manager = manager
     }
 
@@ -17,14 +20,14 @@ export class AppWindow{
         this.theme = this.manager.store.get('theme','light')
     }
 
-    addWindow(win){
-        this.window.push(win)
+    addWindow(win,data){
+        this.windowMap.push({win,data})
     }
 
     removeWindow(win){
-        const idx = this.window.findIndex(value=>value===win)
+        const idx = this.windowMap.findIndex(map=>map.win===win)
         if(idx==-1) return;
-        this.window.splice(idx,1)
+        this.windowMap.splice(idx,1)
     }
     
     /**
@@ -61,7 +64,7 @@ export class AppWindow{
      * 切换所有窗口的主题
      */
     checkoutTheme(theme){
-        this.window.forEach(win=>{
+        BrowserWindow.getAllWindows().forEach(win=>{
             //通知窗口更新主题色
             win.webContents.send('selectTheme',{type:theme})
         })
@@ -70,6 +73,18 @@ export class AppWindow{
         this.theme = theme
     }
 
-
+     hideSidebar(){
+        BrowserWindow.getAllWindows().forEach(win=>{
+            win.webContents.send('hideSidebar')
+        })
+     }
     
+     expandSidebar(){
+        BrowserWindow.getAllWindows().forEach(win=>{
+            win.webContents.send('expandSidebar')
+        })
+     }
+
+
 }
+
