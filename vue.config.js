@@ -60,7 +60,7 @@ module.exports = defineConfig({
               arch: ["x64","ia32"]
             }*/
             ],
-          
+          requestedExecutionLevel: "asInvoker"
         },
         /*electronDownload: {
           customDir: `v13.0.0`,

@@ -101,13 +101,5 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ],
-  "build":{
-    "fileAssociations": {
-      "ext": ["md","markdown","mmd","mdown","mdtxt","mdtext"],
-      "name": "Markdown",
-      "description": "Markdown document",
-      "icon": "./resource/icons/md.ico"
-    }
-  }
+  ]
 }
