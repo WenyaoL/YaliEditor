@@ -2,7 +2,7 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { BrowserWindow, Menu,ipcMain,dialog} from 'electron'
+import { BrowserWindow, Menu,ipcMain,dialog,shell} from 'electron'
 //import { openFile,openFileDialog,openNewWindow,loadUrl} from './common'
 import common from './common'
 import path from 'path'
@@ -82,6 +82,12 @@ export class AppMenu{
                             BrowserWindow.getFocusedWindow().webContents.send('createFileTree',{tree:tree})
                         }
                     }
+                },{
+                    label:'最近打开文件',
+                    role:"recentdocuments",
+                    submenu:[
+                        {label:"清空最近文件",role:"clearrecentdocuments"}
+                    ]
                 },
                 {type: 'separator'},
                 {
@@ -197,33 +203,28 @@ export class AppMenu{
                 }},
                 {type: 'separator'},
                 {label:'代码块', accelerator:'ctrl+shift+k',click:()=>{
-                    console.log('触发代码块快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createBlock',{type:"codeblock"})
                 }},
                 {label:'公式块', accelerator:'ctrl+shift+M',click:()=>{
-                    console.log('触发公式块快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createBlock',{type:"mathblock"})
                 }},
                 {type: 'separator'},
                 {label:'有序列表', accelerator:'ctrl+shift+[',click:()=>{
-                    console.log('触发有序列表快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"list"})
                 }},
                 {label:'无序列表', accelerator:'ctrl+shift+]',click:()=>{
-                    console.log('触发无序列表快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"unlist"})
                 }},
                 {type: 'separator'},
                 {label:'引用', accelerator:'ctrl+shift+q',click:()=>{
-                    console.log('触发引用快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"quote"})
@@ -339,6 +340,53 @@ export class AppMenu{
             submenu:[
                 {label:'作者',click:()=>{
                     BrowserWindow.getFocusedWindow().webContents.send("openAuthorDetails")
+                }},
+                {label:'帮助文档',click:()=>{
+                    //打开文件
+                    const filePath = path.join(__static,"docs/Help.md")
+                    const data = common.openFileSync(filePath)
+                    //open new window
+                    const win = this.manager.appWindow.createWindow(path.basename(filePath))
+                    this.manager.appWindow.addWindow(win)
+                    //加载页面 window load url
+                    common.loadUrl(win)
+                    //页面加载完
+                    win.on('ready-to-show',()=>{
+                        //发送数据
+                        win.webContents.send('updateApplicationContext',{   //上下文
+                            title:path.basename(filePath),
+                            filePath: filePath,   //文件路径
+                            content:data,
+                            preview:"",  
+                            isSave:true,
+                            theme:this.manager.appWindow.theme
+                        })
+                    })
+                }},
+                {label:'开发文档',click:()=>{
+                    //打开文件
+                    const filePath = path.join(__static,"docs/Development.md")
+                    const data = common.openFileSync(filePath)
+                    //open new window
+                    const win = this.manager.appWindow.createWindow(path.basename(filePath))
+                    this.manager.appWindow.addWindow(win)
+                    //加载页面 window load url
+                    common.loadUrl(win)
+                    //页面加载完
+                    win.on('ready-to-show',()=>{
+                        //发送数据
+                        win.webContents.send('updateApplicationContext',{   //上下文
+                            title:path.basename(filePath),
+                            filePath: filePath,   //文件路径
+                            content:data,
+                            preview:"",  
+                            isSave:true,
+                            theme:this.manager.appWindow.theme
+                        })
+                    })
+                }},
+                {label:'Github',click:()=>{
+                    shell.openExternal('https://github.com/WenyaoL/YaliEditor')
                 }},
                 {label:'打开开发者工具',click:()=>{
                     BrowserWindow.getFocusedWindow().webContents.openDevTools()
@@ -512,33 +560,28 @@ export function build(){
                 }},
                 {type: 'separator'},
                 {label:'代码块', accelerator:'ctrl+shift+k',click:()=>{
-                    console.log('触发代码块快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createBlock',{type:"codeblock"})
                 }},
                 {label:'公式块', accelerator:'ctrl+shift+M',click:()=>{
-                    console.log('触发公式块快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createBlock',{type:"mathblock"})
                 }},
                 {type: 'separator'},
                 {label:'有序列表', accelerator:'ctrl+shift+[',click:()=>{
-                    console.log('触发有序列表快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"list"})
                 }},
                 {label:'无序列表', accelerator:'ctrl+shift+]',click:()=>{
-                    console.log('触发无序列表快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"unlist"})
                 }},
                 {type: 'separator'},
                 {label:'引用', accelerator:'ctrl+shift+q',click:()=>{
-                    console.log('触发引用快捷')
                     BrowserWindow.getFocusedWindow()
                                 .webContents
                                 .send('createMulLine',{type:"quote"})

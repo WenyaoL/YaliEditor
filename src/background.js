@@ -24,45 +24,6 @@ protocol.registerSchemesAsPrivileged([
 ])
 
 
-async function createWindow() {
-
-  // Create the browser window.
-  win = new BrowserWindow({
-    width: 1000,
-    height: 618,
-    icon:path.join(__static,"yali.png"),
-    //backgroundColor:'#3269bc',
-    //darkTheme:true,
-    webPreferences: {
-      webSecurity:false,
-      //nodeIntegration:true,
-      preload:path.join(__dirname,'preload.js'),
-      enableRemoteModule: true,
-      contextIsolation: true,
-      //contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
-    }
-  })
-
-  win.on('close',(event)=>{
-    event.preventDefault()
-    win.webContents.send('closeWindow')
-    //win.close()
-    
-  })
-
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
-  } else {
-    createProtocol('app')
-    //win.loadURL(path.join(__static,"index.html"))
-    win.loadURL('app://./index.html')
-    //win.loadURL('app://./home')
-  }
-  //加载菜单 load Menu
-  appMenu.build()
-  //rightMenu.build(win)
-}
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -84,13 +45,14 @@ app.on('ready', async () => {
 
   let win = appManager.appWindow.createWindow()
   appManager.appWindow.addWindow(win)
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     win.loadURL('app://./index.html')
+    //加载第一个页面
+    appManager.loadFirstPage(win)
   }
 
   protocol.interceptFileProtocol('file', (request, callback) => {

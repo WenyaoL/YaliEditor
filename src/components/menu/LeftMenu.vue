@@ -13,19 +13,13 @@
       <el-icon><folder /></el-icon>
       <template #title>文件夹</template>
     </el-menu-item>
-    <el-menu-item index="3" @click="toRouteHelp">
-      <el-icon><QuestionFilled /></el-icon>
-      <template #title>关于</template>
+
+    <el-menu-item index="3" @click="toRouteRecentlyOpened">
+      <el-icon><Document /></el-icon>
+      <template #title>最近打开</template>
     </el-menu-item>
 
-    <el-menu-item index="4"  @click="toRouteDesignDashboard">
-      <el-icon><setting /></el-icon>
-      <template #title>设置</template>
-    </el-menu-item>
-
-
-
-    <el-menu-item index="5" @click="fold">
+    <el-menu-item index="4" @click="fold">
       <el-icon v-show="isFold"><ArrowRightBold /></el-icon>
       <el-icon v-show="!isFold"><ArrowLeftBold /></el-icon>
       <template #title>折叠</template>
@@ -62,7 +56,7 @@ const fold = function(e){
 //手动路由，不使用组件内部的路由，避免BUG
 const toRouteOutline = ()=>router.push("/outline")
 const toRouteFolder = ()=>router.push("/folder")
-const toRouteHelp = ()=>router.push("/test")
+const toRouteRecentlyOpened = ()=>router.push("/recently_opened")
 const toRouteDesignDashboard = ()=>router.push("/designDashboard")
 
 </script>

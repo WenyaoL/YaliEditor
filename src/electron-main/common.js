@@ -47,6 +47,7 @@ export function saveFileDialog(filter){
 
 export function openFileSync(filePath){
     console.log('读取文件=='+filePath)
+    app.addRecentDocument(filePath)
     //sync read file
     const data = fs.readFileSync(path.normalize(filePath),{encoding:'utf8', flag:'r'})
     return data
@@ -54,6 +55,7 @@ export function openFileSync(filePath){
 
 export async function openFile(filePath){
     if(isFile(filePath)) {
+        app.addRecentDocument(filePath)
         return new Promise((resolve,reject)=>{
             fs.readFile(path.normalize(filePath),{encoding:'utf8', flag:'r'}, (err, data) => {
                 if (err) {
