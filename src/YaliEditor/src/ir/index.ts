@@ -5,8 +5,13 @@
 
 import YaLiEditor from "..";
 import { BaseEventBinder, IROptions } from "../../types";
-import { DOMObserver } from "../state/domobserver";
-import IRUndo from "../undo/IRUndo";
+
+//编辑器基础控件
+import { DOMObserver } from "../state/domobserver";  //dom元素修改监控器
+import IRUndo from "../undo/IRUndo";  //undo组件
+import IRContextRefresher from './IRContextRefresher'  //上下文刷新
+import ApplicationEventPublisher from '../event-publisher/ApplicationEventPublisher' //事件发布器
+
 //翻译解析
 import TurndownParser from "../../../turndown-plugin";
 import MarkdownBeautiful from "../../../markdown-it-plugin";
@@ -25,10 +30,9 @@ import IRArrowMoveKeyProcessor from './IRArrowMoveKeyProcessor'
 import IREnterkeyProcessor from './IREnterkeyProcessor'
 import IRInputProcessor from './IRInputProcessor'
 import IRTabProcessor from './IRTabkeyProcessor'
-import IRContextRefresher from './IRContextRefresher'
+import IRCopyProcessor from './IRCopyProcessor'
+import IRPasteProcessor from './IRPasteProcessor'
 
-//事件发布器
-import ApplicationEventPublisher from '../event-publisher/ApplicationEventPublisher'
 
 import rangy from "rangy";
 /**
@@ -71,6 +75,10 @@ class IR{
     public inputProcessor:IRInputProcessor;
     //Tab键处理器
     public tabkeyProcessor:IRTabProcessor;
+    //copy处理器
+    public copyProcessor:IRCopyProcessor;
+    //粘贴处理器
+    public pasteProcessor:IRPasteProcessor;
     //上下文刷新器
     public contextRefresher:IRContextRefresher;
     //事件发布器
@@ -109,6 +117,8 @@ class IR{
         this.arrowMoveKeyProcessor = new IRArrowMoveKeyProcessor(this.editor)
         this.inputProcessor = new IRInputProcessor(this.editor)
         this.tabkeyProcessor = new IRTabProcessor(this.editor)
+        this.copyProcessor = new IRCopyProcessor(this.editor)
+        this.pasteProcessor = new IRPasteProcessor(this.editor)
         this.contextRefresher = new IRContextRefresher(this.editor)
 
         this.binderList = [];

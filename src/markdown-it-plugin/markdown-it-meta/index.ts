@@ -31,7 +31,7 @@ function strongOpen(tokens:Token[], idx:number, options:Object, env:Object, slf:
     const token = tokens[idx]
     const mdTypeAttrs = 'strong'
     token.attrPush(["md-inline",mdTypeAttrs])
-    return slf.renderToken(tokens, idx, options)+'\u200c';
+    return slf.renderToken(tokens, idx, options);
 }
 
 function strongClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){

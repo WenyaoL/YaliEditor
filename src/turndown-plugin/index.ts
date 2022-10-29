@@ -164,24 +164,9 @@ class TurndownParser{
             node.childNodes.forEach(node=>{
               res.push(node.textContent)
             })
- 
-            //获取A标签
-            /*const a = node.getElementsByTagName("a").item(0)
-            const url = node.getElementsByClassName("md-hiden md-link-url md-meta").item(0)
-            const hides = node.getElementsByClassName("md-hiden")
-            if(!a) return ''
-
-            let res = []
-            if(hides.item(0)) res.push(hides.item(0).textContent)
-            res.push(a.textContent)
-            if(hides.item(1)) res.push(hides.item(1).textContent)
-            if(url) res.push(url.textContent)
-            if(hides.item(3)) res.push(hides.item(3).textContent)//第四个才是括号
-            console.log("node==>",node);*/
-          
-            
+            console.log(node);
+            console.log(content);
             return res.join('')
-            //return '['+a.textContent+']('+url.textContent+')';
         }
     })
   }

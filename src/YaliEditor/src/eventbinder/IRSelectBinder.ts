@@ -87,6 +87,8 @@ class IRSelectBinder implements BaseEventBinder{
 
         //this.bindSelectstartEvent(element)
         this.bindClick(element)
+
+        
     }
 
 }

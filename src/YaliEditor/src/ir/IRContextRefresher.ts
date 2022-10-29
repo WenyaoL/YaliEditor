@@ -94,14 +94,16 @@ class IRContextRefresher{
 
         //P标签翻译出的markdown语法会被转义，去除头部的转义符
         //turndown = turndown.replace(/(\\)(?=[^\\])/g,"")
-        turndown = turndown.replace(/(\\)(?=[\\\[\]\`])/g,"")
-        
+
+        turndown = turndown.replace(/(\\)(?=[\\\[\]\`\*])/g,"")
+
         if(turndown.charAt(0) == "\\"){
             turndown = turndown.slice(1)
         }
         //转html
         const res = this.editor.ir.renderer.render(turndown)
 
+        
 
         
         if(!block.parentElement){
@@ -144,6 +146,7 @@ class IRContextRefresher{
                 block.replaceWith(e)
                 sel.moveToBookmark(bookmark)
                 this.editor.ir.focueProcessor.updateFocusElement()
+                
                 return
             }
 

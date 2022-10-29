@@ -28,6 +28,9 @@ export class CodemirrorEditorState implements EditorStateOptions{
     //编辑器主题
     public themeCompartment:{compartment:Compartment,run:(extension: Extension,view:EditorView) => void};
 
+    //编辑状态开关
+    public editorSwitch:(targetApply?: boolean) => void;
+
 
     constructor(
         uuid:string,

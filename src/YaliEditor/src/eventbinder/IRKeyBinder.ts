@@ -103,6 +103,17 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
         })
     }
 
+    bindCopyEvent(element: HTMLElement){
+        element.addEventListener("copy",(event: ClipboardEvent & { target: HTMLElement }) => {
+            this.editor.ir.copyProcessor.execute(event)
+        })
+    }
+
+    bindPasteEvent(element: HTMLElement){
+        element.addEventListener("paste",(event: ClipboardEvent & { target: HTMLElement }) => {
+            this.editor.ir.pasteProcessor.execute(event)
+        })
+    }
 
 
     bindEvent(element: HTMLElement): void {
@@ -110,8 +121,8 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
 
         this.bindKeydownEvent(element)
         this.bindKeyupEvent(element)
-        
-        
+        this.bindCopyEvent(element)
+        this.bindPasteEvent(element)
     }
     
 

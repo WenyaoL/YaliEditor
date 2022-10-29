@@ -79,7 +79,9 @@ export const loadLanguage = (lang:string)=>{
 }
  
 
- 
+export const createMathPlugin = ()=>{
+    
+}
 
  
  
@@ -163,19 +165,86 @@ export class CodemirrorManager{
     addStateCache(src:CodemirrorEditorState){        
         this.allStateCache.push(src)
     }
- 
- 
+    
+    getStateCache(id:string){
+        return this.allStateCache.find(codemirrorEditorState=>{
+            return codemirrorEditorState.editor_uuid == id
+        })
+    }
+
+    
+    /**
+     * 根据视图信息装载插件进入视图状态中
+     * @param codemirrorEditorView 
+     */
+    loadCompartment(codemirrorEditorView:CodemirrorEditorView){
+        let stateInfo =  codemirrorEditorView.stateInfo
+
+        //装载langCompartment
+        if(!stateInfo.langCompartment){
+            stateInfo.langCompartment = createEditorCompartment()                
+            if(stateInfo.languageDescription){
+                stateInfo.langCompartment.run(stateInfo.languageDescription.support,codemirrorEditorView.view)
+            }else {
+                stateInfo.langCompartment.run([],codemirrorEditorView.view)
+            }
+        }
+
+        //装载editorSwitch
+        if(!stateInfo.editorSwitch){                
+            //设置编辑状态按钮(默认打开)
+            let sw = createEditorExtensionToggler(codemirrorEditorView.view,[
+                    EditorView.editable.of(false),
+                    EditorState.readOnly.of(true)
+            ])
+            stateInfo.editorSwitch = sw;
+        }
+
+        //编辑器主题
+        if(!stateInfo.themeCompartment){
+            stateInfo.themeCompartment = createEditorCompartment()
+            selectTheme(stateInfo,codemirrorEditorView.view,this.themeType);
+        }else{
+            selectTheme(stateInfo,codemirrorEditorView.view,this.themeType)
+        }
+
+
+        //是否需要创建建议UI
+        if(stateInfo.needSuggestUI){
+            const tooltip = document.createElement("div")
+            codemirrorEditorView.element.appendChild(tooltip)
+            tooltip.classList.add("md-code-tooltip");
+            //tooltip.classList.add("md-hiden")
+            tooltip.setAttribute("spellcheck","false");
+            //tooltip.setAttribute("editor-uuid",cache.editor_uuid)
+            
+            mount(tooltip,{
+                codemirrorManager:this,
+                editorId:stateInfo.editor_uuid,
+                langName:stateInfo.lang
+            })
+
+        }
+
+
+    }
+
  
     /**
      * refresh cache
-     * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,
-     * 并一一刷新到页面上
+     * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,并一一刷新到页面上
+     * 并且会根据配置信息，装载格外的插件进状态中
+     * 编辑器挂载的容器为页面上的空容器
+     * @param elements 页面上的容器
      */
     refreshStateCache(elements:HTMLCollectionOf<Element>){
 
         this.allStateCache = this.allStateCache.filter(cache=>{
-            //根据id识别
+
+            //根据id识别到要挂载的容器
             const element:Element = elements.namedItem(cache.editor_uuid)
+            
+
             if(!element){
                 //this.allDisableView.push(new CodemirrorEditorView(null,null,cache))
                 return true
@@ -187,137 +256,148 @@ export class CodemirrorManager{
                 root:document
             })
             view.setState(cache.state)
-
+            //创建视图信息
             const viewInfo = new CodemirrorEditorView(element,view,cache)
-            
-            this.allView.push(viewInfo);
-
-            if(!cache.langCompartment){
-                cache.langCompartment = createEditorCompartment()                
-                if(cache.languageDescription){
-                    cache.langCompartment.run(cache.languageDescription.support,view)
-                }else {
-                    cache.langCompartment.run([],view)
-                }
-            }
-
-            if(!viewInfo.editorSwitch){                
-                //设置编辑状态按钮(默认打开)
-                let sw = createEditorExtensionToggler(view,[
-                        EditorView.editable.of(false),
-                        EditorState.readOnly.of(true)
-                ])
-                viewInfo.editorSwitch = sw;
-            }
-
-            //编辑器主题
-            if(!cache.themeCompartment){
-                cache.themeCompartment = createEditorCompartment()
-                selectTheme(cache,view,this.themeType);
-            }else{
-                selectTheme(cache,view,this.themeType)
-            }
-
-            //是否需要创建建议UI
-            if(cache.needSuggestUI){
-                const tooltip = document.createElement("div")
-                element.appendChild(tooltip)
-                tooltip.classList.add("md-code-tooltip");
-                //tooltip.classList.add("md-hiden")
-                tooltip.setAttribute("spellcheck","false");
-                //tooltip.setAttribute("editor-uuid",cache.editor_uuid)
-                
-                mount(tooltip,{
-                    codemirrorManager:this,
-                    editorId:cache.editor_uuid,
-                    langName:cache.lang
-                })
-
-            }
+            //更加信息装载Compartment
+            this.loadCompartment(viewInfo)
+            this.allView.push(viewInfo)
 
             
-            element.setAttribute("contenteditable","false");
 
             return false
         })
 
     }
- 
+    
+
+
+    /**
+     * 从页面容器元素提取文本信息
+     * 在原视图中提取插件信息
+     * @param element 页面容器元素
+     * @param codemirrorEditorView 原有视图信息
+     */
+    extractExiteViewInfo(element:Element,codemirrorEditorView:CodemirrorEditorView):CodemirrorEditorState{
+        let id = codemirrorEditorView.stateInfo.editor_uuid,
+            lang = '',
+            needSuggestUI = true,
+            codemirrorPlugin = this.codemirrorPlugin,
+            languageDescription = null;
+        //销毁原视图
+        codemirrorEditorView.view.destroy()
+
+        //语言包选择UI插件
+        needSuggestUI = codemirrorEditorView.stateInfo.needSuggestUI
+        if(!needSuggestUI){//没有加载包应该是数学块
+            codemirrorPlugin = this.createMathPlugin(id)
+        }
+
+        //提取语言描述信息
+        lang = codemirrorEditorView.stateInfo.lang
+        languageDescription = loadLanguage(lang)
+
+        //提取文本（页面上的文本）
+        const text = this.extractElementTextInfo(element)
+
+
+        let startState = EditorState.create({
+            doc: text,
+            extensions:codemirrorPlugin
+        })
+
+        return new CodemirrorEditorState(id,startState,{
+                                                languageDescription,
+                                                needSuggestUI:needSuggestUI,
+                                                lang})
+
+        
+    }
+
+    /**
+     * 从元素中提取编辑器的文本信息
+     * @param element 
+     * @returns 
+     */
+    extractElementTextInfo(element:Element){
+        let lineArr = []
+        const lines = element.getElementsByClassName("cm-line")
+        if(lines.length == 0) return ''
+        for (let index = 0; index < lines.length; index++) {
+            const line = lines[index].textContent;
+            lineArr.push(line)
+        }
+        return lineArr.join("\n")
+    }
+
+    /**
+     * 从元素中尽可能地提取编辑器的基础信息
+     * @param element 
+     */
+    extractElementInfo(element:Element){
+        //提取文本信息
+        let text = this.extractElementTextInfo(element),
+            needSuggestUI = true;
+
+        //更加是否有输入框确定是否需要加载语言包
+        let input = element.getElementsByTagName("input").item(0)
+        if(!input) needSuggestUI = false
+        
+        
+
+
+    }
+
+    createMathPlugin(id:string){
+        return this.codemirrorPlugin.concat([EditorView.updateListener.of(viewupdate=>{
+            if (viewupdate.state.doc.length === 0) {
+                viewupdate.view.dom.setAttribute("is-empty","true")
+            }
+            if (viewupdate.state.doc.length > 0) {
+                viewupdate.view.dom.setAttribute("is-empty","false")
+            }
+            if(viewupdate.docChanged){
+              this.editor.ir.observer.ignore(()=>{
+                this.editor.ir.renderer.mathjax.freshMathjax(id,viewupdate.state.doc.toString())
+              },this.editor.ir.renderer.mathjax)
+            }
+          })])
+    }
+
     /**
      * 对页面的所有视图进行销毁，将其编辑器状态重新放回缓存区
-     * 让重新刷新缓存区，重新渲染codemirror编辑器面板
+     * 重新刷新缓存区，重新渲染codemirror编辑器面板
+     * 
+     * 从页面中提取编辑器的文本信息，在根据原有视图的信息，整合成新的编辑器状态，并放入缓存区
+     * 
      * @param root 
      */
-    refreshEditorViewSyn(root:HTMLElement){
-        let editor_uuids:string[],
-            languageDescription:LanguageDescription;
-            
+    refreshEditorViewSyn(root?:HTMLElement){
+        if(!root) root = this.editor.ir.rootElement
+        
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
 
 
         for (let index = 0; index < elements.length; index++) {
+            let stateCache = null;
+
             const element = elements[index];
-            let codemirrorPlugin=this.codemirrorPlugin,
-                id = element.id,//编辑器ID
-                input = element.getElementsByTagName("input").item(0),
-                lang='',
-                viewInfo:CodemirrorEditorView = null,
-                needSuggestUI=null;
             //找到现存的视图的ID
-            const idx = this.allView.findIndex(viewInfo=>viewInfo.stateInfo.editor_uuid === id)
-            if(idx>=0) viewInfo = this.allView[idx]
+            const idx = this.allView.findIndex(viewInfo=>viewInfo.stateInfo.editor_uuid === element.id)
+            if(idx>=0){//存在匹配到的现存视图
+                //提取信息
+                stateCache = this.extractExiteViewInfo(element,this.allView[idx])
+
+            }else{//无法匹配到现存视图
+                let cache = this.getStateCache(element.id)
+                
+                if(cache) continue;
+                let text = this.extractElementTextInfo(element)
+
+            }
             
-            if(viewInfo){
-                //销毁原视图
-                viewInfo.view.destroy()
-                //元素UI选择
-                needSuggestUI=viewInfo.stateInfo.needSuggestUI
-            }
-
-            //加载语言包
-            if(input){
-                lang = viewInfo?.stateInfo.lang
-            }else{//没有输入框证明是数学块
-                codemirrorPlugin = codemirrorPlugin.concat([EditorView.updateListener.of(viewupdate=>{
-                    if (viewupdate.state.doc.length === 0) {
-                        viewupdate.view.dom.setAttribute("is-empty","true")
-                    }
-                    if (viewupdate.state.doc.length > 0) {
-                        viewupdate.view.dom.setAttribute("is-empty","false")
-                    }
-                    if(viewupdate.docChanged){
-                      this.editor.ir.observer.ignore(()=>{
-                        this.editor.ir.renderer.mathjax.freshMathjax(id,viewupdate.state.doc.toString())
-                      },this.editor.ir.renderer.mathjax)
-                    }
-                  })])
-                needSuggestUI=false
-            }
-            languageDescription = loadLanguage(lang)
-
-            //提取文本
-            let lineArr = []
-            const lines = element.getElementsByClassName("cm-line")
-            for (let index = 0; index < lines.length; index++) {
-                const line = lines[index].textContent;
-                lineArr.push(line)
-            }
-            const text = lineArr.join("\n")
-
             
-            //基于当前文本创建新的编辑器状态
-            const editorState = CodemirrorEditorState.of(
-                id,
-                text,
-                codemirrorPlugin,
-                {
-                    languageDescription,
-                    lang,
-                    needSuggestUI
-                })
-
             //将数据重新放入缓存
-            this.allStateCache.push(editorState)
+            this.allStateCache.push(stateCache)
             element.innerHTML=""
         }
         //重新置空
@@ -365,7 +445,7 @@ export class CodemirrorManager{
         return new Promise((resolve,reject)=>{
         setTimeout(() => {
             this.initEditorViewSyn(root)
-            resolve("处理primese")
+            resolve("")
         });
         })
         
@@ -411,7 +491,7 @@ export class CodemirrorManager{
     disableEditAllView(){
         this.allView.forEach(viewInof=>{
             //关闭可编辑     
-            viewInof.editorSwitch(true)
+            viewInof.stateInfo.editorSwitch(true)
         })
     }
 
@@ -468,30 +548,38 @@ export class CodemirrorManager{
      * 给markdown-it的高亮器插件，使得markdown-it能使用codemirror作为代码编辑器
      * 经过markdown-it高亮器插件处理的代码块，将会以codemirror代码编辑器状态（CodemirrorEditorState）存储在缓存区里
      * 只有通过刷新缓存区的状态，才能将视图渲染到页面
+     * 
+     * highlighter只会创建代码块的容器（pre），并不会创建代码块
      * @param str 
      * @param lang 
      * @returns 
      */
     highlighter = (str:string,lang:string)=>{
+        //创建容器
         const pre = document.createElement("pre")
         pre.classList.add("markdown-it-code-beautiful")
         pre.setAttribute("md-block","fence")
+        pre.setAttribute("contenteditable","false");
         const uuid = uuidv4()
         pre.id = uuid
+
+
         if(str.endsWith("\n")){
             str = str.substring(0,str.length-1)
         }
+
         //加载语言包
         let languageDescription = loadLanguage(lang)
         let startState = EditorState.create({
-        doc: str,
-        extensions:this.codemirrorPlugin
-    })
-    let info =  new CodemirrorEditorState(uuid,startState,{
-                                            languageDescription,
-                                            needSuggestUI:true,
-                                            lang})
-    this.allStateCache.push(info)
+            doc: str,
+            extensions:this.codemirrorPlugin
+        })
+
+        let info =  new CodemirrorEditorState(uuid,startState,{
+                                                languageDescription,
+                                                needSuggestUI:true,
+                                                lang})
+        this.allStateCache.push(info)
         return pre.outerHTML
     }
 }

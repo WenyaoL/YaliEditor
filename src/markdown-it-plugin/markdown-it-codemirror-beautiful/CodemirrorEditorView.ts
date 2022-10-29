@@ -15,8 +15,7 @@ export class CodemirrorEditorView implements EditorViewOptions{
     //封装的视图信息
     public stateInfo:CodemirrorEditorState;
 
-    //编辑状态开关
-    public editorSwitch:(targetApply?: boolean) => void;
+
 
 
     constructor(element?:Element,view?:EditorView,stateInfo?:CodemirrorEditorState){
@@ -25,7 +24,4 @@ export class CodemirrorEditorView implements EditorViewOptions{
         this.stateInfo = stateInfo;
     }
 
-    setOptions(options:EditorViewOptions){
-        this.editorSwitch = options.editorSwitch
-    }
 }

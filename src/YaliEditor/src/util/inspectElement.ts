@@ -33,7 +33,11 @@ export const strToElement =(src:string)=>{
     return div.firstElementChild
 }
 
-
+export const strToElementList =(src:string)=>{
+  const div = document.createElement("div")
+  div.innerHTML = src
+  return div.children
+}
 
 export const createParagraph = ()=>{
   let p = document.createElement("p")

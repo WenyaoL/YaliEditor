@@ -50,7 +50,7 @@ export let component = {
       }
   },
   template:/*html*/`
-                    <el-autocomplete  v-model="state" :fetch-suggestions="querySearch" clearable class="inline-input w-50" placeholder="Please Input" @select="handleSelect">
+                    <el-autocomplete :lang="state" v-model="state" :fetch-suggestions="querySearch" clearable class="inline-input w-50" placeholder="Please Input" @select="handleSelect">
                       <template #default="{ item }">
                         <div class="value">{{ item.name }}</div>
                       </template>

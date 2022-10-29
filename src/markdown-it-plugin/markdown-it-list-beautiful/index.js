@@ -11,6 +11,7 @@ function isSpace(code) {
   }
 
 // Search `[-+*][\n ]`, returns next pos after marker on success
+//改成：查找[-+*][ ]，不包含回车
 // or -1 on fail.
 function skipBulletListMarker(state, startLine) {
   var marker, pos, max, ch;
@@ -33,6 +34,8 @@ function skipBulletListMarker(state, startLine) {
       // " -test " - is not a list item
       return -1;
     }
+  }else{
+    return -1;
   }
 
   return pos;
@@ -89,7 +92,7 @@ function skipOrderedListMarker(state, startLine) {
 }
 
 /**
- * 修改源码，强制使用松散模式
+ * 
  * @param {*} state 
  * @param {*} idx 
  */
@@ -99,10 +102,10 @@ function markTightParagraphs(state, idx) {
 
   for (i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
     if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
-      //state.tokens[i + 2].hidden = true;
-      //state.tokens[i].hidden = true;
-      state.tokens[i + 2].hidden = false;
-      state.tokens[i].hidden = false;
+      state.tokens[i + 2].hidden = true;
+      state.tokens[i].hidden = true;
+      //state.tokens[i + 2].hidden = false; //强制使用松散模式(设置为false)
+      //state.tokens[i].hidden = false;
       i += 2;
     }
   }
@@ -380,5 +383,8 @@ function list(state, startLine, endLine, silent) {
 
 
 export default function(md){
-  md.block.ruler.before("list","list-beautiful",list)
+  //在规则前面加
+  //md.block.ruler.before("list","list-beautiful",list)
+  //替换
+  md.block.ruler.at("list",list)
 }
