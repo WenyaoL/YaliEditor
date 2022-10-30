@@ -7,6 +7,7 @@ import IRInputBinder from "../eventbinder/IRInputBinder";
 
 //import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import list from '@/markdown-it-plugin/markdown-it-list-beautiful'
+//import list from '@/markdown-it-plugin/abz'
 import emoji from 'markdown-it-emoji'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
 import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'

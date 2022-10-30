@@ -55,10 +55,10 @@ module.exports = defineConfig({
               target: "nsis", // 输出目录的方式
               arch: ["x64","ia32"], //机型
             },
-            /*{
+            {
               target: "zip",
               arch: ["x64","ia32"]
-            }*/
+            }
             ],
           //requestedExecutionLevel: "asInvoker"
         },

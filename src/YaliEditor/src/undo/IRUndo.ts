@@ -41,7 +41,7 @@ class IRUndo{
     //记录最后一次文本(包含codemirror的代码的文本)
     lastText: string;
     //记录最后一次的光标位置(记录的是在codemirror代码块移除前的位置)
-    lastBookMark: any;
+    //lastBookMark: any;
 
     redoStack: History[];
     undoStack: History[];

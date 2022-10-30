@@ -1,4 +1,4 @@
-import plugin from "../markdown-it-meta";
+
 
 // Lists
 function isSpace(code) {
@@ -35,7 +35,7 @@ function skipBulletListMarker(state, startLine) {
       return -1;
     }
   }else{
-    return -1;
+    return -1
   }
 
   return pos;
@@ -102,10 +102,10 @@ function markTightParagraphs(state, idx) {
 
   for (i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
     if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
-      state.tokens[i + 2].hidden = true;
-      state.tokens[i].hidden = true;
-      //state.tokens[i + 2].hidden = false; //强制使用松散模式(设置为false)
-      //state.tokens[i].hidden = false;
+      //state.tokens[i + 2].hidden = true;
+      //state.tokens[i].hidden = true;
+      state.tokens[i + 2].hidden = false; //强制使用松散模式(设置为false)
+      state.tokens[i].hidden = false;
       i += 2;
     }
   }
@@ -196,14 +196,15 @@ function list(state, startLine, endLine, silent) {
   }
 
   // We should terminate list on style change. Remember first one to compare.
+  //这里的markerCharCode对于的是[* - + 1.]等
   markerCharCode = state.src.charCodeAt(posAfterMarker - 1);
-
   // For validation mode we can terminate immediately
   if (silent) { return true; }
 
   // Start list
   listTokIdx = state.tokens.length;
 
+  //更加分类产生一个open token（就是开标签）
   if (isOrdered) {
     token       = state.push('ordered_list_open', 'ol', 1);
     token.attrPush(["md-block","ordered_list"])
@@ -219,17 +220,17 @@ function list(state, startLine, endLine, silent) {
   token.map    = listLines = [ startLine, 0 ];
   token.markup = String.fromCharCode(markerCharCode);
 
-  //
+  //迭代列表项
   // Iterate list items
   //
 
-  nextLine = startLine;
+  nextLine = startLine;  //开始行（也是列表项的开始行）
   prevEmptyEnd = false;
   terminatorRules = state.md.block.ruler.getRules('list');
 
   oldParentType = state.parentType;
-  state.parentType = 'list';
-
+  state.parentType = 'list';   //将state的parentType修改为list，证明当前正在处理list数据
+  //只用不小于结束行，就迭代列表项
   while (nextLine < endLine) {
     pos = posAfterMarker;
     max = state.eMarks[nextLine];
@@ -249,7 +250,7 @@ function list(state, startLine, endLine, silent) {
 
       pos++;
     }
-
+    //文本开始位置
     contentStart = pos;
 
     if (contentStart >= max) {
@@ -270,7 +271,7 @@ function list(state, startLine, endLine, silent) {
     // Run subparser & write tokens
     token        = state.push('list_item_open', 'li', 1);
     token.attrPush(["md-block","list_item"])
-    token.markup = String.fromCharCode(markerCharCode);
+    token.markup = String.fromCharCode(markerCharCode);  //设置markup为[- * + 1.等]
     token.map    = itemLines = [ startLine, 0 ];
     if (isOrdered) {
       token.info = state.src.slice(start, posAfterMarker - 1);
@@ -374,6 +375,7 @@ function list(state, startLine, endLine, silent) {
   state.parentType = oldParentType;
 
   // mark paragraphs tight if needed
+  //更加列表项里面的段落，判断是否需要切换为紧凑模式（紧凑模式将会把段落的P标签隐藏）
   if (tight) {
     markTightParagraphs(state, listTokIdx);
   }
@@ -384,7 +386,7 @@ function list(state, startLine, endLine, silent) {
 
 export default function(md){
   //在规则前面加
-  //md.block.ruler.before("list","list-beautiful",list)
-  //替换
-  md.block.ruler.at("list",list)
+  md.block.ruler.before("list","list-beautiful",list,[ 'paragraph', 'reference', 'blockquote' ])
+  //替换(有BUG，导致规则错乱)
+  //md.block.ruler.at("list",list,[ 'paragraph', 'reference', 'blockquote' ])
 }

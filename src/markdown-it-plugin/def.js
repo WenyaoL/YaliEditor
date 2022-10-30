@@ -11,6 +11,7 @@ import prismHighlighter from './markdown-it-prismjs-beautiful'
 //import './markdown-it-link-beautiful/index.css'
 import './index.scss'
 import table from './markdown-it-table-beautiful'
+import list from './markdown-it-list-beautiful'
 
 var md = new MarkdownIt({
     html: true,
@@ -35,6 +36,7 @@ var md = new MarkdownIt({
     multibody:  true,
     aotolabel:  true,
   })
+  .use(list)
 
 
 export default md;

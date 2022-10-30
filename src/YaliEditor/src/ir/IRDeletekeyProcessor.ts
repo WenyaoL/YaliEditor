@@ -27,8 +27,10 @@ class IRDeletekeyProcessor implements KeyProcessor{
     renderNode(element:HTMLElement,r:RangyRange){
         if(!element) return false;
         const turndown = this.editor.ir.parser.turndown(element.outerHTML)
-        const res = this.editor.ir.renderer.render(turndown)
+
         
+        const res = this.editor.ir.renderer.render(turndown)
+
         if(!res) return false;
         //临时div
         const div = document.createElement("div")
@@ -44,13 +46,17 @@ class IRDeletekeyProcessor implements KeyProcessor{
         if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_BLOCK)){
             //翻译出的是MD_BLOCK块
             //删除原本整个MD_INLINE块
+            //element.replaceWith(div.firstElementChild)
             r.selectNode(element)
             r.deleteContents()
             //在插入文本节点
-            r.insertNode(document.createTextNode(div.innerText))
+            //element.innerHTML = div.innerHTML
+            r.insertNode(div.firstElementChild)
         }
         return true;
     }
+
+
 
     deleteCollapsed(event: KeyboardEvent & { target: HTMLElement }){
         let sel = rangy.getSelection()
@@ -59,7 +65,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
         let end =  r.endContainer
 
         
-        this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+        //this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
         if(start.nodeType === 3){
             start = start.parentElement;
         }
@@ -232,14 +238,15 @@ class IRDeletekeyProcessor implements KeyProcessor{
             let endElement = IRfindClosestMdBlock(end)
   
             
-            let startOffset = r.startOffset
+            
             //相同的情况
             if(startElement === endElement){
                 
                 
+                
                 //删除内容
                 r.deleteContents()
-            
+                let mark = r.getBookmark()
                 
                 if(!this.renderNode(startElement,r)){
                     //翻译出是空的情况
@@ -247,11 +254,13 @@ class IRDeletekeyProcessor implements KeyProcessor{
                     //this.editor.ir.addUndo()
                     return;
                 }
-                r.collapseToPoint(r.startContainer.firstChild,startOffset)
+                r.moveToBookmark(mark)
+                //r.collapseToPoint(r.startContainer.firstChild,startOffset)
                 rangy.getSelection().setSingleRange(r)
             }else{
                 //起始和结束容器不一样的情况
                 //删除内容
+
                 
                 r.deleteContents()
 
