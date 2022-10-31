@@ -21,40 +21,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
         this.editor = editor
     }
 
-    /**
-     * 重新渲染某一节点
-     */
-    renderNode(element:HTMLElement,r:RangyRange){
-        if(!element) return false;
-        const turndown = this.editor.ir.parser.turndown(element.outerHTML)
 
-        
-        const res = this.editor.ir.renderer.render(turndown)
-
-        if(!res) return false;
-        //临时div
-        const div = document.createElement("div")
-        div.innerHTML = res;
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_INLINE)){
-            //翻译出的是MD_INLINE块
-            //删除原本整个MD_INLINE块
-            r.selectNode(element)
-            r.deleteContents()
-            //在插入
-            r.insertNode(div.firstChild)
-        }
-        if(div.firstElementChild.hasAttribute(CONSTANTS.ATTR_MD_BLOCK)){
-            //翻译出的是MD_BLOCK块
-            //删除原本整个MD_INLINE块
-            //element.replaceWith(div.firstElementChild)
-            r.selectNode(element)
-            r.deleteContents()
-            //在插入文本节点
-            //element.innerHTML = div.innerHTML
-            r.insertNode(div.firstElementChild)
-        }
-        return true;
-    }
 
 
 
@@ -64,8 +31,19 @@ class IRDeletekeyProcessor implements KeyProcessor{
         let start = r.startContainer
         let end =  r.endContainer
 
+        let mdBlock = IRfindClosestMdBlock(start)
+
+        //参试退化
+        let p = this.editor.markdownTool.mdBlockDegenerateToP(mdBlock)
+        if(p){
+            r.collapseToPoint(p,0)
+            sel.setSingleRange(r)
+            event.preventDefault()
+            return
+        }
+
         
-        //this.editor.ir.undoManager.lastBookMark = rangy.getSelection().getBookmark(this.editor.ir.rootElement)
+
         if(start.nodeType === 3){
             start = start.parentElement;
         }
@@ -107,6 +85,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 e.remove()
                 let info = this.editor.ir.renderer.codemirrorManager.getViewInfo(sibling.id)
                 let {node,offset} = info.view.domAtPos(info.view.state.doc.length)
+
                 sel.collapse(node,offset)
                 event.preventDefault()
                 return
@@ -118,23 +97,24 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 e.remove()
                 let info = this.editor.ir.renderer.codemirrorManager.getViewInfo(sibling.id)
                 let {node,offset} = info.view.domAtPos(info.view.state.doc.length)
+                
                 sel.collapse(node,offset)
                 this.editor.ir.focueProcessor.updateFocusElement()
                 event.preventDefault()
                 return
             }
 
-            if(e.previousElementSibling){
-                let sibling =  e.previousElementSibling
+            //选择下一个字符
+            let text = this.editor.markdownTool.getLastTextNode(mdBlock.previousElementSibling)
+            if(text){                
+                r.collapseToPoint(text,text.textContent.length)
+                sel.setSingleRange(r)
                 e.remove()
-                let siblingChildNum = sibling.childNodes.length
-                sel.collapse(sibling,siblingChildNum)
-                this.editor.ir.focueProcessor.updateFocusElement()
                 event.preventDefault()
                 return
-            }else{
-                event.preventDefault()
             }
+            event.preventDefault()
+            return 
         }
         
         
@@ -241,37 +221,26 @@ class IRDeletekeyProcessor implements KeyProcessor{
             
             //相同的情况
             if(startElement === endElement){
-                
-                
-                
                 //删除内容
                 r.deleteContents()
                 let mark = r.getBookmark()
-                
-                if(!this.renderNode(startElement,r)){
-                    //翻译出是空的情况
-                    startElement.innerHTML = ""
-                    //this.editor.ir.addUndo()
-                    return;
-                }
+                this.editor.markdownTool.reRenderNode(startElement)
                 r.moveToBookmark(mark)
-                //r.collapseToPoint(r.startContainer.firstChild,startOffset)
+
                 rangy.getSelection().setSingleRange(r)
             }else{
                 //起始和结束容器不一样的情况
                 //删除内容
 
-                
                 r.deleteContents()
+                let mark = r.getBookmark()
+                this.editor.markdownTool.reRenderNode(startElement)
+                this.editor.markdownTool.reRenderNode(endElement)
+                r.moveToBookmark(mark)
+                rangy.getSelection().setSingleRange(r)
 
-                //重新渲染起始容器
-                this.renderNode(startElement,r)
-
-                r.setEnd(endElement,0)
-                //重新渲染结束容器
-                this.renderNode(endElement,r)
             }
-            //this.editor.ir.addUndo()
+
             return
         }
 

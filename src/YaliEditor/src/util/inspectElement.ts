@@ -39,6 +39,24 @@ export const strToElementList =(src:string)=>{
   return div.children
 }
 
+export const strToNodeArray = (src:string)=>{
+  return Array.prototype.slice.call(strToNodeList(src),0)
+}
+
+export const strToNodeList = (src:string)=>{
+  const div = document.createElement("div")
+  div.innerHTML = src
+  return div.childNodes
+}
+
+export const strToDocumentFragment = (src:string)=>{
+  const list = strToNodeList(src)
+  const nodeList:Node[] = Array.prototype.slice.call(list,0)
+  const documentFragment = document.createDocumentFragment()
+  documentFragment.append(...nodeList)
+  return documentFragment
+}
+
 export const createParagraph = ()=>{
   let p = document.createElement("p")
   p.setAttribute(Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_PARAGRAPH)

@@ -6,7 +6,7 @@ import { YaLiEditorOptions } from '../types';
 import {_YALI_VERSION} from './constants'
 import IR from './ir';
 import {EditorOptions} from './options'
-
+import MarkdownTool from './tool/MarkdownTool'
 import './ir/index.scss'
 //import 'bootstrap/dist/css/bootstrap.min.css'
 //import 'bootstrap/dist/js/bootstrap.min'
@@ -17,7 +17,7 @@ class YaLiEditor {
     public options : EditorOptions;
     public rootElement : HTMLElement;
     public ir : IR;
-    
+    public markdownTool:MarkdownTool;
 
     constructor(id: string | HTMLElement, options?: EditorOptions){
         this.version = _YALI_VERSION;
@@ -40,6 +40,7 @@ class YaLiEditor {
         div.id = "yali-tool-tip"
         this.rootElement.appendChild(div)
         this.ir = new IR(this);
+        this.markdownTool = new MarkdownTool(this)
         this.ir.init()
     }
 
