@@ -146,6 +146,8 @@ class IRDeletekeyProcessor implements KeyProcessor{
 
         //删除代码
         if(e.classList.contains(CONSTANTS.CODEMIRROR_LINE)){
+            
+            
             //来自代码块的操作，获取到的是已经删除后的代码
             //编辑器element
             e = findClosestByClassName(e,CONSTANTS.CODEMIRROR_EDITOR,this.editor.ir.getRootElementClassName())
@@ -163,8 +165,6 @@ class IRDeletekeyProcessor implements KeyProcessor{
                     r.setStartBefore(root)
                 }
 
-                
-
                 let p = document.createElement("p")
                 p.setAttribute("md-block","paragraph")
                 root.replaceWith(p)
@@ -175,6 +175,7 @@ class IRDeletekeyProcessor implements KeyProcessor{
                 
                 event.preventDefault()
             }
+            
             return;
         }
 
@@ -274,7 +275,13 @@ class IRDeletekeyProcessor implements KeyProcessor{
 
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
-        this.deleteKey(event)
+        try{
+            this.deleteKey(event)
+            
+        }catch{
+            event.preventDefault()
+        }
+        
         return true
     }
 

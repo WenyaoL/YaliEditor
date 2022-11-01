@@ -164,8 +164,6 @@ class TurndownParser{
             node.childNodes.forEach(node=>{
               res.push(node.textContent)
             })
-            console.log(node);
-            console.log(content);
             return res.join('')
         }
     })

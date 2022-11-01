@@ -1,6 +1,7 @@
 import YaliEditor from '../index'
 import {strToDocumentFragment,strToNodeArray,strToNodeList,createParagraph} from '../util/inspectElement'
 import rangy from "rangy";
+import { IRfindClosestMdBlock } from '../util/findElement';
 
 class MarkdownTool{
 
@@ -92,6 +93,44 @@ class MarkdownTool{
         
         
     }
+
+    /**
+     * 给定元素，通过元素来判断是否需要对光标进行偏移或者选择
+     */
+    deviationCursor(element:HTMLElement){
+        if(!element) return
+        let sel = rangy.getSelection()
+        let r = sel.getRangeAt(0)
+
+        //点击图片进行光标偏移
+        if(element.tagName == "IMG"){
+            r.collapseAfter(element.previousElementSibling?.lastElementChild)
+            sel.setSingleRange(r)
+        }
+
+        if(element.classList.contains("MathJax")){
+            let editor = IRfindClosestMdBlock(element).getElementsByClassName("markdown-it-code-beautiful").item(0)
+            let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(editor.id)
+            let {node,offset} = viewInfo.view.domAtPos(viewInfo.view.state.doc.length)
+            sel.collapse(node,offset)
+        }
+    }
+
+
+    /**
+     * 修补字符串
+     * @param src 
+     */
+    htmlPatch(src:string){
+        let match = src.match(/<t[hr]>/)
+        if(!match || match.length==0) return src
+        else{
+            match = src.match(/<table>/)
+            if(!match || match.length==0) return "<table>" + src + "</table>"
+        }
+        return src
+    }   
+
 
 
 }

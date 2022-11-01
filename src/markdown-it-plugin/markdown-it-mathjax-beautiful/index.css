@@ -30,3 +30,12 @@
 .mathjax-panel{
     padding: 1px 0;
 }
+
+/*为了修补codemirror 光标失效的样式*/
+.md-focus .md-mathblock-input .cm-cursorLayer{
+    animation: steps(1) cm-blink 1.2s infinite;
+}
+
+.md-focus .md-mathblock-input .cm-cursor{
+    display: block;
+}

@@ -49,11 +49,10 @@ class IRSelectBinder implements BaseEventBinder{
         if(event.ctrlKey){
           this.ctrlKeyClick(event)
         }
+        
+        //点击进行光标偏移(主要对一些隐藏类的操作)
+        this.editor.markdownTool.deviationCursor(event.target)
 
-        if(event.target.tagName == "IMG"){
-          r.collapseAfter(event.target.previousElementSibling?.lastElementChild)
-          sel.setSingleRange(r)
-        }
         
         
         const topClassName = this.editor.ir.getRootElementClassName()
@@ -76,8 +75,8 @@ class IRSelectBinder implements BaseEventBinder{
         }
 
         this.editor.ir.focueProcessor.updateFocusElementByStart(event.target)
-
-        return true;
+        return
+        //return true;
       })
     }
 

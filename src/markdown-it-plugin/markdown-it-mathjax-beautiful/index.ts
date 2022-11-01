@@ -23,6 +23,7 @@ import YaLiEditor from "@/YaliEditor/src";
 import { v4 as uuidv4 } from 'uuid';
 import {CodemirrorEditorState} from '../markdown-it-codemirror-beautiful/CodemirrorEditorState'
 import {EditorView} from "@codemirror/view"
+import {EditorState,type Extension, Compartment,StateEffect} from "@codemirror/state"
 
 interface DocumentOptions {
   InputJax: TeX<unknown, unknown, unknown>;
@@ -145,7 +146,9 @@ class Mathjax{
       res.push('<div class="md-mathblock-input markdown-it-code-beautiful" ' ,id ,'>','</div>')
       res.push('</div>')
       
-      let ex = [EditorView.updateListener.of(viewupdate=>{
+      let ex = [
+        EditorView.lineWrapping,
+        EditorView.updateListener.of(viewupdate=>{
         if (viewupdate.state.doc.length === 0) {
           viewupdate.view.dom.setAttribute("is-empty","true")
         }
@@ -157,9 +160,14 @@ class Mathjax{
             this.freshMathjax(info.id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
           },this)
         }
-      })]
-      let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
-      this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
+      })
+    ]
+      let editorState = EditorState.create({
+        doc: info.content,
+        extensions:ex
+      })
+      //let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
+      this.editor.ir.renderer.codemirrorManager.addStateCache(new CodemirrorEditorState(info.id,editorState,{needSuggestUI:false}))
       return  res.join('')
     }
   

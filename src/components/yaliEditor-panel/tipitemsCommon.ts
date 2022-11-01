@@ -1,4 +1,8 @@
 import YaLiEditor from "../../YaliEditor/src"
+import rangy from "rangy"
+import IR from "@/YaliEditor/src/ir"
+
+
 
 export const createCommonItems=(disabled:boolean,editor:YaLiEditor):any[]=>{
     let items:any[]=[]
@@ -26,11 +30,19 @@ export const createCommonItems=(disabled:boolean,editor:YaLiEditor):any[]=>{
             children: [
                 { 
                     label: "复制为纯文本",
-                    
+                    onClick: () => {
+                        let event:any = new ClipboardEvent("copy",{clipboardData:new DataTransfer()})
+                        event.info = "text"                 
+                        editor.ir.rootElement.dispatchEvent(event)
+                    }
 
                 },{
                     label: "复制为markdown",
-
+                    onClick: () => {
+                        let event:any = new ClipboardEvent("copy",{clipboardData:new DataTransfer()})
+                        event.info = "markdown"                 
+                        editor.ir.rootElement.dispatchEvent(event)
+                    }
                 }
             ],
         },

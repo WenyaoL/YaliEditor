@@ -375,7 +375,8 @@ export class CodemirrorManager{
         if(!root) root = this.editor.ir.rootElement
         
         const elements = root.getElementsByClassName("markdown-it-code-beautiful")
-
+        
+        
 
         for (let index = 0; index < elements.length; index++) {
             let stateCache = null;
@@ -387,6 +388,7 @@ export class CodemirrorManager{
                 //提取信息
                 stateCache = this.extractExiteViewInfo(element,this.allView[idx])
 
+                
             }else{//无法匹配到现存视图
                 let cache = this.getStateCache(element.id)
                 

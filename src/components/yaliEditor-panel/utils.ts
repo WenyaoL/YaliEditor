@@ -21,8 +21,7 @@ export const exec = (editor:YaLiEditor,e: MouseEvent)=>{
 
     let disableCopy = false
     //没选中东西的
-    console.log(blockType);
-    console.log(inlineType);
+
     
     if(sel.isCollapsed){
         disableCopy = true
