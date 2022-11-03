@@ -24,6 +24,8 @@
       <el-icon v-show="!isFold"><ArrowLeftBold /></el-icon>
       <template #title>折叠</template>
     </el-menu-item>
+
+
   </el-menu>
 </template>
 
@@ -56,7 +58,7 @@ const fold = function(e){
 //手动路由，不使用组件内部的路由，避免BUG
 const toRouteOutline = ()=>router.push("/outline")
 const toRouteFolder = ()=>router.push("/folder")
-const toRouteRecentlyOpened = ()=>router.push("/recently_opened")
+const toRouteRecentlyOpened = ()=>router.push("/recentDocuments")
 const toRouteDesignDashboard = ()=>router.push("/designDashboard")
 
 </script>

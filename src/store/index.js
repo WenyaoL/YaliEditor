@@ -23,7 +23,8 @@ export default createStore({
       preview:"",  
       tree:[],   //当前文件树
       isSave:true,
-      outline:[]  //文档大纲
+      outline:[],  //文档大纲
+      recentDocuments:[], //最近打开文件
     },
     fonts:{        //jsPDF加载的字体数据
       normal:'',
@@ -78,6 +79,7 @@ export default createStore({
       if(!isEmpty(context.tree))application.tree = context.tree
       if(context.preview) application.preview = context.preview
       if(context.theme) application.theme = context.theme
+      if(context.recentDocuments) application.recentDocuments = context.recentDocuments
     },
     initFonts(state,context){
       state.fonts = context

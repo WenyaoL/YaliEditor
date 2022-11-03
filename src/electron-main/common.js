@@ -46,8 +46,6 @@ export function saveFileDialog(filter){
 
 
 export function openFileSync(filePath){
-    console.log('读取文件=='+filePath)
-    app.addRecentDocument(filePath)
     //sync read file
     const data = fs.readFileSync(path.normalize(filePath),{encoding:'utf8', flag:'r'})
     return data
@@ -55,7 +53,6 @@ export function openFileSync(filePath){
 
 export async function openFile(filePath){
     if(isFile(filePath)) {
-        app.addRecentDocument(filePath)
         return new Promise((resolve,reject)=>{
             fs.readFile(path.normalize(filePath),{encoding:'utf8', flag:'r'}, (err, data) => {
                 if (err) {
@@ -93,7 +90,6 @@ export function loadRenderApplicationContext(){
         
         //applicationContext.tree = openFileTreeSync(path.dirname(filePath))
         if (process.env.WEBPACK_DEV_SERVER_URL){
-            console.log("开发环境");
             applicationContext.filePath = null
         }else{
             //文件内容
@@ -107,7 +103,6 @@ export function loadRenderApplicationContext(){
 
 
 export function saveFile(filePath,data,options = {closeWindow:false,win:null}){
-    console.log("保存路径",filePath);
     fs.writeFile(filePath,data,'utf8',err=>{
         if(err) console.log(err)
         if(options.closeWindow){
@@ -247,7 +242,6 @@ export async function readFontFile(){
     const fontsPath = path.join(__static,  "fonts/SourceHanSans-normal");
     const fontsPath2 = path.join(__static,  "fonts/SourceHanSans-bold");
     
-    console.log("读取字体文件",fontsPath);
     const normal =  await openFile(fontsPath)
     const bold = await openFile(fontsPath2)
     return {

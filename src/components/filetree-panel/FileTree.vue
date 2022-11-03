@@ -34,13 +34,17 @@ export default {
         function readFile(data){
             window.electronAPI.readFile({
                     path:data.path,  //指定读取路径（当路径缺失时，使用上下文中的路径）
-                    applicationContext:JSON.stringify(applicationContext)   //上下文
                 }).then(res=>{
                     store.commit('updateApplicationContext',{
                         isSave:true,
                         filePath:data.path,
                         content:res,
                         title:data.name
+                    })
+                    console.log("添加最近打开文件");
+                    window.electronAPI.addRecentDocument({
+                        filePath:data.path,
+                        description:res.substring(0,30)
                     })
             })
         }

@@ -5,9 +5,11 @@
 
 import {AppMenu} from './appMenu'
 import {AppWindow} from './appWindow'
+import {MainIPMEventLoader} from './ipmMainLoad'
 import {openFile} from './common'
 import path from 'path'
 import Store from 'electron-store'
+import {app} from 'electron'
 
 export class AppManager{
 
@@ -19,15 +21,26 @@ export class AppManager{
             schema:{
                 theme:{
                     type:'string',
-                    default:'light'
+                    default:'light',
+                    description:'主题类型'
+                },
+                recentDocuments:{
+                    type:'array',
+                    default:[],
+                    description:'最近打开文件列表,{fileName:"文件名",dirName:"目录名",description:"文章前几行的文本信息"}'
                 }
             }
         })
+        this.mainIPMEventLoader = new MainIPMEventLoader(this)
     }
 
+    /**
+     * 初始化
+     */
     init(){
         this.appMenu.init()
         this.appWindow.init()
+        this.mainIPMEventLoader.load()
     }
 
     /**
@@ -52,6 +65,49 @@ export class AppManager{
             })
         })
 
+    }
+
+
+    /**
+     * 添加最近打开文件
+     * @param {*} filePath 文件全路径(包含文件本身)
+     */
+    addRecentDocument(filePath,description){
+        let recentDocuments = [],
+            fileName = path.basename(filePath),
+            dirName = path.dirname(filePath)
+        app.addRecentDocument(filePath)
+
+
+        recentDocuments = this.store.get('recentDocuments',[])
+        let index = recentDocuments.findIndex(item=>item.fileName == fileName && item.dirName == dirName)
+        if(index>=0){
+            recentDocuments = recentDocuments.splice(index,1).concat(recentDocuments)
+            return 
+        }else{
+            //判断是否越界
+            if(recentDocuments.length >30) recentDocuments.splice(0,1)
+            recentDocuments.push({
+                fileName,
+                dirName,
+                description
+            })
+            this.store.set('recentDocuments',recentDocuments)
+        }
+        
+    }
+
+    /**
+     * 获取最近打开列表
+     * @returns recentDocuments Array
+     */
+    getRecentDocuments(){
+        return this.store.get('recentDocuments',[])
+    }
+
+    clearRecentDocuments(){
+        this.store.set('recentDocuments',[])
+        app.clearRecentDocuments()
     }
 
 }

@@ -7,7 +7,7 @@ import rightMenu from '@/electron-main/rightMenu'
 import {loadRenderApplicationContext} from '@/electron-main/common'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 import { request } from 'http'
-import loadIPCHandle from './electron-main/ipmMainLoad'
+
 import path from 'path'
 import { AppManager } from './electron-main/appManager'
 
@@ -38,8 +38,6 @@ app.on('activate', () => {
 })
 
 app.on('ready', async () => {
-  //加载ipchandle
-  loadIPCHandle.load()
   let appManager = new AppManager()
   appManager.init()
 
@@ -61,9 +59,9 @@ app.on('ready', async () => {
   })
   
   //应用打开的第一个文件应该去加载数据
-  const renderApplicationContext =  loadRenderApplicationContext()
+  /*const renderApplicationContext =  loadRenderApplicationContext()
   win.webContents.send("updateApplicationContext",renderApplicationContext)
-  isReady = true;
+  isReady = true;*/
 
 })
 

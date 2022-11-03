@@ -1,6 +1,6 @@
 <template>
   <div class="file-outline">
-    <p>
+    <p style="margin-top: 0;">
     <span v-for="(item,index) in props.outline" :key="index" :class="getHeadingStyle(item.level)">
         <a :to-href="item.id">{{item.content}}</a>
     </span>
@@ -37,7 +37,7 @@ const getHeadingStyle = (level:any)=>{
 
 
 
-<style>
+<style scoped>
 .file-outline span{
     display: block;
     cursor: pointer;
@@ -52,6 +52,7 @@ const getHeadingStyle = (level:any)=>{
 .outline-item-3:hover,
 .outline-item-4:hover,
 .outline-item-5:hover{
+    
     transition-duration: 0.5s;
     text-decoration:underline;
     background-color:var(--yali-outline-item-hover-background-color) ;
@@ -73,5 +74,9 @@ const getHeadingStyle = (level:any)=>{
 }
 .outline-item-5{
     padding-left: 32.5px;
+}
+
+p{
+    min-width: 246px;
 }
 </style>

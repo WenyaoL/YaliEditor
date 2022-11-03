@@ -7,9 +7,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import FileContentView from '../views/FileContentView'
 import FolderView from '../views/FolderView'
 import DesignDashboard from '../views/DesignDashboard'
-import TestPanle from '../views/TestPanle'
+
 import FileTree from '@/components/filetree-panel/FileTree.vue'
 import FileOutlineView from '../views/FileOutlineView.vue'
+import RecentDocumentsView from '../views/RecentDocumentsView'
 
 const routes = [
   {
@@ -31,9 +32,9 @@ const routes = [
     component: DesignDashboard
   },
   {
-    path: '/test',
-    name: 'testPanle',
-    component: TestPanle
+    path: '/recentDocuments',
+    name: 'recentDocuments',
+    component: RecentDocumentsView
   },
   {
     path: '/outline',

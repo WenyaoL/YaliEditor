@@ -4,7 +4,6 @@ import type Renderer from "markdown-it/lib/renderer";
 import {escapeHtml} from "markdown-it/lib/common/utils"
 import type StateInline from "markdown-it/lib/rules_inline/state_inline";
 import type StateBlock from "markdown-it/lib/rules_block/state_block";
-import { def } from "@vue/shared";
 
 
 
@@ -14,7 +13,7 @@ function codeInline(tokens:Token[], idx:number, options:Object, env:Object, slf:
     const mdTypeAttrs = 'md-inline="code"'
     return  '<code' + slf.renderAttrs(token) +" " + mdTypeAttrs + '>' +
             escapeHtml(tokens[idx].content) +
-            '</code>\u200c';
+            '</code>';
 }
 
 function codeBlock (tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer) {
@@ -77,17 +76,24 @@ function text(tokens:Token[], idx:number, options:Object, env:Object, slf: Rende
     return '<span md-text="text">'+res+'</span>'
 }
 
-function plugin(md: MarkdownIt, options: any) {
-    md.renderer.rules.code_inline = codeInline;
-    md.renderer.rules.code_block = codeBlock;
-    md.renderer.rules.strong_open = strongOpen;
-    md.renderer.rules.strong_close = strongClose;
-    md.renderer.rules.em_open = emOpen;
-    md.renderer.rules.em_close = emClose;
-    md.renderer.rules.paragraph_open = paragraphOpen;
-    md.renderer.rules.blockquote_open = blockquoteOpen;
-    md.renderer.rules.s_open = sOpen;
-    md.renderer.rules.s_close = sClose;
+function plugin(md: MarkdownIt, options: any = {}) {
+    
+    if(options.borderModel){
+        
+    }else{
+        md.renderer.rules.code_inline = codeInline;
+        md.renderer.rules.code_block = codeBlock;
+        md.renderer.rules.strong_open = strongOpen;
+        //md.renderer.rules.strong_close = strongClose;
+        md.renderer.rules.em_open = emOpen;
+        //md.renderer.rules.em_close = emClose;
+        md.renderer.rules.paragraph_open = paragraphOpen;
+        md.renderer.rules.blockquote_open = blockquoteOpen;
+        md.renderer.rules.s_open = sOpen;
+    }
+
+
+    //md.renderer.rules.s_close = sClose;
     //md.renderer.rules.text = text
 }
 

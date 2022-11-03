@@ -4,7 +4,6 @@
  */
 const {contextBridge,ipcRenderer} = require('electron')
 
-console.log('加载预加载脚本');
 
 contextBridge.exposeInMainWorld('electronAPI', {
 
@@ -29,7 +28,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     invokeSave:(payload) => ipcRenderer.send('saveFile',payload),
     //渲染进程请求关闭窗口
     invokeCloseWin:(payload) => ipcRenderer.send('close-window',payload),
-
+    //添加最近打开文件
+    addRecentDocument:(payload) => ipcRenderer.send('add-recent-document',payload),
 
     //--------------------------------------监听（listener）-----------------------------------
     //渲染进程加载上下文
