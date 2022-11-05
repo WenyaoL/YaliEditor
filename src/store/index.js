@@ -96,6 +96,9 @@ export default createStore({
     updateTheme(state,theme){
       console.log("跟新主题");
       state.applicationContext.theme = theme
+    },
+    updateRecentDocuments(state,recentDocuments){
+      state.applicationContext.recentDocuments = recentDocuments
     }
   },
   actions: {

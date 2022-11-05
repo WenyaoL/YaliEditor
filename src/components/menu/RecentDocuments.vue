@@ -6,7 +6,7 @@
                 :key="index"
                 :title="item.fileName">
       <template #reference>
-        <div  class="recent-document-item">
+        <div  class="recent-document-item" @click="openFile(item)">
           <p>
             <span class="recent-document-filename">{{item.fileName}}</span>
             <span class="recent-document-description">{{item.description}}</span>
@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
 import {ElPopper} from 'element-plus'
+import path from 'path-browserify'
 
 const props = defineProps<{
   fileList:{
@@ -37,7 +38,9 @@ const props = defineProps<{
   }[]
 }>()
 
-
+const openFile = (item)=>{
+  window.electronAPI.openFileInNewWindow({path:path.join(item.dirName,item.fileName)})
+}
 
 </script>
 

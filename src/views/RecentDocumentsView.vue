@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import RecentDocuments from '@/components/menu/RecentDocuments.vue';
-import {computed} from 'vue'
+import {computed,onMounted} from 'vue'
 import {useStore} from 'vuex';
 const store = useStore()
 const getFileList = computed(()=>store.state.applicationContext.recentDocuments)
@@ -15,6 +15,14 @@ const getFileListLength = computed(()=>{
     let recentDocuments = store.state.applicationContext.recentDocuments
     return recentDocuments.length
 })
+
+onMounted(() => {
+  //获取最近打开文件信息
+  window.electronAPI.getRecentDocuments().then(data=>{
+    store.commit('updateRecentDocuments',data)
+  })
+})
+
 </script>
 
 <style scoped>

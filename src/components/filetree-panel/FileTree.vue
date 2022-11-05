@@ -41,7 +41,6 @@ export default {
                         content:res,
                         title:data.name
                     })
-                    console.log("添加最近打开文件");
                     window.electronAPI.addRecentDocument({
                         filePath:data.path,
                         description:res.substring(0,30)

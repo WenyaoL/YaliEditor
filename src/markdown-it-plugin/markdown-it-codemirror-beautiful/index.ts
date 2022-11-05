@@ -256,6 +256,7 @@ export class CodemirrorManager{
                 root:document
             })
             view.setState(cache.state)
+            
             //创建视图信息
             const viewInfo = new CodemirrorEditorView(element,view,cache)
             //更加信息装载Compartment

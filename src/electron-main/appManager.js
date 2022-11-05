@@ -86,8 +86,8 @@ export class AppManager{
             return 
         }else{
             //判断是否越界
-            if(recentDocuments.length >30) recentDocuments.splice(0,1)
-            recentDocuments.push({
+            if(recentDocuments.length >30) recentDocuments.pop()
+            recentDocuments.unshift({
                 fileName,
                 dirName,
                 description
@@ -102,6 +102,7 @@ export class AppManager{
      * @returns recentDocuments Array
      */
     getRecentDocuments(){
+        
         return this.store.get('recentDocuments',[])
     }
 

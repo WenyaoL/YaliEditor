@@ -67,14 +67,14 @@ class RendererIPMEventLoader{
                 element.remove()
             }
 
-            fixCodemirrorGutterStyle(el)
+            //fixCodemirrorGutterStyle(el)
 
             doc.html(el, {
                 jsPDF:doc,
                 margin:[10,1000,10,30],
                 width:400,
                 windowWidth:1200
-            }).save('undefine.pdf').then(o=>{
+            }).save(document.title+'.pdf').then(o=>{
                 //回复原来字体
                 /*setTimeout(()=>{
                     root.removeChild(root.firstChild)
@@ -85,9 +85,11 @@ class RendererIPMEventLoader{
 
         window.electronAPI.exportIMG(()=>{
             //导出图片快照
-            const write = document.getElementsByClassName("write")
-            const e = write.item(0)
-            fixCodemirrorGutterStyle(e)
+            const write = document.getElementsByClassName("write").item(0)
+            if(!write) retrun
+            let e = write
+
+            //fixCodemirrorGutterStyle(e)
 
 
             html2canvas(e,{
@@ -102,7 +104,7 @@ class RendererIPMEventLoader{
         window.electronAPI.exportHTML(()=>{
             const write = document.getElementsByClassName("write").item(0)
             const clone = write.cloneNode(true)
-            fixCodemirrorGutterStyle(clone)
+            //fixCodemirrorGutterStyle(clone)
             const styles = document.head.getElementsByTagName("style")
             let style = ''
             for (let index = 0; index < styles.length; index++) {

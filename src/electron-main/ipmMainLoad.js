@@ -97,6 +97,35 @@ class MainIPMEventLoader{
             this.manager.addRecentDocument(payload.filePath,payload.description)
         })
 
+        //在一个新窗口打开文件
+        ipcMain.on('openFileInNewWindow',(event,payload)=>{
+            //指定路径
+            const filePath = payload.path
+            //打开文件
+            const data = common.openFileSync(filePath)
+            //加入store,保存最近打开文件
+            this.manager.addRecentDocument(filePath,data.substring(0,30))
+            //open new window
+            const win = this.manager.appWindow.createWindow(path.basename(filePath))
+            //const win = common.openNewWindow()
+            this.manager.appWindow.addWindow(win)
+            //加载页面 window load url
+            common.loadUrl(win)
+            //页面加载完
+            win.on('ready-to-show',()=>{
+                //发送数据
+                win.webContents.send('updateApplicationContext',{   //上下文
+                    title:path.basename(filePath),
+                    filePath: filePath,   //文件路径(包含文件名)
+                    content:data,
+                    preview:"",  
+                    isSave:true,
+                    theme:this.manager.appWindow.theme,
+                    recentDocuments:this.manager.getRecentDocuments()
+                })
+            })
+
+        })
     }
 
     loadHandleListener(){
@@ -106,10 +135,10 @@ class MainIPMEventLoader{
 
             //指定路径
             const path = payload.path
-            
             return common.openFile(path)
         })
     
+
 
         //监听渲染进程的加载渲染上下文请求
         ipcMain.handle('loadRenderApplicationContext',(event,payload)=>{
@@ -125,7 +154,7 @@ class MainIPMEventLoader{
                 buttons:["保存","丢弃"]
             })
         })
-    
+        
     
         ipcMain.handle('openURL',(event,payload)=>{
             shell.openExternal(payload.url)
@@ -133,6 +162,10 @@ class MainIPMEventLoader{
     
         ipcMain.handle("openHelpDocumentation",()=>{
             return common.openFileSync(path.join(__static,"docs/Help.md"))
+        })
+
+        ipcMain.handle('getRecentDocuments',()=>{
+            return this.manager.getRecentDocuments()
         })
     }
 

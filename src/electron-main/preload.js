@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     openURL:(payload) => ipcRenderer.invoke('openURL',payload),
     //打开帮助文档
     openHelpDocumentation:()=> ipcRenderer.invoke('openHelpDocumentation'),
+    //获取最近打开文件
+    getRecentDocuments:()=> ipcRenderer.invoke('getRecentDocuments'),
+
 
     //--------------------------------------发送（send）-----------------------------------
     //渲染检查请求加载Fonts
@@ -30,6 +33,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     invokeCloseWin:(payload) => ipcRenderer.send('close-window',payload),
     //添加最近打开文件
     addRecentDocument:(payload) => ipcRenderer.send('add-recent-document',payload),
+    //在新窗口打开文件
+    openFileInNewWindow:(payload)=> ipcRenderer.send('openFileInNewWindow',payload),
 
     //--------------------------------------监听（listener）-----------------------------------
     //渲染进程加载上下文
