@@ -1169,9 +1169,9 @@
     "crelt" "^1.0.5"
 
 "@codemirror/search@^6.0.0":
-  "integrity" "sha512-uOinkOrM+daMduCgMPomDfKLr7drGHB4jHl3Vq6xY2WRlL7MkNsBE0b+XHYa/Mee2npsJOgwvkW4n1lMFeBW2Q=="
-  "resolved" "https://registry.npmmirror.com/@codemirror/search/-/search-6.0.1.tgz"
-  "version" "6.0.1"
+  "integrity" "sha512-2pWY599zXk+lSoJ2iv9EuTO4gB7lhgBPLPwFb/zTbimFH4NmZSaKzJSV51okjABZ7/Rj0DYy5klWbIgaJh2LoQ=="
+  "resolved" "https://registry.npmmirror.com/@codemirror/search/-/search-6.2.2.tgz"
+  "version" "6.2.2"
   dependencies:
     "@codemirror/state" "^6.0.0"
     "@codemirror/view" "^6.0.0"

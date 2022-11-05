@@ -7,16 +7,17 @@
                 :title="item.fileName">
       <template #reference>
         <div  class="recent-document-item" @click="openFile(item)">
-          <p>
+          <p class="recent-document-info">
             <span class="recent-document-filename">{{item.fileName}}</span>
             <span class="recent-document-description">{{item.description}}</span>
           </p>
-          <el-divider />
         </div>
       </template>
       <template #default>
         <p style="margin: 0; font-size: 14px; color: var(--el-color-info)">
+          <el-divider content-position="left">Path</el-divider>
           <span class="recent-document-dirname">{{item.dirName}}</span>
+          <el-divider content-position="left">Description</el-divider>
           <span class="recent-document-description">{{item.description}}</span>
         </p>
       </template>
@@ -47,6 +48,8 @@ const openFile = (item)=>{
 <style scoped>
 .recent-document-item{
   padding: 5px;
+  min-height: 65px;
+  border-bottom: 2px var(--el-border-color) var(--el-border-style);
 }
 
 .recent-document-item:hover{
@@ -72,7 +75,7 @@ span{
   display: block;
 }
 
-p{
+.recent-document-info{
   margin:0;
   text-overflow:ellipsis;
   min-width: 236px;
@@ -80,7 +83,6 @@ p{
 
 .el-divider{
   margin-top: 5px;
-  margin-bottom: 0px;
-  border-top: 2px var(--el-border-color) var(--el-border-style);
+  margin-bottom: 6px;
 }
 </style>
