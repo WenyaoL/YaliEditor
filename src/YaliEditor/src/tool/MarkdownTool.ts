@@ -2,6 +2,7 @@ import YaliEditor from '../index'
 import {strToDocumentFragment,strToNodeArray,strToNodeList,createParagraph} from '../util/inspectElement'
 import rangy from "rangy";
 import { IRfindClosestMdBlock } from '../util/findElement';
+import Constants from '../constants'
 
 class MarkdownTool{
 
@@ -130,6 +131,29 @@ class MarkdownTool{
         }
         return src
     }   
+
+    /**
+     * 给Codemirror6编辑面板添加元素text,text内容为编辑内容
+     * @param root 
+     */
+    fixCodemirror6Element(root:HTMLElement){
+        let es = root.getElementsByClassName(Constants.CLASS_MD_CODE)
+
+        for (let index = 0; index < es.length; index++) {
+            const element = es[index];
+            let text = this.editor.ir.renderer.codemirrorManager.getTextValue(element.id)            
+            element.appendChild(document.createTextNode(text))
+        }
+    }
+
+    removeAllCodemirror6Element(root:HTMLElement){
+        let es = root.getElementsByClassName(Constants.CLASS_MD_CODE)
+
+        for (let index = 0; index < es.length; index++) {
+            const element = es[index];
+            element.innerHTML = ""
+        }
+    }
 
 
 

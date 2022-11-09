@@ -210,8 +210,9 @@ class IR{
             this.rootElement.innerHTML = res
         }
         this.renderer.initEditorView(this.rootElement).then((info)=>{
-            
-            this.undoManager.setOrigin(this.rootElement.innerHTML)
+            let e = this.rootElement.cloneNode(true) as HTMLElement
+            this.undoManager.setRootOrigin(e)
+            //this.undoManager.setOrigin(this.rootElement.innerHTML)
         })
         this.contextRefresher.refreshContext()
         setTimeout(()=>{

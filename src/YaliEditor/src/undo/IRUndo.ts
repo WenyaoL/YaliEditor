@@ -71,16 +71,31 @@ class IRUndo{
         
     }
 
+    setRootOrigin(root:HTMLElement){
+        this.editor.markdownTool.removeAllCodemirror6Element(root)
+        this.editor.markdownTool.fixCodemirror6Element(root)
+        this.lastText = root.innerHTML        
+        this.hasUndo = false;
+        this.redoStack = [];
+        this.undoStack = [];
+    }
+
 
     private IRHistoryUndo(history:History){
         
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
         
+        console.log("lastText文本==》",this.lastText);
+        console.log("还原结果==》",this.editor.ir.rootElement.innerHTML);
+
         //重新设置last
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
+        
+        
+        
         
         
         //刷新disable的视图
@@ -167,6 +182,10 @@ class IRUndo{
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
+        //移除codemirror代码
+        this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
+        this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
+        
         
         //当前状态到上一状态的不同
         const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
@@ -221,7 +240,9 @@ class IRUndo{
         }*/
 
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
-        
+        this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
+        this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
+
         const nowText = cloneRoot.innerHTML
         
         //获取上一个历史状态（1<-2）

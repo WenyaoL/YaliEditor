@@ -298,7 +298,7 @@ export class CodemirrorManager{
         languageDescription = loadLanguage(lang)
 
         //提取文本（页面上的文本）
-        const text = this.extractElementTextInfo(element)
+        const text = this.extractElementPlainText(element)
 
 
         let startState = EditorState.create({
@@ -320,6 +320,7 @@ export class CodemirrorManager{
      * @returns 
      */
     extractElementTextInfo(element:Element){
+
         let lineArr = []
         const lines = element.getElementsByClassName("cm-line")
         if(lines.length == 0) return ''
@@ -328,6 +329,10 @@ export class CodemirrorManager{
             lineArr.push(line)
         }
         return lineArr.join("\n")
+    }
+
+    extractElementPlainText(element:Element){
+        return element.textContent
     }
 
     /**
