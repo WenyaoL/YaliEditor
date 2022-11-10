@@ -140,16 +140,16 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
 
         switch (event.key) {
             case "ArrowUp":
-                //flag = this.arrowUpKeydown()
+                flag = this.arrowUpKeydown()
                 break;
             case "ArrowDown":
-                //flag = this.arrowDownKeydown()
+                flag = this.arrowDownKeydown()
                 break;
             case "ArrowRight":
-                //flag = this.arrowRightKeydown()
+                flag = this.arrowRightKeydown()
                 break;    
             case "ArrowLeft":
-                //flag = this.arrowLeftKeydown()
+                flag = this.arrowLeftKeydown()
                 break;
             default:
                 break;

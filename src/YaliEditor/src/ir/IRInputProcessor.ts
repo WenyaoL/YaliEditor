@@ -1,7 +1,4 @@
 import YaLiEditor from '..'
-import rangy from "rangy";
-import {findClosestByAttribute} from '../util/findElement'
-import {strToElement} from '../util/inspectElement'
 import Constants from "../constants";
 
 class IRInputProcessor{
@@ -24,10 +21,13 @@ class IRInputProcessor{
                 return;
             }
 
-            //如果输入的时的位置是标题
+            //根据输入位置发布不同的事件
             let type = this.editor.ir.focueProcessor.getSelectedBlockMdType()
+
             if(type === Constants.ATTR_MD_BLOCK_HEADING){
                 this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
+            }else if(type === Constants.ATTR_MD_BLOCK_FENCE || type === Constants.ATTR_MD_BLOCK_MATH){
+                this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_CODEBLOCKINPUT)
             }
             
             if(event.inputType==="deleteContentBackward"){

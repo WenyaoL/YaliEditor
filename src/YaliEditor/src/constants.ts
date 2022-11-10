@@ -8,10 +8,11 @@ export const _YALI_VERSION : string =  "YaLier_1.0.0"
 
 export const CLASS_MD_HIDEN : string = "md-hiden"
 export const CLASS_MD_META : string = "md-meta"
-
 export const CLASS_MD_CODE: string = "markdown-it-code-beautiful"
 
-
+/**
+ * md-block的属性块
+ */
 export const ATTR_MD_BLOCK : string = "md-block"
 export const ATTR_MD_BLOCK_HEADING : string = "heading"
 export const ATTR_MD_BLOCK_PARAGRAPH : string = "paragraph" 
@@ -20,6 +21,9 @@ export const ATTR_MD_BLOCK_TABLE : string = "table"
 export const ATTR_MD_BLOCK_FENCE : string = "fence" 
 export const ATTR_MD_BLOCK_MATH : string = "math" 
 
+/**
+ * md-inline的属性块
+ */
 export const ATTR_MD_INLINE : string = "md-inline"
 export const ATTR_MD_INLINE_IMG : string = "img"
 export const ATTR_MD_INLINE_LINK : string = "link"
@@ -47,8 +51,15 @@ export const CODEMIRROR_EDITOR : string = "cm-editor"
 
 export const IR_CLASS_NAME:string = "YaLi-ir"
 
-
+/**
+ * refreshToc 刷新标题事件
+ */
 export const IR_EVENT_REFRESHTOC:string = "refreshToc"
+
+/**
+ * codeinput 在代码块输入时触发的事件（打字不触发，英文输入时触发）
+ */
+export const IR_EVENT_CODEBLOCKINPUT:string = "codeBlockInput"
 
 export default {
     _YALI_VERSION,
@@ -76,5 +87,6 @@ export default {
     CODEMIRROR_CONTENT,
     CODEMIRROR_EDITOR,
     IR_CLASS_NAME,
-    IR_EVENT_REFRESHTOC
+    IR_EVENT_REFRESHTOC,
+    IR_EVENT_CODEBLOCKINPUT
 }

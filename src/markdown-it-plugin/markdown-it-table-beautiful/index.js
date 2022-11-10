@@ -1,7 +1,9 @@
 'use strict';
-var DFA = require('./lib/dfa.js');
+//var DFA = require('./lib/dfa.js');
+import DFA from './lib/dfa'
+import rangy from 'rangy';
 
-module.exports = function multimd_table_plugin(md, options) {
+export function multimd_table_plugin(md, options) {
   var defaults = {
     multiline:  false,
     rowspan:    false,
@@ -162,7 +164,7 @@ module.exports = function multimd_table_plugin(md, options) {
     tableToken       = new state.Token('table_open', 'table', 1);
     tableToken.meta  = { sep: null, cap: null, tr: [] };
     //tableToken.attrPush(["md-block","table"])
-    tableToken.attrPush(["class","table table-bordered"])
+    tableToken.attrPush(["class","table table-bordered table-striped"])
     tableToken.attrPush(["contenteditable","true"])
     
     tableDFA.set_highest_alphabet(0x10000);
@@ -381,10 +383,13 @@ module.exports = function multimd_table_plugin(md, options) {
 
     let table =  slf.renderToken(tokens, index, options);
     //let svg = '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-029747aa=""><path fill="currentColor" d="M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32zm192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32z"></path></svg>'
-    let svg = '<i class="el-icon-delete">'+'</i>'
-    let button = '<button onclick="TABLE_DELETE(this)">'+ svg +'</button>'
 
-    let tip = '<div class="md-table-tip md-hiden">'+button+'</div>'
+    let deleteButton = '<button class="table-delete" onclick="TABLE_DELETE(this)">'+ '<i class="el-icon-delete"></i>' +'</button>'
+    let centerButton = '<button class="table-center" onclick="TABLE_CENTER(this)">'+ '<i class="el-icon-minus"></i>' +'</button>'
+    let leftButton = '<button class="table-left" onclick="TABLE_LEFT(this)">'+ '<i class="el-icon-arrow-left"></i>' +'</button>'
+    let rightButton = '<button class="table-right" onclick="TABLE_RIGHT(this)">'+ '<i class="el-icon-arrow-right"></i>' +'</button>'
+
+    let tip = '<div class="md-table-tip md-hiden">'+deleteButton+centerButton+leftButton+rightButton+'</div>'
     
     let res = '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
 
@@ -399,6 +404,50 @@ module.exports = function multimd_table_plugin(md, options) {
     e.parentElement.parentElement.remove()
   }
 
+  
+  window.TABLE_CENTER = ()=>{
+    toTextAlign("center")
+  }
+  
+  window.TABLE_LEFT = ()=>{
+    toTextAlign("left")
+  }
+
+  window.TABLE_RIGHT = ()=>{
+    toTextAlign("right")
+  }
+
 };
 
+function toTextAlign(align){
+  let sel = rangy.getSelection()
+    let r = sel.getRangeAt(0)
+    let start = r.startContainer
+    
+    if(start.nodeType == 3){
+      start = start.parentElement
+    }
+    
+    if(start.tagName == "TD" || start.tagName == "TH"){
+      //计算节点偏移
+      let bias = 0;  
+      while(start.previousElementSibling){
+        bias++;
+        start = start.previousElementSibling
+      }
+      //找到table
+      let table = start.closest("table")
+      document.createElement("div")
+      let trs = table.getElementsByTagName("tr")
+
+      for (let index = 0; index < trs.length; index++) {
+        const tr = trs[index];
+        const td = tr.children.item(bias)
+        td.style.textAlign = align
+      }
+    }
+}
+
+
+export default multimd_table_plugin
 /* vim: set ts=2 sw=2 et: */

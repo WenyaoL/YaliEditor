@@ -86,8 +86,7 @@ class IRUndo{
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
         
-        console.log("lastText文本==》",this.lastText);
-        console.log("还原结果==》",this.editor.ir.rootElement.innerHTML);
+
 
         //重新设置last
         this.lastText = res[0]
@@ -134,6 +133,8 @@ class IRUndo{
     }
 
     private IRHistoryRedo(history:History){
+        
+        
         //复制并反转补丁
         const redoPatch = this.dmp.patch_deepCopy(history.patch).reverse()
         redoPatch.forEach((patch) => {
@@ -178,7 +179,6 @@ class IRUndo{
 
 
     public addIRHistory(){
-        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement

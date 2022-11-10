@@ -21,6 +21,7 @@ import IRSelectBinder from "../eventbinder/IRSelectBinder";
 import IRInputBinder from "../eventbinder/IRInputBinder";
 import IRKeyBinder from "../eventbinder/IRKeyBinder";
 import IRDragBinder from '../eventbinder/IRDragBinder'
+//import IRScrollBinder from '../eventbinder/IRScrollBinder'
 
 //处理器
 import IRDeletekeyProcessor from "./IRDeletekeyProcessor";
@@ -32,7 +33,7 @@ import IRInputProcessor from './IRInputProcessor'
 import IRTabProcessor from './IRTabkeyProcessor'
 import IRCopyProcessor from './IRCopyProcessor'
 import IRPasteProcessor from './IRPasteProcessor'
-
+import IRCompositionProcessor from './IRCompositionProcessor'
 
 import rangy from "rangy";
 /**
@@ -81,6 +82,8 @@ class IR{
     public pasteProcessor:IRPasteProcessor;
     //上下文刷新器
     public contextRefresher:IRContextRefresher;
+    //打字处理器
+    public compositionProcessor:IRCompositionProcessor;
     //事件发布器
     public applicationEventPublisher:ApplicationEventPublisher;
 
@@ -120,12 +123,14 @@ class IR{
         this.copyProcessor = new IRCopyProcessor(this.editor)
         this.pasteProcessor = new IRPasteProcessor(this.editor)
         this.contextRefresher = new IRContextRefresher(this.editor)
+        this.compositionProcessor = new IRCompositionProcessor(this.editor)
 
         this.binderList = [];
         this.binderList.push(new IRInputBinder(this.editor));
         this.binderList.push(new IRKeyBinder(this.editor));
         this.binderList.push(new IRSelectBinder(this.editor));
         this.binderList.push(new IRDragBinder(this.editor))
+        //this.binderList.push(new IRScrollBinder(this.editor))
         this.bindEvent(this.rootElement);
 
         this.observer = new DOMObserver(this.rootElement,this.editor)
@@ -174,6 +179,17 @@ class IR{
 
     public selectTheme(theme:string){
         this.renderer.codemirrorManager.selectTheme(theme)
+        
+        let tables = this.rootElement.getElementsByClassName("markdown-it-table-beautiful")
+        for (let index = 0; index < tables.length; index++) {
+            const element = tables[index];
+            if(theme == "dark"){
+                element.lastElementChild.classList.add("table-dark")
+            }else{
+                element.lastElementChild.classList.remove("table-dark")
+            }
+            
+        }
     }
     
 

@@ -15,7 +15,7 @@ import {toKeyText} from "../util/formatText"
 import rangy from "rangy";
 import CONSTANTS from "../constants";
 
-import CommonEventBinder from "./commonEventBinder";
+
 import { strToElement,createParagraph} from "../util/inspectElement";
 
 
@@ -23,12 +23,12 @@ import { strToElement,createParagraph} from "../util/inspectElement";
 
 
 
-class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
+class IRKeyBinder  implements BaseEventBinder{
 
-
+    editor: YaLiEditor;
 
     constructor(editor:YaLiEditor) {
-        super(editor)
+        this.editor = editor
     }
 
 
@@ -117,7 +117,6 @@ class IRKeyBinder extends CommonEventBinder implements BaseEventBinder{
 
 
     bindEvent(element: HTMLElement): void {
-        super.bindEvent(element)
 
         this.bindKeydownEvent(element)
         this.bindKeyupEvent(element)

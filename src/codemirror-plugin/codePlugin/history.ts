@@ -374,7 +374,7 @@ class HistoryState {
     } else {
       done = updateBranch(done, done.length, config.minDepth, event)
       let yali = config.editor as YaLiEditor
-      yali.ir.observer.adjustNow()
+      //yali.ir.observer.adjustNow()
       //yali.ir.undoManager.addCodemirrorHistory(config.uuid)
     }
     return new HistoryState(done, none, time, userEvent)

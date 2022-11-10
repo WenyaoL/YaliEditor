@@ -27,6 +27,10 @@ class IRContextRefresher{
             this.refreshToc()
         })
 
+        this.ir.applicationEventPublisher.subscribe(Constants.IR_EVENT_CODEBLOCKINPUT,()=>{
+            this.editor.ir.observer.flush()
+            
+        })
     }
 
 

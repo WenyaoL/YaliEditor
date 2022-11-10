@@ -2,7 +2,7 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { BrowserWindow, Menu,ipcMain,dialog,shell, app} from 'electron'
+import { BrowserWindow, Menu,ipcMain,dialog,shell, app,nativeTheme} from 'electron'
 //import { openFile,openFileDialog,openNewWindow,loadUrl} from './common'
 import common from './common'
 import path from 'path'
@@ -289,10 +289,12 @@ export class AppMenu{
             submenu:[
                 {label:'light',type: 'radio',checked: true,click:()=>{
                     this.manager.appWindow.checkoutTheme("light")
+                    nativeTheme.themeSource = "light"
 
                 }},
                 {label:'dark',type: 'radio',click:()=>{
                     this.manager.appWindow.checkoutTheme('dark')
+                    nativeTheme.themeSource = "dark"
                 }},
             ]
         })

@@ -4,15 +4,15 @@
  */
 import {findClosestByAttribute} from '../util/findElement'
 import rangy from 'rangy'
+import IRCompositionEventBinder from './IRCompositionBinder'
 import { BaseEventBinder } from '../../types';
 import CONSTANTS from "../constants";
 import YaLiEditor from '..';
-class IRInputBinder implements BaseEventBinder{
+class IRInputBinder extends IRCompositionEventBinder implements BaseEventBinder{
 
-    public editor:YaLiEditor;
 
     constructor(editor:YaLiEditor){
-        this.editor = editor;
+        super(editor);
     }
 
     bindInputEvent(element: HTMLElement){
@@ -31,6 +31,8 @@ class IRInputBinder implements BaseEventBinder{
     }
 
     bindEvent(element: HTMLElement): void {
+        super.bindEvent(element)
+
         this.bindInputEvent(element);
         this.bindBeforeInputEvent(element);
     }
