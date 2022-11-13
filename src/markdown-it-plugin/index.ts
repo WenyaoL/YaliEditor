@@ -12,7 +12,7 @@ import CodemirrorManager from './markdown-it-codemirror-beautiful'
 import './index.scss'
 import YaLiEditor from '@/YaliEditor/src';
 //import table from 'markdown-it-multimd-table'
-import table from './markdown-it-table-beautiful'
+import { MultimdTable,multimd_table_plugin } from './markdown-it-table-beautiful'
 
 
 
@@ -22,7 +22,7 @@ class MarkdownBeautiful{
   public mathjax:Mathjax;
   public md:MarkdownIt;
   public editor:YaLiEditor
-
+  public table:MultimdTable
   constructor(editor:YaLiEditor){
     this.editor =editor
     this.codemirrorManager = new CodemirrorManager(this.editor)
@@ -34,13 +34,16 @@ class MarkdownBeautiful{
       breaks:true,
       highlight: this.codemirrorManager.highlighter
     })
-    this.md.use(table,{
+
+    this.table = new MultimdTable({
       multiline:  true,
       rowspan:    false,
       headerless: true,
       multibody:  true,
       aotolabel:  true,
     })
+
+    this.md.use(this.table.multimd_table_plugin,this.table)
     this.mathjax = new Mathjax(this.editor)
     this.md.use(this.mathjax.plugin)
 
@@ -69,6 +72,11 @@ class MarkdownBeautiful{
     return this.md.render(src)
   }
 
+  setTheme(theme:string){
+    this.codemirrorManager.selectTheme(theme)
+    this.table.setTheme(theme)
+  }
+  
 }
 
 

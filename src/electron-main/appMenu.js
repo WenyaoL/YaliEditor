@@ -2,8 +2,7 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { BrowserWindow, Menu,ipcMain,dialog,shell, app,nativeTheme} from 'electron'
-//import { openFile,openFileDialog,openNewWindow,loadUrl} from './common'
+import { BrowserWindow, Menu,shell, nativeTheme} from 'electron'
 import common from './common'
 import path from 'path'
 
@@ -36,9 +35,8 @@ export class AppMenu{
                     accelerator:'ctrl+n',//快捷键
                     click:()=>{
                         //open new window
-                        const win = this.manager.appWindow.createWindow()
+                        const win = this.manager.appWindow.createWindow(null)
                         //const win = common.openNewWindow()
-                        this.manager.appWindow.addWindow(win)
                         //加载页面 window load url
                         common.loadUrl(win)
                     }
@@ -58,11 +56,10 @@ export class AppMenu{
                         //open new window
                         const win = this.manager.appWindow.createWindow(path.basename(filePath))
                         //const win = common.openNewWindow()
-                        this.manager.appWindow.addWindow(win)
+                        //页面加载完，窗口可以展示时
+                        ///win.on('ready-to-show',()=>{})
                         //加载页面 window load url
-                        common.loadUrl(win)
-                        //页面加载完
-                        win.on('ready-to-show',()=>{
+                        common.loadUrl(win).then(()=>{//页面加载完立刻发送数据
                             //发送数据
                             win.webContents.send('updateApplicationContext',{   //上下文
                                 title:path.basename(filePath),
@@ -74,6 +71,7 @@ export class AppMenu{
                                 recentDocuments:this.manager.getRecentDocuments()
                             })
                         })
+                        
                     }
                 },{
                     label:'打开文件夹',
@@ -150,7 +148,6 @@ export class AppMenu{
                     accelerator:'ctrl+w',
                     click:()=>{
                         let win = BrowserWindow.getFocusedWindow()
-                        this.manager.removeWindow(win)
                         win.close()
                     }
                 },
@@ -287,12 +284,12 @@ export class AppMenu{
         this.template.push({
             label:'主题(T)',
             submenu:[
-                {label:'light',type: 'radio',checked: true,click:()=>{
+                {label:'light',type: 'radio',checked: this.manager.appWindow.theme == "light",click:()=>{
                     this.manager.appWindow.checkoutTheme("light")
                     nativeTheme.themeSource = "light"
 
                 }},
-                {label:'dark',type: 'radio',click:()=>{
+                {label:'dark',type: 'radio',checked: this.manager.appWindow.theme == "dark",click:()=>{
                     this.manager.appWindow.checkoutTheme('dark')
                     nativeTheme.themeSource = "dark"
                 }},
@@ -356,12 +353,8 @@ export class AppMenu{
                     const data = common.openFileSync(filePath)
                     //open new window
                     const win = this.manager.appWindow.createWindow(path.basename(filePath))
-                    this.manager.appWindow.addWindow(win)
                     //加载页面 window load url
-                    common.loadUrl(win)
-                    //页面加载完
-                    win.on('ready-to-show',()=>{
-                        //发送数据
+                    common.loadUrl(win).then(()=>{
                         win.webContents.send('updateApplicationContext',{   //上下文
                             title:path.basename(filePath),
                             filePath: filePath,   //文件路径
@@ -378,11 +371,8 @@ export class AppMenu{
                     const data = common.openFileSync(filePath)
                     //open new window
                     const win = this.manager.appWindow.createWindow(path.basename(filePath))
-                    this.manager.appWindow.addWindow(win)
                     //加载页面 window load url
-                    common.loadUrl(win)
-                    //页面加载完
-                    win.on('ready-to-show',()=>{
+                    common.loadUrl(win).then(()=>{
                         //发送数据
                         win.webContents.send('updateApplicationContext',{   //上下文
                             title:path.basename(filePath),

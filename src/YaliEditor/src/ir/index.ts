@@ -136,7 +136,9 @@ class IR{
         this.observer = new DOMObserver(this.rootElement,this.editor)
 
         if(this.options.disableEdit) this.observer.disableObserver()
-        if(this.options.theme) this.renderer.codemirrorManager.themeType = this.options.theme
+        if(this.options.theme){
+            this.selectTheme(this.options.theme)
+        }
 
         this.subscribe()
     }
@@ -178,8 +180,8 @@ class IR{
     }
 
     public selectTheme(theme:string){
-        this.renderer.codemirrorManager.selectTheme(theme)
-        
+        this.renderer.setTheme(theme)
+        this.options.theme = theme
         let tables = this.rootElement.getElementsByClassName("markdown-it-table-beautiful")
         for (let index = 0; index < tables.length; index++) {
             const element = tables[index];

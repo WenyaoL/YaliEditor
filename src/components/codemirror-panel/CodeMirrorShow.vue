@@ -8,13 +8,13 @@
     :autofocus="true"
     :tab-size="2"
     :extensions="extensions"
-    @change="updateContent($event)"
+    @change="updateContent"
     @ready="getContext($event)"
   />
 </template>
 
-<script>
-import {ref,onMounted} from 'vue'
+<script lang="ts">
+import {ref,onMounted,shallowRef,watch,defineComponent} from 'vue'
 import {basicSetup} from "codemirror"
 import { Codemirror } from 'vue-codemirror'
 import { useStore } from 'vuex';
@@ -25,25 +25,24 @@ import {defaultKeymap,indentWithTab} from '@codemirror/commands'
 import {markdown} from "@codemirror/lang-markdown"
 import {languages} from "@codemirror/language-data"
 import { oneDark } from '@codemirror/theme-one-dark'
-import {codeCompletions} from '@/codemirror-plugin/codeCompletions'
-import {updateBlock} from '@/codemirror-plugin/codeCommon'
-
+import {codeCompletions,updateBlock,createEditorCompartment} from '@/codemirror-plugin/util/Common'
 import {syntaxHighlighting,defaultHighlightStyle} from "@codemirror/language"
 
-export default {
+export default defineComponent({
     components: {
       Codemirror
     },
     setup() {
       const store = useStore();
       const applicationContext = store.state.applicationContext
-      const myCode = ref(null)
+      
+      // Codemirror EditorView instance ref
+      const view = shallowRef()
       const md = markdown({codeLanguages: languages})
       //code complete extensions
       const ext = md.language.data.of({
         autocomplete: codeCompletions
       })
-
       const keys =[
         {key: "Shift-Ctrl-k",run() { 
           updateBlock(store.state.viewEditor,{type:"codeblock"}); 
@@ -55,26 +54,26 @@ export default {
         }}
       ]
 
-      //extensions arrays false
+      let {compartment,run} = createEditorCompartment()
+
       let extensions = [
         md,
         ext,
-        //syntaxHighlighting(myHighlightStyle),
-        //oneDark,
         Prec.high(keymap.of(keys)),
         keymap.of([indentWithTab]),
         basicSetup,
         EditorView.lineWrapping,
       ]
-      if(store.state.theme == "dark"){
-        extensions = extensions.concat([oneDark])
+      if(store.state.applicationContext.theme == "dark"){
+          extensions = extensions.concat([compartment.of(oneDark)])
       }
 
       function getContext(payload){
         store.commit('setViewEditor',payload.view)
+        view.value = payload.view
       }
 
-      function updateContent(text){
+      const updateContent = (text)=>{
         let title = document.getElementsByTagName("title")[0].innerText
         if(title.charAt(title.length-1) !== "*"){
           document.getElementsByTagName("title")[0].innerText = title+"*"
@@ -85,18 +84,26 @@ export default {
         store.commit('updateContent',text)
       }
 
-      onMounted(()=>{        
-      });
+
+      watch(()=>store.state.applicationContext.theme,(theme)=>{
+        if(theme == "dark"){
+          run(oneDark,view.value)
+        }else{
+          run([],view.value)
+        }
+      })
+
+
       return {
         extensions,
         getContext,
         updateContent,
         applicationContext,
-        myCode,
+        view
         
       }
     }
-  }
+  })
 </script>
 
 <style scoped>

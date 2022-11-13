@@ -154,8 +154,8 @@ export async function loadUrl(win){
         await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
         if (!process.env.IS_TEST) win.webContents.openDevTools()
       } else {
-        createProtocol('app')
-        win.loadURL('app://./index.html')
+        //createProtocol('app')
+        return win.loadURL('app://./index.html')
     }
 }
 

@@ -3,8 +3,18 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 
-import { BrowserWindow} from 'electron'
+import { BrowserWindow,nativeTheme} from 'electron'
 import path from 'path'
+
+
+function getThemeColor(theme){
+
+    if(theme == "light") return "#ffffff"
+    else if(theme == "dark") return "#333333"
+
+    return "#ffffff"
+}
+
 
 export class AppWindow{
 
@@ -12,36 +22,31 @@ export class AppWindow{
 
     constructor(manager){
         //窗口映射，可携带数据
-        this.windowMap = []
         this.manager = manager
+        this.theme = "light"
     }
 
     init(){
         this.theme = this.manager.store.get('theme','light')
+        if(this.theme == "dark") nativeTheme.themeSource = "dark"
+        else nativeTheme.themeSource = "light"
+        
     }
 
-    addWindow(win,data){
-        this.windowMap.push({win,data})
-    }
-
-    removeWindow(win){
-        const idx = this.windowMap.findIndex(map=>map.win===win)
-        if(idx==-1) return;
-        this.windowMap.splice(idx,1)
-    }
-    
     /**
      * 创建一个窗口
      */
     createWindow(title){
-        if(title == undefined){
+        if(!title){
             title = "Yalier"
         }
+        
         const win = new BrowserWindow({
             width: 1000,
             height: 618,
-            title:title,
             icon:path.join(__static,"yali.png"),
+            title:title,
+            backgroundColor:getThemeColor(this.theme),
             webPreferences: {
               webSecurity:false,
               //nodeIntegration:true,
@@ -53,7 +58,6 @@ export class AppWindow{
     
         win.on('close',(event)=>{
             event.preventDefault()
-            this.removeWindow(win)
             //通知渲染进程要关闭窗口了，对数据进行保存操作
             win.webContents.send('closeWindow')
         })
@@ -70,6 +74,8 @@ export class AppWindow{
         })
         //将配置持久化
         this.manager.store.set('theme',theme)
+        if(this.theme == "dark") nativeTheme.themeSource = "dark"
+        else nativeTheme.themeSource = "light"
         this.theme = theme
     }
 

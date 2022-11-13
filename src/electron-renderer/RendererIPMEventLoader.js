@@ -1,10 +1,10 @@
 
-import {updateLine,updateBlock,updateMulLine,createToc} from '@/codemirror-plugin/codeCommon'
+import {updateLine,updateBlock,updateMulLine,createToc} from '@/codemirror-plugin/util/Common'
 import {updateLineIR,updateBlockIR,updateMulLineIR, createTocIR} from '@/YaliEditor/src/util/hotkeyProcess' 
 import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
-import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/codeFix'
+import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/util/Common'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 

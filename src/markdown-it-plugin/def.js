@@ -10,8 +10,10 @@ import prismHighlighter from './markdown-it-prismjs-beautiful'
 //import '@/markdown-it-plugin/markdown-it-toc-beautiful/index.css'
 //import './markdown-it-link-beautiful/index.css'
 import './index.scss'
-import table from './markdown-it-table-beautiful'
+import {multimd_table_plugin} from './markdown-it-table-beautiful'
 import list from './markdown-it-list-beautiful'
+
+
 
 var md = new MarkdownIt({
     html: true,
@@ -29,7 +31,7 @@ var md = new MarkdownIt({
   .use(toc)
   .use(markdownItMeta)
   .use(link)
-  .use(table,{
+  .use(multimd_table_plugin,{
     multiline:  true,
     rowspan:    false,
     headerless: true,
