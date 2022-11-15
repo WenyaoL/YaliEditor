@@ -1,13 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow,Menu, ipcMain, dialog} from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import appMenu  from '@/electron-main/appMenu'
-import rightMenu from '@/electron-main/rightMenu'
-import {loadRenderApplicationContext} from '@/electron-main/common'
-import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import { request } from 'http'
-
+import { app, protocol, BrowserWindow} from 'electron'
 import path from 'path'
 import { AppManager } from './electron-main/appManager'
 
