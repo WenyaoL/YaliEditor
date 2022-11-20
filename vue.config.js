@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
+  publicPath:'./',
   configureWebpack:{
     entry: {
       app: './src/main.ts' //main.js顺手改成ts就好，出的错处理一下
@@ -28,6 +29,7 @@ module.exports = defineConfig({
       //disableMainProcessTypescript: false,
       //mainProcessFile:'src/background.ts',
       contextIsolation: true,
+      customFileProtocol: './',
       preload: 'src/electron-main/preload.js',
       builderOptions: {
         //不生效，原因未知
