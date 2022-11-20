@@ -32,18 +32,18 @@
 
 - [Download and Install](#download-and-install)
 - [Introduction](#Introduction)
-  
   - [IR real-time rendering mode](#ir-real-time-rendering-mode)
   - [SV split screen mode](#sv-split-screen-mode)
   - [Only source code mode](#only-source-code-mode)
   - [Folder Preview](#folder-Preview)
   - [Theme](#theme)
   - [Support export](#support-export)
-  - [Project setup](#project-setup)
+  - [Render Support](#render-support)
+- [Project setup](#project-setup)
 
 ## Download and Install
 
-Install address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.com/WenyaoL/YaliEditor/releases)
+Download address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.com/WenyaoL/YaliEditor/releases)
 
 Support window 64-bit
 
@@ -52,14 +52,6 @@ Support Window 32-bit
 ## Introduction
 
 YaliEditor is a lightweight real-time rendering markdown editor that supports markdown pure code mode, SV split screen mode, and IR real-time rendering mode.
-
-**The project is still in the development stage**
-
-### Thinking about using virtual nodes to transform the rendering of the editor
-
-In the process of updating, I have been thinking about whether to separate the editor's editing state and abstract the editor's text state into a tree like data structure. When the user changes the content of the text, the editor should modify the data structure of the text state, modify the response text information with more modified nodes, and then re render the editor page through the virtual node technology through the data structure of the text state to realize the presentation and update of the data.
-
-This rendering method is significantly safer and easier to maintain than the current version of the editor. All editing behaviors of the current version of the editor are directly acting on the dom node of the editor panel, which is not the safest operation method. It is possible that the illegal operation method of the user will cause the document to generate a dom structure that cannot be processed, which will cause the editor to have configuration errors and translation errors of markdown syntax.
 
 ### IR real-time rendering mode
 
@@ -93,7 +85,55 @@ Themes now support light and dark modes
 
 - Support html export
 
-### Project setup
+### Render Support
+
+Support rendering code block and mathematical formula block.
+
+The code block implementation uses codemirror 6, which supports syntax highlighting in multiple languages. Support syntax highlighting switch.
+
+### Shortcut key
+
+About -->Help Documents
+
+*   `Ctrl+1`：一级标题
+    
+*   `Ctrl+2`：二级标题
+    
+*   `Ctrl+3`：三级标题
+    
+*   `Ctrl+4`：四级标题
+    
+*   `Ctrl+5`：五级标题
+    
+*   `Ctrl+6`：六级标题
+    
+*   `Ctrl+B`：加粗
+    
+*   `Ctrl+I`：斜体
+    
+*   `Ctrl+U`：下滑线
+    
+*   `Ctrl+]`：增加缩进
+    
+*   `Ctrl+[`：减少缩进
+    
+*   `Ctrl+Shift+5`：删除线
+    
+*   `Ctrl+Shift+~`：代码引用
+    
+*   `Ctrl+Shift+k`：代码块
+    
+*   `Ctrl+Shift+M`：数学公式
+    
+*   `Ctrl+Shift+Q`：引用
+    
+*   `Ctrl+Shift+[`：有序列表
+    
+*   `Ctrl+Shift+]`：无序列表
+    
+*   `Ctrl+Shift+t`：创建目录
+
+## Project setup
 
 ```shell
 #clone project

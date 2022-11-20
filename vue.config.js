@@ -32,7 +32,6 @@ module.exports = defineConfig({
       customFileProtocol: './',
       preload: 'src/electron-main/preload.js',
       builderOptions: {
-        //不生效，原因未知
         fileAssociations: {
               ext: ["md","markdown","mmd","mdown","mdtxt","mdtext"],
               name: "Markdown",
@@ -45,7 +44,7 @@ module.exports = defineConfig({
           //installerIcon:"./resource/icons/yali.ico",// 安装程序图标（最好用256 × 256以上的图标）
           //uninstallerIcon:"./resource/icons/yali.ico",//卸载程序图标（最好用256 × 256以上的图标）
           perMachine: false, 
-          //createDesktopShortcut: true, // 创建桌面图标
+          createDesktopShortcut: true, // 创建桌面图标
           //createStartMenuShortcut: true,// 创建开始菜单图标
           //license:"./src/license/license.html" //安装界面的软件许可证，如果不配置，不会出现软件许可证界面
         },
