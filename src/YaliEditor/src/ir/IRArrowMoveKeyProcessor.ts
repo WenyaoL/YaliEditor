@@ -8,7 +8,7 @@ import {
     IRfindClosestFence,
     IRfindClosestTop
 } from '../util/findElement'
-import {isBlockMdFence} from '../util/inspectElement'
+import {isMdBlockFence} from '../util/inspectElement'
 import rangy from 'rangy';
 class IRArrowMoveKeyProcessor implements KeyProcessor{
 
@@ -21,7 +21,7 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
     arrowUpKeydown(){
         let sel = rangy.getSelection()
         let fence = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if(!isBlockMdFence(fence)) return
+        if(!isMdBlockFence(fence)) return
         
         let r = sel.getRangeAt(0)
 
@@ -51,7 +51,7 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
         let sel = rangy.getSelection()
         let fence = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
 
-        if(!isBlockMdFence(fence)) return
+        if(!isMdBlockFence(fence)) return
         let r = sel.getRangeAt(0)
 
         let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(fence.id)
@@ -83,7 +83,7 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
 
         let fence = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
 
-        if(!isBlockMdFence(fence)) return
+        if(!isMdBlockFence(fence)) return
 
         let r = sel.getRangeAt(0)
 
@@ -111,7 +111,7 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
         let sel = rangy.getSelection()
         let fence = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
 
-        if(!isBlockMdFence(fence)) return
+        if(!isMdBlockFence(fence)) return
         let r = sel.getRangeAt(0)
 
         let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(fence.id)

@@ -6,7 +6,7 @@
 import {KeyProcessor} from './KeyProcessor'
 import rangy from 'rangy';
 import YaLiEditor from '../'
-import Constants from '../constants'
+import Constants from '../constant/constants'
 class IRTabkeyProcessor implements KeyProcessor{
 
     //编辑器

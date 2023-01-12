@@ -2,7 +2,7 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import {createParagraph} from '../util/inspectElement'
+import {createParagraph} from '../util/createElement'
 import YaLiEditor from "..";
 
 export class DOMObserver{

@@ -59,8 +59,8 @@ const props = defineProps({
 const dialogFormVisible = ref(false)
 const dialogDetailsVisible = ref(false)
 const form = reactive({
-  row: 0,
-  col: 0,
+  row: 3,
+  col: 3,
 })
 const store = useStore()
 //生成环境路径

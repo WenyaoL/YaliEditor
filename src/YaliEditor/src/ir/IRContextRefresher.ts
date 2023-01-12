@@ -5,31 +5,32 @@
 
 import IR from '.';
 import YaliEditor from '../index'
-import Constants from '../constants';
-import { strToElement,createParagraph, getAllHeading} from "../util/inspectElement";
-import {toTocElementText} from "../util/formatText"
+import Constants from '../constant/constants';
+import { getAllHeading } from "../util/inspectElement";
+import { strToElement, createParagraph } from "../util/createElement";
+import { toTocElementText } from "../util/formatText"
 import rangy from 'rangy';
-class IRContextRefresher{
+class IRContextRefresher {
 
-    public editor:YaliEditor;
-    public ir:IR
+    public editor: YaliEditor;
+    public ir: IR
 
-    constructor(editor:YaliEditor){
+    constructor(editor: YaliEditor) {
         this.editor = editor
         this.ir = this.editor.ir
 
-        
+
     }
 
-    subscribe(){
+    subscribe() {
         //订阅
-        this.ir.applicationEventPublisher.subscribe("refreshToc",()=>{
+        this.ir.applicationEventPublisher.subscribe("refreshToc", () => {
             this.refreshToc()
         })
 
-        this.ir.applicationEventPublisher.subscribe(Constants.IR_EVENT_CODEBLOCKINPUT,()=>{
+        this.ir.applicationEventPublisher.subscribe(Constants.IR_EVENT_CODEBLOCKINPUT, () => {
             this.editor.ir.observer.flush()
-            
+
         })
     }
 
@@ -37,29 +38,29 @@ class IRContextRefresher{
     /**
      * 刷新
      */
-    refresh(){
+    refresh() {
 
         //强制让IR面板最后留一个空行
-        if(this.editor.ir.rootElement.lastElementChild.tagName != "P"){
+        if (this.editor.ir.rootElement.lastElementChild.tagName != "P") {
             this.editor.ir.rootElement.appendChild(createParagraph())
         }
 
         //补丁类的刷新(忽略补丁监控)
-        this.ir.observer.ignore(()=>{
+        this.ir.observer.ignore(() => {
             this.refreshLink()
             this.refreshImg()
             this.refreshHeading()
             this.refreshTable()
             //this.refreshToc()
-        },this)
+        }, this)
 
 
         //更新焦点元素
         this.editor.ir.focueProcessor.updateFocusElement()
         this.editor.ir.focueProcessor.updateBookmark()
-    }   
+    }
 
-    refreshContext(){
+    refreshContext() {
         this.refreshLink()
         this.refreshImg()
         this.refreshHeading()
@@ -71,13 +72,36 @@ class IRContextRefresher{
     /**
      * 刷新聚焦的行
      */
-    refreshFocusInline(){
+    refreshFocusInline() {
         //根据行类型选择是否强制刷新块
-        let inlineType = this.editor.ir.focueProcessor.getSelectedInlineMdType()
-        if(inlineType == Constants.ATTR_MD_INLINE_IMG || inlineType == Constants.ATTR_MD_INLINE_LINK){
-            this.refreshFocusBlock(true)
+        const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
+        const inlineType = this.editor.ir.focueProcessor.getSelectedInlineMdType()
+        const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
+
+        //只有P标签才进行刷新
+        if (blockType == Constants.ATTR_MD_BLOCK_PARAGRAPH) {
+            const sel = rangy.getSelection()
+
+            if(likeType || inlineType == Constants.ATTR_MD_INLINE_IMG || inlineType == Constants.ATTR_MD_INLINE_LINK){
+                let inline = this.editor.ir.focueProcessor.getSelectedInlineMdElement()
+                let mark = sel.getBookmark(inline)
+                inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
+                if(!inline) return false
+                mark.rangeBookmarks[0].containerNode = inline
+                sel.moveToBookmark(mark)
+                this.editor.ir.focueProcessor.updateFocusElement()
+                return true
+            }
+            
+            let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+            if (!block) return
+            let mark = sel.getBookmark(block)
+            this.editor.markdownTool.reRenderInlineElementAtBlock(block)
+            sel.moveToBookmark(mark)
+            this.editor.ir.focueProcessor.updateFocusElement()
             return true
         }
+
         return false
     }
 
@@ -88,86 +112,45 @@ class IRContextRefresher{
      * p  ---->  h2  (节点发生变化，渲染到页面)
      * @returns 
      */
-    refreshFocusBlock(force?:boolean){
+    refreshFocusBlock(force?: boolean) {
         let sel = rangy.getSelection()
         let r = sel.getRangeAt(0)
         //获取当前所在的块
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if(!block) return
-        let turndown = this.editor.ir.parser.turndown(block.outerHTML)
+        if (!block) return
 
-        //P标签翻译出的markdown语法会被转义，去除头部的转义符
-        //turndown = turndown.replace(/(\\)(?=[^\\])/g,"")
+        let bookmark = sel.getBookmark(block)
 
-        turndown = turndown.replace(/(\\)(?=[\\\[\]\`\*])/g,"")
-
-        if(turndown.charAt(0) == "\\"){
-            turndown = turndown.slice(1)
-        }
-        //转html
-        const res = this.editor.ir.renderer.render(turndown)
-
-        
-
-        
-        if(!block.parentElement){
-            this.editor.ir.focueProcessor.updateFocusElement()
-            block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        }
-        
-        if(!res) return
-        //转化为dom
-        let e = strToElement(res)
-
-        
-        //只有发生转化为新块时才刷新
-        if(e.tagName!="P" && e.textContent.length!= 0){
-
-            
-            //已经转化为新的块
+        //强制刷新
+        if(force){
+            let turndown = this.editor.markdownTool.turndown(block)
+            const res = this.editor.markdownTool.renderBlock(turndown)
+            const e = strToElement(res)
             block.replaceWith(e)
-            sel.collapse(e,1)
+            bookmark.rangeBookmarks[0].containerNode = e
+            sel.moveToBookmark(bookmark)
             this.editor.ir.focueProcessor.updateFocusElement()
-        }else{
-            //强制刷新?
-            if(force){         
-                       
-                let bookmark = sel.getBookmark(block)
-                bookmark.rangeBookmarks[0].containerNode = e
-                block.replaceWith(e)
-                sel.moveToBookmark(bookmark)
-                this.editor.ir.focueProcessor.updateFocusElement()
-                return
-            }
-
-            if(e.textContent.length== 0){
-                return
-            }
-
-            if(e?.innerHTML!=block?.innerHTML && e?.childElementCount!= block?.childElementCount){
-                let bookmark = sel.getBookmark(block)
-                bookmark.rangeBookmarks[0].containerNode = e
-                block.replaceWith(e)
-                sel.moveToBookmark(bookmark)
-                this.editor.ir.focueProcessor.updateFocusElement()
-                
-                return
-            }
-
             return
         }
+
+
+        
+        block = this.editor.markdownTool.mdBlockTransform(block) as HTMLElement
+        if(!block) return
+        sel.collapse(block,block.childNodes.length)
+        this.editor.ir.focueProcessor.updateFocusElement()
     }
 
     /**
      * 刷新table（补丁）
      */
-    refreshTable(){
+    refreshTable() {
         let root = this.ir.rootElement
 
         let tds = root.getElementsByTagName("td")
         for (let index = 0; index < tds.length; index++) {
             const element = tds[index];
-            if(element.innerText== "\n"){
+            if (element.innerText == "\n") {
                 element.innerText = "";
             }
         }
@@ -175,7 +158,7 @@ class IRContextRefresher{
         let ths = root.getElementsByTagName("th")
         for (let index = 0; index < ths.length; index++) {
             const element = ths[index];
-            if(element.innerText== "\n"){
+            if (element.innerText == "\n") {
                 element.innerText = "";
             }
         }
@@ -185,36 +168,36 @@ class IRContextRefresher{
     /**
      * 刷新上下文中链接节点
      */
-    refreshLink(){
+    refreshLink() {
         let root = this.ir.rootElement
         let links = root.querySelectorAll(Constants.SELECTOR_MD_INLINE_LINK)
-        links.forEach(link=>{
+        links.forEach(link => {
             let a = link.getElementsByTagName("a").item(0)
             let meta = link.getElementsByClassName("md-hiden md-link-url md-meta").item(0)
-            if(!a || !meta) return
-            a.href = meta.textContent?meta.textContent:a.href
+            if (!a || !meta) return
+            a.href = meta.textContent ? meta.textContent : a.href
         })
     }
 
     /**
      * 刷新上下文中的图片节点
      */
-    refreshImg(){
+    refreshImg() {
         let root = this.ir.rootElement
         let imgs = root.querySelectorAll(Constants.SELECTOR_MD_INLINE_IMG)
-        
-        imgs.forEach(img=>{
+
+        imgs.forEach(img => {
             let url = img.getElementsByClassName("md-img-url md-hiden md-meta").item(0)
             let i = img.getElementsByTagName("img").item(0)
-            if(!url || !i) return
-            i.src = url.textContent?url.textContent:i.src
+            if (!url || !i) return
+            i.src = url.textContent ? url.textContent : i.src
         })
     }
 
     /**
      * 刷新上下文中的标题节点
      */
-    refreshHeading(){
+    refreshHeading() {
 
 
     }
@@ -222,11 +205,11 @@ class IRContextRefresher{
     /**
      * 刷新上下文中的TOC节点
      */
-    refreshToc(){
+    refreshToc() {
         let root = this.ir.rootElement
         let toc = root.querySelector(".markdown-it-toc-beautiful[md-block]")
-        if(!toc){
-            this.ir.applicationEventPublisher.publish("refreshedToc",getAllHeading(root))
+        if (!toc) {
+            this.ir.applicationEventPublisher.publish("refreshedToc", getAllHeading(root))
             return
         }
         //let headings = root.querySelectorAll("h1,h2,h3,h4,h5[md-block=heading]")
@@ -234,16 +217,8 @@ class IRContextRefresher{
         let headText = toTocElementText(headings)
         let p = toc.getElementsByTagName("p")[0]
         p.innerHTML = headText
-        //let as = toc.querySelectorAll("a")
 
-        /*as.forEach(a=>{
-            let href = a.getAttribute("to-href")
-            let id = "#"+href
-            let heading = root.querySelector(id)
-            if(heading) a.innerText = heading.textContent
-            
-        })*/
-        this.ir.applicationEventPublisher.publish("refreshedToc",headings)
+        this.ir.applicationEventPublisher.publish("refreshedToc", headings)
     }
 }
 

@@ -1,6 +1,6 @@
 import ContextMenu from '@imengyu/vue3-context-menu'
 import YaLiEditor from '../../YaliEditor/src'
-import Constants from '../../YaliEditor/src/constants'
+import Constants from '../../YaliEditor/src/constant/constants'
 import rangy from 'rangy'
 import {createTableItems,createHeadItems,createImgItems,createParagraphItems} from './tipitemsCommon'
 

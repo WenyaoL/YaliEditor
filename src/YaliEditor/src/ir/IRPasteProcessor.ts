@@ -5,7 +5,9 @@
 
 import YaliEditor from '../index'
 import rangy from "rangy";
-import {strToElementList} from "../util/inspectElement"
+import {strToElementList,strToElementArray, strToDocumentFragment} from "../util/createElement"
+import Constants from "../constant/constants"
+import Reg from '../constant/reg'
 class IRPasteProcessor{
 
     public editor:YaliEditor;
@@ -44,78 +46,73 @@ class IRPasteProcessor{
     pasteMarkdown(str:string){
         if(!str) return
 
-        let sel = rangy.getSelection()
-        let r = sel.getRangeAt(0)
-
-        //翻译成markdown元素
-        let markdown = this.editor.ir.renderer.render(str)
+        //首先当成Block进行渲染
+        const block = this.editor.markdownTool.renderBlock(str)
+        const df = strToDocumentFragment(block)
         
-        //返回翻译元素
-        let eList = strToElementList(markdown)
-        //document碎片，一次性渲染，提高性能
-        let doc = document.createDocumentFragment()
-        //最后的node(用于粘贴后，重新定位光标到最后面)
-        let lastNode:Node =null
-        //只有一个P元素，特殊处理
-        if(eList.length == 1 && eList.item(0).tagName == "P"){
-            const element = eList.item(0)
-            let arr:Node[] = Array.prototype.slice.call(element.childNodes,0)
-            lastNode = arr[arr.length-1]
-            doc.replaceChildren(...arr)
-        }else{
-            //多个标签
-            r.setEndAfter(this.editor.ir.focueProcessor.getSelectedBlockMdElement())
-            doc = r.extractContents()
-            let list:Node[] = Array.prototype.slice.call(eList,0)
-            let extractList:Node[] = Array.prototype.slice.call(doc.childNodes,0)
-            doc.replaceChildren(...list,...extractList)
-            lastNode = list[list.length-1]
+        //如果只是单纯的P文本文段，当成Inline规则进行渲染
+        if(df.children.length == 1 && df.children.item(0).tagName == "P"){
+            const inline = this.editor.markdownTool.renderInline(str)
+            this.editor.domTool.insertAdjacentHTMLAtCursor(inline)
+            return
         }
 
-        
-        r.insertNode(doc)
-        if(lastNode.nodeType == 3){
-
-            r.collapseToPoint(lastNode,lastNode.textContent.length)
-        }else{
-            r.collapseToPoint(lastNode,lastNode.childNodes.length)
+        let selBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+        if(selBlock){
+            this.editor.ir.focueProcessor.updateFocusElement()
+            selBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
         }
-        sel.setSingleRange(r)
-        this.editor.ir.renderer.codemirrorManager.initEditorView(this.editor.ir.rootElement)
+        
+        
+        const {start,end} = this.editor.domTool.splitElementAtCursor(selBlock,df)
+        this.editor.markdownTool.reRenderNode(start as HTMLElement)
+        this.editor.markdownTool.reRenderNode(end as HTMLElement)
+
+        
+        this.editor.ir.renderer.codemirrorManager.refreshEditorView().then(()=>{
+            this.editor.ir.focueProcessor.update()
+            this.editor.ir.observer.forceFlush()
+            this.editor.ir.applicationEventPublisher.publish("refreshToc")
+        })
     }
 
     /**
      * 文本粘贴
      */
     pasteTextPlain(str:string){
-        let sel = rangy.getSelection()
-        let r = sel.getRangeAt(0)
-        let text = document.createTextNode(str)
-        r.insertNode(text)
-        r.collapseAfter(text)
-        sel.setSingleRange(r)
+
+        if(Reg.urlReg.test(str)){ //link
+            const link = this.editor.markdownTool.renderInline(str)
+            this.editor.domTool.insertElementAtCursor(link)
+        }else{
+            //将文本当成markdown字符串进行处理
+            this.pasteMarkdown(str)
+        }  
     }
 
     execute(event: ClipboardEvent) {
         let sel = rangy.getSelection()
-        let str = event.clipboardData?.getData('text/markdown')
+        let markdown = event.clipboardData?.getData('text/markdown')
 
+        let type = this.editor.ir.focueProcessor.getSelectedBlockMdType()
+        if(type == Constants.ATTR_MD_BLOCK_FENCE){
+            return
+        }
 
-
-        if(str.length != 0){
+        if(markdown.length != 0){
             //光标是否聚合
             if(sel.isCollapsed){
-                this.pasteMarkdown(str)
+                this.pasteMarkdown(markdown)
             }else{
-                this.pasteMarkdownAfterDelete(str)
+                this.pasteMarkdownAfterDelete(markdown)
             }
         }else{
-            str = event.clipboardData?.getData('text/plain')
+            let text = event.clipboardData?.getData('text/plain')
             //光标是否聚合
             if(sel.isCollapsed){
-                this.pasteTextPlain(str)
+                this.pasteTextPlain(text)
             }else{
-                this.pasteTextPlainAfterDelete(str)
+                this.pasteTextPlainAfterDelete(text)
             }
 
         }

@@ -2,47 +2,48 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { findClosestByAttribute,
-    findClosestByClassName,
-    findClosestByTop,
-    IRfindClosestMdBlock,
-    IRfindClosestMdInline,
-    IRfindClosestLi,
-    IRfindClosestTop
+import {
+  findClosestByAttribute,
+  findClosestByClassName,
+  findClosestByTop,
+  IRfindClosestMdBlock,
+  IRfindClosestMdInline,
+  IRfindClosestLi,
+  IRfindClosestTop
 } from "../util/findElement";
-import Constants from "../constants";
+import Constants from "../constant/constants";
 import rangy from "rangy";
 import YaLiEditor from "..";
 
-class IRFocusProcessor{
-    //当前被选中的md-inline原生
-  private selectedInlineMdElement:HTMLElement|null = null;
-  private selectedBlockMdElement:HTMLElement|null = null;
+class IRFocusProcessor {
+  //当前被选中的md-inline原生
+  private selectedInlineMdElement: HTMLElement | null = null;
+  private selectedBlockMdElement: HTMLElement | null = null;
 
 
-  public editor:YaLiEditor
+  public editor: YaLiEditor
   //选择对象,代表选择对象在面板的最后位置
-  public sel:RangySelection
+  public sel: RangySelection
   //当前位置的bookmark
-  private bookmark:any;
-  private lastBookmark:any;
+  private bookmark: any;
+  private lastBookmark: any;
 
   //修改锁(发生修改操作前应该锁上)
-  private modifyLock:boolean;
+  private modifyLock: boolean;
   //修改操作之前的bookmark(定位基于整个面板)
-  private modifyBeforeBookmark:any;
+  private modifyBeforeBookmark: any;
   //修改操作之前的二级bookmark(定位基于整个段落块)
-  private modifyBeforeSecondBookmark:any
+  private modifyBeforeSecondBookmark: any
 
-  constructor(editor:YaLiEditor){
+  constructor(editor: YaLiEditor) {
     this.editor = editor
   }
-  
+
 
   /**
    * 刷新所有状态信息
    */
-  update(){
+  update() {
     this.updateFocusElement()
     this.updateBookmark()
   }
@@ -51,10 +52,10 @@ class IRFocusProcessor{
    * 锁定给定元素为聚焦元素
    * @param block 
    */
-  updateFocusElementByMdblock(block?:HTMLElement){
+  updateFocusElementByMdblock(block?: HTMLElement) {
     this.sel = rangy.getSelection()
-    if(!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
-    if(this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
+    if (!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
+    if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     this.selectedBlockMdElement = block
     this.selectedInlineMdElement?.classList.add("md-expand")
   }
@@ -63,11 +64,11 @@ class IRFocusProcessor{
    * 给定IR面板，刷新改面板下的焦点位置
    * @param root 
    */
-  updateFocusElementByRoot(root?:HTMLElement){
+  updateFocusElementByRoot(root?: HTMLElement) {
     this.sel = rangy.getSelection()
-    if(!root) root = this.editor.ir.rootElement
+    if (!root) root = this.editor.ir.rootElement
     const focusElements = root.getElementsByClassName("md-focus")
-    const expandElements =  root.getElementsByClassName("md-expand")
+    const expandElements = root.getElementsByClassName("md-expand")
     const start = this.sel.getRangeAt(0).startContainer
 
     for (let index = 0; index < focusElements.length; index++) {
@@ -91,41 +92,83 @@ class IRFocusProcessor{
    * 给定起点位置，去刷新当前选中的元素
    * @param start 
    */
-  updateFocusElementByStart(start?:Node){
+  updateFocusElementByStart(start?: Node) {
     this.sel = rangy.getSelection()
-    if(!start) start = this.sel.getRangeAt(0).startContainer
+    if (!start) start = this.sel.getRangeAt(0).startContainer
 
-    if(this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
-    if(this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
+    this.updateFocusMdInlineByStart(start)
+    this.updateFocusMdBlockByStart(start)
+  }
 
-    this.selectedInlineMdElement = IRfindClosestMdInline(start)
-    this.selectedBlockMdElement = IRfindClosestMdBlock(start)
-
-    this.selectedInlineMdElement?.classList.add("md-expand")
+  /**
+   * 给定起点，去刷新当前选中的md-block
+   * @param start 
+   * @returns 
+   */
+  updateFocusMdBlockByStart(start: Node) {
+    if (!start) return
+    const block = IRfindClosestMdBlock(start)
+    //当前聚焦的md-block元素没变化，不处理
+    if (block == this.selectedBlockMdElement) return
+    //移除当前聚焦元素
+    if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
+    //移除面板上可能残留的聚焦元素
+    const focus = this.editor.rootElement.getElementsByClassName("md-focus")
+    if (focus.length > 0) {
+      Array.from(focus).forEach((e) => {
+        e.classList.remove("md-focus")
+      })
+    }
+    //更新
+    this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
+  }
+
+  /**
+   * 给定起点，去刷新当前选中的md-inline
+   * @param start 
+   * @returns 
+   */
+  updateFocusMdInlineByStart(start: Node) {
+    if (!start) return
+    const inline = IRfindClosestMdInline(start)
+    //当前聚焦的md-inline元素没变化，不处理
+    if (inline == this.selectedInlineMdElement) return
+
+    //移除当前聚焦元素
+    if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
+    //移除面板上可能残留的聚焦元素
+    const expand = this.editor.rootElement.getElementsByClassName("md-expand")
+    if (expand.length > 0) {
+      Array.from(expand).forEach((e) => {
+        e.classList.remove("md-expand")
+      })
+    }
+    //更新
+    this.selectedInlineMdElement = inline
+    this.selectedInlineMdElement?.classList.add("md-expand")
   }
 
   /**
    * 根据当前光标位置刷新选中元素
    */
-  updateFocusElement(){
+  updateFocusElement() {
     //跟新选择对象为最新select
     this.sel = rangy.getSelection()
     this.updateFocusElementByStart(this.sel.getRangeAt(0).startContainer)
   }
 
-
-  updateBookmark(){
+  updateBookmark() {
     this.sel = rangy.getSelection()
     this.lastBookmark = this.bookmark
-    this.bookmark = this.sel.getBookmark(this.editor.ir.rootElement) 
+    this.bookmark = this.sel.getBookmark(this.editor.ir.rootElement)
 
   }
 
   /**
    * 释放修改锁
    */
-  releaseModifyLock(){
+  releaseModifyLock() {
     this.modifyLock = false
   }
 
@@ -133,71 +176,82 @@ class IRFocusProcessor{
    * 修改前更新，更新所有修改前的定位信息，并且会给对象上修改锁。
    * 只有在一系列修改之后，才会将修改锁释放，否则将无法进行更新
    */
-  updateBeforeModify(){
-    
+  updateBeforeModify() {
+
     this.sel = rangy.getSelection()
 
     //上锁前跟新修改前的bookmark
-    if(!this.modifyLock){
+    if (!this.modifyLock) {
 
-      
-      
-      try{
+
+
+      try {
         this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
         this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
-      }catch{
+      } catch {
         this.updateFocusElement()
         this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
         this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
       }
-      
 
-      
+
+
     }
-    
+
     this.modifyLock = true
   }
 
-  updateAfterModify(){
+  updateAfterModify() {
     this.modifyLock = false
   }
 
 
 
-  getBookmark(){
+  getBookmark() {
     return this.bookmark
   }
 
-  getLastBookmark(){
+  getLastBookmark() {
     return this.lastBookmark
   }
 
-  getModifyBeforeBookmark(){
+  getModifyBeforeBookmark() {
     return this.modifyBeforeBookmark
   }
 
-  getModifyBeforeSecondBookmark(){
+  getModifyBeforeSecondBookmark() {
     return this.modifyBeforeSecondBookmark
   }
 
-  getSelectedBlockMdElement(){
+  getSelectedBlockMdElement() {
+    this.updateFocusElement()
     return this.selectedBlockMdElement
   }
 
-  getSelectedInlineMdElement(){
+  getSelectedInlineMdElement() {
+    this.updateFocusElement()
     return this.selectedInlineMdElement
   }
 
-  getSelectedBlockMdType(){
-    if(this.selectedBlockMdElement){
+  getSelectedBlockMdType() {
+    this.updateFocusElement()
+    if (this.selectedBlockMdElement) {
       return this.selectedBlockMdElement.getAttribute(Constants.ATTR_MD_BLOCK)
     }
     return null
   }
 
-  getSelectedInlineMdType(){
-    if(this.selectedInlineMdElement){
+  getSelectedInlineMdType() {
+    this.updateFocusElement()
+    if (this.selectedInlineMdElement) {
       return this.selectedInlineMdElement.getAttribute(Constants.ATTR_MD_INLINE)
+    }
+    return null
+  }
+
+  getSelectedInlineBeLikeType() {
+    if (this.selectedInlineMdElement) {
+      return this.selectedInlineMdElement.getAttribute(Constants.ATTR_MD_LIKE)
     }
     return null
   }

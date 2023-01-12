@@ -13,11 +13,12 @@ import { findClosestByAttribute,
     IRfindClosestMdInline} from "../util/findElement";
 
 import { getAllHeading } from '../util/inspectElement';
-import Constants from "../constants";
+import {strToDocumentFragment} from '../util/createElement';
+import Constants from "../constant/constants";
 import {toKeyText,createTableStr,toTocElementText} from "../util/formatText"
 import rangy from "rangy";
 import IR from '.';
-import {createParagraph} from '../util/inspectElement'
+import {createParagraph} from '../util/createElement'
 import { KeyProcessor } from './KeyProcessor';
 
 
@@ -71,11 +72,6 @@ class IRHotkeyProcessor implements KeyProcessor{
         if(start.nodeType === 3){
             start = start.parentElement;
         }
-        let e = start as HTMLElement
-        //来自代码的不处理
-        /*if(e.classList.contains(Constants.CODEMIRROR_LINE)){
-            return
-        }*/
         this.editor.ir.undo()
     }
     
@@ -184,50 +180,100 @@ class IRHotkeyProcessor implements KeyProcessor{
             uuid:string;
         //光标聚合的
         if(r.collapsed){
-            r.setEndAfter(e)
-            //剪切
-            content = r.extractContents()
+            //clone node
+            let clone = e.cloneNode(true)
+            let root = document.createElement("div")
+            root.appendChild(clone)
+            //get mark
+            let mark = r.getBookmark(e) as {start: number, end: number,containerNode:Node}
+            mark.containerNode = clone
+            r.moveToBookmark(mark)
 
-            let block = content.firstElementChild
-            if(!block) return
+            //提取
+            r.setStartBefore(clone)
+            const preContent = r.extractContents()
+            r.setEndAfter(clone)
+            const lastContent = r.extractContents()
+
             //创建codemirror编辑面板
             const codeStr = "```\n\n```"
             const res = this.editor.ir.renderer.render(codeStr)
-            //添加面板
-            block.insertAdjacentHTML("beforebegin",res)
-            if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
-            uuid = content.firstElementChild? content.firstElementChild.id:''
+            const df = strToDocumentFragment(res)
+            const codemirrorBlock = df.firstElementChild
+            uuid = codemirrorBlock? codemirrorBlock.id:''
 
-            r.collapseAfter(e)
-            r.insertNode(content)
-            r.collapseAfter(e);
-            sel.setSingleRange(r);
+            let block = preContent.firstElementChild
+            if(!block) return
+            //重新翻译块元素
+            let turndown = this.editor.ir.parser.turndown(block.outerHTML)
+            let blockRes = this.editor.ir.renderer.render(turndown)
+
+            //添加前置内容
+            codemirrorBlock.insertAdjacentHTML("beforebegin",blockRes)
+
+            block = lastContent.firstElementChild
+            if(!block) return
+            //重新翻译块元素
+            turndown = this.editor.ir.parser.turndown(block.outerHTML)
+            blockRes = this.editor.ir.renderer.render(turndown)
+
+            codemirrorBlock.insertAdjacentHTML("afterend",blockRes)
+            
+            e.replaceWith(df)
+            
+            //r.collapseAfter(df.firstElementChild)
+            //sel.setSingleRange(r);
 
         }else{
-            let str = r.extractContents().textContent
-            r.setEndAfter(e)
-            content = r.extractContents()
-            
-            let block = content.firstElementChild
-            if(!block) return
-            //创建codemirror编辑面板
-            const codeStr = "```\n"+ str +"\n```"
-            const res = this.editor.ir.renderer.render(codeStr)
-            //添加面板
-            block.insertAdjacentHTML("beforebegin",res)
-            if(!block.textContent || block.textContent.length == 0) content.removeChild(block)
-            uuid = content.firstElementChild? content.firstElementChild.id:''
-            
-            r.collapseAfter(e)
-            r.insertNode(content)
+            //clone node
+            let clone = e.cloneNode(true)
+            let root = document.createElement("div")
+            root.appendChild(clone)
 
-            r.collapseAfter(e);
-            sel.setSingleRange(r);
+            //get mark
+            let mark = r.getBookmark(e) as {start: number, end: number,containerNode:Node}
+            mark.containerNode = clone
+            r.moveToBookmark(mark)
+
+            let str = r.extractContents().textContent
+            
+            //提取
+            r.setStartBefore(clone)
+            const preContent = r.extractContents()
+            r.setEndAfter(clone)
+            const lastContent = r.extractContents()
+
+            //创建codemirror编辑面板
+            const codeStr = "```\n"+str+"\n```"
+            const res = this.editor.ir.renderer.render(codeStr)
+            const df = strToDocumentFragment(res)
+            const codemirrorBlock = df.firstElementChild
+            uuid = codemirrorBlock? codemirrorBlock.id:''
+
+            let block = preContent.firstElementChild
+            if(!block) return
+            //重新翻译块元素
+            let turndown = this.editor.ir.parser.turndown(block.outerHTML)
+            let blockRes = this.editor.ir.renderer.render(turndown)
+
+            //添加前置内容
+            codemirrorBlock.insertAdjacentHTML("beforebegin",blockRes)
+
+            block = lastContent.firstElementChild
+            if(!block) return
+            //重新翻译块元素
+            turndown = this.editor.ir.parser.turndown(block.outerHTML)
+            blockRes = this.editor.ir.renderer.render(turndown)
+
+            codemirrorBlock.insertAdjacentHTML("afterend",blockRes)
+            
+            e.replaceWith(df)
         }
         
         
         this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
+
     }
 
     /**

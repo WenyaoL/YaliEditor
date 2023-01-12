@@ -2,6 +2,7 @@
 node_modules
 /dist
 /build
+/build_demo
 
 # local env files
 .env.local

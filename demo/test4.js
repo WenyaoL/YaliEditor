@@ -10,8 +10,8 @@ console.log(data);*/
 import MarkdownIt from 'markdown-it'
 import path from 'path';
 import fs from 'fs'
-import {highlighter} from "../codemirror-plugin/codeStyle/codeStyle"
-import toc from "../markdown-it-plugin/markdown-it-toc-beautiful"
+//import {highlighter} from "../src/codemirror-plugin/codeStyle/codeStyle"
+//import toc from "../src/markdown-it-plugin/markdown-it-toc-beautiful"
 //import mathjax3 from '../markdown-it-plugin/markdown-it-mathjax-beautiful'
 import TurndownService from 'turndown';
 
@@ -20,7 +20,7 @@ const options = {
     linkify: true,
     typographer: true,
     breaks:true,
-    highlight: highlighter
+    //highlight: highlighter
 }
 
 let data = fs.readFileSync(path.normalize('C:/Users/liangwy/Desktop/测试文件夹/测试markdown.md'),{encoding:'utf8', flag:'r'})

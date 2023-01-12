@@ -1,23 +1,22 @@
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
 
-export class IRSelectBinder implements BaseEventBinder{
+export class IRSelectBinder implements BaseEventBinder {
     editor: YaLiEditor;
 
-    constructor(editor:YaLiEditor){
+    constructor(editor: YaLiEditor) {
         this.editor = editor
     }
 
-    bindScrollEvent(element: HTMLElement){
-        element.addEventListener('scroll',(event:Event)=>{
-            console.log("滚动中");
-            
+    bindScrollEvent(element: HTMLElement) {
+        element.addEventListener('scroll', (event: Event) => {
+
+
         })
     }
 
     bindEvent(element: HTMLElement): void {
-        console.log("绑定");
-        
+
         this.bindScrollEvent(element)
     }
 

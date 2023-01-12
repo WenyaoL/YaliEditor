@@ -1,6 +1,6 @@
 import YaliEditor from '../index'
 import IR from '.';
-import Constants from "../constants";
+import Constants from "../constant/constants";
 
 export class IRCompositionProcessor{
     public editor:YaliEditor;

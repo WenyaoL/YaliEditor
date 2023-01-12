@@ -20,12 +20,27 @@ function linkOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: R
     const token = tokens[idx]
 
     let root = document.createElement("span")
-    root.setAttribute("md-inline","link")
-    root.setAttribute("spellcheck","false")
-    let pre = document.createElement("span")
-    pre.innerText = "["
-    pre.classList.add("md-hiden")
-    root.appendChild(pre)
+
+    //if nextToken.type == "link_close", then text is []()
+    const nextToken = tokens[idx+1];
+    if(nextToken.type == "link_close"){
+        root.setAttribute("md-inline","link")
+        root.setAttribute("md-like","link")
+        root.setAttribute("spellcheck","false")
+        let pre = document.createElement("span")
+        pre.innerText = "["
+        pre.classList.add("md-like")
+        root.appendChild(pre)
+    }else{
+        root.setAttribute("md-inline","link")
+        root.setAttribute("spellcheck","false")
+        let pre = document.createElement("span")
+        pre.innerText = "["
+        pre.classList.add("md-hiden")
+        root.appendChild(pre)
+    }
+
+
 
     let html = root.outerHTML
     //移除</span>
@@ -38,23 +53,27 @@ function linkOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: R
 
 function linkClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
     let token = tokens[idx-2]
-    if(token.type !== "link_open"){        
+    let mdClass = "md-hiden"
+
+    //if token.type !== "link_open" ,then text is []()
+    if(!token ||token.type !== "link_open"){        
         token = tokens[idx-1];
+        mdClass = "md-like"
     }
 
     let root = document.createElement("span")
     let mid = document.createElement("span")
     mid.innerText = "]("
-    mid.classList.add("md-hiden")
+    mid.classList.add(mdClass)
     let url = document.createElement("span")
     url.innerText = token.attrGet("href")
-    url.classList.add("md-hiden")
+    url.classList.add(mdClass)
     url.classList.add("md-link-url")
     url.classList.add("md-meta")
 
     let suf = document.createElement("span")
     suf.innerText = ")"
-    suf.classList.add("md-hiden")
+    suf.classList.add(mdClass)
     root.appendChild(mid)
     root.appendChild(url)
     root.appendChild(suf)

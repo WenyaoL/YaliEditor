@@ -37,6 +37,11 @@ export const SELECTOR_MD_INLINE_LINK : string = "span[md-inline=link]"
 export const SELECTOR_MD_INLINE_IMG : string = "span[md-inline=img]"
 
 /**
+ * md-like的属性块
+ */
+ export const ATTR_MD_LIKE : string = "md-like"
+
+/**
  * cm-line
  */
 export const CODEMIRROR_LINE :string = "cm-line"
@@ -83,6 +88,7 @@ export default {
     ATTR_MD_INLINE_STRONG,
     SELECTOR_MD_INLINE_LINK,
     SELECTOR_MD_INLINE_IMG,
+    ATTR_MD_LIKE,
     CODEMIRROR_LINE,
     CODEMIRROR_CONTENT,
     CODEMIRROR_EDITOR,

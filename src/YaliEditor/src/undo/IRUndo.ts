@@ -179,6 +179,7 @@ class IRUndo{
 
 
     public addIRHistory(){
+        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement

@@ -3,10 +3,11 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import { YaLiEditorOptions } from '../types';
-import {_YALI_VERSION} from './constants'
+import {_YALI_VERSION} from './constant/constants'
 import IR from './ir';
 import {EditorOptions} from './options'
 import MarkdownTool from './tool/MarkdownTool'
+import DomTool from './tool/DomTool'
 import './ir/index.scss'
 //import 'bootstrap/dist/css/bootstrap.min.css'
 //import 'bootstrap/dist/js/bootstrap.min'
@@ -18,6 +19,7 @@ class YaLiEditor {
     public rootElement : HTMLElement;
     public ir : IR;
     public markdownTool:MarkdownTool;
+    public domTool:DomTool
 
     constructor(id: string | HTMLElement, options?: EditorOptions){
         this.version = _YALI_VERSION;
@@ -41,6 +43,7 @@ class YaLiEditor {
         this.rootElement.appendChild(div)
         this.ir = new IR(this);
         this.markdownTool = new MarkdownTool(this)
+        this.domTool = new DomTool(this)
         this.ir.init()
     }
 

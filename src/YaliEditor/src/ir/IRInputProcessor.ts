@@ -1,5 +1,5 @@
 import YaLiEditor from '..'
-import Constants from "../constants";
+import Constants from "../constant/constants";
 
 class IRInputProcessor{
     
@@ -22,26 +22,23 @@ class IRInputProcessor{
             }
 
             //根据输入位置发布不同的事件
-            let type = this.editor.ir.focueProcessor.getSelectedBlockMdType()
+            const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
 
-            if(type === Constants.ATTR_MD_BLOCK_HEADING){
+
+            if(blockType === Constants.ATTR_MD_BLOCK_HEADING){
                 this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
-            }else if(type === Constants.ATTR_MD_BLOCK_FENCE || type === Constants.ATTR_MD_BLOCK_MATH){
+            }else if(blockType === Constants.ATTR_MD_BLOCK_FENCE || blockType === Constants.ATTR_MD_BLOCK_MATH){
                 this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_CODEBLOCKINPUT)
             }
             
-            if(event.inputType==="deleteContentBackward"){
-                return;
-            }
-
             //普通的输入需要刷新节点
-            if(this.editor.ir.focueProcessor.getSelectedBlockMdType() == Constants.ATTR_MD_BLOCK_PARAGRAPH){
-                if(!this.editor.ir.contextRefresher.refreshFocusInline()){
-                    this.editor.ir.contextRefresher.refreshFocusBlock()
-                }
-                
-            }
             
+            if(!this.editor.ir.contextRefresher.refreshFocusInline()){
+                this.editor.ir.contextRefresher.refreshFocusBlock()
+            }
+                
+            
+            this.editor.ir.observer.flush()
     }
 
 }   

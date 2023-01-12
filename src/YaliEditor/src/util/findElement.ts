@@ -2,7 +2,7 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import Constants from "../constants";
+import Constants from "../constant/constants";
 
 
 /**

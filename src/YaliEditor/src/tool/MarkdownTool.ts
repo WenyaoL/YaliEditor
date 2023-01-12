@@ -1,8 +1,15 @@
+/**
+ * @author liangwenyao
+ * @github https://github.com/WenyaoL/YaliEditor
+ */
+
 import YaliEditor from '../index'
-import {strToDocumentFragment,strToNodeArray,strToNodeList,createParagraph} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdFence, isMdBlockParagraph} from '../util/inspectElement'
+import { strToElement,createParagraph,strToNodeArray} from "../util/createElement";
 import rangy from "rangy";
 import { IRfindClosestMdBlock } from '../util/findElement';
-import Constants from '../constants'
+import Constants from '../constant/constants'
+import {} from '../util/inspectElement'
 
 class MarkdownTool{
 
@@ -13,6 +20,21 @@ class MarkdownTool{
     }
 
     /**
+     * 给定元素，翻译成markdown字符串
+     * @param element 
+     * @returns 
+     */
+    turndown(element:HTMLElement){
+        let turndown = this.editor.ir.parser.turndown(element.outerHTML)
+        //P标签翻译出的markdown语法会被转义，去除头部的转义符
+        turndown = turndown.replace(/(\\)(?=[\\\[\]\`\*])/g,"")
+        if(turndown.charAt(0) == "\\"){
+            turndown = turndown.slice(1)
+        }
+        return turndown
+    }
+
+    /**
      * 重新渲染某个节点
      * @param element 
      */
@@ -20,16 +42,66 @@ class MarkdownTool{
         if(!element) return false;
 
         //重新翻译，重新渲染成节点
-        const turndown = this.editor.ir.parser.turndown(element.outerHTML)
+        let turndown = this.turndown(element)
         const res = this.editor.ir.renderer.render(turndown)
 
         if(!res) return false;
         
-        const nodes = strToNodeArray(res)
+        const e = strToElement(res)
         
-        element.replaceWith(...nodes)
+        element.replaceWith(e)
+        return e
     }
 
+    /**
+     * 
+     * @param inline 
+     * @returns 
+     */
+    reRenderInlineElement(inline:HTMLElement){
+        if(!inline) return
+        let turndown = this.turndown(inline)
+        const res = this.renderInline(turndown)
+        const e = strToElement(res)
+        inline.replaceWith(e)
+        return e
+    }
+
+    /**
+     * 给定一个md-block,以renderInline规则重新渲染md-block中的文本
+     * @param block 
+     * @returns 
+     */
+    reRenderInlineElementAtBlock(block:HTMLElement){
+        if(!block) return false;
+        let turndown = this.turndown(block)
+        const res = this.renderInline(turndown)
+        block.replaceChildren(...strToNodeArray(res))
+        return block
+    }
+
+
+    /**
+     * 给定一个md-block,以renderBlock规则重新渲染整个md-block
+     * @param block 
+     * @returns 
+     */
+    reRenderBlockElement(block:HTMLElement){
+        if(!block || !isMdBlock(block)) return false;
+        let turndown = this.turndown(block)
+        const res = this.renderBlock(turndown)
+        const e = strToElement(res)
+        block.replaceWith(e)
+        return e
+    }
+
+    renderInline(str:string){
+        return this.editor.ir.renderer.md.renderInline(str)
+    }
+
+    renderBlock(str:string){
+        return this.editor.ir.renderer.md.render(str)
+    }
 
     /**
      * 对节点模块进行退化操作
@@ -50,7 +122,6 @@ class MarkdownTool{
      */
     mdBlockDegenerateToP(element:HTMLElement){
         if(!element) return;
-
         //不存在任何文本标签将会被退化
         if(element.innerText.length == 0 || element.innerText == "\n"){
             //P标签需要分类讨论
@@ -62,10 +133,34 @@ class MarkdownTool{
                 return this.nodeDegenerateToP(element)
             }
             
+        }else if(isEmptyMdFence(element)){
+            this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
+            return this.nodeDegenerateToP(element)
         }
+
         return;
     }
 
+
+    /**
+     * 参试转换md-block,发生标签转换将会对元素进行替换，并返回替换的元素
+     * @param block 
+     * @returns 
+     */
+    mdBlockTransform(block:HTMLElement){
+        if(!block) return;
+        let turndown = this.turndown(block)
+        const res = this.renderBlock(turndown)
+        const e = strToElement(res) as HTMLElement
+        //块没发生转换不进行处理
+        if(e.tagName == block.tagName) return
+
+        if(e.innerText.length == 0) return
+        block.replaceWith(e)
+        return e
+    }
+
+    
 
     /**
      * 
@@ -77,7 +172,7 @@ class MarkdownTool{
 
         if(element.nodeType == 3){
             //块与块之间会可能有一个隐藏的textNode textContent=="\n"
-            if(element.textContent != "\n"){
+            if(element.textContent != "\n"  && element.textContent.length != 0){
                 return element
             }else{
                 //向前移动
@@ -93,6 +188,22 @@ class MarkdownTool{
         }
         
         
+    }
+
+    /**
+     * 
+     * @param element 
+     */
+    getParagraphLastTextNode(element:HTMLElement){
+        if(!element || !isMdBlockParagraph(element)) return false
+
+        if(element.textContent.length == 0 && element.innerText.length == 0){
+            const br = document.createElement("br")
+            element.appendChild(br)
+            return br
+        } 
+        
+        return element.lastChild
     }
 
     /**
@@ -151,6 +262,8 @@ class MarkdownTool{
 
         for (let index = 0; index < es.length; index++) {
             const element = es[index];
+            let input = element.getElementsByTagName("input").item(0)
+            if(input) element.setAttribute("lang",input.getAttribute("lang"))
             element.innerHTML = ""
         }
     }

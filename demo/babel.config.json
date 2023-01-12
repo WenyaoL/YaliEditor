@@ -1,0 +1,7 @@
+{
+  "presets": [  //要处理的语法
+    "es2015"
+  ],
+  "sourceMaps": true, //生成映射文件.map
+  "retainLines": true
+}

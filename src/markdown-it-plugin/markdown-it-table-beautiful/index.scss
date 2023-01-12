@@ -35,7 +35,7 @@ th {
   margin: 20px 0;
 
   .md-table-tip{
-
+    user-select: none;
     button{
       position:absolute;
       color: var(--yali-icon-color);

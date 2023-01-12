@@ -108,7 +108,7 @@ class MainIPMEventLoader{
             //open new window
             const win = this.manager.appWindow.createWindow(path.basename(filePath))
             //const win = common.openNewWindow()
-            this.manager.appWindow.addWindow(win)
+            //this.manager.appWindow.addWindow(win)
             //加载页面 window load url
             common.loadUrl(win)
             //页面加载完

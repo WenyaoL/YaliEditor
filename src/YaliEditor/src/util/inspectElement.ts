@@ -2,89 +2,77 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { findClosestByAttribute } from "./findElement";
-import Constants from '../constants'
+import Constants from '../constant/constants'
 
-export const isInline = (element:Node,stopClassName:string):boolean=>{
-    let isInline = true;
-    let e = findClosestByAttribute(element,"md-inline","",stopClassName)
-    if(!e){
-      e = findClosestByAttribute(element,"md-block","",stopClassName)
-      isInline = false;
-    }
-    return isInline
+/**
+ * 判断当前元素是否为md-inline
+ * @param element 
+ * @returns 
+ */
+export const isMdInline = (element: Element): boolean => {
+  return element && element.hasAttribute(Constants.ATTR_MD_INLINE)
 }
 
-export const isBlockMdFence = (element:Element)=>{
+/**
+ * 判断当前元素是否为md-block
+ * @param element 
+ * @returns 
+ */
+export const isMdBlock = (element: Element): boolean => {
+  return element && element.hasAttribute(Constants.ATTR_MD_BLOCK)
+}
 
-  if(!element || !element.hasAttribute(Constants.ATTR_MD_BLOCK)) return false
-
-
-  if(element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_FENCE) return true
-  
+export const isMdBlockFence = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_FENCE) return true
   return false
+}
 
+export const isMdBlockParagraph = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_PARAGRAPH) return true
+  return false
+}
+
+export const isMdBlockTable = (element: Element) =>{
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TABLE) return true
+  return false
 }
 
 
-export const strToElement =(src:string)=>{
-    const div = document.createElement("div")
-    div.innerHTML = src
-    return div.firstElementChild
+/**
+ * 判断当前fence块文本是否为空
+ */
+export const isEmptyMdFence = (element: Element) => {
+  if (isMdBlockFence(element) && element.firstElementChild.getAttribute("is-empty") == "true") return true
+  return false
 }
 
-export const strToElementList =(src:string)=>{
-  const div = document.createElement("div")
-  div.innerHTML = src
-  return div.children
-}
 
-export const strToNodeArray = (src:string)=>{
-  return Array.prototype.slice.call(strToNodeList(src),0)
-}
-
-export const strToNodeList = (src:string)=>{
-  const div = document.createElement("div")
-  div.innerHTML = src
-  return div.childNodes
-}
-
-export const strToDocumentFragment = (src:string)=>{
-  const list = strToNodeList(src)
-  const nodeList:Node[] = Array.prototype.slice.call(list,0)
-  const documentFragment = document.createDocumentFragment()
-  documentFragment.append(...nodeList)
-  return documentFragment
-}
-
-export const createParagraph = ()=>{
-  let p = document.createElement("p")
-  p.setAttribute(Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_PARAGRAPH)
-  return p
-}
 
 /**
  * 获取某个element下面的所有heading（不深度查找，只查找其儿子节点）
  */
-export function getAllHeading(root:HTMLElement){
-  let res:{type:string,content:string|null,id:string,level:number}[] = []
+export function getAllHeading(root: HTMLElement) {
+  let res: { type: string, content: string | null, id: string, level: number }[] = []
 
   //孩子节点
   let children = root.children
   for (let index = 0; index < children.length; index++) {
     const element = children[index];
-    if(element.tagName == "H1"){
-      res.push({type:"h1",content:element.textContent,id:element.id,level:1})
-    }else if(element.tagName == "H2"){
-      res.push({type:"h2",content:element.textContent,id:element.id,level:2})
-    }else if(element.tagName == "H3"){
-      res.push({type:"h3",content:element.textContent,id:element.id,level:3})
-    }else if(element.tagName == "H4"){
-      res.push({type:"h4",content:element.textContent,id:element.id,level:4})
-    }else if(element.tagName == "H5"){
-      res.push({type:"h5",content:element.textContent,id:element.id,level:5})
-    }else if(element.tagName == "H6"){
-      res.push({type:"h6",content:element.textContent,id:element.id,level:6})
+    if (element.tagName == "H1") {
+      res.push({ type: "h1", content: element.textContent, id: element.id, level: 1 })
+    } else if (element.tagName == "H2") {
+      res.push({ type: "h2", content: element.textContent, id: element.id, level: 2 })
+    } else if (element.tagName == "H3") {
+      res.push({ type: "h3", content: element.textContent, id: element.id, level: 3 })
+    } else if (element.tagName == "H4") {
+      res.push({ type: "h4", content: element.textContent, id: element.id, level: 4 })
+    } else if (element.tagName == "H5") {
+      res.push({ type: "h5", content: element.textContent, id: element.id, level: 5 })
+    } else if (element.tagName == "H6") {
+      res.push({ type: "h6", content: element.textContent, id: element.id, level: 6 })
     }
   }
 
