@@ -5,38 +5,40 @@
 import { YaLiEditorOptions } from '../types';
 import {_YALI_VERSION} from './constant/constants'
 import IR from './ir';
-import {EditorOptions} from './options'
+import {EditorConfig} from './options'
 import MarkdownTool from './tool/MarkdownTool'
 import DomTool from './tool/DomTool'
 import './ir/index.scss'
 //import 'bootstrap/dist/css/bootstrap.min.css'
 //import 'bootstrap/dist/js/bootstrap.min'
 
-
+import _ from 'lodash'
 class YaLiEditor {
     public readonly version: string;
-    public options : EditorOptions;
+    public options : EditorConfig;
     public rootElement : HTMLElement;
     public ir : IR;
     public markdownTool:MarkdownTool;
     public domTool:DomTool
 
-    constructor(id: string | HTMLElement, options?: EditorOptions){
+    constructor(id: string | HTMLElement, options?: EditorConfig){
         this.version = _YALI_VERSION;
 
         if (typeof id === "string") {
             id = document.getElementById(id);
         }
-        //默认选项
-        let defalutOptions = EditorOptions.defalut()
-        //合并
-        this.options = defalutOptions.merge(options)
+        
+        
+        if(options)this.options = options
+        else this.options = EditorConfig.defalut()
+
+
         
         
         this.init(id,this.options)
     }
 
-    private init(id: HTMLElement, options: EditorOptions){
+    private init(id: HTMLElement, options: EditorConfig){
         this.rootElement = id;
         const div = document.createElement("div")
         div.id = "yali-tool-tip"

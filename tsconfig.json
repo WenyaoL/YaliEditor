@@ -1,31 +1,38 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      //"outDir": "./build/",
-      //"noEmit": true,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "strict": false,
-      "strictNullChecks": false, 
-      "allowJs": true,
-      "sourceMap": true,
-      "esModuleInterop": true,
-      "moduleResolution": "node",
-      "paths": {
-        "@/*": [
-          "src/*"
-        ]
-      },
+  "compilerOptions": {
+    "baseUrl": ".",
+    //"outDir": "./build/",
+    //"noEmit": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": false,
+    "strictNullChecks": false,
+    "allowJs": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
     },
-    "include": [
-      "src/**/*",
-      //"src/markdown-it-plugin/**/*"
-    ],
-    "exclude": [
-      "node_modules",
-      //"src/main.ts",
-    ],
-    "files": [
-      "./src/shims-vue.d.ts"
-    ]
+  },
+  "include": [
+    "src/bus/*",
+    "src/codemirror-plugin/**/*",
+    "src/components/**/*",
+    "src/markdown-it-plugin/**/*",
+    "src/turndown-plugin/**/*",
+    "src/views/**/*",
+    "src/YaliEditor/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "src/markdown-it-plugin/markdown-it-list-beautiful",
+    //"src/main.ts",
+  ],
+  "files": [
+    "./src/shims-vue.d.ts"
+  ]
 }

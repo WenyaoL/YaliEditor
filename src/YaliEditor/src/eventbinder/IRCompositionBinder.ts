@@ -27,11 +27,16 @@ class IRCompositionBinder implements BaseEventBinder {
         });
     }
 
-
+    public bindCompositionupdateEvent(element:HTMLElement){
+        element.addEventListener("compositionupdate", (event: CompositionEvent & { target: HTMLElement }) => {
+            this.editor.ir.compositionProcessor.compositionUpdate(event)
+        });
+    }
 
     public bindEvent(element: HTMLElement) {
         this.bindCompositionstartEvent(element);
         this.bindCompositionendEvent(element);
+        this.bindCompositionupdateEvent(element);
     }
 
 

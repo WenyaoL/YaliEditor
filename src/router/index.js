@@ -9,15 +9,15 @@ import FolderView from '../views/FolderView'
 import DesignDashboard from '../views/DesignDashboard'
 
 import FileTree from '@/components/filetree-panel/FileTree.vue'
-import FileOutlineView from '../views/FileOutlineView.vue'
+import FileOutlineView from '../views/ContextOutlineView.vue'
 import RecentDocumentsView from '../views/RecentDocumentsView'
 
 const routes = [
   {
     path: '/',
-    redirect: '/folder'
+    //redirect: '/outline'
   },
-  {
+  /*{
     path: '/index.html',
     redirect: '/folder'
   },
@@ -40,7 +40,7 @@ const routes = [
     path: '/outline',
     name: 'outline',
     component: FileOutlineView
-  }
+  }*/
 ]
 
 const router = createRouter({

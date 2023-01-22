@@ -102,6 +102,7 @@ class IR {
         if (!this.options.disableEdit) divElement.setAttribute("contenteditable", "true");
         divElement.setAttribute("spellcheck", "false")
         divElement.setAttribute("tabindex", "1");
+        divElement.style.userSelect = "none;"
         this.editor.rootElement.appendChild(divElement);
         this.rootElement = divElement;
     }
@@ -265,7 +266,6 @@ class IR {
         document.getSelection().collapse(e, 0)
         rangy.getSelection().refresh()
         e.focus()
-
     }
 }
 

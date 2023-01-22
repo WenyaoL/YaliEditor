@@ -1,5 +1,5 @@
 import MarkdownIt from 'markdown-it';
-import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
+import {Mathjax} from './markdown-it-mathjax-beautiful'
 
 //import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
 

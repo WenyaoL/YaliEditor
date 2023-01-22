@@ -14,7 +14,7 @@ import {createCommonItems} from './tipitemsCommon'
 import {exec} from './utils'
 
 import {getCurrentInstance} from 'vue';
-import { EditorOptions } from '@/YaliEditor/src/options'
+import { EditorConfig } from '@/YaliEditor/src/options'
 export default {
   props: {
     content: String,
@@ -36,11 +36,13 @@ export default {
       e.preventDefault();
     }
     onMounted(()=>{
+      const config = EditorConfig.defalut()
+      .ir
+      .setDisableEdit(props.disableEdit)
+      .setTheme(store.state.applicationContext.theme)
+      .end()
       
-      yali = new YaLiEditor("YaliEditor",new EditorOptions({},{
-        disableEdit:props.disableEdit,
-        theme:store.state.applicationContext.theme
-      }))
+      yali = new YaLiEditor("YaliEditor",config)
       //注册监听事件
       yali.ir.applicationEventPublisher.subscribe("refreshedToc",(headings:any)=>{
         store.commit("updateOutline",headings)

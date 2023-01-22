@@ -2,13 +2,13 @@
 
 // Lists
 function isSpace(code) {
-    switch (code) {
-      case 0x09:
-      case 0x20:
-        return true;
-    }
-    return false;
+  switch (code) {
+    case 0x09:
+    case 0x20:
+      return true;
   }
+  return false;
+}
 
 // Search `[-+*][\n ]`, returns next pos after marker on success
 //改成：查找[-+*][ ]，不包含回车
@@ -18,12 +18,11 @@ function skipBulletListMarker(state, startLine) {
 
   pos = state.bMarks[startLine] + state.tShift[startLine];
   max = state.eMarks[startLine];
-
   marker = state.src.charCodeAt(pos++);
   // Check bullet
   if (marker !== 0x2A/* * */ &&
-      marker !== 0x2D/* - */ &&
-      marker !== 0x2B/* + */) {
+    marker !== 0x2D/* - */ &&
+    marker !== 0x2B/* + */) {
     return -1;
   }
 
@@ -34,7 +33,7 @@ function skipBulletListMarker(state, startLine) {
       // " -test " - is not a list item
       return -1;
     }
-  }else{
+  } else {
     return -1
   }
 
@@ -42,12 +41,13 @@ function skipBulletListMarker(state, startLine) {
 }
 
 // Search `\d+[.)][\n ]`, returns next pos after marker on success
+//改成：查找\d+[.)][ ]，不包含回车
 // or -1 on fail.
 function skipOrderedListMarker(state, startLine) {
   var ch,
-      start = state.bMarks[startLine] + state.tShift[startLine],
-      pos = start,
-      max = state.eMarks[startLine];
+    start = state.bMarks[startLine] + state.tShift[startLine],
+    pos = start,
+    max = state.eMarks[startLine];
 
   // List marker should have at least 2 chars (digit + dot)
   if (pos + 1 >= max) { return -1; }
@@ -56,7 +56,7 @@ function skipOrderedListMarker(state, startLine) {
 
   if (ch < 0x30/* 0 */ || ch > 0x39/* 9 */) { return -1; }
 
-  for (;;) {
+  for (; ;) {
     // EOL -> fail
     if (pos >= max) { return -1; }
 
@@ -87,18 +87,20 @@ function skipOrderedListMarker(state, startLine) {
       // " 1.test " - is not a list item
       return -1;
     }
+  } else {
+    return -1
   }
   return pos;
 }
 
 /**
- * 
- * @param {*} state 
- * @param {*} idx 
- */
+* 
+* @param {*} state 
+* @param {*} idx 
+*/
 function markTightParagraphs(state, idx) {
   var i, l,
-      level = state.level + 2;
+    level = state.level + 2;
 
   for (i = idx + 2, l = state.tokens.length - 2; i < l; i++) {
     if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
@@ -114,35 +116,35 @@ function markTightParagraphs(state, idx) {
 
 function list(state, startLine, endLine, silent) {
   var ch,
-      contentStart,
-      i,
-      indent,
-      indentAfterMarker,
-      initial,
-      isOrdered,
-      itemLines,
-      l,
-      listLines,
-      listTokIdx,
-      markerCharCode,
-      markerValue,
-      max,
-      nextLine,
-      offset,
-      oldListIndent,
-      oldParentType,
-      oldSCount,
-      oldTShift,
-      oldTight,
-      pos,
-      posAfterMarker,
-      prevEmptyEnd,
-      start,
-      terminate,
-      terminatorRules,
-      token,
-      isTerminatingParagraph = false,
-      tight = true;
+    contentStart,
+    i,
+    indent,
+    indentAfterMarker,
+    initial,
+    isOrdered,
+    itemLines,
+    l,
+    listLines,
+    listTokIdx,
+    markerCharCode,
+    markerValue,
+    max,
+    nextLine,
+    offset,
+    oldListIndent,
+    oldParentType,
+    oldSCount,
+    oldTShift,
+    oldTight,
+    pos,
+    posAfterMarker,
+    prevEmptyEnd,
+    start,
+    terminate,
+    terminatorRules,
+    token,
+    isTerminatingParagraph = false,
+    tight = true;
 
   // if it's indented more than 3 spaces, it should be a code block
   if (state.sCount[startLine] - state.blkIndent >= 4) { return false; }
@@ -154,8 +156,8 @@ function list(state, startLine, endLine, silent) {
   //     - item 4
   //      - this one is a paragraph continuation
   if (state.listIndent >= 0 &&
-      state.sCount[startLine] - state.listIndent >= 4 &&
-      state.sCount[startLine] < state.blkIndent) {
+    state.sCount[startLine] - state.listIndent >= 4 &&
+    state.sCount[startLine] < state.blkIndent) {
     return false;
   }
 
@@ -206,18 +208,18 @@ function list(state, startLine, endLine, silent) {
 
   //更加分类产生一个open token（就是开标签）
   if (isOrdered) {
-    token       = state.push('ordered_list_open', 'ol', 1);
-    token.attrPush(["md-block","ordered_list"])
+    token = state.push('ordered_list_open', 'ol', 1);
+    token.attrPush(["md-block", "ordered_list"])
     if (markerValue !== 1) {
-      token.attrs = [ [ 'start', markerValue ] ];
+      token.attrs = [['start', markerValue]];
     }
 
   } else {
-    token       = state.push('bullet_list_open', 'ul', 1);
-    token.attrPush(["md-block","bullet_list"])
+    token = state.push('bullet_list_open', 'ul', 1);
+    token.attrPush(["md-block", "bullet_list"])
   }
 
-  token.map    = listLines = [ startLine, 0 ];
+  token.map = listLines = [startLine, 0];
   token.markup = String.fromCharCode(markerCharCode);
 
   //迭代列表项
@@ -269,10 +271,10 @@ function list(state, startLine, endLine, silent) {
     indent = initial + indentAfterMarker;
 
     // Run subparser & write tokens
-    token        = state.push('list_item_open', 'li', 1);
-    token.attrPush(["md-block","list_item"])
+    token = state.push('list_item_open', 'li', 1);
+    token.attrPush(["md-block", "list_item"])
     token.markup = String.fromCharCode(markerCharCode);  //设置markup为[- * + 1.等]
-    token.map    = itemLines = [ startLine, 0 ];
+    token.map = itemLines = [startLine, 0];
     if (isOrdered) {
       token.info = state.src.slice(start, posAfterMarker - 1);
     }
@@ -321,7 +323,7 @@ function list(state, startLine, endLine, silent) {
     state.sCount[startLine] = oldSCount;
     state.tight = oldTight;
 
-    token        = state.push('list_item_close', 'li', -1);
+    token = state.push('list_item_close', 'li', -1);
     token.markup = String.fromCharCode(markerCharCode);
 
     nextLine = startLine = state.line;
@@ -384,9 +386,9 @@ function list(state, startLine, endLine, silent) {
 };
 
 
-export default function(md){
+export default function (md) {
   //在规则前面加
-  md.block.ruler.before("list","list-beautiful",list,[ 'paragraph', 'reference', 'blockquote' ])
-  //替换(有BUG，导致规则错乱)
-  //md.block.ruler.at("list",list,[ 'paragraph', 'reference', 'blockquote' ])
+  //md.block.ruler.before("list","list-beautiful",list,[ 'paragraph', 'reference', 'blockquote' ])
+  //替换(需要添加选项alt)
+  md.block.ruler.at("list", list, { alt: ['paragraph', 'reference', 'blockquote'] })
 }

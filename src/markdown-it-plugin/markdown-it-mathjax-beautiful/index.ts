@@ -184,6 +184,7 @@ class Mathjax{
 function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {
   const adaptor = liteAdaptor();
   RegisterHTMLHandler(adaptor);
+  if(!content || content == "\n") content = "empty-math"
   const mathDocument = mathjax.document(content, documentOptions);
   const html = adaptor.outerHTML(
     mathDocument.convert(content, convertOptions)

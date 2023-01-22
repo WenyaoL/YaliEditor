@@ -4,8 +4,8 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdFence, isMdBlockParagraph} from '../util/inspectElement'
-import { strToElement,createParagraph,strToNodeArray} from "../util/createElement";
+import {isMdBlock, isEmptyMdFence, isMdBlockParagraph, isMdBlockToc} from '../util/inspectElement'
+import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import { IRfindClosestMdBlock } from '../util/findElement';
 import Constants from '../constant/constants'
@@ -24,13 +24,10 @@ class MarkdownTool{
      * @param element 
      * @returns 
      */
-    turndown(element:HTMLElement){
+    turndown(element:HTMLElement,escape:boolean = true){
         let turndown = this.editor.ir.parser.turndown(element.outerHTML)
         //P标签翻译出的markdown语法会被转义，去除头部的转义符
-        turndown = turndown.replace(/(\\)(?=[\\\[\]\`\*])/g,"")
-        if(turndown.charAt(0) == "\\"){
-            turndown = turndown.slice(1)
-        }
+        if(escape) turndown = turndown.replace(/(\\)(?=[\[\]`*.>#$])/g,"")
         return turndown
     }
 
@@ -54,16 +51,29 @@ class MarkdownTool{
     }
 
     /**
+     * 重新渲染inline元素，如
+     * []f() --> inline将会退化为Text
+     * f[]()和[]()f --> inline将会转化为一个字符+一个inline元素
      * 
      * @param inline 
-     * @returns 
+     * @returns 退化将会返回Text，其他情况返回inline元素
      */
     reRenderInlineElement(inline:HTMLElement){
         if(!inline) return
         let turndown = this.turndown(inline)
+
+        
         const res = this.renderInline(turndown)
-        const e = strToElement(res)
-        inline.replaceWith(e)
+
+        const df = strToDocumentFragment(res)
+        const e = df.firstElementChild 
+        if(!e){
+            const text = document.createTextNode(res)
+            inline.replaceWith(text)
+            return text
+        }
+               
+        inline.replaceWith(df)
         return e
     }
 
@@ -115,6 +125,17 @@ class MarkdownTool{
         return p
     }
 
+    mdInlineDegenerateToText(inline:HTMLElement){
+        if(!inline) return
+        let turndown = this.turndown(inline)
+        const res = this.renderInline(turndown)
+        const e = strToElement(res)
+        if(e) return
+        const text = document.createTextNode(res)
+        inline.replaceWith(text)
+        return text
+    }
+
     /**
      * 整个MD-Block块将会被退化成P标签
      * @param element 
@@ -152,11 +173,13 @@ class MarkdownTool{
         let turndown = this.turndown(block)
         const res = this.renderBlock(turndown)
         const e = strToElement(res) as HTMLElement
+        if(!e) return
         //块没发生转换不进行处理
         if(e.tagName == block.tagName) return
 
         if(e.innerText.length == 0) return
         block.replaceWith(e)
+        if(isMdBlockToc(e)) this.editor.ir.contextRefresher.refreshToc()
         return e
     }
 

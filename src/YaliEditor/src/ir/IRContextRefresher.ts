@@ -6,7 +6,7 @@
 import IR from '.';
 import YaliEditor from '../index'
 import Constants from '../constant/constants';
-import { getAllHeading } from "../util/inspectElement";
+import { getAllHeading,isMdBlockFence,isMdBlockMath,isMdBlockParagraph, isMdInlineImg, isMdInlineLink } from "../util/inspectElement";
 import { strToElement, createParagraph } from "../util/createElement";
 import { toTocElementText } from "../util/formatText"
 import rangy from 'rangy';
@@ -18,8 +18,6 @@ class IRContextRefresher {
     constructor(editor: YaliEditor) {
         this.editor = editor
         this.ir = this.editor.ir
-
-
     }
 
     subscribe() {
@@ -30,7 +28,6 @@ class IRContextRefresher {
 
         this.ir.applicationEventPublisher.subscribe(Constants.IR_EVENT_CODEBLOCKINPUT, () => {
             this.editor.ir.observer.flush()
-
         })
     }
 
@@ -61,8 +58,8 @@ class IRContextRefresher {
     }
 
     refreshContext() {
-        this.refreshLink()
-        this.refreshImg()
+        //this.refreshLink()
+        //this.refreshImg()
         this.refreshHeading()
         this.refreshTable()
         this.refreshToc()
@@ -70,35 +67,46 @@ class IRContextRefresher {
 
 
     /**
-     * 刷新聚焦的行
+     * 刷新聚焦的行,参数escape用于阻止整个P标签的内部重新渲染,但不阻止Mdinline级别的渲染
+     * @param escape 
+     * @returns 
      */
-    refreshFocusInline() {
+    refreshFocusInline(escape?:boolean) {
         //根据行类型选择是否强制刷新块
-        const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
-        const inlineType = this.editor.ir.focueProcessor.getSelectedInlineMdType()
+        
+        let {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement()
         const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
+        
 
         //只有P标签才进行刷新
-        if (blockType == Constants.ATTR_MD_BLOCK_PARAGRAPH) {
+        if (isMdBlockParagraph(block)) {
             const sel = rangy.getSelection()
 
-            if(likeType || inlineType == Constants.ATTR_MD_INLINE_IMG || inlineType == Constants.ATTR_MD_INLINE_LINK){
-                let inline = this.editor.ir.focueProcessor.getSelectedInlineMdElement()
-                let mark = sel.getBookmark(inline)
+            if(likeType || isMdInlineLink(inline) || isMdInlineImg(inline)){
+                let mark = sel.getBookmark(block)
                 inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
+                
                 if(!inline) return false
-                mark.rangeBookmarks[0].containerNode = inline
+                block.normalize()
+                mark.rangeBookmarks[0].containerNode = block
                 sel.moveToBookmark(mark)
                 this.editor.ir.focueProcessor.updateFocusElement()
                 return true
             }
-            
-            let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+
+            if(escape) return false
+
             if (!block) return
+
             let mark = sel.getBookmark(block)
+            
+            const count = block.childElementCount
             this.editor.markdownTool.reRenderInlineElementAtBlock(block)
             sel.moveToBookmark(mark)
+
+            
             this.editor.ir.focueProcessor.updateFocusElement()
+            if(count==block.childElementCount) return false
             return true
         }
 
@@ -114,10 +122,10 @@ class IRContextRefresher {
      */
     refreshFocusBlock(force?: boolean) {
         let sel = rangy.getSelection()
-        let r = sel.getRangeAt(0)
+
         //获取当前所在的块
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if (!block) return
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block)) return
 
         let bookmark = sel.getBookmark(block)
 

@@ -6,7 +6,7 @@ import Canvas2Image from './canvas2image'
 import {jsPDF} from 'jspdf'
 import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/util/Common'
 import { ElMessage, ElMessageBox } from 'element-plus'
-
+import bus from '../bus'
 
 
 class RendererIPMEventLoader{
@@ -198,7 +198,7 @@ class RendererIPMEventLoader{
         })
 
         window.electronAPI.checkoutSidebarDisplay((event,payload)=>{
-            store.commit('updateSideBarHiden',!store.state.sideBarHiden)
+            bus.emit('sideBarChange')
         })
 
         //创建文件树

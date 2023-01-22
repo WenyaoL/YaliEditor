@@ -76,6 +76,8 @@ class IRKeyBinder implements BaseEventBinder {
                 return;
             }
 
+            
+
             //键盘Arrow移动键
             if (this.editor.ir.arrowMoveKeyProcessor.execute(event)) {
                 return;

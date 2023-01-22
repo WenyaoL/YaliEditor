@@ -1,0 +1,54 @@
+import BaseConfig from './BaseConfig'
+import { EditorConfig } from './'
+import MarkdownIt from 'markdown-it';
+import { Extension } from '@codemirror/state';
+
+export class IRPanelConfig implements BaseConfig {
+
+    editorConfig?: EditorConfig
+
+    //IR面板中Codemirror组件的插件
+    codemirrorPlugins: Extension[] = [];
+
+    //markdonw-it插件
+    markdownItPlugins: {
+        plugin: MarkdownIt.PluginWithOptions<any> | MarkdownIt.PluginSimple | MarkdownIt.PluginWithParams,
+        options?: any
+    }[] = [];
+
+    disableEdit?: boolean;
+
+    theme?: string;
+
+    constructor() { }
+
+    addMarkdownItPlugins(...plugin: {
+        plugin: MarkdownIt.PluginWithOptions<any> | MarkdownIt.PluginSimple | MarkdownIt.PluginWithParams,
+        options?: any
+    }[]) {
+        this.markdownItPlugins.push(...plugin)
+        return this
+    }
+
+    addCodemirrorPlugins(extension: Extension) {
+        this.codemirrorPlugins.push(extension)
+        return this
+    }
+
+    setTheme(theme: string) {
+        this.theme = theme
+        return this
+    }
+
+    setDisableEdit(disableEdit: boolean) {
+        this.disableEdit = disableEdit
+        return this
+    }
+
+    end() {
+        return this.editorConfig
+    }
+
+}
+
+export default IRPanelConfig

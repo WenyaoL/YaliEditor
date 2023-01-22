@@ -48,6 +48,7 @@ class DomTool {
         element.parentElement.normalize()
     }
 
+
     /**
      * 在光标处插入element元素,字符串将会解析成HTML，允许多个element组成的字符串
      * @param str

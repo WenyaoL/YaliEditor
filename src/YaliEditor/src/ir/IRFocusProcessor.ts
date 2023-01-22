@@ -95,7 +95,6 @@ class IRFocusProcessor {
   updateFocusElementByStart(start?: Node) {
     this.sel = rangy.getSelection()
     if (!start) start = this.sel.getRangeAt(0).startContainer
-
     this.updateFocusMdInlineByStart(start)
     this.updateFocusMdBlockByStart(start)
   }
@@ -105,8 +104,8 @@ class IRFocusProcessor {
    * @param start 
    * @returns 
    */
-  updateFocusMdBlockByStart(start: Node) {
-    if (!start) return
+  updateFocusMdBlockByStart(start?: Node) {
+    if (!start) start = this.sel.getRangeAt(0).startContainer
     const block = IRfindClosestMdBlock(start)
     //当前聚焦的md-block元素没变化，不处理
     if (block == this.selectedBlockMdElement) return
@@ -129,8 +128,8 @@ class IRFocusProcessor {
    * @param start 
    * @returns 
    */
-  updateFocusMdInlineByStart(start: Node) {
-    if (!start) return
+  updateFocusMdInlineByStart(start?: Node) {
+    if (!start) start = this.sel.getRangeAt(0).startContainer
     const inline = IRfindClosestMdInline(start)
     //当前聚焦的md-inline元素没变化，不处理
     if (inline == this.selectedInlineMdElement) return
@@ -223,26 +222,31 @@ class IRFocusProcessor {
     return this.modifyBeforeSecondBookmark
   }
 
-  getSelectedBlockMdElement() {
-    this.updateFocusElement()
+  getSelectedBlockMdElement(refresh: boolean = true) {
+    if (refresh) this.updateFocusElement()
     return this.selectedBlockMdElement
   }
 
-  getSelectedInlineMdElement() {
-    this.updateFocusElement()
+  getSelectedInlineMdElement(refresh: boolean = true) {
+    if (refresh) this.updateFocusElement()
     return this.selectedInlineMdElement
   }
 
-  getSelectedBlockMdType() {
-    this.updateFocusElement()
+  getSelectedMdElement(refresh: boolean = true) {
+    if (refresh) this.updateFocusElement()
+    return { block: this.selectedBlockMdElement, inline: this.selectedInlineMdElement }
+  }
+
+  getSelectedBlockMdType(refresh: boolean = true) {
+    if (refresh) this.updateFocusElement()
     if (this.selectedBlockMdElement) {
       return this.selectedBlockMdElement.getAttribute(Constants.ATTR_MD_BLOCK)
     }
     return null
   }
 
-  getSelectedInlineMdType() {
-    this.updateFocusElement()
+  getSelectedInlineMdType(refresh: boolean = true) {
+    if (refresh) this.updateFocusElement()
     if (this.selectedInlineMdElement) {
       return this.selectedInlineMdElement.getAttribute(Constants.ATTR_MD_INLINE)
     }

@@ -35,7 +35,7 @@ class IRUndo{
     dmp:diff_match_patch;
 
     //undo and redo stack size
-    stackSize = 100;
+    stackSize = 80;
 
     hasUndo:boolean;
     //记录最后一次文本(包含codemirror的代码的文本)
@@ -92,10 +92,6 @@ class IRUndo{
         this.lastText = res[0]
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
-        
-        
-        
-        
         
         //刷新disable的视图
         //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)

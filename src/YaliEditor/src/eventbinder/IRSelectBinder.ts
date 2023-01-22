@@ -69,7 +69,7 @@ class IRSelectBinder implements BaseEventBinder {
         }
       }
 
-      this.editor.ir.focueProcessor.updateFocusElementByStart(r.startContainer)
+      this.editor.ir.focueProcessor.updateFocusElementByStart(r.startContainer)   
       return
 
     })

@@ -3,7 +3,7 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import Constants from "../constant/constants";
-
+import rangy from "rangy";
 
 /**
  * find  the closest element 
@@ -126,6 +126,13 @@ export const findClosest = (element: Node,stopClassName: string)=>{
 
 
 export const IRfindClosestMdBlock = (element: Node)=>{
+    if(element.nodeType == 1 && (element as HTMLElement).classList.contains(Constants.IR_CLASS_NAME)){
+        let sel = rangy.getSelection();
+        sel.refresh()
+        const node = (element as HTMLElement).children.item(sel.focusOffset)
+        sel.collapse(node,0)
+    }
+
     return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)
 }
 

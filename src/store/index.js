@@ -10,11 +10,6 @@ export default createStore({
     yaliEditor:null,
 
     editModel:"IR",  //编辑模式
-    sideBarFold:true, //侧边栏折叠
-    sideBarHiden:false, //侧边栏隐藏
-
-    
-
     applicationContext:{   //上下文
       theme:"light",   //主题
       title:"undefine",  //标题
@@ -84,17 +79,10 @@ export default createStore({
     initFonts(state,context){
       state.fonts = context
     },
-    updateSideBarFold(state,flag){
-      state.sideBarFold = flag
-    },
-    updateSideBarHiden(state,flag){
-      state.sideBarHiden = flag
-    },
     updateOutline(state,heading){
       state.applicationContext.outline = heading
     },
     updateTheme(state,theme){
-      console.log("跟新主题");
       state.applicationContext.theme = theme
     },
     updateRecentDocuments(state,recentDocuments){

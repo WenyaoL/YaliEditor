@@ -63,23 +63,27 @@ function image(tokens:Token[], idx:number, options:Object, env:Object, slf: Rend
       token.attrs[token.attrIndex('alt')][1] =
         slf.renderInlineAsText(token.children, options, env);
     }
+    const src = token.attrGet("src")
+    let decodeSrc:string = ""
+    if(src){
+      decodeSrc = decodeURI(src)
+    }
+    const type = src&&decodeSrc?"md-hiden":"md-like"
+
 
     token.attrPush(["onerror","ir_imgerror(event)"])
+
     const img = slf.renderToken(tokens, idx, options);
-    
+
     const root = document.createElement("span")
     root.classList.add("md-image")
 
     root.setAttribute("md-inline","img")
 
     const span = document.createElement("span")
-    span.classList.add("md-hiden")
+    span.classList.add(type)
 
-    const src = token.attrGet("src")
-    let decodeSrc:string = ""
-    if(src){
-      decodeSrc = decodeURI(src)
-    }
+    
     
     let text = toImgElementText(token.content,decodeSrc)
     span.innerHTML = text
@@ -88,20 +92,23 @@ function image(tokens:Token[], idx:number, options:Object, env:Object, slf: Rend
     root.insertAdjacentHTML("beforeend",img)
 
     
+    
     return root.outerHTML
   };
 
 function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.image = image
-    md.renderer.rules.html_block = htmlBlock
+    md.renderer.rules.html_block = htmlBlock;
     
     //md.block.ruler.disable("html_block")
 
-    const doc:any = document
-    doc.ir_imgerror = (event:Event)=>{
+
+    (document as any).ir_imgerror = (event:Event)=>{
       let img = event.target as HTMLImageElement
-      img.src = "";
-      //img.onerror = null; //防止闪图
+      img.style.width = "300px"
+      img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWwAAADsCAYAAABQWJzVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAU6SURBVHhe7d0xa2RVGIBh/38lLCwEVnZRBAUbG8HGQrCwEgs7sbASCzsRtomchSvXyU1mQibhe+EpHgJz752Z6uXwnTPko7//eX8LwHyCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCDRAh2AARgg0QIdgAEYINECHYABGCzVjf//Dji/rp519u//jzr8PvAhMINiOteH786ubFrXAffR+YQLAZaYVzi+iXX3397D5597lgM55gM9IW7BXTo+vXtj5HsJlOsBlJsOEuwWYkwYa7BJuRBBvuEmxGujTY6zTJNY7jCTYFgs1I54K9Ar2ub566EhdsCgSbkc4F++ic9lNW2YJNgWAz0rlg//rb7/+L9TpHfXTfpW7efCrYjCfYjHQu2Ms33373IdTrnhXwo3susd5nC79gM5lgM9Ilwb6G09GKYDOZYDPSSwR7P1Z5ffNWsBlPsBnpuYO9P2WyjVUEm+kEm5EeG+y1Wn7MKZEt0Mt6VrApEGxGujTY+/BuwT0X7v0m47ZZKdgUCDYjXRLs01hv1uv3RXu/ybiPs2BTINiMdC7Y+/CuFfNaKe9XzmsufRrt/Sbj6fsKNgWCzUgPBXu/YXh6fT23/TOCZYX99JmjH9kINgWCzUj3BXuFdwvyUXiXtZLeR3uL8WabW+8JNgWCzUj3BXsf36PwbvZh37vvGcGmQLAZ6SjY22uPCesaiax713z7dKa9J9gUCDYjnQb7oQ3DaxBsCgSbkfbBPrdheA2CTYFgM9I+2FtMl4fm1k8h2BQINiNtwX7z9u4Rvecg2BQINiNtwX71+s2Hv2vT8Oi+axFsCgSbkbZgr5n1u8+++G808lzWZwk20wk2I+1/ev6SnnPsAk8l2Iy0ToZsZ6hf0tF3gSkEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwASIEGyBCsAEiBBsgQrABIgQbIEKwARLe3/4LdA2SLM5klBgAAAAASUVORK5CYII=";
+      img.previousElementSibling.className = "md-like"
+      img.onerror = null; //防止闪图
     }
 }
 

@@ -24,7 +24,7 @@ export class DOMObserver{
         this.dom = dom;
         this.editor = editor;
         //修改分组延时
-        this.groupDelayTime = 300;
+        this.groupDelayTime = 500;
         this.lastChange = Date.now()
         this.disable = false
         this.isObserving = false
@@ -33,6 +33,7 @@ export class DOMObserver{
 
             if(this.editor.ir.rootElement.childElementCount == 0){
                 this.editor.ir.rootElement.append(createParagraph())
+                this.editor.ir.focus()
             }
             let mut = mutations.at(0)
             
@@ -80,6 +81,18 @@ export class DOMObserver{
             this.delayTimer = -1;
         }, this.groupDelayTime);
         
+    }
+
+    flushByCustom(f:Function){
+        const now = Date.now()
+        this.lastChange = now
+        //存在延时器(清除当前延时器)
+        if(this.delayTimer>0){
+            clearTimeout(this.delayTimer)
+            this.delayTimer = -1;
+        }
+        //创建新的延时器
+        this.delayTimer = window.setTimeout(f, this.groupDelayTime);
     }
 
     /**

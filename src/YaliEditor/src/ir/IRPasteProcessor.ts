@@ -8,6 +8,7 @@ import rangy from "rangy";
 import {strToElementList,strToElementArray, strToDocumentFragment} from "../util/createElement"
 import Constants from "../constant/constants"
 import Reg from '../constant/reg'
+import {axiosInstance} from '../axios'
 class IRPasteProcessor{
 
     public editor:YaliEditor;
@@ -58,11 +59,9 @@ class IRPasteProcessor{
         }
 
         let selBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if(selBlock){
-            this.editor.ir.focueProcessor.updateFocusElement()
+        if(!selBlock){
             selBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
         }
-        
         
         const {start,end} = this.editor.domTool.splitElementAtCursor(selBlock,df)
         this.editor.markdownTool.reRenderNode(start as HTMLElement)
@@ -72,18 +71,46 @@ class IRPasteProcessor{
         this.editor.ir.renderer.codemirrorManager.refreshEditorView().then(()=>{
             this.editor.ir.focueProcessor.update()
             this.editor.ir.observer.forceFlush()
-            this.editor.ir.applicationEventPublisher.publish("refreshToc")
+            this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
         })
     }
 
     /**
-     * 文本粘贴
+     * 插入纯文本
+     * @param str 
+     */
+    pasteText(str:string){
+        this.editor.domTool.insertTextNodeAtCursor(str)
+        this.editor.ir.contextRefresher.refreshFocusInline()
+    }
+
+    /**
+     * 文本粘贴处理
      */
     pasteTextPlain(str:string){
+        let mdinlineType = this.editor.ir.focueProcessor.getSelectedInlineMdType(false)
 
         if(Reg.urlReg.test(str)){ //link
-            const link = this.editor.markdownTool.renderInline(str)
-            this.editor.domTool.insertElementAtCursor(link)
+            if(mdinlineType){ 
+                this.pasteText(str)
+                return
+            }
+
+            axiosInstance.get(str).then(response=>{
+                const res = Reg.htmlTitleReg.exec(response.data).at(0)
+                if(res){
+                    const link = this.editor.markdownTool.renderInline(`[${res}](${str})`)
+                    this.editor.domTool.insertElementAtCursor(link)
+                }else{
+                    const link = this.editor.markdownTool.renderInline(str)
+                    this.editor.domTool.insertElementAtCursor(link)
+                }   
+            }).catch(()=>{
+                const link = this.editor.markdownTool.renderInline(str)
+                this.editor.domTool.insertElementAtCursor(link)
+            })
+
+            
         }else{
             //将文本当成markdown字符串进行处理
             this.pasteMarkdown(str)
@@ -114,10 +141,11 @@ class IRPasteProcessor{
             }else{
                 this.pasteTextPlainAfterDelete(text)
             }
-
+            this.editor.ir.contextRefresher.refreshFocusInline(true)
         }
-        
+        //这里会导致系统的输入和粘贴的默认行为得到阻止
         event.preventDefault()
+        
     }  
 }
 

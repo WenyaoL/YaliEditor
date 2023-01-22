@@ -1,6 +1,6 @@
 <template>
   <div class="write">
-    <yali-editor :disableEdit="props.disableEdit"/>
+    <YaliEditor :disableEdit="props.disableEdit"/>
   </div>
 </template>
 

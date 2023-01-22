@@ -2,75 +2,79 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { IROptions, YaLiEditorOptions } from "@/YaliEditor/types";
-import IRInputBinder from "../eventbinder/IRInputBinder";
+
 
 //import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import list from '@/markdown-it-plugin/markdown-it-list-beautiful'
-//import list from '@/markdown-it-plugin/abz'
+
 import emoji from 'markdown-it-emoji'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
 import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
 import imgplugin from '@/markdown-it-plugin/markdown-it-image-beautiful'
-import link  from '@/markdown-it-plugin/markdown-it-link-beautiful'
+import link from '@/markdown-it-plugin/markdown-it-link-beautiful'
 
-import {basicSetup,minimalSetup} from "codemirror"
-import {noLineNumberBasicSetup,gutterBasicSetup,myMinimalSetup} from '@/codemirror-plugin/codeStyle/codePlugin'
-import {EditorView, keymap,ViewUpdate} from "@codemirror/view"
-import {indentWithTab} from "@codemirror/commands"
+import _ from 'lodash'
+
+import { basicSetup, minimalSetup } from "codemirror"
+import { noLineNumberBasicSetup, gutterBasicSetup, myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
+import { EditorView, keymap, ViewUpdate } from "@codemirror/view"
+import { indentWithTab } from "@codemirror/commands"
+
+
+import BaseConfig from './BaseConfig'
+import CommonConfig from './CommonConfig'
+import IRPanelConfig from './IRPanelConfig'
 
 
 
-export class EditorOptions {
-    public yali?: YaLiEditorOptions;
-    public ir?:IROptions
-    
+export class EditorConfig {
+    public commonConfig: CommonConfig;
+    public ir: IRPanelConfig;
 
-    constructor(yaLiEditorOptions?:YaLiEditorOptions,
-                irOptions?:IROptions) {
-        this.yali = yaLiEditorOptions;
-        this.ir = irOptions;
+    constructor(commonConfig: CommonConfig, ir: IRPanelConfig) {
+        this.commonConfig = commonConfig;
+        this.commonConfig.editorConfig = this
+
+        this.ir = ir;
+        this.ir.editorConfig = this
     }
 
-    /**
-     * 
-     */
-    public merge(other:EditorOptions):EditorOptions{
-        if(!other) return this
-        if(other.ir) Object.assign(this.ir,other.ir)
-        if(other.yali) Object.assign(this.yali,other.yali)        
+
+    /*public merge(options?: EditorConfig){
+        //浅拷贝
+        Object.assign(this.commonConfig,options.commonConfig)
+        Object.assign(this.ir,options.ir)
         return this
-    }
+    }*/
 
     /**
      * 生成一个defalut选项
      */
-    static defalut(){
+    public static defalut() {
 
-        const yali:YaLiEditorOptions={
-            isTestModel:false
-        }
+        const common = new CommonConfig()
+        const ir = new IRPanelConfig()
+        const editor = new EditorConfig(common, ir)
 
-        const ir:IROptions={
-            markdownItPlugins:[
-                //{plugin: mathjax},
-                {plugin: list},
-                {plugin: emoji},
-                {plugin: toc},
-                {plugin: markdownItMeta},
-                {plugin: imgplugin},
-                {plugin: link}
-            ],
-            codemirrorPlugins:[
-                myMinimalSetup,
-                //gutterBasicSetup,
-                keymap.of([indentWithTab]),
-            ],
-            disableEdit:false
-        }
+        editor
+            .ir
+            .addMarkdownItPlugins({ plugin: list })
+            .addMarkdownItPlugins({ plugin: emoji })
+            .addMarkdownItPlugins({ plugin: toc })
+            .addMarkdownItPlugins({ plugin: markdownItMeta })
+            .addMarkdownItPlugins({ plugin: imgplugin })
+            .addMarkdownItPlugins({ plugin: link })
+            .addCodemirrorPlugins(myMinimalSetup)
+            .addCodemirrorPlugins(keymap.of([indentWithTab]))
+            .end()
+            .commonConfig
+            .setTestModel(false)
+            .end()
 
-        return new EditorOptions(yali,ir)
+
+        return editor
     }
-
 }
+
+
 

@@ -294,8 +294,7 @@ class IRHotkeyProcessor implements KeyProcessor{
         
         //构建toc
         let res:string[] = []
-        let svg = '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-029747aa=""><path fill="currentColor" d="M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32zm192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32z"></path></svg>'
-        //svg = '<i class="el-icon-delete"></i>'
+        let svg = '<i class="el-icon-delete"></i>'
         let tip ='<div class="md-toc-tip md-hiden">'+'<span>目录</span><button class="toc-delete" onclick="TOC_DELETE()"><span>'+svg+'</button></span></div>';
         res.push(tip)
         
@@ -325,7 +324,7 @@ class IRHotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     codelineKey(event: KeyboardEvent|null){
-        this.blockKey(event,"`","`",Constants.ATTR_MD_INLINE_CODE)
+        this.typefaceKey(event,"`","`",Constants.ATTR_MD_INLINE_CODE)
     }
 
     /**
@@ -333,30 +332,30 @@ class IRHotkeyProcessor implements KeyProcessor{
      * @param event 
      */
     deletelineKey(event: KeyboardEvent|null){
-        this.blockKey(event,"~~","~~",Constants.ATTR_MD_INLINE_DELETELINE)
+        this.typefaceKey(event,"~~","~~",Constants.ATTR_MD_INLINE_DELETELINE)
     }
 
     blodKey(event: KeyboardEvent|null){
-        this.blockKey(event,"**","**",Constants.ATTR_MD_INLINE_STRONG)
+        this.typefaceKey(event,"**","**",Constants.ATTR_MD_INLINE_STRONG)
         
     }
 
     underlineKey(event: KeyboardEvent|null){
-        this.blockKey(event,'<u md-inline="underline">','</u>',Constants.ATTR_MD_INLINE_UNDERLINE)
+        this.typefaceKey(event,'<u md-inline="underline">','</u>',Constants.ATTR_MD_INLINE_UNDERLINE)
     }
 
     italicKey(event: KeyboardEvent|null){
-        this.blockKey(event,"*","*",Constants.ATTR_MD_INLINE_EM)
+        this.typefaceKey(event,"*","*",Constants.ATTR_MD_INLINE_EM)
     }
 
     /**
-     * 块级渲染，可渲染各种字体等
+     * 字体渲染，可渲染各种字体等
      * @param event 
      * @param pre 
      * @param suf 
      * @returns 
      */
-    blockKey(event: KeyboardEvent|null,pre:string,suf:string,type?:string){
+    typefaceKey(event: KeyboardEvent|null,pre:string,suf:string,type?:string){
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start =  r.startContainer
@@ -454,9 +453,6 @@ class IRHotkeyProcessor implements KeyProcessor{
             r.collapseAfter(e);
             
         }
-        
-
-        
         this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
     }

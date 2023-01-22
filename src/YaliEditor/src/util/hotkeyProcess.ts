@@ -78,8 +78,6 @@ export function updateMulLineIR(ir:IR,payload:any){
 }
 
 export function createTocIR(ir:IR){
-    console.log("测试");
-    
     ir.hotkeyProcessor.tocKey(null)
 }
 

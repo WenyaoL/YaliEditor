@@ -5,14 +5,11 @@ export const toImgText = (info:string,src:string)=>{
 }
 
 export const toImgElementText = (info:string,src:string)=>{
-    const pre = '<span class="md-hiden" >' + '![' + '</span>'
-    const mid = '<span class="md-hiden" >' + '](' + '</span>'
-    const suf = '<span class="md-hiden" >' + ')' + '</span>'
-    info = '<span class="md-info md-hiden md-meta">' + info +  '</span>'
-    src = '<span class="md-img-url md-hiden md-meta">' + src +  '</span>'
-    
-    
-    
+    const pre = `<span>![</span>`
+    const mid = `<span>](</span>`
+    const suf = `<span>)</span>`
+    info = '<span class="md-info md-meta">' + info +  '</span>'
+    src = '<span class="md-img-url md-meta">' + src +  '</span>'
     return pre + info + mid + src + suf
 }
 

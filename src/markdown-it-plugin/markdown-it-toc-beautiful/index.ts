@@ -105,6 +105,7 @@ export default function(md:MarkdownIt) {
 
         var headings = [];
         var gtokens = gstate.tokens;
+        
         var size = gtokens.length;
         //获取标题
         for (var i = 0; i < size; i++) {

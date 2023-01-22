@@ -2,26 +2,25 @@
   <el-menu
     default-active="1"
     class="el-menu-vertical-demo"
-    
     :collapse="isCollapse"
   > 
-    <el-menu-item index="1" @click="toRouteOutline">
+    <el-menu-item index="1" @click="changePanel('ContextOutline')">
       <el-icon><Notebook /></el-icon>
       <template #title>大纲</template>
     </el-menu-item>
-    <el-menu-item index="2" @click="toRouteFolder">
+    <el-menu-item index="2" @click="changePanel('FileTree')">
       <el-icon><folder /></el-icon>
       <template #title>文件夹</template>
     </el-menu-item>
 
-    <el-menu-item index="3" @click="toRouteRecentlyOpened">
+    <el-menu-item index="3" @click="changePanel('RecentDocuments')">
       <el-icon><Document /></el-icon>
       <template #title>最近打开</template>
     </el-menu-item>
 
     <el-menu-item index="4" @click="fold">
-      <el-icon v-show="isFold"><ArrowRightBold /></el-icon>
-      <el-icon v-show="!isFold"><ArrowLeftBold /></el-icon>
+      <el-icon v-show="sideBarFlag=='fold'"><Expand /></el-icon>
+      <el-icon v-show="sideBarFlag=='expand'"><Fold /></el-icon>
       <template #title>折叠</template>
     </el-menu-item>
 
@@ -34,32 +33,29 @@ import {
   Document,
   Menu as IconMenu,
   Folder,
-  Setting,
-  QuestionFilled,
-  ArrowLeftBold,
-  ArrowRightBold,
+  Fold,
+  Expand,
   Notebook
 } from '@element-plus/icons-vue'
 import {ref} from 'vue'
 import {useStore} from 'vuex'
-import router from "@/router";
-
+import bus from '@/bus'
+const emit = defineEmits(['update:sideBarFlag'])
+const props = defineProps<{sideBarFlag:string}>()
 let isCollapse = ref(true)
 let isRoute = ref(true)
 const store = useStore()
-let isFold = ref(store.state.sideBarFold)
 
-const fold = function(e){  
-  isFold.value = !isFold.value
-  store.commit("updateSideBarFold",isFold.value)
-  //router.push("/outline")
+
+
+
+const changePanel = (type:string)=>bus.emit("ToolPanelChange",type)
+
+const fold = ()=>{
+  bus.emit("sideBarChange",props.sideBarFlag=="fold"?"expand":"fold")
+  emit("update:sideBarFlag",props.sideBarFlag=="fold"?"expand":"fold")
 }
 
-//手动路由，不使用组件内部的路由，避免BUG
-const toRouteOutline = ()=>router.push("/outline")
-const toRouteFolder = ()=>router.push("/folder")
-const toRouteRecentlyOpened = ()=>router.push("/recentDocuments")
-const toRouteDesignDashboard = ()=>router.push("/designDashboard")
 
 </script>
 

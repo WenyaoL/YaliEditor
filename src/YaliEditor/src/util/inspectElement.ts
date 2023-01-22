@@ -28,18 +28,41 @@ export const isMdBlockFence = (element: Element) => {
   return false
 }
 
+export const isMdBlockMath = (element: Element) => {
+  if(!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_MATH) return true
+  return false
+}
+
 export const isMdBlockParagraph = (element: Element) => {
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_PARAGRAPH) return true
   return false
 }
 
-export const isMdBlockTable = (element: Element) =>{
+export const isMdBlockTable = (element: Element) => {
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TABLE) return true
   return false
 }
 
+export const isMdBlockToc = (element: Element)=>{
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TOC) return true
+  return false
+}
+
+export const isMdInlineImg = (element: Element) =>{
+  if(!isMdInline(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_IMG) return true
+  return false
+} 
+
+export const isMdInlineLink = (element: Element) =>{
+  if(!isMdInline(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_LINK) return true
+  return false
+} 
 
 /**
  * 判断当前fence块文本是否为空

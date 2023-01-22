@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
@@ -14,7 +15,8 @@ class TurndownParser{
     this.editor = editor
     this.turndownService = new TurndownService({
       headingStyle:"atx",
-      emDelimiter:'*'
+      emDelimiter:'*',
+      borderModel:false
     })
     this.initCodeRule()
     this.initImgRule()
@@ -24,6 +26,7 @@ class TurndownParser{
     this.initLinkRule()
     this.initInineCodeRule()
     this.initFontRule()
+    //this.initParagraphRule()
     this.turndownService.use(tableRule)
     
   }
@@ -61,6 +64,7 @@ class TurndownParser{
         return flag
       },
       replacement: function (content, node, options) {
+        if(options.borderModel) return content
         return '`'+content+'`';
       }
     })    
@@ -172,9 +176,10 @@ class TurndownParser{
   initFontRule(){
     //删除线
     this.turndownService.addRule('md-font-del',{
-      filter:['del', 's'],
+      filter:['del', 's', 'strike'],
       replacement:(content, node, options) =>{
-            return '~~' + content + '~~'
+          if(options.borderModel) content
+          else return '~~' + content + '~~'
         }
     })
 
@@ -182,9 +187,28 @@ class TurndownParser{
     this.turndownService.addRule('md-font-underline',{
       filter:'u',
       replacement:(content, node, options) =>{
+            if(options.borderModel) content
             return '<u>' + content + '</u>'
         }
     })    
+
+    //粗体字
+    this.turndownService.addRule('md-font-strong',{
+      filter:'strong',
+      replacement:(content, node, options) =>{
+        if(options.borderModel) content
+        return options.strongDelimiter + content + options.strongDelimiter
+      }
+    })
+
+    //斜体
+    this.turndownService.addRule('md-font-strong',{
+      filter:'em',
+      replacement:(content, node, options) =>{
+        if(options.borderModel) content
+        return options.emDelimiter + content + options.emDelimiter
+      }
+    })
 
   }
 
@@ -192,8 +216,8 @@ class TurndownParser{
     this.turndownService.addRule('md-paragraph',{
       filter: 'p',
       replacement: function (content) {
-        content = content.replaceAll("\u200c",'')
-        return '\n\n' + content + '\n\n'
+        content = content.replaceAll("\u00a0","&nbsp;")
+        return '\n' + content + '\n'
       }
     })
   }

@@ -20,7 +20,11 @@ export class IRCompositionProcessor{
 
         this.editor.ir.observer.stop()
     }
-
+    
+    public compositionUpdate(event: CompositionEvent & { target: HTMLElement }){
+        this.editor.ir.observer.flush()
+        return
+    }
 
     public compositionEnd(event: CompositionEvent & { target: HTMLElement }){
         if(!this.composingLock) return
@@ -32,9 +36,13 @@ export class IRCompositionProcessor{
         if(type === Constants.ATTR_MD_BLOCK_HEADING){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
         }
+        //普通的输入需要刷新节点
+        if(!this.editor.ir.contextRefresher.refreshFocusInline()){
+            this.editor.ir.contextRefresher.refreshFocusBlock()
+        }
 
         this.editor.ir.observer.start()
-        this.editor.ir.observer.forceFlush()
+        this.editor.ir.observer.flush()
     }
 }
 

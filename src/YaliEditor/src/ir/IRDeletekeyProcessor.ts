@@ -5,9 +5,8 @@
 import YaliEditor from '../index'
 import {
     findClosestByAttribute,
-    findClosestByClassName,
-    findClosestByTop,
-    IRfindClosestMdBlock
+    IRfindClosestMdBlock,
+    IRfindClosestMdInline
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
@@ -22,10 +21,6 @@ class IRDeletekeyProcessor implements KeyProcessor {
         this.editor = editor
     }
 
-
-
-
-
     deleteCollapsed() {
         let sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
@@ -33,6 +28,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
 
         let mdBlock = IRfindClosestMdBlock(start)
+        let mdinline = IRfindClosestMdInline(start)
 
         //参试退化
         let p = this.editor.markdownTool.mdBlockDegenerateToP(mdBlock)
@@ -44,6 +40,11 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         const mdBlockPreviousElement = mdBlock.previousElementSibling
         if (isMdBlockParagraph(mdBlock) && this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
+            if(!mdBlockPreviousElement){
+                this.editor.ir.focueProcessor.updateFocusMdBlockByStart()
+                return true
+            }
+            
             if(isMdBlockParagraph(mdBlockPreviousElement)) {
                 let text = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
                 if (text) {
@@ -51,7 +52,6 @@ class IRDeletekeyProcessor implements KeyProcessor {
                     sel.setSingleRange(r)
                     return true
                 }
-                
             }
 
             //选择下一个字符
@@ -64,82 +64,14 @@ class IRDeletekeyProcessor implements KeyProcessor {
             return false
         }
 
-        if (start.nodeType === 3) {
-            start = start.parentElement;
+        let e = (start as Element)
+
+        if (e.nodeType === 3) {
+            e = e.parentElement;
         }
-        let e = start as HTMLElement
-
-        //无字符删除的情况
-        /*if (e.textContent.length == 0 || e.innerText == "\n") {
-
-            //删除的是表格
-            if (e && e.tagName == "TD" || e.tagName == "TH") {
-                if (e.previousElementSibling) {
-                    let element = e.previousElementSibling
-                    let coll = 0
-                    if (element.textContent && element.textContent.length > 0) coll = 1
-                    sel.collapse(e.previousElementSibling, coll)
-                } else if (e.parentElement.previousElementSibling) {
-                    let element = e.parentElement.previousElementSibling
-                    let coll = 0
-                    if (element.lastElementChild.textContent.length > 0) coll = 1
-                    sel.collapse(element.lastElementChild, coll)
-                }
-                //event.preventDefault()
-                return
-            }
-
-            //删除的是列表
-            if (e.parentElement && e.parentElement.tagName == "LI") {
-                let li = e.parentElement
-                let ol = li.parentElement
-                li.remove()
-                if (ol.childElementCount == 0) ol.remove()
-                event.preventDefault()
-                return
-            }
-
-            //删除发生在代码块旁边
-            if (e.previousElementSibling && e.previousElementSibling.tagName == "PRE") {
-                let sibling = e.previousElementSibling
-                e.remove()
-                let info = this.editor.ir.renderer.codemirrorManager.getViewInfo(sibling.id)
-                let { node, offset } = info.view.domAtPos(info.view.state.doc.length)
-
-                sel.collapse(node, offset)
-                event.preventDefault()
-                return
-            }
-
-            //删除发生在公式块旁边
-            if (e.previousElementSibling && e.previousElementSibling.classList.contains("markdown-it-mathjax-beautiful")) {
-                let sibling = e.previousElementSibling.getElementsByClassName("md-mathblock-input")[0]
-                e.remove()
-                let info = this.editor.ir.renderer.codemirrorManager.getViewInfo(sibling.id)
-                let { node, offset } = info.view.domAtPos(info.view.state.doc.length)
-
-                sel.collapse(node, offset)
-                this.editor.ir.focueProcessor.updateFocusElement()
-                event.preventDefault()
-                return
-            }
-
-            //选择下一个字符
-            let text = this.editor.markdownTool.getLastTextNode(mdBlock.previousElementSibling)
-
-            if (text && !isMdBlockFence(mdBlock)) {
-                r.collapseToPoint(text, text.textContent.length)
-                sel.setSingleRange(r)
-                e.remove()
-                event.preventDefault()
-                return
-            }
-
-            return
-        }*/
 
 
-
+        
         //删除元数据类
         if (e.classList.contains(CONSTANTS.CLASS_MD_META)) {
             //元数据类更改，应该影响内容的展示和标签的实际功能
@@ -148,11 +80,9 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         //删除隐藏类
         if (e.classList.contains(CONSTANTS.CLASS_MD_HIDEN)) {
-            //寻找行级模块
-            e = findClosestByAttribute(e, CONSTANTS.ATTR_MD_INLINE, "", this.editor.ir.getRootElementClassName())
-            if (!e) return false
-            if (e.hasAttribute(CONSTANTS.ATTR_MD_INLINE)) {
-                r.selectNodeContents(e)
+            if (!mdinline) return false
+            if (mdinline.hasAttribute(CONSTANTS.ATTR_MD_INLINE)) {
+                r.selectNodeContents(mdinline)
                 rangy.getSelection().setSingleRange(r)
                 return true;
             }
@@ -170,8 +100,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 r.deleteContents()
                 return true
             }
-        }
-
+        }        
         return false;
     }
 
@@ -186,6 +115,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
         //删除一个节点的
         if (r.getNodes().length == 1) {
             r.deleteContents()
+            return true
         }
 
         //删除多个节点的
@@ -218,7 +148,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 return true
             }
         }
-        return false;
+        return true;
     }
 
     filter(target: HTMLElement) {
@@ -236,7 +166,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         //单一的删除
         if (rangy.getSelection().isCollapsed) {
-            if(this.deleteCollapsed()) event.preventDefault()
+            if(this.deleteCollapsed()) event.preventDefault() 
         } else {//范围删除
             if(this.deleteRang()) event.preventDefault()
         }
@@ -250,6 +180,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
         this.editor.ir.focueProcessor.updateBeforeModify()
         try {
             this.deleteKey(event)
+            this.editor.ir.focueProcessor.updateFocusElement()
             this.editor.ir.observer.flush()
         } catch {
             event.preventDefault()
@@ -259,6 +190,5 @@ class IRDeletekeyProcessor implements KeyProcessor {
     }
 
 }
-
 
 export default IRDeletekeyProcessor
