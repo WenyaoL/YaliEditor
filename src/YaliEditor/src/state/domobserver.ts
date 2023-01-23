@@ -30,22 +30,11 @@ export class DOMObserver{
         this.isObserving = false
 
         this.observer = new MutationObserver(mutations => {
-
             if(this.editor.ir.rootElement.childElementCount == 0){
                 this.editor.ir.rootElement.append(createParagraph())
                 this.editor.ir.focus()
             }
-            let mut = mutations.at(0)
-            
-            let e = mut.target as HTMLElement
-            if(e.nodeType == 3){
-                e = e.parentElement
-            }
-            
-            if(this.filt(e)) return
-
             this.flush()
-
         });
     }
 
@@ -57,7 +46,6 @@ export class DOMObserver{
     }
 
     stop() {
-
         this.isObserving = false
         this.observer.disconnect()
     }
@@ -80,7 +68,6 @@ export class DOMObserver{
             this.editor.ir.addUndo()
             this.delayTimer = -1;
         }, this.groupDelayTime);
-        
     }
 
     flushByCustom(f:Function){
@@ -106,10 +93,8 @@ export class DOMObserver{
             clearTimeout(this.delayTimer)
             this.delayTimer = -1;
         }
-
         //记录修改
         this.editor.ir.addUndo()
-
     }
 
     disableObserver(){
@@ -119,9 +104,7 @@ export class DOMObserver{
         this.observer.disconnect()
         this.disable =true
     }
-
-
-
+    
     /**
      * 在执行函数期间忽略观察
      * 执行完函数，回复为原本状态，如：
@@ -141,21 +124,5 @@ export class DOMObserver{
                 this.start()
             }
         }
-    }
-
-    /**
-     * 过滤一些不需要侦查的元素
-     */
-    filt(e:Element){
-        if(!e) return false
-        if(e && e.className && e.parentElement && (e.className.search(/cm-.*/)>=0 || e.parentElement.className.search(/cm-.*/)>=0)){
-            return true
-        }
-
-        if(e.className == "el-input__wrapper"){
-            return true
-        }
-
-        return false
     }
 }

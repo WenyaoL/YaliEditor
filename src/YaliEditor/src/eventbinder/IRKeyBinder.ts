@@ -18,6 +18,7 @@ import CONSTANTS from "../constant/constants";
 
 
 import { strToElement, createParagraph } from "../util/createElement";
+import { isMdBlockFence, isMdBlockMath } from "../util/inspectElement";
 
 
 
@@ -53,6 +54,8 @@ class IRKeyBinder implements BaseEventBinder {
     bindKeydownEvent(element: HTMLElement) {
 
         element.addEventListener("keydown", (event: KeyboardEvent & { target: HTMLElement }) => {
+
+
 
             // 非目录键不处理
             if (!this.isTargetKey(event)) {

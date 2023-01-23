@@ -22,22 +22,16 @@ class IRInputProcessor{
             return;
         }
         
-        
         //根据输入位置发布不同的事件
-
         const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
-
-
-        
 
         if(blockType === Constants.ATTR_MD_BLOCK_HEADING){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
         }else if(blockType === Constants.ATTR_MD_BLOCK_FENCE || blockType === Constants.ATTR_MD_BLOCK_MATH){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_CODEBLOCKINPUT)
+            this.editor.ir.observer.flush()
+            return
         }
-
-
-
         
         if(event.data == " "){
             this.editor.ir.contextRefresher.refreshFocusInline(true)
@@ -56,7 +50,6 @@ class IRInputProcessor{
             this.editor.ir.contextRefresher.refreshFocusBlock()
         }
 
-        
         this.editor.ir.observer.flush()
     }
 

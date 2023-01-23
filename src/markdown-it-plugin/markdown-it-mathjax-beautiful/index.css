@@ -1,21 +1,41 @@
-.md-hiden .md-mathblock-input{
-    display: block;
-    color: #219;
+.md-mathblock-tool{
+    display: none;
+    right: 0px;
+    line-height: 12px;
+    position: absolute;
+}
+.md-mathblock-tip{
+    font-size: 10px;
+}
+
+.markdown-it-mathjax-beautiful{
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .md-mathblock-input{
+    display: none;
+}
+
+.markdown-it-mathjax-beautiful.md-focus .md-mathblock-input{
+    display: block;
     background-color: rgb(245, 245, 245);
 }
 
-.markdown-it-mathjax-beautiful.md-focus{
+.markdown-it-mathjax-beautiful.md-focus .mathjax-panel{
     box-shadow: 0 1px 1px 0 rgba(0,29,35,0.25);
     border-top: 1px solid #eef2f2;
 }
 
-.markdown-it-mathjax-beautiful:not(.md-focus) .mathjax-panel:hover{
-
+.markdown-it-mathjax-beautiful:not(.md-focus):hover .mathjax-panel{
     transition:background 0.5s;
     background-color: var(--yali-mathjax-hover--background-color)
+}
+
+
+.markdown-it-mathjax-beautiful:not(.md-focus):hover .md-mathblock-tool{
+    display:block;
 }
 
 .md-mathblock-input.markdown-it-code-beautiful{
@@ -23,9 +43,7 @@
 }
 
 
-.md-focus .md-mathblock-tip{
-    display: block;
-}
+
 
 .mathjax-panel{
     padding: 1px 0;

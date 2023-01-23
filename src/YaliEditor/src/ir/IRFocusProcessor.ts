@@ -52,12 +52,12 @@ class IRFocusProcessor {
    * 锁定给定元素为聚焦元素
    * @param block 
    */
-  updateFocusElementByMdblock(block?: HTMLElement) {
+  setFocusElementByMdblock(block?: HTMLElement){
     this.sel = rangy.getSelection()
     if (!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
     if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     this.selectedBlockMdElement = block
-    this.selectedInlineMdElement?.classList.add("md-expand")
+    this.selectedBlockMdElement?.classList.add("md-focus")
   }
 
   /**

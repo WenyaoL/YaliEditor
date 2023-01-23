@@ -41,189 +41,6 @@ interface MathjaxInfo{
   content?:string;
 }
 
-class Mathjax{
-  editor:YaLiEditor;
-  info:MathjaxInfo[];
-  documentOptions:{
-    InputJax: TeX<unknown, unknown, unknown>;
-    OutputJax: SVG<unknown, unknown, unknown>;
-  }
-  convertOptions:{
-    display: boolean
-  }
-
-  constructor(editor:YaLiEditor){
-    this.editor = editor
-    this.info=[]
-  }
-
-  public freshMathjax(id:string,doc:string,documentOptions?:DocumentOptions,convertOptions?:ConvertOptions){
-    let info = this.info.find(value=>value.id==id)
-    if(!info) return
-    if(!documentOptions) documentOptions = this.documentOptions
-    if(!convertOptions) convertOptions = this.convertOptions
-    info.content = doc
-    const e = document.getElementById(info.id)
-    //获取渲染面板
-    const panle = e.parentElement.nextElementSibling
-
-    panle.innerHTML = renderMath(doc, documentOptions, convertOptions)
-  }
-
-  /**
-   * 添加一个数学公式面板，数学公式中的代码块由codemirrorManager管理
-   * @param id 
-   * @param content 
-   */
-  public addMathjaxPanel(id:string,content:string){
-    let ex = [EditorView.updateListener.of(viewupdate=>{
-      if(viewupdate.docChanged){
-        this.editor.ir.observer.ignore(()=>{
-          this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
-        },this)
-      }
-    })]
-    let editorState = CodemirrorEditorState.of(id,content,ex,{needSuggestUI:false})
-    this.editor.ir.renderer.codemirrorManager.addStateCache(editorState)
-  }
-
-
-  public plugin = (md: MarkdownIt, options: any)=>{
-    // Default options
-  
-    this.documentOptions = {
-      InputJax: new TeX({ packages: AllPackages,  ...options?.tex }),
-      OutputJax: new SVG({ fontCache: 'none',  ...options?.svg })
-    }
-    this.convertOptions = {
-      display: false
-    }
-  
-    // set MathJax as the renderer for markdown-it-simplemath
-    md.inline.ruler.after("escape", "math_inline", math_inline);
-    md.block.ruler.after("blockquote", "math_block", math_block, {
-      alt: ["paragraph", "reference", "blockquote", "list"],
-    });
-    md.renderer.rules.math_inline = (tokens: Token[], idx: number)=>{
-      
-      this.convertOptions.display = false;
-      return renderMath(tokens[idx].content, this.documentOptions, this.convertOptions)
-    };
-  
-  
-    md.renderer.rules.math_block = (tokens: Token[], idx: number)=>{
-      this.convertOptions.display = true;
-      let res = []
-  
-      res.push('<div class="mathjax-panel">')
-      res.push(renderMath(tokens[idx].content, this.documentOptions, this.convertOptions))
-      res.push('</div>')
-      
-  
-      return res.join('')
-    };
-  
-    md.renderer.rules.math_open = (tokens: Token[], idx: number)=>{
-      let res = [],content=''
-      
-      res.push('<div class="markdown-it-mathjax-beautiful" md-block="math">')
-      
-      //hiden value
-      if(tokens[idx+1].type == "math_block"){
-        content = tokens[idx+1].content
-        if(content.endsWith("\n")) content = content.substring(0,content.length-1)
-      }
-      let info:MathjaxInfo = {
-        id:uuidv4(),
-        content
-      }
-      this.info.push(info)
-
-      //tip
-      res.push('<div class="md-mathblock-tip md-hiden">')
-      
-      let id = 'id="'+ info.id +'"'
-      res.push('<div class="md-mathblock-input markdown-it-code-beautiful" ' ,id ,'>','</div>')
-      res.push('</div>')
-      
-      let ex = [
-        EditorView.lineWrapping,
-        EditorView.updateListener.of(viewupdate=>{
-        if (viewupdate.state.doc.length === 0) {
-          viewupdate.view.dom.setAttribute("is-empty","true")
-        }
-        if (viewupdate.state.doc.length > 0) {
-          viewupdate.view.dom.setAttribute("is-empty","false")
-        }
-        if(viewupdate.docChanged){
-          this.editor.ir.observer.ignore(()=>{
-            this.freshMathjax(info.id,viewupdate.state.doc.toString(),this.documentOptions,this.convertOptions)
-          },this)
-        }
-      })
-    ]
-      let editorState = EditorState.create({
-        doc: info.content,
-        extensions:ex
-      })
-      //let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
-      this.editor.ir.renderer.codemirrorManager.addStateCache(new CodemirrorEditorState(info.id,editorState,{needSuggestUI:false}))
-      return  res.join('')
-    }
-  
-    md.renderer.rules.math_close = function(tokens: Token[], idx: number){
-      return "</div>"
-    }
-  }
-}
-
-
-//---------------------------function---------------------------
-
-
-function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {
-  const adaptor = liteAdaptor();
-  RegisterHTMLHandler(adaptor);
-  if(!content || content == "\n") content = "empty-math"
-  const mathDocument = mathjax.document(content, documentOptions);
-  const html = adaptor.outerHTML(
-    mathDocument.convert(content, convertOptions)
-  );
-  const stylesheet = adaptor.outerHTML(documentOptions.OutputJax.styleSheet(mathDocument) as any)
-  const mathJax = juice(html+stylesheet)
-
-  return mathJax;
-}
-
-// Test if potential opening or closing delimieter
-// Assumes that there is a "$" at state.src[pos]
-function isValidDelim(state: StateInline, pos: number) {
-  let max = state.posMax,
-    can_open = true,
-    can_close = true;
-
-  const prevChar = pos > 0 ? state.src.charCodeAt(pos - 1) : -1,
-    nextChar = pos + 1 <= max ? state.src.charCodeAt(pos + 1) : -1;
-
-  // Check non-whitespace conditions for opening and closing, and
-  // check that closing delimeter isn't followed by a number
-  if (
-    prevChar === 0x20 /* " " */ ||
-    prevChar === 0x09 /* \t */ ||
-    (nextChar >= 0x30 /* "0" */ && nextChar <= 0x39) /* "9" */
-  ) {
-    can_close = false;
-  }
-  if (nextChar === 0x20 /* " " */ || nextChar === 0x09 /* \t */) {
-    can_open = false;
-  }
-
-  return {
-    can_open: can_open,
-    can_close: can_close,
-  };
-}
-
 function math_inline(state: StateInline, silent: boolean) {
   if (state.src[state.pos] !== "$") {
     return false;
@@ -368,6 +185,147 @@ function math_block(
 
   return true;
 }
+
+
+
+class Mathjax{
+  editor:YaLiEditor;
+  info:MathjaxInfo[];
+  documentOptions:{
+    InputJax: TeX<unknown, unknown, unknown>;
+    OutputJax: SVG<unknown, unknown, unknown>;
+  }
+
+
+  constructor(editor:YaLiEditor){
+    this.editor = editor
+    this.info=[]
+  }
+
+  public freshMathjax(id:string,doc:string,documentOptions?:DocumentOptions,convertOptions?:ConvertOptions){
+    const e = document.getElementById(id)
+    //获取渲染面板
+    const panle = e.nextElementSibling
+    panle.innerHTML = renderMath(doc, documentOptions, convertOptions)
+  }
+
+
+
+
+  public plugin = (md: MarkdownIt, options: any)=>{
+    // Default options
+    this.documentOptions = {
+      InputJax: new TeX({ packages: AllPackages,  ...options?.tex }),
+      OutputJax: new SVG({ fontCache: 'none',  ...options?.svg })
+    }
+
+  
+    // set MathJax as the renderer for markdown-it-simplemath
+    md.inline.ruler.after("escape", "math_inline", math_inline);
+    md.block.ruler.after("blockquote", "math_block", math_block, {
+      alt: ["paragraph", "reference", "blockquote", "list"],
+    });
+
+    md.renderer.rules.math_inline = (tokens: Token[], idx: number)=>{
+      return renderMath(tokens[idx].content, this.documentOptions, {display:false})
+    };
+  
+  
+    md.renderer.rules.math_block = (tokens: Token[], idx: number)=>{
+      const mathdom = renderMath(tokens[idx].content, this.documentOptions, {display:true})
+      return `<div class="mathjax-panel">${mathdom}</div>`
+    };
+  
+    md.renderer.rules.math_open = (tokens: Token[], idx: number)=>{
+      let content='',id=uuidv4();
+      //hiden value
+      if(tokens[idx+1].type == "math_block"){
+        content = tokens[idx+1].content
+        if(content.endsWith("\n")) content = content.substring(0,content.length-1)
+      }
+
+      let extensions = [
+        EditorView.lineWrapping,
+        EditorView.updateListener.of(viewupdate=>{
+        if (viewupdate.state.doc.length === 0) {
+          viewupdate.view.dom.setAttribute("is-empty","true")
+        }
+        if (viewupdate.state.doc.length > 0) {
+          viewupdate.view.dom.setAttribute("is-empty","false")
+        }
+        if(viewupdate.docChanged){
+          this.editor.ir.observer.ignore(()=>{
+            this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,{display:true})
+          },this)
+        }
+      })
+    ]
+      let editorState = EditorState.create({
+        doc: content,
+        extensions
+      })
+      //let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
+      this.editor.ir.renderer.codemirrorManager.addStateCache(new CodemirrorEditorState(id,editorState,{needSuggestUI:false}))
+      return `<div class="markdown-it-mathjax-beautiful" md-block="math">
+      <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
+      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>
+      `
+    }
+  
+    md.renderer.rules.math_close = function(tokens: Token[], idx: number){
+      return "</div>"
+    }
+  }
+}
+
+
+//---------------------------function---------------------------
+
+
+function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {
+  const adaptor = liteAdaptor();
+  RegisterHTMLHandler(adaptor);
+  if(!content || content == "\n") content = "empty-math"
+  const mathDocument = mathjax.document(content, documentOptions);
+  const html = adaptor.outerHTML(
+    mathDocument.convert(content, convertOptions)
+  );
+  const stylesheet = adaptor.outerHTML(documentOptions.OutputJax.styleSheet(mathDocument) as any)
+  const mathJax = juice(html+stylesheet)
+
+  return mathJax;
+}
+
+// Test if potential opening or closing delimieter
+// Assumes that there is a "$" at state.src[pos]
+function isValidDelim(state: StateInline, pos: number) {
+  let max = state.posMax,
+    can_open = true,
+    can_close = true;
+
+  const prevChar = pos > 0 ? state.src.charCodeAt(pos - 1) : -1,
+    nextChar = pos + 1 <= max ? state.src.charCodeAt(pos + 1) : -1;
+
+  // Check non-whitespace conditions for opening and closing, and
+  // check that closing delimeter isn't followed by a number
+  if (
+    prevChar === 0x20 /* " " */ ||
+    prevChar === 0x09 /* \t */ ||
+    (nextChar >= 0x30 /* "0" */ && nextChar <= 0x39) /* "9" */
+  ) {
+    can_close = false;
+  }
+  if (nextChar === 0x20 /* " " */ || nextChar === 0x09 /* \t */) {
+    can_open = false;
+  }
+
+  return {
+    can_open: can_open,
+    can_close: can_close,
+  };
+}
+
+
 
 
 

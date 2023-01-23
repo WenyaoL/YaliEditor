@@ -99,9 +99,10 @@ class IRUndo{
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
         let sel = rangy.getSelection()
-        
-        history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-        sel.moveToBookmark(history.bookMark)
+        if(history.bookMark){
+            history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
+            sel.moveToBookmark(history.bookMark)
+        }
         let r = sel.getRangeAt(0)
         let block = IRfindClosestMdBlock(r.startContainer)
         //当光标是聚合的时候，开启二级定位，提供更加准确的定位

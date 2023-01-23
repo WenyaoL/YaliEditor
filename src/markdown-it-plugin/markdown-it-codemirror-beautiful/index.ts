@@ -138,8 +138,6 @@ export class CodemirrorManager {
     }
 
     selectTheme(theme: string) {
-
-
         this.themeType = theme
         this.allView.forEach(info => {
             selectTheme(info.stateInfo, info.view, theme)
@@ -503,15 +501,11 @@ export class CodemirrorManager {
     }
 
     viewFocus(uuid: string) {
-
         if (this.allView.length <= 0) return;
-
-
         const idx = this.allView.map(viewInfo => viewInfo.stateInfo.editor_uuid).indexOf(uuid)
-
-
         if (idx == -1) return
         let view = this.allView.at(idx).view
+        
         this.editor.ir.focueProcessor.updateFocusElementByStart(view.dom)
         view.focus()
     }

@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdFence, isMdBlockParagraph, isMdBlockToc} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import { IRfindClosestMdBlock } from '../util/findElement';
@@ -41,7 +41,7 @@ class MarkdownTool{
         //重新翻译，重新渲染成节点
         let turndown = this.turndown(element)
         const res = this.editor.ir.renderer.render(turndown)
-
+        
         if(!res) return false;
         
         const e = strToElement(res)
@@ -241,13 +241,21 @@ class MarkdownTool{
         if(element.tagName == "IMG"){
             r.collapseAfter(element.previousElementSibling?.lastElementChild)
             sel.setSingleRange(r)
+            return true
         }
 
-        if(element.classList.contains("MathJax")){
-            let editor = IRfindClosestMdBlock(element).getElementsByClassName("markdown-it-code-beautiful").item(0)
+
+        
+        const math_panel = element.closest(".mathjax-panel")
+        if(math_panel){
+            const math_block = element.closest(".markdown-it-mathjax-beautiful")
+            let editor = math_block.getElementsByClassName("markdown-it-code-beautiful").item(0)
+            this.editor.ir.focueProcessor.setFocusElementByMdblock(math_block as HTMLElement)            
             let viewInfo = this.editor.ir.renderer.codemirrorManager.getViewInfo(editor.id)
+            viewInfo.view.focus()
             let {node,offset} = viewInfo.view.domAtPos(viewInfo.view.state.doc.length)
             sel.collapse(node,offset)
+            return true
         }
     }
 

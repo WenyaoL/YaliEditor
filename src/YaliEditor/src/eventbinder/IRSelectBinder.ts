@@ -40,7 +40,8 @@ class IRSelectBinder implements BaseEventBinder {
     element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
 
       this.editor.ir.focueProcessor.update()
-
+      //console.log(this.editor.ir.focueProcessor.getSelectedMdElement());
+      
       let sel = this.editor.ir.focueProcessor.sel
       let r = sel.getRangeAt(0)
 
@@ -49,7 +50,11 @@ class IRSelectBinder implements BaseEventBinder {
       }
 
       //点击进行光标偏移(主要对一些隐藏类的操作)
-      this.editor.markdownTool.deviationCursor(event.target)
+      if(this.editor.markdownTool.deviationCursor(event.target)){
+        event.preventDefault()
+        return
+      }
+
 
       const topClassName = this.editor.ir.getRootElementClassName()
 
