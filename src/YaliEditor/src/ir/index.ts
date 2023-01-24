@@ -162,17 +162,17 @@ class IR {
         setTimeout(() => {
             this.observer.start()
             this.focus()
-
         }, 200)
     }
 
     public undo() {
         //在undo期间屏蔽监控
-        this.observer.ignore(this.undoManager.undo, this.undoManager)
+        this.undoManager.undo()
+
     }
 
     public redo() {
-        this.observer.ignore(this.undoManager.redo, this.undoManager)
+        this.undoManager.redo()
     }
 
 
@@ -237,7 +237,6 @@ class IR {
         setTimeout(() => {
             this.observer.start()
             this.focus()
-
         }, 200)
     }
 

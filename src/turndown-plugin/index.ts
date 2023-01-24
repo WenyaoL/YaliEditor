@@ -13,10 +13,11 @@ class TurndownParser{
 
   constructor(editor:YaLiEditor){
     this.editor = editor
+    TurndownService.prototype.escape = str=>str
     this.turndownService = new TurndownService({
       headingStyle:"atx",
       emDelimiter:'*',
-      borderModel:false
+      borderModel:true
     })
     this.initCodeRule()
     this.initImgRule()
@@ -24,7 +25,6 @@ class TurndownParser{
     this.initTocRule()
     this.initCodemirrorRule(this.editor)
     this.initLinkRule()
-    this.initInineCodeRule()
     this.initFontRule()
     //this.initParagraphRule()
     this.turndownService.use(tableRule)
@@ -52,22 +52,6 @@ class TurndownParser{
         )
       }
     })
-  }
-
-  initInineCodeRule(){
-    this.turndownService.addRule('md-inline-codeing',{
-      filter: function (node, options) {
-        let flag = (
-          node.nodeName === 'CODE' &&
-          node.getAttribute('md-inline') === "code"
-        )
-        return flag
-      },
-      replacement: function (content, node, options) {
-        if(options.borderModel) return content
-        return '`'+content+'`';
-      }
-    })    
   }
 
   initCodemirrorRule(editor:YaLiEditor){
@@ -178,7 +162,7 @@ class TurndownParser{
     this.turndownService.addRule('md-font-del',{
       filter:['del', 's', 'strike'],
       replacement:(content, node, options) =>{
-          if(options.borderModel) content
+          if(options.borderModel) return content
           else return '~~' + content + '~~'
         }
     })
@@ -187,8 +171,8 @@ class TurndownParser{
     this.turndownService.addRule('md-font-underline',{
       filter:'u',
       replacement:(content, node, options) =>{
-            if(options.borderModel) content
-            return '<u>' + content + '</u>'
+            if(options.borderModel) return '<u md-inline="underline">' + content + '</u>'
+            return '<u md-inline="underline">' + content + '</u>'
         }
     })    
 
@@ -196,7 +180,7 @@ class TurndownParser{
     this.turndownService.addRule('md-font-strong',{
       filter:'strong',
       replacement:(content, node, options) =>{
-        if(options.borderModel) content
+        if(options.borderModel) return content
         return options.strongDelimiter + content + options.strongDelimiter
       }
     })
@@ -205,10 +189,25 @@ class TurndownParser{
     this.turndownService.addRule('md-font-strong',{
       filter:'em',
       replacement:(content, node, options) =>{
-        if(options.borderModel) content
+        if(options.borderModel) return content
         return options.emDelimiter + content + options.emDelimiter
       }
     })
+
+    //行内代码字体
+    this.turndownService.addRule('md-inline-codeing',{
+      filter: function (node, options) {
+        let flag = (
+          node.nodeName === 'CODE' &&
+          node.getAttribute('md-inline') === "code"
+        )
+        return flag
+      },
+      replacement: function (content, node, options) {
+        if(options.borderModel) return content
+        return '`'+content+'`';
+      }
+    })    
 
   }
 
@@ -227,8 +226,6 @@ class TurndownParser{
   }
 
 }
-
-
 
 
 function cleanAttribute (attribute:string) {

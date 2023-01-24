@@ -17,12 +17,10 @@ export class IRCompositionProcessor{
         this.editor.ir.focueProcessor.updateBeforeModify()
         //上锁，代表在用打字
         this.composingLock = true;
-
-        this.editor.ir.observer.stop()
     }
     
     public compositionUpdate(event: CompositionEvent & { target: HTMLElement }){
-        this.editor.ir.observer.flush()
+        //this.editor.ir.observer.flush()
         return
     }
 
@@ -40,8 +38,6 @@ export class IRCompositionProcessor{
         if(!this.editor.ir.contextRefresher.refreshFocusInline()){
             this.editor.ir.contextRefresher.refreshFocusBlock()
         }
-
-        this.editor.ir.observer.start()
         this.editor.ir.observer.flush()
     }
 }

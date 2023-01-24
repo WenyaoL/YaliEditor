@@ -61,7 +61,6 @@ export class EditorConfig {
             .addMarkdownItPlugins({ plugin: list })
             .addMarkdownItPlugins({ plugin: emoji })
             .addMarkdownItPlugins({ plugin: toc })
-            .addMarkdownItPlugins({ plugin: markdownItMeta })
             .addMarkdownItPlugins({ plugin: imgplugin })
             .addMarkdownItPlugins({ plugin: link })
             .addCodemirrorPlugins(myMinimalSetup)

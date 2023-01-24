@@ -22,7 +22,7 @@ function codeInlineBorderModel(tokens: Token[], idx: number, options: Object, en
     return '<code' + slf.renderAttrs(token) + " " + mdTypeAttrs + '>' +
         '<span class="md-border">`</span>' +
         escapeHtml(tokens[idx].content) +
-        '<span class="md-border">`*`</span>' +
+        '<span class="md-border">`</span>' +
         '</code>';
 }
 
@@ -115,7 +115,15 @@ function text(tokens: Token[], idx: number, options: Object, env: Object, slf: R
     return '<span md-text="text">' + res + '</span>'
 }
 
+
+function hr(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer){
+    const hrstr = slf.renderToken(tokens, idx, env)
+    return '<div md-block="hr" class="md-hr" contenteditable="false">' + hrstr + '</div>'
+}
+
 function plugin(md: MarkdownIt, options: any = {}) {
+
+    md.renderer.rules.hr = hr
 
     if (options.borderModel) {
         md.renderer.rules.code_inline = codeInlineBorderModel

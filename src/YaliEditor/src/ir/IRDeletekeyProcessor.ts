@@ -9,7 +9,7 @@ import {
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath} from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr} from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
 
 class IRDeletekeyProcessor implements KeyProcessor {
@@ -42,6 +42,12 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         //尝试删除P节点
         const mdBlockPreviousElement = mdBlock.previousElementSibling
+
+        if(isMdBlockParagraph(mdBlock) && isMdBlockHr(mdBlockPreviousElement)){
+            mdBlockPreviousElement.remove()
+            return true
+        }
+
         if (isMdBlockParagraph(mdBlock) && this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
             if(!mdBlockPreviousElement){
                 this.editor.ir.focueProcessor.updateFocusMdBlockByStart()

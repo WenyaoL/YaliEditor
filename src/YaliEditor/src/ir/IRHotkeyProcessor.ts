@@ -754,6 +754,8 @@ class IRHotkeyProcessor implements KeyProcessor{
             //this.editor.ir.undoManager.updateBookmark()
             event.preventDefault()
             this.editor.ir.focueProcessor.updateFocusElement()
+            if(f == this.undoKey || f == this.redoKey) return true
+            this.editor.ir.observer.forceFlush()
             return true
         }
 

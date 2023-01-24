@@ -176,27 +176,18 @@ class IRFocusProcessor {
    * 只有在一系列修改之后，才会将修改锁释放，否则将无法进行更新
    */
   updateBeforeModify() {
-
     this.sel = rangy.getSelection()
-
     //上锁前跟新修改前的bookmark
     if (!this.modifyLock) {
-
-
-
       try {
-        this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
-        this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
-      } catch {
         this.updateFocusElement()
         this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
         this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
+      } catch {
+        this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
+        this.modifyBeforeSecondBookmark = null
       }
-
-
-
     }
-
     this.modifyLock = true
   }
 

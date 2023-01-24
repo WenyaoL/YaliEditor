@@ -27,7 +27,7 @@ class MarkdownTool{
     turndown(element:HTMLElement,escape:boolean = true){
         let turndown = this.editor.ir.parser.turndown(element.outerHTML)
         //P标签翻译出的markdown语法会被转义，去除头部的转义符
-        if(escape) turndown = turndown.replace(/(\\)(?=[\[\]`*.>#$])/g,"")
+        if(escape && !this.editor.options.ir.borderModel) turndown = turndown.replace(/(\\)(?=[\[\]`*.>#$])/g,"")
         return turndown
     }
 
@@ -86,6 +86,7 @@ class MarkdownTool{
         if(!block) return false;
         let turndown = this.turndown(block)
         const res = this.renderInline(turndown)
+
         block.replaceChildren(...strToNodeArray(res))
         return block
     }
@@ -175,9 +176,8 @@ class MarkdownTool{
         const e = strToElement(res) as HTMLElement
         if(!e) return
         //块没发生转换不进行处理
-        if(e.tagName == block.tagName) return
+        if(e.tagName == block.tagName || e.innerText.length == 0) return
 
-        if(e.innerText.length == 0) return
         block.replaceWith(e)
         if(isMdBlockToc(e)) this.editor.ir.contextRefresher.refreshToc()
         return e

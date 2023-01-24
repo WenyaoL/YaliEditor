@@ -10,7 +10,6 @@ import {
 import {isMdBlockFence, isMdBlockMath, isMdBlockParagraph} from '../util/inspectElement'
 
 import YaLiEditor from "..";
-import { strToElement } from "../util/createElement";
 import rangy from "rangy";
 
 class IREnterkeyProcessor implements KeyProcessor{
@@ -29,11 +28,6 @@ class IREnterkeyProcessor implements KeyProcessor{
     }
 
 
-
-
-
-
-
     enter(){
         const sel = rangy.getSelection()
         let r = sel.getRangeAt(0).cloneRange()
@@ -49,7 +43,9 @@ class IREnterkeyProcessor implements KeyProcessor{
 
         const li = IRfindClosestLi(block)
         if(li){
-            let {end} = this.editor.domTool.splitElementAtCursor(li)
+            let {start,end} = this.editor.domTool.splitElementAtCursor(li)
+            this.editor.markdownTool.reRenderInlineElementAtBlock(start.firstElementChild as HTMLElement)
+            this.editor.markdownTool.reRenderInlineElementAtBlock(end.firstElementChild as HTMLElement)
             sel.collapse(end.firstElementChild,0)
             return true
         }
@@ -69,6 +65,7 @@ class IREnterkeyProcessor implements KeyProcessor{
             return true
         }else{
             let {start,end} = this.editor.domTool.splitElementAtCursor(block)
+            
             if(isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
             else this.editor.markdownTool.reRenderBlockElement(start as HTMLElement)
 
@@ -83,7 +80,10 @@ class IREnterkeyProcessor implements KeyProcessor{
     execute(event: KeyboardEvent) {
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
-        if(this.enter()) event.preventDefault()
+        if(this.enter()) {
+            event.preventDefault()
+            this.editor.ir.observer.flush()
+        }
 
     }
 

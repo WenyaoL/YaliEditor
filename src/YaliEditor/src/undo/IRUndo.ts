@@ -123,15 +123,12 @@ class IRUndo{
         if(!history) return;
 
         this.redoStack.push(history);
-
         this.IRHistoryUndo(history)
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
     }
 
     private IRHistoryRedo(history:History){
-        
-        
         //复制并反转补丁
         const redoPatch = this.dmp.patch_deepCopy(history.patch).reverse()
         redoPatch.forEach((patch) => {
@@ -153,9 +150,6 @@ class IRUndo{
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         //重新设置光标
         history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-        
-        
-        
         rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
@@ -190,8 +184,7 @@ class IRUndo{
        //生成补丁
         const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
         if(patch.length === 0) return;
-
-        
+ 
         
         //创建历史记录
         let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()

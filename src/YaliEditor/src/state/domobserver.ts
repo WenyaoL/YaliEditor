@@ -34,7 +34,6 @@ export class DOMObserver{
                 this.editor.ir.rootElement.append(createParagraph())
                 this.editor.ir.focus()
             }
-            this.flush()
         });
     }
 

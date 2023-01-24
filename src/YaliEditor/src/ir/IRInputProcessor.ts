@@ -35,20 +35,26 @@ class IRInputProcessor{
         
         if(event.data == " "){
             this.editor.ir.contextRefresher.refreshFocusInline(true)
+            this.editor.ir.observer.flush()
             return
         }
 
-        if(Reg.alphabetReg.test(event.data)){
+        /*if(Reg.alphabetReg.test(event.data)){
             if(!this.editor.ir.contextRefresher.refreshFocusInline(true)){
+                console.log("刷新块级原");
+                
                 this.editor.ir.contextRefresher.refreshFocusBlock()
             }
+            this.editor.ir.observer.flush()
             return
-        }
+        }*/
 
         //普通的输入需要刷新节点
-        if(!this.editor.ir.contextRefresher.refreshFocusInline()){
+        this.editor.ir.contextRefresher.refreshFocusInline()
+        this.editor.ir.contextRefresher.refreshFocusBlock()
+        /*if(!this.editor.ir.contextRefresher.refreshFocusInline()){
             this.editor.ir.contextRefresher.refreshFocusBlock()
-        }
+        }*/
 
         this.editor.ir.observer.flush()
     }

@@ -46,6 +46,12 @@ export const isMdBlockTable = (element: Element) => {
   return false
 }
 
+export const isMdBlockHr = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_HR) return true
+  return false
+}
+
 export const isMdBlockToc = (element: Element)=>{
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TOC) return true

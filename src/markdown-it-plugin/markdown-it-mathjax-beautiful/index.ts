@@ -254,9 +254,8 @@ class Mathjax{
           viewupdate.view.dom.setAttribute("is-empty","false")
         }
         if(viewupdate.docChanged){
-          this.editor.ir.observer.ignore(()=>{
-            this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,{display:true})
-          },this)
+          this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,{display:true})
+          //this.editor.ir.observer.flush()
         }
       })
     ]

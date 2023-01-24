@@ -1,17 +1,14 @@
 import MarkdownIt from 'markdown-it';
 import {Mathjax} from './markdown-it-mathjax-beautiful'
 
-//import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
-
-
 import highlighter from './markdown-it-highlight-beautiful'
 
-//import CodemirrorManager from './markdown-it-code-beautiful'
 import CodemirrorManager from './markdown-it-codemirror-beautiful'
+import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
 
 import './index.scss'
 import YaLiEditor from '@/YaliEditor/src';
-//import table from 'markdown-it-multimd-table'
+
 import { MultimdTable,multimd_table_plugin } from './markdown-it-table-beautiful'
 
 
@@ -42,10 +39,13 @@ class MarkdownBeautiful{
       multibody:  true,
       aotolabel:  true,
     })
-
     this.md.use(this.table.multimd_table_plugin,this.table)
+
+
     this.mathjax = new Mathjax(this.editor)
     this.md.use(this.mathjax.plugin)
+
+    this.md.use(markdownItMeta,{borderModel:this.editor.options.ir.borderModel})
 
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{
       this.md.use(mdp.plugin,mdp.options)
@@ -68,7 +68,6 @@ class MarkdownBeautiful{
   }
 
   render(src:string){
-    
     return this.md.render(src)
   }
 

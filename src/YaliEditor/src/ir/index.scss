@@ -115,10 +115,41 @@
 
 .YaLi-ir{
 
+    .md-border{
+        display: none;
+    }
+
+    strong.md-expand span.md-border{
+        display:inline;
+        color: var(--yali-font-before-color);
+    }
+
+    em.md-expand span.md-border{
+        display:inline;
+        color: var(--yali-font-before-color);
+    }
+
+    code.md-expand  span.md-border{
+        display:inline;
+    }
+
+    s.md-expand span.md-border{
+        display:inline;
+        color: var(--yali-font-before-color);
+    }
+
+    u.md-expand span.md-border{
+        display:inline;
+        color: var(--yali-font-before-color);
+    }
+
+
+
+    /*飞边界模式下的CSS
     code.md-expand::before,code.md-expand::after{
         content: '`';
     }
-    
+
     strong.md-expand::before,strong.md-expand::after{
         content: '**';
         color: var(--yali-font-before-color);
@@ -133,7 +164,7 @@
         content: '~~';
         color: var(--yali-font-before-color);
     }
-
+    */
     u.md-expand::before{
         content: '<u>';
         color: var(--yali-font-before-color);

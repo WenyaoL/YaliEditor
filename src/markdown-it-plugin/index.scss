@@ -21,7 +21,18 @@
 
 
 
-.md-like{
+.md-like {
     display: inline;
     color: #C7C5C5;
+}
+
+.md-hr {
+    background-color: #C7C5C5;
+}
+
+.md-hr.md-focus {
+    background-color:#6eace2;
+    hr{
+        height: 2px;
+    }
 }

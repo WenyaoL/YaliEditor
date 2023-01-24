@@ -146,6 +146,7 @@ class IRPasteProcessor{
         //这里会导致系统的输入和粘贴的默认行为得到阻止
         event.preventDefault()
         
+        this.editor.ir.observer.forceFlush()
     }  
 }
 

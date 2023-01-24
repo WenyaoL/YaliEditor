@@ -19,7 +19,8 @@ export const ATTR_MD_BLOCK_PARAGRAPH : string = "paragraph"
 export const ATTR_MD_BLOCK_TOC:string = "toc"
 export const ATTR_MD_BLOCK_TABLE : string = "table" 
 export const ATTR_MD_BLOCK_FENCE : string = "fence" 
-export const ATTR_MD_BLOCK_MATH : string = "math" 
+export const ATTR_MD_BLOCK_MATH : string = "math"
+export const ATTR_MD_BLOCK_HR : string = "hr"
 
 /**
  * md-inline的属性块
@@ -78,6 +79,7 @@ export default {
     ATTR_MD_BLOCK_TABLE,
     ATTR_MD_BLOCK_FENCE,
     ATTR_MD_BLOCK_MATH,
+    ATTR_MD_BLOCK_HR,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

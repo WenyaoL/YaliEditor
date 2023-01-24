@@ -29,13 +29,12 @@ class IRTabkeyProcessor implements KeyProcessor{
             start.textContent = start.textContent.slice(0,startOff)+"\u00A0\u00A0"+start.textContent.slice(endOff)
             sel.collapse(start,startOff+2)
         }
-        
-        //r.insertNode(document.createTextNode("f"))
         return true
     }
 
     execute(event: KeyboardEvent) {
         if(this.insert()){
+            this.editor.ir.observer.flush()
             event.preventDefault()
         }
     }

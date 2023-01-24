@@ -378,9 +378,7 @@ export class CodemirrorManager {
                 viewupdate.view.dom.setAttribute("is-empty", "false")
             }
             if (viewupdate.docChanged) {
-                this.editor.ir.observer.ignore(() => {
-                    this.editor.ir.renderer.mathjax.freshMathjax(id, viewupdate.state.doc.toString())
-                }, this.editor.ir.renderer.mathjax)
+                this.editor.ir.renderer.mathjax.freshMathjax(id, viewupdate.state.doc.toString())
             }
         })])
     }

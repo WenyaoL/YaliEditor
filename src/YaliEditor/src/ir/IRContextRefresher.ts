@@ -42,15 +42,12 @@ class IRContextRefresher {
             this.editor.ir.rootElement.appendChild(createParagraph())
         }
 
-        //补丁类的刷新(忽略补丁监控)
-        this.ir.observer.ignore(() => {
-            this.refreshLink()
-            this.refreshImg()
-            this.refreshHeading()
-            this.refreshTable()
-            //this.refreshToc()
-        }, this)
-
+        //补丁类的刷新
+        this.refreshLink()
+        this.refreshImg()
+        this.refreshHeading()
+        this.refreshTable()
+        //this.refreshToc()
 
         //更新焦点元素
         this.editor.ir.focueProcessor.updateFocusElement()

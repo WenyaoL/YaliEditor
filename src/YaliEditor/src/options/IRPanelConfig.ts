@@ -16,9 +16,11 @@ export class IRPanelConfig implements BaseConfig {
         options?: any
     }[] = [];
 
-    disableEdit?: boolean;
+    disableEdit?: boolean;  //可编辑模式
 
-    theme?: string;
+    theme?: string;  //主题
+
+    borderModel:boolean = true;  //边界模式（决定是否要渲染字体的边界）
 
     constructor() { }
 
@@ -43,6 +45,10 @@ export class IRPanelConfig implements BaseConfig {
     setDisableEdit(disableEdit: boolean) {
         this.disableEdit = disableEdit
         return this
+    }
+
+    setBorderModel(flag:boolean){
+        this.borderModel = flag
     }
 
     end() {
