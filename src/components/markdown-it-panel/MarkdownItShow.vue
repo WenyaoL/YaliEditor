@@ -26,8 +26,6 @@ export default {
       }
 
       onMounted(()=>{
-
-        
         markShow.value.addEventListener("click",(ev: MouseEvent & { target: HTMLElement })=>{
           ev.preventDefault()
           if(ev.ctrlKey && ev.target.tagName =="A"){
@@ -117,5 +115,13 @@ div{
   width: 500px;
   margin-left: auto;
   margin-right: auto;
+}
+
+::v-deep p>code{
+    border: 1px solid var(--yali-code-font-border-color);
+    border-radius: 3px;
+    color: var(--yali-code-font-color);
+    background-color: var(--yali-code-font-background-color);
+    font-size:large;
 }
 </style>

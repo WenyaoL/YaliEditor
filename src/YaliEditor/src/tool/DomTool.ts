@@ -109,7 +109,7 @@ class DomTool {
      * @param element 
      */
     deleteTextEmptyElement(element: HTMLElement) {
-        if (element.innerText.length == 0 || element.innerText == "\n"){
+        if (element.innerText.length == 0 || Reg.emptyString.test(element.innerText)) {
             element.remove()
             return true
         }
@@ -117,21 +117,26 @@ class DomTool {
     }
 
 
-    deleteSeletedTextNode(){
+    isTextEmptyElement(element: HTMLElement) {
+        if (element.innerText.length == 0 || Reg.emptyString.test(element.innerText)) return true
+        return false
+    }
+
+    deleteSeletedTextNode() {
         let sel = rangy.getSelection()
         let r = sel.getRangeAt(0).cloneRange()
-        let nodeList = sel.getRangeAt(0).getNodes([3],(node)=>{
-            if(Reg.emptyString.test(node.textContent)) return false
+        let nodeList = sel.getRangeAt(0).getNodes([3], (node) => {
+            if (Reg.emptyString.test(node.textContent)) return false
             return true
         })
 
-        nodeList.forEach(node=>{
-            if(r.startContainer == node){
-                node.textContent = node.textContent.slice(0,r.startOffset)
+        nodeList.forEach(node => {
+            if (r.startContainer == node) {
+                node.textContent = node.textContent.slice(0, r.startOffset)
                 return
             }
 
-            if(r.endContainer == node){
+            if (r.endContainer == node) {
                 node.textContent = node.textContent.slice(r.endOffset)
                 return
             }
@@ -139,13 +144,13 @@ class DomTool {
         })
     }
 
-    selectedNodeLast(node:Node){
+    selectedNodeLast(node: Node) {
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0)
-        if(node.nodeType == 3){
+        if (node.nodeType == 3) {
             r.collapseToPoint(node, node.textContent.length)
             sel.setSingleRange(r)
-        }else if(node.nodeType == 1){
+        } else if (node.nodeType == 1) {
             r.collapseToPoint(node, node.childNodes.length)
             sel.setSingleRange(r)
         }

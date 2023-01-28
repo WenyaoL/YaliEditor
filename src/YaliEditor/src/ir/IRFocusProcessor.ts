@@ -14,6 +14,7 @@ import {
 import Constants from "../constant/constants";
 import rangy from "rangy";
 import YaLiEditor from "..";
+import { isMdInline } from "../util/inspectElement";
 
 class IRFocusProcessor {
   //当前被选中的md-inline原生
@@ -58,6 +59,27 @@ class IRFocusProcessor {
     if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
+  }
+
+  setFocusElementByMdinline(inline?:HTMLElement){
+    this.sel = rangy.getSelection()
+    if (!inline) inline = IRfindClosestMdInline(this.sel.getRangeAt(0).startContainer)
+    if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
+    this.selectedInlineMdElement = inline
+    this.selectedInlineMdElement?.classList.add("md-expand")
+  }
+
+
+  /**
+   * 给定md-inline并将光标聚焦到上面
+   * @param inline 
+   */
+  focusMdInline(inline:HTMLElement){
+    this.sel = rangy.getSelection()
+    if(isMdInline(inline)){
+      this.setFocusElementByMdinline(inline)
+      this.sel.collapse(inline.lastChild,inline.lastChild.textContent.length)
+    }
   }
 
   /**

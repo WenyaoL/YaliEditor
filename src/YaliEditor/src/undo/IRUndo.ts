@@ -85,8 +85,6 @@ class IRUndo{
         
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
-        
-
 
         //重新设置last
         this.lastText = res[0]
@@ -119,6 +117,8 @@ class IRUndo{
      * undo 操作
      */
     public undo(){
+        this.editor.ir.observer.flushNow()
+
         const history = this.undoStack.pop()
         if(!history) return;
 

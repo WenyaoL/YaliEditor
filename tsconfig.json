@@ -4,6 +4,7 @@
     //"outDir": "./build/",
     //"noEmit": true,
     "declaration": true,
+    "declarationDir":"./type",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": false,

@@ -27,7 +27,6 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
 
         let mdBlock = IRfindClosestMdBlock(start)
-        let mdinline = IRfindClosestMdInline(start)
 
         //尝试退化成P
         let p = this.editor.markdownTool.mdBlockDegenerateToP(mdBlock)
@@ -40,79 +39,53 @@ class IRDeletekeyProcessor implements KeyProcessor {
         //退化失败后，mdBlock-Math和mdBlock-Fance将不做任何处理
         if(!this.filter()) return false
 
-        //尝试删除P节点
-        const mdBlockPreviousElement = mdBlock.previousElementSibling
-
-        if(isMdBlockParagraph(mdBlock) && isMdBlockHr(mdBlockPreviousElement)){
-            mdBlockPreviousElement.remove()
-            return true
-        }
-
-        if (isMdBlockParagraph(mdBlock) && this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
-            if(!mdBlockPreviousElement){
-                this.editor.ir.focueProcessor.updateFocusMdBlockByStart()
+        //P标签处理
+        if(isMdBlockParagraph(mdBlock)){
+            const mdBlockPreviousElement = mdBlock.previousElementSibling
+            //临近Hr附近
+            if(this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockHr(mdBlockPreviousElement)){
+                mdBlockPreviousElement.remove()
                 return true
             }
-            
-            if(isMdBlockParagraph(mdBlockPreviousElement)) {
-                let text = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
+
+            //尝试删除P节点
+            if(this.editor.domTool.deleteTextEmptyElement(mdBlock)){
+                if(!mdBlockPreviousElement){
+                    this.editor.ir.focueProcessor.updateFocusMdBlockByStart()
+                    return true
+                }
+
+                let text:any = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
                 if (text) {
                     r.collapseAfter(text)
                     sel.setSingleRange(r)
                     return true
                 }
+
+                //选择下一个字符
+                text = this.editor.markdownTool.getLastTextNode(mdBlockPreviousElement)
+                if (text) {
+                    this.editor.domTool.selectedNodeLast(text)
+                    return true
+                }
+                return false
             }
 
-            //选择下一个字符
-            let text = this.editor.markdownTool.getLastTextNode(mdBlockPreviousElement)
-            if (text) {
-                this.editor.domTool.selectedNodeLast(text)
-                return true
-            }
-
-            return false
         }
-
-
-
-
-        let e = (start as Element)
-
-        if (e.nodeType === 3) {
-            e = e.parentElement;
-        }
-
-
         
-        //删除元数据类
-        if (e.classList.contains(CONSTANTS.CLASS_MD_META)) {
-            //元数据类更改，应该影响内容的展示和标签的实际功能
-            return false;
-        }
 
-        //删除隐藏类
-        if (e.classList.contains(CONSTANTS.CLASS_MD_HIDEN)) {
-            if (!mdinline) return false
-            if (mdinline.hasAttribute(CONSTANTS.ATTR_MD_INLINE)) {
-                r.selectNodeContents(mdinline)
-                rangy.getSelection().setSingleRange(r)
-                return true;
-            }
-        }
-
-
-        //校正删除LINK
-        start = r.startContainer
+        //模拟最后字符删除(用于修复link的错误删除)
         let startOff = r.startOffset
-        //模拟字符删除
-        if (startOff == 1 && start.previousSibling && start.previousSibling.nodeType == 1 && start.nodeType == 3) {
+        if (start.nodeType == 3 && startOff == 1 && start.previousSibling && start.previousSibling.nodeType == 1) {
             let sib = start.previousSibling as HTMLElement
             if (sib.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK) {
                 r.setStart(start, startOff - 1)
                 r.deleteContents()
+                this.editor.ir.focueProcessor.focusMdInline(sib)
                 return true
             }
-        }        
+        }
+        
         return false;
     }
 

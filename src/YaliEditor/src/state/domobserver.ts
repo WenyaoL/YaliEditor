@@ -69,6 +69,23 @@ export class DOMObserver{
         }, this.groupDelayTime);
     }
 
+    /**
+     * 如果有存在的延时器，现在进行冲刷
+     */
+    flushNow(){
+        this.lastChange = Date.now()
+        //存在延时器(清除当前延时器)
+        if(this.delayTimer>0){
+            clearTimeout(this.delayTimer)
+            this.delayTimer = -1;
+            this.editor.ir.addUndo()
+        }
+    }
+
+    /**
+     * 自定义刷新
+     * @param f 
+     */
     flushByCustom(f:Function){
         const now = Date.now()
         this.lastChange = now

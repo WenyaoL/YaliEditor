@@ -27,6 +27,7 @@ class IRDragBinder implements BaseEventBinder {
         let sel = rangy.getSelection()
         let r = sel.getRangeAt(0).cloneRange()
         r.insertNode(e)
+        this.editor.ir.observer.forceFlush()
         return true
     }
 

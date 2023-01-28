@@ -78,14 +78,31 @@ class MarkdownTool{
     }
 
     /**
-     * 给定一个md-block,以renderInline规则重新渲染md-block中的文本
-     * @param block 
+     * 给定一个md-block,以renderInline规则重新渲染md-block中的文本，
+     * 默认:没发生element元素数量变化不会刷新
+     * @param block 给定的md-block
+     * @param force 是否强制刷新
      * @returns 
      */
-    reRenderInlineElementAtBlock(block:HTMLElement){
+    reRenderInlineElementAtBlock(block:HTMLElement,force?: boolean){
         if(!block) return false;
+        const childCount = block.childElementCount
         let turndown = this.turndown(block)
         const res = this.renderInline(turndown)
+
+        //强制渲染
+        if(force) {
+            block.replaceChildren(...strToNodeArray(res))
+            return block
+        }
+
+        //检测有没有生成新的element
+        const root = document.createElement("div")
+        root.innerHTML = res
+        if(root.childElementCount == childCount){ 
+            return false
+        }
+
 
         block.replaceChildren(...strToNodeArray(res))
         return block

@@ -3,6 +3,7 @@ node_modules
 /dist
 /build
 /build_demo
+type
 
 # local env files
 .env.local

@@ -74,12 +74,14 @@ class IRContextRefresher {
         let {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement()
         const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
         
+        if (!block) return false
 
         //只有P标签才进行刷新
         if (isMdBlockParagraph(block)) {
             const sel = rangy.getSelection()
 
-            if(likeType || isMdInlineLink(inline) || isMdInlineImg(inline)){
+            //存在md-inline或者likeType对其进行刷新
+            if(likeType || inline){
                 let mark = sel.getBookmark(block)
                 inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
                 
@@ -93,18 +95,14 @@ class IRContextRefresher {
 
             if(escape) return false
 
-            if (!block) return
-
+            //尝试刷新行内的所有文本
             let mark = sel.getBookmark(block)
-            
-            const count = block.childElementCount
-            this.editor.markdownTool.reRenderInlineElementAtBlock(block)
-            sel.moveToBookmark(mark)
-
-            
-            this.editor.ir.focueProcessor.updateFocusElement()
-            if(count==block.childElementCount) return false
-            return true
+            if(this.editor.markdownTool.reRenderInlineElementAtBlock(block)){
+                sel.moveToBookmark(mark)
+                this.editor.ir.focueProcessor.updateFocusElement()
+                return true
+            }
+            return false
         }
 
         return false

@@ -52,32 +52,34 @@
     p{
         position: relative;
         min-height: 22.4px;
+
+        >u{
+            //color: palevioletred;
+            color: var(--yali-underline-font-color);
+        }
+    
+        >strong{
+            color: var(--yali-bold-font-color);
+        }
+    
+        >em{
+            color: var(--yali-italic-font-color);
+        }
+    
+        >s{
+            color: var(--yali-deleteline-font-color);
+        }
+    
+        >code{
+            border: 1px solid var(--yali-code-font-border-color);
+            border-radius: 3px;
+            color: var(--yali-code-font-color);
+            background-color: var(--yali-code-font-background-color);
+            font-size:large;
+        }
     }
 
-    u{
-        //color: palevioletred;
-        color: var(--yali-underline-font-color);
-    }
 
-    strong{
-        color: var(--yali-bold-font-color);
-    }
-
-    em{
-        color: var(--yali-italic-font-color);
-    }
-
-    s{
-        color: var(--yali-deleteline-font-color);
-    }
-
-    code{
-        border: 1px solid var(--yali-code-font-border-color);
-        border-radius: 3px;
-        color: var(--yali-code-font-color);
-        background-color: var(--yali-code-font-background-color);
-        font-size:large;
-    }
 
 
     p.md-focus::before{
@@ -189,10 +191,4 @@
     color: var(--yali-selection-color);
 }
 
-code{
-    border: 1px solid var(--yali-code-font-border-color);
-    border-radius: 3px;
-    color: var(--yali-code-font-color);
-    background-color: var(--yali-code-font-background-color);
-    font-size:large;
-}
+

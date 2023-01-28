@@ -19,15 +19,6 @@ class IREnterkeyProcessor implements KeyProcessor{
         this.editor = editor
     }
 
-    isNotHandle(inline:HTMLElement|null,block:HTMLElement|null,top:HTMLElement|null){
-        //光标是否在公式块里面
-        if(block && block.tagName === "PRE") return true
-        
-        //光标是否在math块里面
-        if(top && top.classList.contains("markdown-it-mathjax-beautiful")) return true;
-    }
-
-
     enter(){
         const sel = rangy.getSelection()
         let r = sel.getRangeAt(0).cloneRange()
@@ -82,9 +73,8 @@ class IREnterkeyProcessor implements KeyProcessor{
         this.editor.ir.focueProcessor.updateBeforeModify()
         if(this.enter()) {
             event.preventDefault()
-            this.editor.ir.observer.flush()
         }
-
+        this.editor.ir.observer.flush()
     }
 
 }
