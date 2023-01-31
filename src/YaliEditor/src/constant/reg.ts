@@ -14,9 +14,14 @@ export const markdownRuleStr = /[+*-~`#>\[\]]/
 
 export const numberReg = /[0-9]/
 
+export const linuxFilePathReg = /^\/(\w+\/)+\w+\.\w+$/
+export const windowFilePathReg = /^[a-zA-Z]:\\(?:\w+\\)*\w+\.\w+$/
+
 export const alphabetReg = /[a-zA-Z]/;
 
 export const htmlTitleReg = /(?<=<title>)(.*)(?=<\/title>)/;
+export const htmlcommentReg = /^<!-[\s\S]*?-->\n?$/
+export const imgBase64Reg = /^data:image\/.*;base64/
 
 export default {
     httpReg,
@@ -25,6 +30,10 @@ export default {
     emptyString,
     markdownRuleStr,
     numberReg,
+    linuxFilePathReg,
+    windowFilePathReg,
     alphabetReg,
-    htmlTitleReg
+    htmlTitleReg,
+    htmlcommentReg,
+    imgBase64Reg
 }

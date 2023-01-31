@@ -29,8 +29,20 @@ export const isMdBlockFence = (element: Element) => {
 }
 
 export const isMdBlockMath = (element: Element) => {
-  if(!isMdBlock(element)) return false
+  if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_MATH) return true
+  return false
+}
+
+export const isMdBlockCode = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_CODE) return true
+  return false
+}
+
+export const isMdBlockMeta = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_META) return true
   return false
 }
 
@@ -52,23 +64,23 @@ export const isMdBlockHr = (element: Element) => {
   return false
 }
 
-export const isMdBlockToc = (element: Element)=>{
+export const isMdBlockToc = (element: Element) => {
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TOC) return true
   return false
 }
 
-export const isMdInlineImg = (element: Element) =>{
-  if(!isMdInline(element)) return false
+export const isMdInlineImg = (element: Element) => {
+  if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_IMG) return true
   return false
-} 
+}
 
-export const isMdInlineLink = (element: Element) =>{
-  if(!isMdInline(element)) return false
+export const isMdInlineLink = (element: Element) => {
+  if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_LINK) return true
   return false
-} 
+}
 
 /**
  * 判断当前fence块文本是否为空

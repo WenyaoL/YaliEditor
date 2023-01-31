@@ -5,6 +5,9 @@ import {LanguageDescription} from "@codemirror/language"
 import {EditorState,type Extension, Compartment,StateEffect} from "@codemirror/state"
 import {EditorView} from "@codemirror/view"
 import {EditorStateOptions} from './EditorOptions'
+import { App } from "vue" 
+
+
 /**
  * 封装的EditorState
  */
@@ -31,6 +34,12 @@ export class CodemirrorEditorState implements EditorStateOptions{
     //编辑状态开关
     public editorSwitch:(targetApply?: boolean) => void;
 
+    //输入选项组件
+    public inputComponent:App
+
+    //输入选项组件是否已经挂载
+    public isMountedInputComponent:boolean = false;
+
 
     constructor(
         uuid:string,
@@ -44,7 +53,8 @@ export class CodemirrorEditorState implements EditorStateOptions{
            this.langCompartment = options.langCompartment;
            this.lang = options.lang;
            this.needSuggestUI = options.needSuggestUI;
-           this.languageDescription = options.languageDescription
+           this.languageDescription = options.languageDescription;
+           this.inputComponent = options.inputComponent
         }
 
     }

@@ -1,6 +1,7 @@
 import YaLiEditor from '..'
 import Constants from "../constant/constants";
 import Reg from '../constant/reg';
+import { isMdBlockCode, isMdBlockFence, isMdBlockMath, isMdBlockMeta } from '../util/inspectElement';
 
 class IRInputProcessor{
     
@@ -21,6 +22,8 @@ class IRInputProcessor{
         if(event.isComposing){
             return;
         }
+        const block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)) return
         
         //根据输入位置发布不同的事件
         const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
@@ -32,26 +35,13 @@ class IRInputProcessor{
             this.editor.ir.observer.flush()
             return
         }
-        
+
         if(event.data == " "){
             this.editor.ir.contextRefresher.refreshFocusInline(true)
             this.editor.ir.observer.flush()
             return
         }
-
-        /*if(Reg.alphabetReg.test(event.data)){
-            if(!this.editor.ir.contextRefresher.refreshFocusInline(true)){
-                console.log("刷新块级原");
-                
-                this.editor.ir.contextRefresher.refreshFocusBlock()
-            }
-            this.editor.ir.observer.flush()
-            return
-        }*/
-
-        //普通的输入需要刷新节点
-        //this.editor.ir.contextRefresher.refreshFocusInline()
-        //this.editor.ir.contextRefresher.refreshFocusBlock()
+        
         if(!this.editor.ir.contextRefresher.refreshFocusInline()){
             this.editor.ir.contextRefresher.refreshFocusBlock()
         }

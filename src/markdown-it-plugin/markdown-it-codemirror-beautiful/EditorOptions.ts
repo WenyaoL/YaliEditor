@@ -2,6 +2,7 @@ import {LanguageDescription} from "@codemirror/language"
 import {type Extension, Compartment} from "@codemirror/state"
 
 import {EditorView} from "@codemirror/view"
+import { App } from "vue";
 
 export interface EditorStateOptions{
     
@@ -16,6 +17,9 @@ export interface EditorStateOptions{
     langCompartment?:{compartment:Compartment,run:(extension: Extension,view:EditorView) => void};
     //主题的切换
     themeCompartment?:{compartment:Compartment,run:(extension: Extension,view:EditorView) => void};
+
+    //输入选项组件
+    inputComponent?:App
 }
 
 

@@ -54,13 +54,8 @@ export class DOMObserver{
      * @returns 
      */
     flush(){
-        const now = Date.now()
-        this.lastChange = now
         //存在延时器(清除当前延时器)
-        if(this.delayTimer>0){
-            clearTimeout(this.delayTimer)
-            this.delayTimer = -1;
-        }
+        this.clear()
         //创建新的延时器
         this.delayTimer = window.setTimeout(() => {
             //记录修改
@@ -87,13 +82,8 @@ export class DOMObserver{
      * @param f 
      */
     flushByCustom(f:Function){
-        const now = Date.now()
-        this.lastChange = now
         //存在延时器(清除当前延时器)
-        if(this.delayTimer>0){
-            clearTimeout(this.delayTimer)
-            this.delayTimer = -1;
-        }
+        this.clear()
         //创建新的延时器
         this.delayTimer = window.setTimeout(f, this.groupDelayTime);
     }
@@ -102,13 +92,8 @@ export class DOMObserver{
      * 强制刷新
      */
     forceFlush(){
-        const now = Date.now()
-        this.lastChange = now
         //存在延时器(清除当前延时器)
-        if(this.delayTimer>0){
-            clearTimeout(this.delayTimer)
-            this.delayTimer = -1;
-        }
+        this.clear()
         //记录修改
         this.editor.ir.addUndo()
     }
@@ -140,5 +125,22 @@ export class DOMObserver{
                 this.start()
             }
         }
+    }
+
+    /**
+     * 清除当前的延时器，并刷新时间
+     */
+    clear(){
+        this.lastChange = Date.now()
+        //存在延时器(清除当前延时器)
+        if(this.delayTimer>0){
+            clearTimeout(this.delayTimer)
+            this.delayTimer = -1;
+        }
+    }
+
+    hasDelayTimer(){
+        if(this.delayTimer>0) return true
+        return false
     }
 }

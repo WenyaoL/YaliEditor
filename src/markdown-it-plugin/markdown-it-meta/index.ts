@@ -117,6 +117,8 @@ function text(tokens: Token[], idx: number, options: Object, env: Object, slf: R
 
 
 function hr(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer){
+    const token = tokens[idx]
+    token.attrPush(["markup",token.markup])
     const hrstr = slf.renderToken(tokens, idx, env)
     return '<div md-block="hr" class="md-hr" contenteditable="false">' + hrstr + '</div>'
 }

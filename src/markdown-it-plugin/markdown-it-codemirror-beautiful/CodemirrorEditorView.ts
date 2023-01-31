@@ -17,7 +17,6 @@ export class CodemirrorEditorView implements EditorViewOptions{
 
 
 
-
     constructor(element?:Element,view?:EditorView,stateInfo?:CodemirrorEditorState){
         this.element = element;
         this.view = view;

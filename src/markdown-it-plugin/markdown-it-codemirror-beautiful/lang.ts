@@ -1,279 +1,279 @@
 export const langCanload = [{
-	"name": "C"
+	"value": "C"
 }, {
-	"name": "C++"
+	"value": "C++"
 }, {
-	"name": "CQL"
+	"value": "CQL"
 }, {
-	"name": "CSS"
+	"value": "CSS"
 }, {
-	"name": "HTML"
+	"value": "HTML"
 }, {
-	"name": "Java"
+	"value": "Java"
 }, {
-	"name": "JavaScript"
+	"value": "JavaScript"
 }, {
-	"name": "JSON"
+	"value": "JSON"
 }, {
-	"name": "JSX"
+	"value": "JSX"
 }, {
-	"name": "MariaDB SQL"
+	"value": "MariaDB SQL"
 }, {
-	"name": "Markdown"
+	"value": "Markdown"
 }, {
-	"name": "MS SQL"
+	"value": "MS SQL"
 }, {
-	"name": "MySQL"
+	"value": "MySQL"
 }, {
-	"name": "PHP"
+	"value": "PHP"
 }, {
-	"name": "PLSQL"
+	"value": "PLSQL"
 }, {
-	"name": "PostgreSQL"
+	"value": "PostgreSQL"
 }, {
-	"name": "Python"
+	"value": "Python"
 }, {
-	"name": "Rust"
+	"value": "Rust"
 }, {
-	"name": "SQL"
+	"value": "SQL"
 }, {
-	"name": "SQLite"
+	"value": "SQLite"
 }, {
-	"name": "TSX"
+	"value": "TSX"
 }, {
-	"name": "TypeScript"
+	"value": "TypeScript"
 }, {
-	"name": "WebAssembly"
+	"value": "WebAssembly"
 }, {
-	"name": "XML"
+	"value": "XML"
 }, {
-	"name": "APL"
+	"value": "APL"
 }, {
-	"name": "PGP"
+	"value": "PGP"
 }, {
-	"name": "ASN.1"
+	"value": "ASN.1"
 }, {
-	"name": "Asterisk"
+	"value": "Asterisk"
 }, {
-	"name": "Brainfuck"
+	"value": "Brainfuck"
 }, {
-	"name": "Cobol"
+	"value": "Cobol"
 }, {
-	"name": "C#"
+	"value": "C#"
 }, {
-	"name": "Clojure"
+	"value": "Clojure"
 }, {
-	"name": "ClojureScript"
+	"value": "ClojureScript"
 }, {
-	"name": "Closure Stylesheets (GSS)"
+	"value": "Closure Stylesheets (GSS)"
 }, {
-	"name": "CMake"
+	"value": "CMake"
 }, {
-	"name": "CoffeeScript"
+	"value": "CoffeeScript"
 }, {
-	"name": "Common Lisp"
+	"value": "Common Lisp"
 }, {
-	"name": "Cypher"
+	"value": "Cypher"
 }, {
-	"name": "Cython"
+	"value": "Cython"
 }, {
-	"name": "Crystal"
+	"value": "Crystal"
 }, {
-	"name": "D"
+	"value": "D"
 }, {
-	"name": "Dart"
+	"value": "Dart"
 }, {
-	"name": "diff"
+	"value": "diff"
 }, {
-	"name": "Dockerfile"
+	"value": "Dockerfile"
 }, {
-	"name": "DTD"
+	"value": "DTD"
 }, {
-	"name": "Dylan"
+	"value": "Dylan"
 }, {
-	"name": "EBNF"
+	"value": "EBNF"
 }, {
-	"name": "ECL"
+	"value": "ECL"
 }, {
-	"name": "edn"
+	"value": "edn"
 }, {
-	"name": "Eiffel"
+	"value": "Eiffel"
 }, {
-	"name": "Elm"
+	"value": "Elm"
 }, {
-	"name": "Erlang"
+	"value": "Erlang"
 }, {
-	"name": "Esper"
+	"value": "Esper"
 }, {
-	"name": "Factor"
+	"value": "Factor"
 }, {
-	"name": "FCL"
+	"value": "FCL"
 }, {
-	"name": "Forth"
+	"value": "Forth"
 }, {
-	"name": "Fortran"
+	"value": "Fortran"
 }, {
-	"name": "F#"
+	"value": "F#"
 }, {
-	"name": "Gas"
+	"value": "Gas"
 }, {
-	"name": "Gherkin"
+	"value": "Gherkin"
 }, {
-	"name": "Go"
+	"value": "Go"
 }, {
-	"name": "Groovy"
+	"value": "Groovy"
 }, {
-	"name": "Haskell"
+	"value": "Haskell"
 }, {
-	"name": "Haxe"
+	"value": "Haxe"
 }, {
-	"name": "HXML"
+	"value": "HXML"
 }, {
-	"name": "HTTP"
+	"value": "HTTP"
 }, {
-	"name": "IDL"
+	"value": "IDL"
 }, {
-	"name": "JSON-LD"
+	"value": "JSON-LD"
 }, {
-	"name": "Jinja2"
+	"value": "Jinja2"
 }, {
-	"name": "Julia"
+	"value": "Julia"
 }, {
-	"name": "Kotlin"
+	"value": "Kotlin"
 }, {
-	"name": "LESS"
+	"value": "LESS"
 }, {
-	"name": "LiveScript"
+	"value": "LiveScript"
 }, {
-	"name": "Lua"
+	"value": "Lua"
 }, {
-	"name": "mIRC"
+	"value": "mIRC"
 }, {
-	"name": "Mathematica"
+	"value": "Mathematica"
 }, {
-	"name": "Modelica"
+	"value": "Modelica"
 }, {
-	"name": "MUMPS"
+	"value": "MUMPS"
 }, {
-	"name": "Mbox"
+	"value": "Mbox"
 }, {
-	"name": "Nginx"
+	"value": "Nginx"
 }, {
-	"name": "NSIS"
+	"value": "NSIS"
 }, {
-	"name": "NTriples"
+	"value": "NTriples"
 }, {
-	"name": "Objective-C"
+	"value": "Objective-C"
 }, {
-	"name": "Objective-C++"
+	"value": "Objective-C++"
 }, {
-	"name": "OCaml"
+	"value": "OCaml"
 }, {
-	"name": "Octave"
+	"value": "Octave"
 }, {
-	"name": "Oz"
+	"value": "Oz"
 }, {
-	"name": "Pascal"
+	"value": "Pascal"
 }, {
-	"name": "Perl"
+	"value": "Perl"
 }, {
-	"name": "Pig"
+	"value": "Pig"
 }, {
-	"name": "PowerShell"
+	"value": "PowerShell"
 }, {
-	"name": "Properties files"
+	"value": "Properties files"
 }, {
-	"name": "ProtoBuf"
+	"value": "ProtoBuf"
 }, {
-	"name": "Puppet"
+	"value": "Puppet"
 }, {
-	"name": "Q"
+	"value": "Q"
 }, {
-	"name": "R"
+	"value": "R"
 }, {
-	"name": "RPM Changes"
+	"value": "RPM Changes"
 }, {
-	"name": "RPM Spec"
+	"value": "RPM Spec"
 }, {
-	"name": "Ruby"
+	"value": "Ruby"
 }, {
-	"name": "SAS"
+	"value": "SAS"
 }, {
-	"name": "Sass"
+	"value": "Sass"
 }, {
-	"name": "Scala"
+	"value": "Scala"
 }, {
-	"name": "Scheme"
+	"value": "Scheme"
 }, {
-	"name": "SCSS"
+	"value": "SCSS"
 }, {
-	"name": "Shell"
+	"value": "Shell"
 }, {
-	"name": "Sieve"
+	"value": "Sieve"
 }, {
-	"name": "Smalltalk"
+	"value": "Smalltalk"
 }, {
-	"name": "Solr"
+	"value": "Solr"
 }, {
-	"name": "SML"
+	"value": "SML"
 }, {
-	"name": "SPARQL"
+	"value": "SPARQL"
 }, {
-	"name": "Spreadsheet"
+	"value": "Spreadsheet"
 }, {
-	"name": "Squirrel"
+	"value": "Squirrel"
 }, {
-	"name": "Stylus"
+	"value": "Stylus"
 }, {
-	"name": "Swift"
+	"value": "Swift"
 }, {
-	"name": "sTeX"
+	"value": "sTeX"
 }, {
-	"name": "LaTeX"
+	"value": "LaTeX"
 }, {
-	"name": "SystemVerilog"
+	"value": "SystemVerilog"
 }, {
-	"name": "Tcl"
+	"value": "Tcl"
 }, {
-	"name": "Textile"
+	"value": "Textile"
 }, {
-	"name": "TiddlyWiki"
+	"value": "TiddlyWiki"
 }, {
-	"name": "Tiki wiki"
+	"value": "Tiki wiki"
 }, {
-	"name": "TOML"
+	"value": "TOML"
 }, {
-	"name": "Troff"
+	"value": "Troff"
 }, {
-	"name": "TTCN"
+	"value": "TTCN"
 }, {
-	"name": "TTCN_CFG"
+	"value": "TTCN_CFG"
 }, {
-	"name": "Turtle"
+	"value": "Turtle"
 }, {
-	"name": "Web IDL"
+	"value": "Web IDL"
 }, {
-	"name": "VB.NET"
+	"value": "VB.NET"
 }, {
-	"name": "VBScript"
+	"value": "VBScript"
 }, {
-	"name": "Velocity"
+	"value": "Velocity"
 }, {
-	"name": "Verilog"
+	"value": "Verilog"
 }, {
-	"name": "VHDL"
+	"value": "VHDL"
 }, {
-	"name": "XQuery"
+	"value": "XQuery"
 }, {
-	"name": "Yacas"
+	"value": "Yacas"
 }, {
-	"name": "YAML"
+	"value": "YAML"
 }, {
-	"name": "Z80"
+	"value": "Z80"
 }, {
-	"name": "MscGen"
+	"value": "MscGen"
 }, {
-	"name": "Xù"
+	"value": "Xù"
 }, {
-	"name": "MsGenny"
+	"value": "MsGenny"
 }]

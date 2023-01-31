@@ -6,7 +6,7 @@
 import IR from '.';
 import YaliEditor from '../index'
 import Constants from '../constant/constants';
-import { getAllHeading,isMdBlockFence,isMdBlockMath,isMdBlockParagraph, isMdInlineImg, isMdInlineLink } from "../util/inspectElement";
+import { getAllHeading,isMdBlockCode,isMdBlockFence,isMdBlockMath,isMdBlockMeta,isMdBlockParagraph, isMdInlineImg, isMdInlineLink } from "../util/inspectElement";
 import { strToElement, createParagraph } from "../util/createElement";
 import { toTocElementText } from "../util/formatText"
 import rangy from 'rangy';
@@ -71,8 +71,9 @@ class IRContextRefresher {
     refreshFocusInline(escape?:boolean) {
         //根据行类型选择是否强制刷新块
         
-        let {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement()
+        let {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement(false)
         const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
+        
         
         if (!block) return false
 
@@ -120,7 +121,7 @@ class IRContextRefresher {
 
         //获取当前所在的块
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if (!block || isMdBlockFence(block) || isMdBlockMath(block)) return
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)) return
 
         let bookmark = sel.getBookmark(block)
 

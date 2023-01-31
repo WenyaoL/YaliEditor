@@ -7,9 +7,8 @@ import YaliEditor from '../index'
 import {isMdBlock, isEmptyMdFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
-import { IRfindClosestMdBlock } from '../util/findElement';
 import Constants from '../constant/constants'
-import {} from '../util/inspectElement'
+import {toVNode,patch} from '../snabbdom'
 
 class MarkdownTool{
 
@@ -96,13 +95,17 @@ class MarkdownTool{
             return block
         }
 
+        
         //检测有没有生成新的element
-        const root = document.createElement("div")
+        const root = block.cloneNode(false) as HTMLElement
         root.innerHTML = res
-        if(root.childElementCount == childCount){ 
-            return false
-        }
+        if(root.childElementCount == 0 && childCount == 0) return false
 
+        if(root.childElementCount == childCount){ 
+            const vnode = toVNode(root)
+            const oldvnode = toVNode(block)
+            return patch(oldvnode,vnode).elm
+        }
 
         block.replaceChildren(...strToNodeArray(res))
         return block
@@ -168,10 +171,10 @@ class MarkdownTool{
             &&element.parentElement.tagName == "BLOCKQUOTE"){
                 //父标签是BLOCKQUOTE，父标签退化
                 return this.nodeDegenerateToP(element.parentElement)
-            }else if(element.tagName != "P"){
+            }else if(element.tagName != "P"){        
+                if(isEmptyMdFence(element)) this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
                 return this.nodeDegenerateToP(element)
             }
-            
         }else if(isEmptyMdFence(element)){
             this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
             return this.nodeDegenerateToP(element)
@@ -253,7 +256,7 @@ class MarkdownTool{
         if(!element) return
         let sel = rangy.getSelection()
         let r = sel.getRangeAt(0)
-
+        
         //点击图片进行光标偏移
         if(element.tagName == "IMG"){
             r.collapseAfter(element.previousElementSibling?.lastElementChild)
@@ -296,18 +299,18 @@ class MarkdownTool{
      * @param root 
      */
     fixCodemirror6Element(root:HTMLElement){
-        let es = root.getElementsByClassName(Constants.CLASS_MD_CODE)
-
+        //要遍历查询时querySelectorAll更佳
+        let es = root.querySelectorAll(`.${Constants.CLASS_MARKDOWN_IT_CODE_BEAUTIFUL}`)
+        //遍历查询
         for (let index = 0; index < es.length; index++) {
-            const element = es[index];
+            const element = es[index];  
             let text = this.editor.ir.renderer.codemirrorManager.getTextValue(element.id)            
             element.appendChild(document.createTextNode(text))
         }
     }
 
     removeAllCodemirror6Element(root:HTMLElement){
-        let es = root.getElementsByClassName(Constants.CLASS_MD_CODE)
-
+        let es = root.querySelectorAll(`.${Constants.CLASS_MARKDOWN_IT_CODE_BEAUTIFUL}`)
         for (let index = 0; index < es.length; index++) {
             const element = es[index];
             let input = element.getElementsByTagName("input").item(0)
@@ -316,6 +319,12 @@ class MarkdownTool{
         }
     }
 
+    removeAllFocusStyle(root:HTMLElement){
+        let focus = root.querySelectorAll(`.${Constants.CLASS_MD_FOCUS}`)
+        let expand = root.querySelectorAll(`.${Constants.CLASS_MD_EXPAND}`)
+        focus.forEach(e=>e.classList.remove(Constants.CLASS_MD_FOCUS))
+        expand.forEach(e=>e.classList.remove(Constants.CLASS_MD_EXPAND))
+    }
 
 
 }

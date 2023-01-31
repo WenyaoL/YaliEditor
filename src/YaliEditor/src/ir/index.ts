@@ -9,6 +9,7 @@ import { BaseEventBinder, IROptions } from "../../types";
 //编辑器基础控件
 import { DOMObserver } from "../state/domobserver";  //dom元素修改监控器
 import IRUndo from "../undo/IRUndo";  //undo组件
+//import IRUndo from "../undo/IRUndoSna"; //undo组件
 import IRContextRefresher from './IRContextRefresher'  //上下文刷新
 import ApplicationEventPublisher from '../event-publisher/ApplicationEventPublisher' //事件发布器
 
@@ -34,6 +35,8 @@ import IRTabProcessor from './IRTabkeyProcessor'
 import IRCopyProcessor from './IRCopyProcessor'
 import IRPasteProcessor from './IRPasteProcessor'
 import IRCompositionProcessor from './IRCompositionProcessor'
+import IRClickProcessor from "./IRClickProcessor";
+
 
 import rangy from "rangy";
 /**
@@ -70,8 +73,10 @@ class IR {
     public enterkeyProcessor: IREnterkeyProcessor
     //键盘移动键处理器
     public arrowMoveKeyProcessor: IRArrowMoveKeyProcessor;
-    //光标选中处理器
+    //聚焦处理器
     public focueProcessor: IRFocusProcessor
+    //点击处理器
+    public clickProcessor: IRClickProcessor
     //输入处理器
     public inputProcessor: IRInputProcessor;
     //Tab键处理器
@@ -114,10 +119,12 @@ class IR {
         this.parser = new TurndownParser(this.editor);;
 
         this.undoManager = new IRUndo(this.editor, "")
+        //this.undoManager = new IRUndo(this.editor, null)
         this.hotkeyProcessor = new IRHotkeyProcessor(this.editor)
         this.deletekeyProcessor = new IRDeletekeyProcessor(this.editor)
         this.enterkeyProcessor = new IREnterkeyProcessor(this.editor)
         this.focueProcessor = new IRFocusProcessor(this.editor)
+        this.clickProcessor = new IRClickProcessor(this.editor)
         this.arrowMoveKeyProcessor = new IRArrowMoveKeyProcessor(this.editor)
         this.inputProcessor = new IRInputProcessor(this.editor)
         this.tabkeyProcessor = new IRTabProcessor(this.editor)

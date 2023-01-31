@@ -106,8 +106,9 @@ function markTightParagraphs(state, idx) {
     if (state.tokens[i].level === level && state.tokens[i].type === 'paragraph_open') {
       //state.tokens[i + 2].hidden = true;
       //state.tokens[i].hidden = true;
-      state.tokens[i + 2].hidden = false; //强制使用松散模式(设置为false)
+      state.tokens[i + 2].hidden = false; //紧凑模式下强制显示P标签(设置为false)
       state.tokens[i].hidden = false;
+      state.tokens[i].attrPush(["tight","1"])
       i += 2;
     }
   }
@@ -221,7 +222,7 @@ function list(state, startLine, endLine, silent) {
 
   token.map = listLines = [startLine, 0];
   token.markup = String.fromCharCode(markerCharCode);
-
+  token.attrPush(["markup",token.markup])
   //迭代列表项
   // Iterate list items
   //

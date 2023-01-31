@@ -8,7 +8,13 @@ export const _YALI_VERSION : string =  "YaLier_1.0.0"
 
 export const CLASS_MD_HIDEN : string = "md-hiden"
 export const CLASS_MD_META : string = "md-meta"
-export const CLASS_MD_CODE: string = "markdown-it-code-beautiful"
+export const CLASS_MARKDOWN_IT_CODE_BEAUTIFUL: string = "markdown-it-code-beautiful"
+
+/**
+ * 聚焦class
+ */
+export const CLASS_MD_FOCUS : string = "md-focus"
+export const CLASS_MD_EXPAND : string = "md-expand"
 
 /**
  * md-block的属性块
@@ -21,6 +27,8 @@ export const ATTR_MD_BLOCK_TABLE : string = "table"
 export const ATTR_MD_BLOCK_FENCE : string = "fence" 
 export const ATTR_MD_BLOCK_MATH : string = "math"
 export const ATTR_MD_BLOCK_HR : string = "hr"
+export const ATTR_MD_BLOCK_CODE : string = "code"
+export const ATTR_MD_BLOCK_META : string = "meta"
 
 /**
  * md-inline的属性块
@@ -71,7 +79,9 @@ export default {
     _YALI_VERSION,
     CLASS_MD_HIDEN,
     CLASS_MD_META,
-    CLASS_MD_CODE,
+    CLASS_MARKDOWN_IT_CODE_BEAUTIFUL,
+    CLASS_MD_FOCUS,
+    CLASS_MD_EXPAND,
     ATTR_MD_BLOCK,
     ATTR_MD_BLOCK_HEADING,
     ATTR_MD_BLOCK_PARAGRAPH,
@@ -80,6 +90,8 @@ export default {
     ATTR_MD_BLOCK_FENCE,
     ATTR_MD_BLOCK_MATH,
     ATTR_MD_BLOCK_HR,
+    ATTR_MD_BLOCK_CODE,
+    ATTR_MD_BLOCK_META,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

@@ -16,7 +16,6 @@ class TurndownParser{
     TurndownService.prototype.escape = str=>str
     this.turndownService = new TurndownService({
       headingStyle:"atx",
-      emDelimiter:'*',
       borderModel:true
     })
     this.initCodeRule()
@@ -26,7 +25,10 @@ class TurndownParser{
     this.initCodemirrorRule(this.editor)
     this.initLinkRule()
     this.initFontRule()
-    //this.initParagraphRule()
+    this.initListRule()
+    this.initParagraphRule()
+    this.initHrRule()
+    this.initBlockMetaRule()
     this.turndownService.use(tableRule)
     
   }
@@ -214,11 +216,78 @@ class TurndownParser{
   initParagraphRule(){
     this.turndownService.addRule('md-paragraph',{
       filter: 'p',
-      replacement: function (content) {
-        content = content.replaceAll("\u00a0","&nbsp;")
+      replacement: function (content,node) {
+        //content = content.replaceAll("\u00a0","&nbsp;")
+        if((node as HTMLElement).hasAttribute("tight"))return '\n' + content
         return '\n' + content + '\n'
       }
     })
+  }
+
+  initListRule(){
+    this.turndownService.addRule('md-list',{
+      filter: ['ul', 'ol'],
+      replacement: function (content, node) {
+        var parent = node.parentNode
+        if (parent.nodeName === 'LI' && parent.lastElementChild === node) {
+          return '\n' + content
+        } else {
+          return '\n\n' + content + '\n\n'
+        }
+      }
+    })
+
+    this.turndownService.addRule('md-list-item',{
+      filter:'li',
+      replacement: function (content, node, options) {
+        content = content
+          .replace(/^\n+/, '') // remove leading newlines
+          .replace(/\n+$/, '\n') // replace trailing newlines with just a single one
+          .replace(/\n/gm, '\n    ') // indent
+        var prefix = options.bulletListMarker + '   '
+        var parent = node.parentNode
+        if (parent.nodeName === 'OL') {
+          var start = parent.getAttribute('start')
+          var index = Array.prototype.indexOf.call(parent.children, node)
+          prefix = (start ? Number(start) + index : index + 1) + '.  '
+        }
+        if(parent.nodeName === 'UL'){
+          const markup = (parent as HTMLElement).getAttribute("markup")
+          prefix = markup + ' '
+        }
+        
+        return (
+          prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
+        )
+      }
+    })
+  }
+
+  initHrRule(){
+    this.turndownService.addRule('md-hr',{
+      filter: 'hr',
+      replacement: function (content, node, options) {
+        const markup = (node as HTMLElement).getAttribute("markup")
+        if(markup) return '\n\n' + markup + '\n\n'
+        return '\n\n' + options.hr + '\n\n'
+      }
+    })
+
+  }
+
+  initBlockMetaRule(){
+    this.turndownService.addRule('md-block-meta',{
+      filter: function (node, options) {
+        return (
+          node.nodeName === 'PRE' && (node as HTMLElement).getAttribute("md-block") == "meta"
+        )
+      },
+      replacement: function (content, node, options) {
+        if(content.endsWith("\n"))return '---\n' + content + '---\n\n'
+        return '---\n' + content + '\n---\n\n'
+      }
+    })
+    
   }
 
   turndown(src:string | TurndownService.Node){

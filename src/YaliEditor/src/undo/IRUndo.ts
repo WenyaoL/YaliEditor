@@ -74,6 +74,7 @@ class IRUndo{
     setRootOrigin(root:HTMLElement){
         this.editor.markdownTool.removeAllCodemirror6Element(root)
         this.editor.markdownTool.fixCodemirror6Element(root)
+        this.editor.markdownTool.removeAllFocusStyle(root)
         this.lastText = root.innerHTML        
         this.hasUndo = false;
         this.redoStack = [];
@@ -82,19 +83,24 @@ class IRUndo{
 
 
     private IRHistoryUndo(history:History){
-        
+
         //对当前状态应用补丁，将其回退到上一状态
         const res = this.dmp.patch_apply(history.patch,this.lastText)
 
+        
         //重新设置last
         this.lastText = res[0]
+
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
-        
+
+
         //刷新disable的视图
         //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
+
         //刷新视图
         this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
+
         //重新设置光标
         let sel = rangy.getSelection()
         if(history.bookMark){
@@ -123,7 +129,9 @@ class IRUndo{
         if(!history) return;
 
         this.redoStack.push(history);
+
         this.IRHistoryUndo(history)
+        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
     }
@@ -170,21 +178,23 @@ class IRUndo{
 
 
     public addIRHistory(){
-        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot =  this.editor.ir.rootElement.cloneNode(true) as HTMLElement
+
         //移除codemirror代码
         this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
         this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
+        this.editor.markdownTool.removeAllFocusStyle(cloneRoot)
+
         
-        
+
         //当前状态到上一状态的不同
         const diff = this.dmp.diff_main(cloneRoot.innerHTML,this.lastText)
        //生成补丁
         const patch = this.dmp.patch_make(cloneRoot.innerHTML,diff)
         if(patch.length === 0) return;
- 
+
         
         //创建历史记录
         let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()
@@ -209,6 +219,7 @@ class IRUndo{
        this.editor.ir.isChange=true
        this.editor.ir.undoAddListener(this.editor)
 
+       
     }
 
     /**

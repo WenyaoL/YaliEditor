@@ -3,13 +3,8 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import {
-  findClosestByAttribute,
-  findClosestByClassName,
-  findClosestByTop,
   IRfindClosestMdBlock,
   IRfindClosestMdInline,
-  IRfindClosestLi,
-  IRfindClosestTop
 } from "../util/findElement";
 import Constants from "../constant/constants";
 import rangy from "rangy";
@@ -89,8 +84,8 @@ class IRFocusProcessor {
   updateFocusElementByRoot(root?: HTMLElement) {
     this.sel = rangy.getSelection()
     if (!root) root = this.editor.ir.rootElement
-    const focusElements = root.getElementsByClassName("md-focus")
-    const expandElements = root.getElementsByClassName("md-expand")
+    const focusElements = root.querySelectorAll(".md-focus")
+    const expandElements = root.querySelectorAll(".md-expand")
     const start = this.sel.getRangeAt(0).startContainer
 
     for (let index = 0; index < focusElements.length; index++) {
@@ -134,7 +129,7 @@ class IRFocusProcessor {
     //移除当前聚焦元素
     if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     //移除面板上可能残留的聚焦元素
-    const focus = this.editor.rootElement.getElementsByClassName("md-focus")
+    const focus = this.editor.rootElement.querySelectorAll(".md-focus")
     if (focus.length > 0) {
       Array.from(focus).forEach((e) => {
         e.classList.remove("md-focus")
@@ -159,7 +154,7 @@ class IRFocusProcessor {
     //移除当前聚焦元素
     if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
     //移除面板上可能残留的聚焦元素
-    const expand = this.editor.rootElement.getElementsByClassName("md-expand")
+    const expand = this.editor.rootElement.querySelectorAll(".md-expand")
     if (expand.length > 0) {
       Array.from(expand).forEach((e) => {
         e.classList.remove("md-expand")

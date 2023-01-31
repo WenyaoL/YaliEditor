@@ -1,15 +1,17 @@
 import MarkdownIt from 'markdown-it';
 import {Mathjax} from './markdown-it-mathjax-beautiful'
 
-import highlighter from './markdown-it-highlight-beautiful'
 
 import CodemirrorManager from './markdown-it-codemirror-beautiful'
 import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
+import markdownItMetaBeautiful from './markdown-it-meta-beautiful';
+import markdownItHTMLBeautiful from './markdown-it-html-beautiful'
 
 import './index.scss'
 import YaLiEditor from '@/YaliEditor/src';
 
 import { MultimdTable,multimd_table_plugin } from './markdown-it-table-beautiful'
+import { isMdBlockFence } from '@/YaliEditor/src/util/inspectElement';
 
 
 
@@ -46,12 +48,14 @@ class MarkdownBeautiful{
     this.md.use(this.mathjax.plugin)
 
     this.md.use(markdownItMeta,{borderModel:this.editor.options.ir.borderModel})
-
+    this.md.use(markdownItMetaBeautiful)
+    this.md.use(markdownItHTMLBeautiful)
+    
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{
       this.md.use(mdp.plugin,mdp.options)
     })
 
-    
+    this.subscribe()
   }
 
   initEditorView(rootElement:HTMLElement){
@@ -63,7 +67,7 @@ class MarkdownBeautiful{
   }
 
   refreshStateCache(rootElement:HTMLElement){
-    const elements = rootElement.getElementsByClassName("markdown-it-code-beautiful")
+    const elements = rootElement.querySelectorAll(".markdown-it-code-beautiful")
     this.codemirrorManager.refreshStateCache(elements)
   }
 
@@ -76,6 +80,13 @@ class MarkdownBeautiful{
     this.table.setTheme(theme)
   }
   
+  subscribe(){
+    this.editor.ir.applicationEventPublisher.subscribe("clickChanged",({block,inline})=>{
+      if(isMdBlockFence(block))this.codemirrorManager.mountInputComponent((block as HTMLElement).id)
+    })
+  }
+
+
 }
 
 
