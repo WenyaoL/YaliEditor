@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import Constants from '../constant/constants'
@@ -172,10 +172,13 @@ class MarkdownTool{
                 //父标签是BLOCKQUOTE，父标签退化
                 return this.nodeDegenerateToP(element.parentElement)
             }else if(element.tagName != "P"){        
-                if(isEmptyMdFence(element)) this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
+                if(isEmptyMdBlockFence(element)) this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
                 return this.nodeDegenerateToP(element)
             }
-        }else if(isEmptyMdFence(element)){
+        }else if(isEmptyMdBlockFence(element)){
+            this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
+            return this.nodeDegenerateToP(element)
+        }else if(isEmptyMdBlockMath(element)){
             this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
             return this.nodeDegenerateToP(element)
         }
@@ -193,6 +196,7 @@ class MarkdownTool{
         if(!block) return;
         let turndown = this.turndown(block)
         const res = this.renderBlock(turndown)
+        
         const e = strToElement(res) as HTMLElement
         if(!e) return
         //块没发生转换不进行处理

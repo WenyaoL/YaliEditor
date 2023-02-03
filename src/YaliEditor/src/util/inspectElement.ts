@@ -52,6 +52,12 @@ export const isMdBlockParagraph = (element: Element) => {
   return false
 }
 
+export const isMdBlockHeading = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_HEADING) return true
+  return false
+}
+
 export const isMdBlockTable = (element: Element) => {
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_TABLE) return true
@@ -85,12 +91,15 @@ export const isMdInlineLink = (element: Element) => {
 /**
  * 判断当前fence块文本是否为空
  */
-export const isEmptyMdFence = (element: Element) => {
+export const isEmptyMdBlockFence = (element: Element) => {
   if (isMdBlockFence(element) && element.firstElementChild.getAttribute("is-empty") == "true") return true
   return false
 }
 
-
+export const isEmptyMdBlockMath = (element: Element) => {
+  if (isMdBlockMath(element) && element.querySelector("arkdown-it-code-beautiful")?.getAttribute("is-empty") == "true") return true
+  return false
+}
 
 /**
  * 获取某个element下面的所有heading（不深度查找，只查找其儿子节点）

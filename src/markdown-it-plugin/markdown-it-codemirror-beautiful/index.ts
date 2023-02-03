@@ -91,9 +91,9 @@ export class CodemirrorManager {
     public editor: YaLiEditor
 
     //codemirror编辑器面板
-    private stateCacheMap: Map<string,CodemirrorEditorState>  = new Map();
+    private stateCacheMap: Map<string, CodemirrorEditorState> = new Map();
     //编辑器视图
-    public viewMap: Map<string,CodemirrorEditorView> = new Map();
+    public viewMap: Map<string, CodemirrorEditorView> = new Map();
     //默认插件
     public codemirrorPlugin: Extension[];
 
@@ -150,26 +150,46 @@ export class CodemirrorManager {
      * 添加一个视图，该视图将会被manager管理
      */
     addViewInfo(viewInfo: CodemirrorEditorView) {
-        this.viewMap.set(viewInfo.stateInfo.editor_uuid,viewInfo)
+        this.viewMap.set(viewInfo.stateInfo.editor_uuid, viewInfo)
     }
 
-
-
-
     addStateCache(state: CodemirrorEditorState) {
-        this.stateCacheMap.set(state.editor_uuid,state)
+        this.stateCacheMap.set(state.editor_uuid, state)
     }
 
     getStateCache(id: string) {
         return this.stateCacheMap.get(id)
     }
 
-    mountInputComponent(id: string){
-        const viewInfo = this.getViewInfo(id)
-        if(!viewInfo.stateInfo.isMountedInputComponent){
-            viewInfo.stateInfo.inputComponent.mount(viewInfo.element.querySelector(".md-code-tooltip"))
-            viewInfo.stateInfo.isMountedInputComponent = true
+    getViewInfo(uuid: string) {
+        return this.viewMap.get(uuid)
+    }
+
+
+    /**
+     * 获取指定id的文本信息
+     * @param uuid 
+     */
+    getTextValue(uuid: string) {
+        const viewInfo = this.getViewInfo(uuid)
+
+        if (viewInfo) {
+            let res = viewInfo.view.state.doc.toString()
+            return res;
+        } else {
+            return ''
         }
+
+    }
+
+    mountInputComponent(id: string) {
+        setTimeout(() => {
+            const viewInfo = this.getViewInfo(id)
+            if (!viewInfo.stateInfo.isMountedInputComponent) {
+                viewInfo.stateInfo.inputComponent.mount(viewInfo.element.querySelector(".md-code-tooltip"))
+                viewInfo.stateInfo.isMountedInputComponent = true
+            }
+        })
     }
 
 
@@ -178,13 +198,13 @@ export class CodemirrorManager {
      * @param codemirrorEditorView 
      */
     loadCompartment(codemirrorEditorView: CodemirrorEditorView) {
-        if(!codemirrorEditorView) return
+        if (!codemirrorEditorView) return
         let stateInfo = codemirrorEditorView.stateInfo
 
         //装载langCompartment
         if (!stateInfo.langCompartment) {
             stateInfo.langCompartment = createEditorCompartment()
-            if (stateInfo.languageDescription && stateInfo.languageDescription.support) {                
+            if (stateInfo.languageDescription && stateInfo.languageDescription.support) {
                 stateInfo.langCompartment.run(stateInfo.languageDescription.support, codemirrorEditorView.view)
             } else {
                 stateInfo.langCompartment.run([], codemirrorEditorView.view)
@@ -211,14 +231,13 @@ export class CodemirrorManager {
 
 
         //是否需要创建建议UI
-        setTimeout(()=>{
-            
+        setTimeout(() => {
             if (stateInfo.needSuggestUI) {
                 const tooltip = document.createElement("div")
                 tooltip.classList.add("md-code-tooltip");
                 tooltip.setAttribute("spellcheck", "false");
                 codemirrorEditorView.element.appendChild(tooltip)
-                if(!stateInfo.inputComponent){
+                if (!stateInfo.inputComponent) {
                     stateInfo.inputComponent = createComponent({
                         codemirrorManager: this,
                         editorId: stateInfo.editor_uuid,
@@ -227,47 +246,11 @@ export class CodemirrorManager {
                 }
                 stateInfo.isMountedInputComponent = false
             }
-            
         })
     }
 
 
-    /**
-     * refresh cache
-     * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,并一一刷新到页面上
-     * 并且会根据配置信息，装载格外的插件进状态中
-     * 编辑器挂载的容器为页面上的空容器
-     * @param elements 页面上的容器
-     */
-    refreshStateCache(elements?: NodeListOf<Element>) {
-        
-        if(!elements){
-            elements = this.editor.ir.rootElement.querySelectorAll('.markdown-it-code-beautiful')
-        }
 
-        elements.forEach(e=>{
-
-            const uuid = e.id
-            let stateInfo = this.getStateCache(uuid)
-            if(!stateInfo) return
-            let view = new EditorView({
-                parent: e,
-                root: document
-            })
-            view.setState(stateInfo.state)
-            //创建视图信息
-            const viewInfo = new CodemirrorEditorView(e, view, stateInfo)
-
-            //根据信息装载Compartment
-            this.loadCompartment(viewInfo)
-            
-            
-            this.viewMap.set(uuid,viewInfo)
-            this.stateCacheMap.delete(uuid)
-
-        })
-
-    }
 
 
 
@@ -288,7 +271,7 @@ export class CodemirrorManager {
         //销毁原视图
         codemirrorEditorView.view.destroy()
 
-        
+
         //语言包选择UI插件
         needSuggestUI = codemirrorEditorView.stateInfo.needSuggestUI
         if (!needSuggestUI) {//没有加载包应该是数学块
@@ -301,9 +284,9 @@ export class CodemirrorManager {
 
         //提取文本（页面上的文本）
         const text = this.extractElementPlainText(element)
-        if(!text){
+        if (!text) {
             startState = codemirrorEditorView.view.state
-        }else{
+        } else {
             startState = EditorState.create({
                 doc: text,
                 extensions: codemirrorPlugin
@@ -311,8 +294,8 @@ export class CodemirrorManager {
         }
 
         //销毁并创建新的组件
-        if(inputComponent) {
-            if(codemirrorEditorView.stateInfo.isMountedInputComponent || inputComponent._instance?.isMounted){
+        if (inputComponent) {
+            if (codemirrorEditorView.stateInfo.isMountedInputComponent || inputComponent._instance?.isMounted) {
                 inputComponent.unmount()
             }
             inputComponent = createComponent({
@@ -322,10 +305,10 @@ export class CodemirrorManager {
             })
         }
 
-        
+
         return new CodemirrorEditorState(id, startState, {
             languageDescription,
-            needSuggestUI: needSuggestUI,
+            needSuggestUI,
             lang,
             inputComponent
         })
@@ -363,10 +346,11 @@ export class CodemirrorManager {
     extractElementInfo(element: Element) {
         //提取文本信息
         let text = this.extractElementTextInfo(element),
-            needSuggestUI = element.getAttribute("inupt-suggest")=="true"?true:false,
+            needSuggestUI = element.getAttribute("inupt-suggest") == "true" ? true : false,
             uuid = element.id,
-            lang = needSuggestUI ? element.getAttribute("lang"):"";
-        
+            lang = needSuggestUI ? element.getAttribute("lang") : "",
+            languageDescription = loadLanguage(lang);
+
         return new CodemirrorEditorState(uuid,
             EditorState.create({
                 doc: text,
@@ -374,7 +358,8 @@ export class CodemirrorManager {
             }),
             {
                 needSuggestUI,
-                lang
+                lang,
+                languageDescription
             }
         )
     }
@@ -394,6 +379,43 @@ export class CodemirrorManager {
     }
 
     /**
+     * refresh cache
+     * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,并一一刷新到页面上
+     * 并且会根据配置信息，装载格外的插件进状态中
+     * 编辑器挂载的容器为页面上的空容器
+     * @param elements 页面上的容器
+     */
+    refreshStateCache(elements?: NodeListOf<Element>) {
+
+        if (!elements) {
+            elements = this.editor.ir.rootElement.querySelectorAll('.markdown-it-code-beautiful')
+        }
+
+        elements.forEach(e => {
+
+            const uuid = e.id
+            let stateInfo = this.getStateCache(uuid)
+            if (!stateInfo) return
+            let view = new EditorView({
+                parent: e,
+                root: document
+            })
+            view.setState(stateInfo.state)
+            //创建视图信息
+            const viewInfo = new CodemirrorEditorView(e, view, stateInfo)
+
+            //根据信息装载Compartment
+            this.loadCompartment(viewInfo)
+
+
+            this.viewMap.set(uuid, viewInfo)
+            this.stateCacheMap.delete(uuid)
+
+        })
+
+    }
+
+    /**
      * 对页面的所有视图进行销毁，将其编辑器状态重新放回缓存区
      * 重新刷新缓存区，重新渲染codemirror编辑器面板
      * 
@@ -405,9 +427,9 @@ export class CodemirrorManager {
         if (!root) root = this.editor.ir.rootElement
 
         const elements = root.querySelectorAll('.markdown-it-code-beautiful')
-        
+
         for (let index = 0; index < elements.length; index++) {
-            let stateCache:CodemirrorEditorState|null = null;
+            let stateCache: CodemirrorEditorState | null = null;
 
             const element = elements[index];
             const uuid = element.id
@@ -421,26 +443,64 @@ export class CodemirrorManager {
                 if (cache) continue;
                 stateCache = this.extractElementInfo(element)
             }
-                
+
             //将数据重新放入缓存
-            this.stateCacheMap.set(uuid,stateCache)
+            this.stateCacheMap.set(uuid, stateCache)
             element.innerHTML = ""
         }
         //重新置空
         delete this.viewMap
         this.viewMap = new Map()
-        
+
         this.refreshStateCache(elements)
     }
 
+    /**
+     * 非安全方式刷新视图,不不会对视图进行销毁，而是将element重新挂上去，性能上更佳
+     * @param root 
+     */
+    unsafeRefreshEditorViewSyn(root?: HTMLElement) {
+        if (!root) root = this.editor.ir.rootElement
+        const elements = root.querySelectorAll('.markdown-it-code-beautiful')
+
+        for (let index = 0; index < elements.length; index++) {
+            let stateCache: CodemirrorEditorState | null = null;
+
+            const element = elements[index];
+            const uuid = element.id
+            //找到现存的视图的ID
+            const viewInfo = this.getViewInfo(uuid)
+            if (viewInfo) {//存在匹配到的现存视图
+                //提取信息
+                const text = this.extractElementPlainText(element)
+                viewInfo.view.dispatch({
+                    changes: {
+                        from: 0,
+                        to: viewInfo.view.state.doc.length,
+                        insert: text
+                    }
+                })
+                element.replaceWith(viewInfo.element)
+            } else {//无法匹配到现存视图
+                let cache = this.getStateCache(uuid)
+                if (cache) continue;
+                stateCache = this.extractElementInfo(element)
+                //将数据重新放入缓存
+                this.stateCacheMap.set(uuid, stateCache)
+                element.innerHTML = ""
+            }
+        }
+
+        this.refreshStateCache(elements)
+    }
 
 
     /**
      * 重新跟新视图状态
      */
     refreshEditorView(root?: HTMLElement) {
-        if(!root) root = this.editor.ir.rootElement
-        return new Promise((resolve,reject)=>{
+        if (!root) root = this.editor.ir.rootElement
+        return new Promise((resolve, reject) => {
             setTimeout(() => {
                 this.refreshEditorViewSyn(root)
                 resolve(null)
@@ -448,6 +508,17 @@ export class CodemirrorManager {
         })
 
     }
+
+    unsafeRefreshEditorView(root?: HTMLElement) {
+        if (!root) root = this.editor.ir.rootElement
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                this.unsafeRefreshEditorViewSyn(root)
+                resolve(null)
+            })
+        })
+    }
+
 
     /**
      * 同步的方式初始化编辑器
@@ -486,10 +557,10 @@ export class CodemirrorManager {
     viewDestroy(uuid: string) {
         if (this.viewMap.size <= 0) return;
         const viewInfo = this.getViewInfo(uuid)
-        if(!viewInfo) return
+        if (!viewInfo) return
         viewInfo.view.destroy()
-        
-        
+
+
         viewInfo.stateInfo.inputComponent.unmount()
         delete viewInfo.stateInfo.inputComponent
         this.viewMap.delete(uuid)
@@ -498,15 +569,15 @@ export class CodemirrorManager {
     viewReset(uuid: string) {
         if (this.viewMap.size <= 0) return;
         const viewInfo = this.getViewInfo(uuid)
-        if(!viewInfo) return
+        if (!viewInfo) return
         viewInfo.stateInfo.inputComponent.unmount()
         delete viewInfo.stateInfo.inputComponent
-        
+
         this.viewMap.delete(uuid)
         //跟新视图状态
         viewInfo.stateInfo.state = viewInfo.view.state
         //重新返回缓存(等待刷新)
-        this.stateCacheMap.set(uuid,viewInfo.stateInfo)
+        this.stateCacheMap.set(uuid, viewInfo.stateInfo)
     }
 
     viewFocus(uuid: string) {
@@ -526,7 +597,6 @@ export class CodemirrorManager {
     }
 
     updatedLang(lang: string, uuid: string) {
-
         const languageDescriptions = LanguageDescription.matchLanguageName(languages, lang, true);
         if (!languageDescriptions) {
             return
@@ -537,8 +607,8 @@ export class CodemirrorManager {
         const viewInfo = this.getViewInfo(uuid);
         const stateInfo = viewInfo.stateInfo
         stateInfo.lang = lang
-        viewInfo.view.dom.parentElement.setAttribute("lang",lang)        
-        
+        viewInfo.view.dom.parentElement.setAttribute("lang", lang)
+
         if (support) {//已经加载
             //跟新语言包
             stateInfo.langCompartment.run(support, viewInfo.view)
@@ -551,26 +621,7 @@ export class CodemirrorManager {
 
     }
 
-    getViewInfo(uuid: string) {
-        return this.viewMap.get(uuid)
-    }
 
-
-    /**
-     * 获取指定id的文本信息
-     * @param uuid 
-     */
-    getTextValue(uuid: string) {
-        const viewInfo = this.getViewInfo(uuid)
-
-        if (viewInfo) {
-            let res = viewInfo.view.state.doc.toString()
-            return res;
-        } else {
-            return ''
-        }
-
-    }
 
     /**
      * 给markdown-it的高亮器插件，使得markdown-it能使用codemirror作为代码编辑器
@@ -589,7 +640,8 @@ export class CodemirrorManager {
         pre.classList.add("markdown-it-code-beautiful")
         pre.setAttribute("md-block", "fence")
         pre.setAttribute("contenteditable", "false");
-        pre.setAttribute("inupt-suggest","true")
+        pre.setAttribute("inupt-suggest", "true")
+        pre.setAttribute("lang", lang)
         const uuid = uuidv4()
         pre.id = uuid
 
@@ -610,7 +662,7 @@ export class CodemirrorManager {
             needSuggestUI: true,
             lang
         })
-        this.stateCacheMap.set(uuid,info)
+        this.stateCacheMap.set(uuid, info)
         return pre.outerHTML
     }
 }

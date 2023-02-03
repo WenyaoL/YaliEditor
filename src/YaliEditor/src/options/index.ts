@@ -6,10 +6,8 @@
 
 //import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
 import list from '@/markdown-it-plugin/markdown-it-list-beautiful'
-
 import emoji from 'markdown-it-emoji'
 import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
-import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
 import imgplugin from '@/markdown-it-plugin/markdown-it-image-beautiful'
 import link from '@/markdown-it-plugin/markdown-it-link-beautiful'
 
@@ -58,11 +56,7 @@ export class EditorConfig {
 
         editor
             .ir
-            .addMarkdownItPlugins({ plugin: list })
             .addMarkdownItPlugins({ plugin: emoji })
-            .addMarkdownItPlugins({ plugin: toc })
-            .addMarkdownItPlugins({ plugin: imgplugin })
-            .addMarkdownItPlugins({ plugin: link })
             .addCodemirrorPlugins(myMinimalSetup)
             .addCodemirrorPlugins(keymap.of([indentWithTab]))
             .end()

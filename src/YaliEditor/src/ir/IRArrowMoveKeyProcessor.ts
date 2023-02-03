@@ -58,8 +58,7 @@ class IRArrowMoveKeyProcessor implements KeyProcessor{
         let pos = viewInfo.view.posAtDOM(r.startContainer,r.startOffset)
         let length = viewInfo.view.state.doc.length
         let blockInfo = viewInfo.view.lineBlockAt(pos)
-        if(blockInfo.from == length){
-  
+        if(blockInfo.from == length-1){
             //兄弟节点
             let sibling = fence.nextElementSibling
             if(!sibling) return false

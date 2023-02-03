@@ -1,16 +1,18 @@
 import MarkdownIt from 'markdown-it';
-import {Mathjax} from './markdown-it-mathjax-beautiful'
-
 
 import CodemirrorManager from './markdown-it-codemirror-beautiful'
 import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
 import markdownItMetaBeautiful from './markdown-it-meta-beautiful';
 import markdownItHTMLBeautiful from './markdown-it-html-beautiful'
+import markdownItListBeautiful from '@/markdown-it-plugin/markdown-it-list-beautiful'
+import markdownItTocBeautiful from "@/markdown-it-plugin/markdown-it-toc-beautiful"
+import markdownItImageBeautiful from '@/markdown-it-plugin/markdown-it-image-beautiful'
+import markdownItLinkBeautiful from '@/markdown-it-plugin/markdown-it-link-beautiful'
+import { MultimdTable} from './markdown-it-table-beautiful'
+import {Mathjax} from './markdown-it-mathjax-beautiful'
 
 import './index.scss'
 import YaLiEditor from '@/YaliEditor/src';
-
-import { MultimdTable,multimd_table_plugin } from './markdown-it-table-beautiful'
 import { isMdBlockFence } from '@/YaliEditor/src/util/inspectElement';
 
 
@@ -24,8 +26,8 @@ class MarkdownBeautiful{
   public table:MultimdTable
   constructor(editor:YaLiEditor){
     this.editor =editor
-    this.codemirrorManager = new CodemirrorManager(this.editor)
 
+    this.codemirrorManager = new CodemirrorManager(this.editor)
     this.md = new MarkdownIt({
       html: true,
       linkify: true,
@@ -43,13 +45,16 @@ class MarkdownBeautiful{
     })
     this.md.use(this.table.multimd_table_plugin,this.table)
 
-
     this.mathjax = new Mathjax(this.editor)
     this.md.use(this.mathjax.plugin)
 
     this.md.use(markdownItMeta,{borderModel:this.editor.options.ir.borderModel})
     this.md.use(markdownItMetaBeautiful)
     this.md.use(markdownItHTMLBeautiful)
+    this.md.use(markdownItListBeautiful)
+    this.md.use(markdownItTocBeautiful)
+    this.md.use(markdownItImageBeautiful,{editor:this.editor})
+    this.md.use(markdownItLinkBeautiful)
     
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{
       this.md.use(mdp.plugin,mdp.options)

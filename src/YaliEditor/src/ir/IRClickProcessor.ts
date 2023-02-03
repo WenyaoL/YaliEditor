@@ -26,6 +26,12 @@ export class IRClickProcessor {
 
     click(event: MouseEvent & { target: HTMLElement }) {
 
+        //A标签跳转
+        if(event.target.tagName == "A" && !event.target.classList.contains("md-link-a")){
+            window.electronAPI.openURL({ url: (event.target as HTMLAnchorElement).href })
+            event.preventDefault()
+            return
+        }
 
         //点击进行光标偏移(主要对一些隐藏类的操作)
         if (this.editor.markdownTool.deviationCursor(event.target)) {
@@ -47,8 +53,6 @@ export class IRClickProcessor {
                 return
             }
         }
-
-        
         return
     }
 

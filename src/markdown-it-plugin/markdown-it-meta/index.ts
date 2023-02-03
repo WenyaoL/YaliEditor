@@ -78,6 +78,7 @@ function emOpen(tokens: Token[], idx: number, options: Object, env: Object, slf:
 function paragraphOpen(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer) {
     const token = tokens[idx]
     token.attrPush(["md-block", "paragraph"])
+    token.attrPush(["class", ""])
     return slf.renderToken(tokens, idx, options);
 }
 

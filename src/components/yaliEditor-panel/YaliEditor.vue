@@ -26,13 +26,10 @@ export default {
     let yali:YaLiEditor = null;
 
     const instance = getCurrentInstance()
-  
 
     function onContextmenu(e: MouseEvent){
       let editor:YaLiEditor = store.state.yaliEditor;
-      
       exec(editor,e)
-
       e.preventDefault();
     }
     onMounted(()=>{
@@ -46,6 +43,9 @@ export default {
       //注册监听事件
       yali.ir.applicationEventPublisher.subscribe("refreshedToc",(headings:any)=>{
         store.commit("updateOutline",headings)
+      })
+      yali.ir.applicationEventPublisher.subscribe("GET-CurrFilePath",()=>{   
+        yali.ir.applicationEventPublisher.publish("RETURN-CurrFilePath",store.state.applicationContext.filePath)
       })
       yali.render(store.state.applicationContext.content)
       yali.ir.undoAddListener = (editor:YaLiEditor)=>{

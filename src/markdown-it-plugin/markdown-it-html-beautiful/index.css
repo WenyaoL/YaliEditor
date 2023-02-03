@@ -1,3 +1,25 @@
-div.html-comment[md-block="html-comment"]{
-    color: #a78405;;
+div.html-comment[md-block="html-comment"] {
+    color: #a78405;
+    ;
+}
+
+div[md-block="html"]:hover {
+    transition: background 0.5s;
+    background-color: var(--yali-mathjax-hover--background-color)
+}
+
+div[md-block="html"]:hover>.md-htmlblock-tooltip {
+    background-color: white
+}
+
+div[md-block="html"]:hover>.md-htmlblock-tooltip>span {
+    transition: background 0.5s;
+    background-color: var(--yali-mathjax-hover--background-color)
+}
+
+div[md-block="html"]>.md-htmlblock-tooltip>span {
+    display: inline-block;
+    height: 22.4px;
+    line-height: 22.4px;
+    font-size: 12px;
 }

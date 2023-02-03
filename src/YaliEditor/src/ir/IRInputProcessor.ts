@@ -1,7 +1,7 @@
 import YaLiEditor from '..'
 import Constants from "../constant/constants";
 import Reg from '../constant/reg';
-import { isMdBlockCode, isMdBlockFence, isMdBlockMath, isMdBlockMeta } from '../util/inspectElement';
+import { isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockMath, isMdBlockMeta } from '../util/inspectElement';
 
 class IRInputProcessor{
     
@@ -23,14 +23,15 @@ class IRInputProcessor{
             return;
         }
         const block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
-        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)) return
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)){
+            this.editor.ir.observer.flush()
+            return
+        }
         
         //根据输入位置发布不同的事件
-        const blockType = this.editor.ir.focueProcessor.getSelectedBlockMdType()
-
-        if(blockType === Constants.ATTR_MD_BLOCK_HEADING){
+        if(isMdBlockHeading(block)){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
-        }else if(blockType === Constants.ATTR_MD_BLOCK_FENCE || blockType === Constants.ATTR_MD_BLOCK_MATH){
+        }else if(isMdBlockFence(block) || isMdBlockMath(block)){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_CODEBLOCKINPUT)
             this.editor.ir.observer.flush()
             return

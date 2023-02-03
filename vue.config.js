@@ -21,6 +21,7 @@ module.exports = defineConfig({
     },
     resolve: {
       extensions: ['.ts', '.tsx','js','json'],
+      fallback:{path:require.resolve("path-browserify")}
     }
   },
   pluginOptions:{

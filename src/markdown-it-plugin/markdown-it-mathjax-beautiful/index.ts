@@ -255,7 +255,6 @@ class Mathjax{
         }
         if(viewupdate.docChanged){
           this.freshMathjax(id,viewupdate.state.doc.toString(),this.documentOptions,{display:true})
-          //this.editor.ir.observer.flush()
         }
       })
     ]
@@ -265,7 +264,7 @@ class Mathjax{
       })
       //let editorState = CodemirrorEditorState.of(info.id,info.content,ex,{needSuggestUI:false})
       this.editor.ir.renderer.codemirrorManager.addStateCache(new CodemirrorEditorState(id,editorState,{needSuggestUI:false}))
-      return `<div class="markdown-it-mathjax-beautiful" md-block="math">
+      return `<div class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false">
       <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
       <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>
       `
@@ -281,11 +280,23 @@ class Mathjax{
 //---------------------------function---------------------------
 
 
-function renderMath(content: string, documentOptions: DocumentOptions, convertOptions: ConvertOptions): string {
+function renderMath(content: string, documentOptions?: DocumentOptions, convertOptions?: ConvertOptions): string {
+  if(!content || content == "\n") content = "empty-math"
+ 
+  if(!documentOptions) {
+    documentOptions = {
+      InputJax: new TeX({ packages: AllPackages }),
+      OutputJax: new SVG({ fontCache: 'none'})
+    }
+  }
+  
+  if(!convertOptions) {
+    convertOptions = {display:true}
+  }
   const adaptor = liteAdaptor();
   RegisterHTMLHandler(adaptor);
-  if(!content || content == "\n") content = "empty-math"
   const mathDocument = mathjax.document(content, documentOptions);
+  
   const html = adaptor.outerHTML(
     mathDocument.convert(content, convertOptions)
   );

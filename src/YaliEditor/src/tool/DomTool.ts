@@ -105,6 +105,14 @@ class DomTool {
     }
 
     /**
+     * 提取选中内容的文本信息
+     * @returns 
+     */
+    getTextContentAtSelected(){
+        return rangy.getSelection().getRangeAt(0).extractContents().textContent
+    }
+
+    /**
      * 销毁一个没有显示文本的元素
      * @param element 
      */

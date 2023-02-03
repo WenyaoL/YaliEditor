@@ -13,8 +13,10 @@ function metaBlock(state: StateBlock, startLine: number, endLine: number, silent
         max = state.eMarks[startLine];
 
 
-    //不是第一行
-    if (startLine !== 0) { return false; }
+
+    
+    //不是第一行或者整个文本只有一行
+    if (startLine !== 0 || state.lineMax == 1) { return false; }
     // if it's indented more than 3 spaces, it should be a code block
     if (state.sCount[startLine] - state.blkIndent >= 4) { return false; }
 
@@ -62,7 +64,7 @@ function metaBlock(state: StateBlock, startLine: number, endLine: number, silent
 
         if (pos < max && state.sCount[nextLine] < state.blkIndent) {
             // non-empty line with negative indent should stop the list:
-            // - ```
+            // - ---
             //  test
             break;
         }

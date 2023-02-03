@@ -51,7 +51,9 @@ class IRFocusProcessor {
   setFocusElementByMdblock(block?: HTMLElement){
     this.sel = rangy.getSelection()
     if (!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
-    if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
+    
+    this.removeFocusMdblock()
+
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
   }
@@ -59,9 +61,33 @@ class IRFocusProcessor {
   setFocusElementByMdinline(inline?:HTMLElement){
     this.sel = rangy.getSelection()
     if (!inline) inline = IRfindClosestMdInline(this.sel.getRangeAt(0).startContainer)
-    if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
+    this.removeFocusMdinline()
     this.selectedInlineMdElement = inline
     this.selectedInlineMdElement?.classList.add("md-expand")
+  }
+
+  removeFocusMdblock(){
+    //移除当前聚焦元素
+    if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
+    //移除面板上可能残留的聚焦元素
+    const focus = this.editor.rootElement.querySelectorAll(".md-focus")
+    if (focus.length > 0) {
+      Array.from(focus).forEach((e) => {
+        e.classList.remove("md-focus")
+      })
+    }
+  }
+
+  removeFocusMdinline(){
+    //移除当前聚焦元素
+    if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
+    //移除面板上可能残留的聚焦元素
+    const expand = this.editor.rootElement.querySelectorAll(".md-expand")
+    if (expand.length > 0) {
+      Array.from(expand).forEach((e) => {
+        e.classList.remove("md-expand")
+      })
+    }
   }
 
 
@@ -124,17 +150,12 @@ class IRFocusProcessor {
   updateFocusMdBlockByStart(start?: Node) {
     if (!start) start = this.sel.getRangeAt(0).startContainer
     const block = IRfindClosestMdBlock(start)
+    
     //当前聚焦的md-block元素没变化，不处理
     if (block == this.selectedBlockMdElement) return
-    //移除当前聚焦元素
-    if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
-    //移除面板上可能残留的聚焦元素
-    const focus = this.editor.rootElement.querySelectorAll(".md-focus")
-    if (focus.length > 0) {
-      Array.from(focus).forEach((e) => {
-        e.classList.remove("md-focus")
-      })
-    }
+    
+    this.removeFocusMdblock()
+
     //更新
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
@@ -151,15 +172,7 @@ class IRFocusProcessor {
     //当前聚焦的md-inline元素没变化，不处理
     if (inline == this.selectedInlineMdElement) return
 
-    //移除当前聚焦元素
-    if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
-    //移除面板上可能残留的聚焦元素
-    const expand = this.editor.rootElement.querySelectorAll(".md-expand")
-    if (expand.length > 0) {
-      Array.from(expand).forEach((e) => {
-        e.classList.remove("md-expand")
-      })
-    }
+    this.removeFocusMdinline()
     //更新
     this.selectedInlineMdElement = inline
     this.selectedInlineMdElement?.classList.add("md-expand")

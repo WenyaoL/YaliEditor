@@ -4,21 +4,7 @@
  */
 import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
-import {
-    findClosestByAttribute,
-    findClosestByClassName,
-    findClosestByTop,
-    IRfindClosestMdBlock,
-    IRfindClosestMdInline,
-    IRfindClosestLi
-} from "../util/findElement";
-import { toKeyText } from "../util/formatText"
-import rangy from "rangy";
-import CONSTANTS from "../constant/constants";
 
-
-import { strToElement, createParagraph } from "../util/createElement";
-import { isMdBlockFence, isMdBlockMath } from "../util/inspectElement";
 
 
 

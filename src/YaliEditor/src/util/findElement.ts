@@ -129,8 +129,10 @@ export const IRfindClosestMdBlock = (element: Node)=>{
     if(element.nodeType == 1 && (element as HTMLElement).classList.contains(Constants.IR_CLASS_NAME)){
         let sel = rangy.getSelection();
         sel.refresh()
-        const node = (element as HTMLElement).children.item(sel.focusOffset)
-        sel.collapse(node,0)
+        if(sel.isCollapsed && sel.focusOffset!=0){
+            const node = (element as HTMLElement).children.item(sel.focusOffset)    
+            if(node) sel.collapse(node,0)
+        }
     }
 
     return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)

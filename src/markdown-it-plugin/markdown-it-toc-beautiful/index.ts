@@ -86,8 +86,8 @@ export default function(md:MarkdownIt) {
         //href属性
         const attrs = label.content + '_' + label.map[0]
         token.attrPush(["id",attrs])
-        const mdTypeAttrs = 'heading'
-        token.attrPush(["md-block",mdTypeAttrs])
+        token.attrPush(["md-block",'heading'])
+        token.attrPush(["class",''])
         return slf.renderToken(tokens, index, options);
     };
 

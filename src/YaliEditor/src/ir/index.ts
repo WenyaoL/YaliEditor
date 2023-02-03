@@ -182,7 +182,6 @@ class IR {
         this.undoManager.redo()
     }
 
-
     public addUndo() {
         this.undoManager.addIRHistory()
     }
@@ -208,8 +207,6 @@ class IR {
      * @param element 
      */
     private bindEvent(element: HTMLElement) {
-
-
         this.binderList.forEach(binder => {
             binder.bindEvent(element);
         })
@@ -231,7 +228,7 @@ class IR {
         this.observer.stop()
         const res = this.renderer.render(src)
         if (res === '') {
-            this.rootElement.innerHTML = '<p md-block="paragraph"><br></p>'
+            this.rootElement.innerHTML = '<p md-block="paragraph" class="md-focus"><br></p>'
         } else {
             this.rootElement.innerHTML = res
         }
@@ -246,9 +243,6 @@ class IR {
             this.focus()
         }, 200)
     }
-
-
-
 
     /**
      * 获取markdown文本
@@ -267,11 +261,12 @@ class IR {
     }
 
     public focus() {
-        let e = this.rootElement.firstElementChild as HTMLElement
-        window.getSelection().collapse(e, 0)
-        document.getSelection().collapse(e, 0)
+        window.getSelection().removeAllRanges()
+        const r = new Range()
+        r.setStart(this.rootElement, 0)
+        window.getSelection().addRange(r)
         rangy.getSelection().refresh()
-        e.focus()
+        this.rootElement.focus()
     }
 }
 

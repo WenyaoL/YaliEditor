@@ -6,17 +6,18 @@
 import YaLiEditor from '@/YaliEditor/src';
 import TurndownService from 'turndown';
 import tableRule from './table'
+import beautify from 'js-beautify'
 
-class TurndownParser{
-  turndownService:TurndownService;
-  editor:YaLiEditor;
+class TurndownParser {
+  turndownService: TurndownService;
+  editor: YaLiEditor;
 
-  constructor(editor:YaLiEditor){
+  constructor(editor: YaLiEditor) {
     this.editor = editor
-    TurndownService.prototype.escape = str=>str
+    TurndownService.prototype.escape = str => str
     this.turndownService = new TurndownService({
-      headingStyle:"atx",
-      borderModel:true
+      headingStyle: "atx",
+      borderModel: true
     })
     this.initCodeRule()
     this.initImgRule()
@@ -29,15 +30,16 @@ class TurndownParser{
     this.initParagraphRule()
     this.initHrRule()
     this.initBlockMetaRule()
+    this.initHtmlBlockRule()
     this.turndownService.use(tableRule)
-    
+
   }
 
   /**
    * 初始化高亮代码解析规则
    */
-  initCodeRule(){
-    this.turndownService.addRule('md-codeing',{
+  initCodeRule() {
+    this.turndownService.addRule('md-codeing', {
       filter: function (node, options) {
         let flag = (
           node.nodeName === 'PRE' &&
@@ -48,7 +50,7 @@ class TurndownParser{
       replacement: function (content, node, options) {
         const language = (node.lastElementChild.className.match(/language-(\S+)/) || [null, ''])[1]
         return (
-          '\n```'+ language + '\n' +
+          '\n```' + language + '\n' +
           node.lastElementChild.textContent.replace(/\n/g, '\n') +
           '```\n\n'
         )
@@ -56,8 +58,8 @@ class TurndownParser{
     })
   }
 
-  initCodemirrorRule(editor:YaLiEditor){
-    this.turndownService.addRule('md-codemirror',{
+  initCodemirrorRule(editor: YaLiEditor) {
+    this.turndownService.addRule('md-codemirror', {
       filter: function (node, options) {
         let flag = (
           node.nodeName === 'PRE' &&
@@ -66,138 +68,138 @@ class TurndownParser{
         return flag
       },
       replacement: function (content, node, options) {
-        let language:string;
-        
+        let language: string;
+
         node = node as HTMLElement
         const uuid = node.id
         const text = editor.ir.renderer.codemirrorManager.getTextValue(uuid)
-        if(!text) return ''
+        if (!text) return ''
         const input = node.lastElementChild.getElementsByTagName("input").item(0)
-        if(input) language = input.value.trim()
+        if (input) language = input.value.trim()
+        else language = node.getAttribute("lang")
 
-        
-        if(text.endsWith("\n")) {
-          return '\n```'+ language + '\n' + text +'```\n\n'
-        }else{
-          return '\n```'+ language + '\n' + text +'\n```\n\n'
-        } 
-        
+        if (text.endsWith("\n")) {
+          return '\n```' + language + '\n' + text + '```\n\n'
+        } else {
+          return '\n```' + language + '\n' + text + '\n```\n\n'
+        }
+
       }
     })
   }
 
-  initImgRule(){
-    this.turndownService.addRule('md-img',{
-      filter:function (node, options) {
+  initImgRule() {
+    this.turndownService.addRule('md-img', {
+      filter: function (node, options) {
         let flag = (
           node.nodeName === 'SPAN' &&
           node.getAttribute("md-inline") === "img"
         )
         return flag;
-        },
-        replacement:(content, node, options) =>{
-  
-            node.firstElementChild.textContent
-            return node.firstElementChild.textContent
-        }
-    })
-  }
-
-  initTocRule(){
-    this.turndownService.addRule('md-toc',{
-      filter:function (node, options) {
-          let flag = (
-            node.nodeName === 'DIV' &&
-            node.classList.contains('markdown-it-toc-beautiful')
-          )
-          return flag;
       },
-      replacement:function(content, node, options) {
-          return '[toc]';
+      replacement: (content, node, options) => {
+
+        node.firstElementChild.textContent
+        return node.firstElementChild.textContent
       }
     })
   }
 
-  initMathjaxRule(){
-    this.turndownService.addRule('md-mathjax',{
-      filter:function(node,options){
-        return  (node.classList.contains("markdown-it-mathjax-beautiful")  &&
-                node.nodeName === "DIV")
+  initTocRule() {
+    this.turndownService.addRule('md-toc', {
+      filter: function (node, options) {
+        let flag = (
+          node.nodeName === 'DIV' &&
+          node.classList.contains('markdown-it-toc-beautiful')
+        )
+        return flag;
       },
-      replacement:function(content, node, options) {
-        if(node.children.length>1){
+      replacement: function (content, node, options) {
+        return '[toc]';
+      }
+    })
+  }
+
+  initMathjaxRule() {
+    this.turndownService.addRule('md-mathjax', {
+      filter: function (node, options) {
+        return (node.classList.contains("markdown-it-mathjax-beautiful") &&
+          node.nodeName === "DIV")
+      },
+      replacement: function (content, node, options) {
+        if (node.children.length > 1) {
           let e = node as HTMLElement
           const value = e.getElementsByClassName("md-mathblock-input").item(0).textContent
-          return '\n$$\n'+
-                value + 
-                '\n$$\n'
+          return '\n$$\n' +
+            value +
+            '\n$$\n'
         }
-        
+
         return '';
       }
     })
   }
 
-  initLinkRule(){
-    this.turndownService.addRule('md-link',{
-      filter:function (node, options) {
+  initLinkRule() {
+    this.turndownService.addRule('md-link', {
+      filter: function (node, options) {
         let flag = (
           node.nodeName === 'SPAN' &&
           node.getAttribute("md-inline") === "link"
         )
         return flag;
-        },
-        replacement:(content, node, options) =>{
-            node = node as HTMLElement
+      },
+      replacement: (content, node, options) => {
+        node = node as HTMLElement
 
-            let res = []
-            node.childNodes.forEach(node=>{
-              res.push(node.textContent)
-            })
-            return res.join('')
-        }
+        let res = []
+        node.childNodes.forEach(node => {
+          res.push(node.textContent)
+        })
+        return res.join('')
+      }
     })
   }
 
-  initFontRule(){
+  initFontRule() {
     //删除线
-    this.turndownService.addRule('md-font-del',{
-      filter:['del', 's', 'strike'],
-      replacement:(content, node, options) =>{
-          if(options.borderModel) return content
-          else return '~~' + content + '~~'
-        }
+    this.turndownService.addRule('md-font-del', {
+      filter: ['del', 's', 'strike'],
+      replacement: (content, node, options) => {
+        if (options.borderModel) return content
+        else return '~~' + content + '~~'
+      }
     })
 
     //下划线
-    this.turndownService.addRule('md-font-underline',{
-      filter:'u',
-      replacement:(content, node, options) =>{
-            if(options.borderModel) return '<u md-inline="underline">' + content + '</u>'
-            return '<u md-inline="underline">' + content + '</u>'
-        }
-    })    
+    this.turndownService.addRule('md-font-underline', {
+      filter: 'u',
+      replacement: (content, node, options) => {
+        if (options.borderModel) return '<u md-inline="underline">' + content + '</u>'
+        return '<u md-inline="underline">' + content + '</u>'
+      }
+    })
 
     //粗体字
-    this.turndownService.addRule('md-font-strong',{
-      filter:'strong',
-      replacement:(content, node, options) =>{
-        if(options.borderModel) return content
+    this.turndownService.addRule('md-font-strong', {
+      filter: 'strong',
+      replacement: (content, node, options) => {
+        if (options.borderModel) return content
         return options.strongDelimiter + content + options.strongDelimiter
       }
     })
 
     //斜体
-    this.turndownService.addRule('md-font-strong',{
-      filter:'em',
-      replacement:(content, node, options) =>{
-        if(options.borderModel) return content
+    this.turndownService.addRule('md-font-strong', {
+      filter: 'em',
+      replacement: (content, node, options) => {
+        if (options.borderModel) return content
         return options.emDelimiter + content + options.emDelimiter
       }
     })
 
     //行内代码字体
-    this.turndownService.addRule('md-inline-codeing',{
+    this.turndownService.addRule('md-inline-codeing', {
       filter: function (node, options) {
         let flag = (
           node.nodeName === 'CODE' &&
@@ -206,26 +208,26 @@ class TurndownParser{
         return flag
       },
       replacement: function (content, node, options) {
-        if(options.borderModel) return content
-        return '`'+content+'`';
+        if (options.borderModel) return content
+        return '`' + content + '`';
       }
-    })    
+    })
 
   }
 
-  initParagraphRule(){
-    this.turndownService.addRule('md-paragraph',{
+  initParagraphRule() {
+    this.turndownService.addRule('md-paragraph', {
       filter: 'p',
-      replacement: function (content,node) {
+      replacement: function (content, node) {
         //content = content.replaceAll("\u00a0","&nbsp;")
-        if((node as HTMLElement).hasAttribute("tight"))return '\n' + content
-        return '\n' + content + '\n'
+        if ((node as HTMLElement).hasAttribute("tight")) return '\n' + content
+        return '\n\n' + content + '\n\n'
       }
     })
   }
 
-  initListRule(){
-    this.turndownService.addRule('md-list',{
+  initListRule() {
+    this.turndownService.addRule('md-list', {
       filter: ['ul', 'ol'],
       replacement: function (content, node) {
         var parent = node.parentNode
@@ -237,8 +239,8 @@ class TurndownParser{
       }
     })
 
-    this.turndownService.addRule('md-list-item',{
-      filter:'li',
+    this.turndownService.addRule('md-list-item', {
+      filter: 'li',
       replacement: function (content, node, options) {
         content = content
           .replace(/^\n+/, '') // remove leading newlines
@@ -251,11 +253,11 @@ class TurndownParser{
           var index = Array.prototype.indexOf.call(parent.children, node)
           prefix = (start ? Number(start) + index : index + 1) + '.  '
         }
-        if(parent.nodeName === 'UL'){
+        if (parent.nodeName === 'UL') {
           const markup = (parent as HTMLElement).getAttribute("markup")
           prefix = markup + ' '
         }
-        
+
         return (
           prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : '')
         )
@@ -263,42 +265,60 @@ class TurndownParser{
     })
   }
 
-  initHrRule(){
-    this.turndownService.addRule('md-hr',{
+  initHrRule() {
+    this.turndownService.addRule('md-hr', {
       filter: 'hr',
       replacement: function (content, node, options) {
         const markup = (node as HTMLElement).getAttribute("markup")
-        if(markup) return '\n\n' + markup + '\n\n'
+        if (markup) return '\n\n' + markup + '\n\n'
         return '\n\n' + options.hr + '\n\n'
       }
     })
 
   }
 
-  initBlockMetaRule(){
-    this.turndownService.addRule('md-block-meta',{
+  initBlockMetaRule() {
+    this.turndownService.addRule('md-block-meta', {
       filter: function (node, options) {
         return (
           node.nodeName === 'PRE' && (node as HTMLElement).getAttribute("md-block") == "meta"
         )
       },
       replacement: function (content, node, options) {
-        if(content.endsWith("\n"))return '---\n' + content + '---\n\n'
+        if (content.endsWith("\n")) return '---\n' + content + '---\n\n'
         return '---\n' + content + '\n---\n\n'
       }
     })
-    
+
   }
 
-  turndown(src:string | TurndownService.Node){
+  initHtmlBlockRule() {
+    this.turndownService.addRule('md-block-html', {
+      filter: function (node, options) {
+        return (
+          node.nodeName === 'DIV' && (node as HTMLElement).getAttribute("md-block") == "html"
+        )
+      },
+      replacement: function (content, node, options) {
+        let html = node.querySelector(".md-htmlblock-panel").innerHTML
+        html = beautify.html_beautify(html,{
+          indent_size:4,
+          end_with_newline:true
+        })
+        return "\n\n" + html + "\n\n"
+      }
+    })
+  }
+
+  turndown(src: string | TurndownService.Node) {
     return this.turndownService.turndown(src)
   }
 
 }
 
 
-function cleanAttribute (attribute:string) {
-    return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : ''
+function cleanAttribute(attribute: string) {
+  return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : ''
 }
 
 
