@@ -1,13 +1,16 @@
 import MarkdownIt from 'markdown-it';
 
 import CodemirrorManager from './markdown-it-codemirror-beautiful'
-import markdownItMeta from '@/markdown-it-plugin/markdown-it-meta'
-import markdownItMetaBeautiful from './markdown-it-meta-beautiful';
+import markdownItFontBeautiful from './markdown-it-font-beautiful'
+import markdownItCodeblockBeautiful from './markdown-it-codeblock-beautiful'
+import markdownItBlockquoteBeautiful from './markdown-it-blockquote-beautiful'
+import markdownItHrBeautiful from './markdown-it-hr-beautiful'
+import markdownItMetaBeautiful from './markdown-it-meta-beautiful'
 import markdownItHTMLBeautiful from './markdown-it-html-beautiful'
-import markdownItListBeautiful from '@/markdown-it-plugin/markdown-it-list-beautiful'
-import markdownItTocBeautiful from "@/markdown-it-plugin/markdown-it-toc-beautiful"
-import markdownItImageBeautiful from '@/markdown-it-plugin/markdown-it-image-beautiful'
-import markdownItLinkBeautiful from '@/markdown-it-plugin/markdown-it-link-beautiful'
+import markdownItListBeautiful from './markdown-it-list-beautiful'
+import markdownItTocBeautiful from "./markdown-it-toc-beautiful"
+import markdownItImageBeautiful from './markdown-it-image-beautiful'
+import markdownItLinkBeautiful from './markdown-it-link-beautiful'
 import { MultimdTable} from './markdown-it-table-beautiful'
 import {Mathjax} from './markdown-it-mathjax-beautiful'
 
@@ -47,8 +50,11 @@ class MarkdownBeautiful{
 
     this.mathjax = new Mathjax(this.editor)
     this.md.use(this.mathjax.plugin)
-
-    this.md.use(markdownItMeta,{borderModel:this.editor.options.ir.borderModel})
+    
+    this.md.use(markdownItFontBeautiful,{borderModel:this.editor.options.ir.borderModel})
+    this.md.use(markdownItCodeblockBeautiful)
+    this.md.use(markdownItHrBeautiful)
+    this.md.use(markdownItBlockquoteBeautiful)
     this.md.use(markdownItMetaBeautiful)
     this.md.use(markdownItHTMLBeautiful)
     this.md.use(markdownItListBeautiful)
