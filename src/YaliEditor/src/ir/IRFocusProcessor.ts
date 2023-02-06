@@ -13,8 +13,8 @@ import { isMdInline } from "../util/inspectElement";
 
 class IRFocusProcessor {
   //当前被选中的md-inline原生
-  private selectedInlineMdElement: HTMLElement | null = null;
-  private selectedBlockMdElement: HTMLElement | null = null;
+  public selectedInlineMdElement: HTMLElement | null = null;
+  public selectedBlockMdElement: HTMLElement | null = null;
 
 
   public editor: YaLiEditor
@@ -39,8 +39,12 @@ class IRFocusProcessor {
   /**
    * 刷新所有状态信息
    */
-  update() {
-    this.updateFocusElement()
+  update(start?:Node) {
+    if(start){
+      this.updateFocusElementByStart(start)
+    }else{
+      this.updateFocusElement()
+    }
     this.updateBookmark()
   }
 

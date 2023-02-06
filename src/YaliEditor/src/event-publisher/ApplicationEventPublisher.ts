@@ -18,8 +18,11 @@ class ApplicationEventPublisher {
         }[]
     };
 
+    private asynEventMap: Map<string, NodeJS.Timeout>;
+
     constructor() {
         this.listenerMap = {}
+        this.asynEventMap = new Map()
     }
 
     /**
@@ -79,12 +82,44 @@ class ApplicationEventPublisher {
             })
         }
     }
+    /**
+     * 发布异步事件
+     * @param event 
+     * @param data 
+     */
+    AsynPublish(event: string, ...data: any[]) {
+        const listenerList = this.listenerMap[event]
+        if (listenerList && Array.isArray(listenerList)) {
+            //清除事件的timer
+            this.clearTimer(event)
+            const timer = setTimeout(() => {
+                listenerList.forEach(({ uuid, listener, once }) => {
+                    if (once) {
+                        this.unsubscribe(event, uuid)
+                    }
+                    listener(...data)
+                })
+                //清除事件的timer
+                this.clearTimer(event)
+            })
+            this.asynEventMap.set(event, timer)
+        }
+    }
 
     /**
      * 获取事件列表
      */
     getEventList() {
         return Object.keys(this.listenerMap)
+    }
+
+
+    clearTimer(event: string) {
+        let timer = this.asynEventMap.get(event)
+        if (timer) {
+            clearTimeout(timer)
+            this.asynEventMap.delete(event)
+        }
     }
 }
 

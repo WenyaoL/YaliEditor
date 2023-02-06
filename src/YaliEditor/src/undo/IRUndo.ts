@@ -5,7 +5,7 @@
 import { diff_match_patch, patch_obj } from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
-import { IRfindClosestMdBlock } from '../util/findElement'
+import { IRfindClosestMdBlock, IRfindClosestMdInline } from '../util/findElement'
 import { toVNode, patch } from '../snabbdom'
 import { VNode } from 'snabbdom';
 
@@ -48,6 +48,9 @@ class IRUndo {
     undoStack: History[];
 
     editor: YaLiEditor;
+
+    cursorTimer: any;
+
     constructor(editor: YaLiEditor, origin: string) {
         this.editor = editor
 
@@ -90,6 +93,7 @@ class IRUndo {
 
         //重新设置last
         this.lastText = res[0]
+
         //跟新编译器当前文本
         this.editor.ir.rootElement.innerHTML = res[0]
 
@@ -97,21 +101,31 @@ class IRUndo {
         //this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
         this.editor.ir.renderer.codemirrorManager.unsafeRefreshEditorViewSyn(this.editor.ir.rootElement)
 
-        //重新设置光标
-        let sel = rangy.getSelection()
-        if (history.bookMark) {
-            history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-            sel.moveToBookmark(history.bookMark)
-        }
-        let r = sel.getRangeAt(0)
-        let block = IRfindClosestMdBlock(r.startContainer)
-        //当光标是聚合的时候，开启二级定位，提供更加准确的定位
-        if (block && r.collapsed) {
-            history.secondBookMark.rangeBookmarks[0].containerNode = block
-            sel.moveToBookmark(history.secondBookMark)
+
+        if (this.cursorTimer) {
+            clearTimeout(this.cursorTimer)
+            this.cursorTimer = null
         }
 
-        this.editor.ir.focueProcessor.updateFocusElementByRoot()
+        this.cursorTimer = setTimeout(() => {
+            //重新设置光标
+            let sel = rangy.getSelection()
+            if (history.bookMark) {
+                history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
+                sel.moveToBookmark(history.bookMark)
+            }
+            let r = sel.getRangeAt(0)
+            let block = IRfindClosestMdBlock(r.startContainer)
+            //当光标是聚合的时候，开启二级定位，提供更加准确的定位
+            if (block && r.collapsed) {
+                history.secondBookMark.rangeBookmarks[0].containerNode = block
+                sel.moveToBookmark(history.secondBookMark)
+            }
+
+            this.editor.ir.focueProcessor.updateFocusElement()
+            this.cursorTimer = null
+        })
+
         //rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
@@ -184,14 +198,11 @@ class IRUndo {
         this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
         this.editor.markdownTool.removeAllFocusStyle(cloneRoot)
 
-
-
         //当前状态到上一状态的不同
         const diff = this.dmp.diff_main(cloneRoot.innerHTML, this.lastText)
         //生成补丁
         const patch = this.dmp.patch_make(cloneRoot.innerHTML, diff)
         if (patch.length === 0) return;
-
 
         //创建历史记录
         let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()

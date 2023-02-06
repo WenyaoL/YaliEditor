@@ -189,6 +189,8 @@ class IRHotkeyProcessor implements KeyProcessor {
             extractContents = this.editor.domTool.getTextContentAtSelected()
         }
 
+        if (!extractContents) extractContents = ''
+
         //创建代码块
         const codeStr = "```\n" + extractContents + "\n```"
         const res = this.editor.ir.renderer.render(codeStr)
@@ -197,13 +199,16 @@ class IRHotkeyProcessor implements KeyProcessor {
         //获取uuid
         uuid = codeBlock.id
 
+        if (this.editor.markdownTool.replaceMdBlockFence(mdBlock, codeBlock)) { }
+        else {
+            //插入代码块
+            const { start, end } = this.editor.domTool.splitElementAtCursor(mdBlock, codeBlock, true)
 
-        //插入代码块
-        const { start, end } = this.editor.domTool.splitElementAtCursor(mdBlock, codeBlock)
+            //刷新start和end节点
+            if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
+            if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
+        }
 
-        //刷新start和end节点
-        if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
-        if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
 
         this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
 
@@ -356,7 +361,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         if (!sel.isCollapsed) {
             extractContents = this.editor.domTool.getTextContentAtSelected()
         }
-
+        if (!extractContents) extractContents = ''
         //创建数学块
         const codeStr = "$$\n" + extractContents + "\n$$"
         const res = this.editor.ir.renderer.render(codeStr)
@@ -366,14 +371,18 @@ class IRHotkeyProcessor implements KeyProcessor {
         const codemirrorBlock = mathBlock.querySelector(".markdown-it-code-beautiful")
         uuid = codemirrorBlock ? codemirrorBlock.id : ''
 
+        if (this.editor.markdownTool.replaceMdBlockFence(mdBlock, mathBlock)) { }
+        else {
+            //插入代码块
+            const { start, end } = this.editor.domTool.splitElementAtCursor(mdBlock, mathBlock, true)
+
+            //刷新start和end节点
+            if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
+            if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
+        }
 
 
-        //插入代码块
-        const { start, end } = this.editor.domTool.splitElementAtCursor(mdBlock, mathBlock)
 
-        //刷新start和end节点
-        if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
-        if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
 
         this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
 

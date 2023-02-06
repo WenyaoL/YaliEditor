@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import Constants from '../constant/constants'
@@ -40,7 +40,7 @@ class MarkdownTool{
         //重新翻译，重新渲染成节点
         let turndown = this.turndown(element)
         const res = this.editor.ir.renderer.render(turndown)
-        
+
         if(!res) return false;
         
         const e = strToElement(res)
@@ -186,6 +186,29 @@ class MarkdownTool{
         return;
     }
 
+    /**
+     * 给定一个mdblock,参试将改block替换成fence
+     * @param block 
+     */
+    replaceMdBlockFence(block:HTMLElement,fence:Element){
+        if(isEmptyMdBlockParagraph(block)){ 
+            block.replaceWith(fence)
+            return fence
+        }
+        return null
+    }
+
+    /**
+     * 给定一个mdblock,参试将改block替换成mdBlock-math
+     * @param block 
+     */
+    replaceMdBlockMath(block:HTMLElement,mathBlock:Element){
+        if(isEmptyMdBlockMath(block)){ 
+            block.replaceWith(mathBlock)
+            return mathBlock
+        }
+        return null
+    }
 
     /**
      * 参试转换md-block,发生标签转换将会对元素进行替换，并返回替换的元素

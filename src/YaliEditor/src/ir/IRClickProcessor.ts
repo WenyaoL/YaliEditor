@@ -1,8 +1,10 @@
 import YaLiEditor from "..";
+import { createParagraph } from "../util/createElement";
 import {
     IRfindClosestMdBlock,
     IRfindClosestMdInline,
 } from "../util/findElement";
+import { isMdBlockParagraph, isMdBlockToc, isYaliIR } from "../util/inspectElement";
 
 export class IRClickProcessor {
 
@@ -26,8 +28,11 @@ export class IRClickProcessor {
 
     click(event: MouseEvent & { target: HTMLElement }) {
 
+        const block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
+        
         //A标签跳转
-        if(event.target.tagName == "A" && !event.target.classList.contains("md-link-a")){
+        if(event.target.tagName == "A" && !event.target.classList.contains("md-link-a") && !isMdBlockToc(block)){
+
             window.electronAPI.openURL({ url: (event.target as HTMLAnchorElement).href })
             event.preventDefault()
             return
@@ -38,34 +43,25 @@ export class IRClickProcessor {
             event.preventDefault()
             return
         }
+        
+        //最后留空行
+        if(isYaliIR(event.target) && !isMdBlockParagraph(event.target.lastElementChild)){
+            event.target.appendChild(createParagraph())
+        }
 
-        let e = IRfindClosestMdInline(event.target)
-        if (!e) {
-            e = IRfindClosestMdBlock(event.target)
-        }
-        if (!e) {
-            const lastE = event.target.lastElementChild
-            if (!lastE) return
-            if (lastE.tagName === "P" && (lastE.textContent.length == 0 || lastE.textContent == "\n")) {
-                return
-            } else {
-                event.target.insertAdjacentHTML("beforeend", '<p md-block="paragraph"><br></p>')
-                return
-            }
-        }
         return
     }
 
     execute(event: MouseEvent  & { target: HTMLElement }) {
         this.editor.ir.focueProcessor.update()
-        let sel = this.editor.ir.focueProcessor.sel
-        let r = sel.getRangeAt(0)
+
         if (event.ctrlKey) {
             this.ctrlKeyClick(event)
         }
         this.click(event)
+        event.preventDefault()
         //this.editor.ir.focueProcessor.updateFocusElementByStart(r.startContainer)
-        const {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement()
+        const {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement(false)
         this.editor.ir.applicationEventPublisher.publish("clickChanged",{block,inline})
     }
 }

@@ -76,9 +76,10 @@ class DomTool {
      * 在光标处分开元素，并以`insertNode`进行分割
      * @param boundary 边界
      * @param insertNode 插入的node
+     * @param clear 清除空的节点
      * @returns 返回分割后的两个元素
      */
-    splitElementAtCursor(boundary: Element, insertNode?: Node) {
+    splitElementAtCursor(boundary: Element, insertNode?: Node,clear?:boolean) {
         const sel = rangy.getSelection()
 
         let r = sel.getRangeAt(0).cloneRange()
@@ -92,9 +93,9 @@ class DomTool {
         const lastFirstElementChild = lastContents.firstElementChild
 
         const df = document.createDocumentFragment()
-        df.appendChild(preContents)
+        if(!(clear && !preContents.textContent))df.appendChild(preContents)
         if (insertNode) df.appendChild(insertNode)
-        df.appendChild(lastContents)
+        if(!(clear && !preContents.textContent))df.appendChild(lastContents)
 
         boundary.replaceWith(df)
 

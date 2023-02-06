@@ -3,6 +3,7 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import Constants from '../constant/constants'
+import Reg from '../constant/reg'
 
 /**
  * 判断当前元素是否为md-inline
@@ -85,6 +86,19 @@ export const isMdInlineImg = (element: Element) => {
 export const isMdInlineLink = (element: Element) => {
   if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_LINK) return true
+  return false
+}
+
+export const isYaliIR = (element: Element) => {
+  if(element && element.classList.contains(Constants.IR_CLASS_NAME)) return true
+  return false
+}
+
+/**
+ * 判断当前段落是否为空
+ */
+export const isEmptyMdBlockParagraph = (element: HTMLElement) => {
+  if (isMdBlockParagraph(element) && (!element.innerText || Reg.emptyString.test(element.innerText))) return true
   return false
 }
 

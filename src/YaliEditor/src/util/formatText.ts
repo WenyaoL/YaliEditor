@@ -32,13 +32,6 @@ export const toTocElementText = (headings:{
         let head = '<span class="md-toc-h'+ element.level +' md-toc-item ">' + '<a to-href="'+element.id+'">'+ element.content+'</a></span>'
         res.push(head)
     }
-    /*headings.forEach(heading=>{
-        let level = heading.tagName.charAt(1)
-        res.push('<span class="'+'md-toc-h'+level+' md-toc-item ">'
-            +'<a to-href="'+ heading.id+ '">'+ heading.textContent+ 
-            '</a></span>')
-
-    })*/
     return res.join('')
 }
 

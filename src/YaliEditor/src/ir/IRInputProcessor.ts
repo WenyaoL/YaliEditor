@@ -16,6 +16,7 @@ class IRInputProcessor{
      * 刷新渲染
      */
      execute(event: InputEvent){
+
         this.editor.ir.focueProcessor.updateBookmark()
 
         //一般打字不处理
@@ -27,15 +28,17 @@ class IRInputProcessor{
             this.editor.ir.observer.flush()
             return
         }
-        
+
+
         //根据输入位置发布不同的事件
         if(isMdBlockHeading(block)){
-            this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_REFRESHTOC)
+            this.editor.ir.applicationEventPublisher.AsynPublish(Constants.IR_EVENT_REFRESHTOC)
         }else if(isMdBlockFence(block) || isMdBlockMath(block)){
             this.editor.ir.applicationEventPublisher.publish(Constants.IR_EVENT_CODEBLOCKINPUT)
             this.editor.ir.observer.flush()
             return
         }
+
 
         if(event.data == " "){
             this.editor.ir.contextRefresher.refreshFocusInline(true)
@@ -48,6 +51,7 @@ class IRInputProcessor{
         }
 
         this.editor.ir.observer.flush()
+
     }
 
 }   

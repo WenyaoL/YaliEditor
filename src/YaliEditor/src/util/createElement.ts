@@ -37,5 +37,6 @@ export const strToDocumentFragment = (src: string) => {
 export const createParagraph = () => {
     let p = document.createElement("p")
     p.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_PARAGRAPH)
+    p.className = ""
     return p
 }

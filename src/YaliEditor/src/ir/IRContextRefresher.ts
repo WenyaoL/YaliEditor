@@ -45,7 +45,6 @@ class IRContextRefresher {
         //补丁类的刷新
         this.refreshLink()
         this.refreshImg()
-        this.refreshHeading()
         this.refreshTable()
         //this.refreshToc()
 
@@ -57,7 +56,7 @@ class IRContextRefresher {
     refreshContext() {
         //this.refreshLink()
         //this.refreshImg()
-        this.refreshHeading()
+
         this.refreshTable()
         this.refreshToc()
     }
@@ -198,13 +197,7 @@ class IRContextRefresher {
         })
     }
 
-    /**
-     * 刷新上下文中的标题节点
-     */
-    refreshHeading() {
 
-
-    }
 
     /**
      * 刷新上下文中的TOC节点
@@ -212,12 +205,11 @@ class IRContextRefresher {
     refreshToc() {
         let root = this.ir.rootElement
         let toc = root.querySelector(".markdown-it-toc-beautiful[md-block]")
+        let headings = getAllHeading(root)
         if (!toc) {
-            this.ir.applicationEventPublisher.publish("refreshedToc", getAllHeading(root))
+            this.ir.applicationEventPublisher.publish("refreshedToc", headings)
             return
         }
-        //let headings = root.querySelectorAll("h1,h2,h3,h4,h5[md-block=heading]")
-        let headings = getAllHeading(root)
         let headText = toTocElementText(headings)
         let p = toc.getElementsByTagName("p")[0]
         p.innerHTML = headText

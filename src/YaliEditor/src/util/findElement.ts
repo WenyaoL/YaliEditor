@@ -129,8 +129,10 @@ export const IRfindClosestMdBlock = (element: Node)=>{
     if(element.nodeType == 1 && (element as HTMLElement).classList.contains(Constants.IR_CLASS_NAME)){
         let sel = rangy.getSelection();
         sel.refresh()
-        if(sel.isCollapsed && sel.focusOffset!=0){
-            const node = (element as HTMLElement).children.item(sel.focusOffset)    
+        if(sel.isCollapsed){
+            let node:Element = null;
+            if(sel.focusOffset == 0) node = (element as HTMLElement).children.item((element as HTMLElement).childElementCount-1)
+            else node = (element as HTMLElement).children.item(sel.focusOffset)
             if(node) sel.collapse(node,0)
         }
     }

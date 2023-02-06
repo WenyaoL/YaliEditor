@@ -87,7 +87,6 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 return true
             }
         }
-        
         return false;
     }
 
@@ -117,10 +116,15 @@ class IRDeletekeyProcessor implements KeyProcessor {
                     this.editor.domTool.deleteSeletedTextNode()
                     return true
                 }
+
                 //删除内容
                 r.deleteContents()
+
                 let mark = r.getBookmark(this.editor.ir.rootElement)
-                this.editor.markdownTool.reRenderNode(startElement)
+                
+                if(isMdBlockParagraph(startElement)) this.editor.markdownTool.reRenderInlineElementAtBlock(startElement)
+                else this.editor.markdownTool.reRenderNode(startElement)
+                
                 r.moveToBookmark(mark)
 
                 rangy.getSelection().setSingleRange(r)
