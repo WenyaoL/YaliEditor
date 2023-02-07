@@ -5,7 +5,6 @@
 import YaLiEditor from '..'
 import {
     findClosestByAttribute,
-    findClosestByClassName,
     findClosestByTop,
     IRfindClosestMdBlock,
     IRfindClosestParagraph,
@@ -14,7 +13,7 @@ import {
     IRfindClosestMdInline
 } from "../util/findElement";
 
-import { getAllHeading, isMdBlockFence, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
+import { getAllHeading, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
 import { strToDocumentFragment, strToElement } from '../util/createElement';
 import Constants from "../constant/constants";
 import { toKeyText, createTableStr, toTocElementText } from "../util/formatText"
@@ -60,6 +59,7 @@ class IRHotkeyProcessor implements KeyProcessor {
             "ctrl+shift+{": this.listKey,
             "ctrl+shift+}": this.unlistKey,
             "ctrl+shift+t": this.tocKey,
+            "ctrl+shift+h": this.htmlblockKey,
             "ctrl+shift+m": this.mathKey
         }
     }
@@ -216,6 +216,53 @@ class IRHotkeyProcessor implements KeyProcessor {
         this.editor.ir.focueProcessor.setFocusElementByMdblock(codeBlock as HTMLElement)
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
         this.editor.ir.renderer.codemirrorManager.mountInputComponent(uuid)
+    }
+
+    htmlblockKey(event: KeyboardEvent | null) {
+        const sel = rangy.getSelection()
+
+        let uuid: string = '',
+            extractContents: string;
+
+        //获取当前块
+        let mdBlock = IRfindClosestMdBlock(sel.getRangeAt(0).startContainer)
+        if (!mdBlock) return
+
+        if (isMdBlockHTML(mdBlock)) return
+
+        //提取文本
+        if (!sel.isCollapsed) {
+            extractContents = this.editor.domTool.getTextContentAtSelected()
+        }
+
+        if (!extractContents) extractContents = ''
+
+        //创建代码块
+        const htmlStr = "<div>" + extractContents + "</div>"
+        const res = this.editor.ir.renderer.render(htmlStr)
+        const htmlBlock = strToElement(res)
+
+        //获取uuid
+        uuid = htmlBlock.querySelector(".markdown-it-code-beautiful").id
+
+        if (this.editor.markdownTool.replaceMdBlockFence(mdBlock, htmlBlock)) { }
+        else {
+            //插入代码块
+            const { start, end } = this.editor.domTool.splitElementAtCursor(mdBlock, htmlBlock, true)
+
+            //刷新start和end节点
+            if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
+            if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
+        }
+
+
+        this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
+
+        //锁定为聚焦元素
+        this.editor.ir.focueProcessor.setFocusElementByMdblock(htmlBlock as HTMLElement)
+        this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
+
+        event?.preventDefault()
     }
 
     /**

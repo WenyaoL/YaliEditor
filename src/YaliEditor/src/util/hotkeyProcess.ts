@@ -11,11 +11,11 @@ import IR from "../ir";
  * @param ir
  * @param payload 
  */
-export function updateLineIR(ir:IR,payload:any){
-    if(payload.type === "head"){
-        const keyboardEvent = new KeyboardEvent("keydown",{
-            ctrlKey:true,
-            key:""+payload.level
+export function updateLineIR(ir: IR, payload: any) {
+    if (payload.type === "head") {
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            ctrlKey: true,
+            key: "" + payload.level
         })
         ir.hotkeyProcessor.headingKey(keyboardEvent)
     }
@@ -34,15 +34,21 @@ export function updateLineIR(ir:IR,payload:any){
  * @param ir 
  * @param payload 
  */
-export function updateBlockIR(ir:IR,payload:any){
+export function updateBlockIR(ir: IR, payload: any) {
 
-    let keyboardEvent:KeyboardEvent;
-    switch(payload.type){
+    let keyboardEvent: KeyboardEvent;
+    switch (payload.type) {
         case "blod":
             ir.hotkeyProcessor.blodKey(null)
             break;
         case "codeblock":
             ir.hotkeyProcessor.codeblockKey(null)
+            break;
+        case "mathblock":
+            ir.hotkeyProcessor.mathKey(null)
+            break;
+        case "htmlblock":
+            ir.hotkeyProcessor.htmlblockKey(null)
             break;
         case "codeline":
             ir.hotkeyProcessor.codelineKey(null)
@@ -67,17 +73,17 @@ export function updateBlockIR(ir:IR,payload:any){
  * line3      - line3
  * 有序列表，无序列表
  */
-export function updateMulLineIR(ir:IR,payload:any){
-    if(payload.type == "unlist"){ //无序列表
+export function updateMulLineIR(ir: IR, payload: any) {
+    if (payload.type == "unlist") { //无序列表
         ir.hotkeyProcessor.unlistKey(null)
-    }else if(payload.type == "list"){
+    } else if (payload.type == "list") {
         ir.hotkeyProcessor.listKey(null)
-    }else if(payload.type == "quote"){
+    } else if (payload.type == "quote") {
         ir.hotkeyProcessor.quoteKey(null)
     }
 }
 
-export function createTocIR(ir:IR){
+export function createTocIR(ir: IR) {
     ir.hotkeyProcessor.tocKey(null)
 }
 

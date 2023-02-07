@@ -216,6 +216,11 @@ export class AppMenu{
                                 .webContents
                                 .send('createBlock',{type:"mathblock"})
                 }},
+                {label:'HTML块', accelerator:'ctrl+shift+H',click:()=>{
+                    BrowserWindow.getFocusedWindow()
+                                .webContents
+                                .send('createBlock',{type:"htmlblock"})
+                }},
                 {type: 'separator'},
                 {label:'有序列表', accelerator:'ctrl+shift+[',click:()=>{
                     BrowserWindow.getFocusedWindow()

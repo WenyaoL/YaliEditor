@@ -88,9 +88,9 @@ class IRKeyBinder implements BaseEventBinder {
      */
     bindKeyupEvent(element: HTMLElement) {
         element.addEventListener("keyup", (event: KeyboardEvent & { target: HTMLElement }) => {
+            if(event.altKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
             this.editor.ir.contextRefresher.refresh()
-
             return;
         })
     }

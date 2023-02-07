@@ -56,9 +56,11 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
     }
 
     const id = uuidv4()
+    const extensions = editor.ir.renderer.codemirrorManager.createHtmlBlockPlugin(id)
+    
     let editorState = EditorState.create({
         doc: content,
-        extensions: editor.ir.renderer.codemirrorManager.createHtmlBlockPlugin(id)
+        extensions
     })
     editor.ir.renderer.codemirrorManager.addStateCache(
         new CodemirrorEditorState(

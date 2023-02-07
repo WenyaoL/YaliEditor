@@ -192,6 +192,20 @@ class MarkdownTool{
     /**
      * 给定一个mdblock,参试将改block替换成fence
      * @param block 
+     * @param htmlBlock 
+     */
+    replaceMdBlockHtml(block:HTMLElement,htmlBlock:Element){
+        if(isEmptyMdBlockParagraph(block)){ 
+            block.replaceWith(htmlBlock)
+            return htmlBlock
+        }
+        return null
+    }
+
+    /**
+     * 给定一个mdblock,参试将改block替换成fence
+     * @param block 
+     * @param fence 
      */
     replaceMdBlockFence(block:HTMLElement,fence:Element){
         if(isEmptyMdBlockParagraph(block)){ 
