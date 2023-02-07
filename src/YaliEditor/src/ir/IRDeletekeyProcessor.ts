@@ -9,7 +9,7 @@ import {
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr} from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML} from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
 
 class IRDeletekeyProcessor implements KeyProcessor {
@@ -145,7 +145,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
     filter() {
         let mdBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if(isMdBlockFence(mdBlock) || isMdBlockMath(mdBlock)) return false
+        if(isMdBlockFence(mdBlock) || isMdBlockMath(mdBlock) || isMdBlockHTML(mdBlock)) return false
         return true
     }
 

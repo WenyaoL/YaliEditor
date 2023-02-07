@@ -77,6 +77,12 @@ export const isMdBlockToc = (element: Element) => {
   return false
 }
 
+export const isMdBlockHTML = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_HTML) return true
+  return false
+}
+
 export const isMdInlineImg = (element: Element) => {
   if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_IMG) return true
@@ -90,7 +96,7 @@ export const isMdInlineLink = (element: Element) => {
 }
 
 export const isYaliIR = (element: Element) => {
-  if(element && element.classList.contains(Constants.IR_CLASS_NAME)) return true
+  if (element && element.classList.contains(Constants.IR_CLASS_NAME)) return true
   return false
 }
 
@@ -111,7 +117,12 @@ export const isEmptyMdBlockFence = (element: Element) => {
 }
 
 export const isEmptyMdBlockMath = (element: Element) => {
-  if (isMdBlockMath(element) && element.querySelector("arkdown-it-code-beautiful")?.getAttribute("is-empty") == "true") return true
+  if (isMdBlockMath(element) && element.querySelector(".markdown-it-code-beautiful")?.firstElementChild.getAttribute("is-empty") == "true") return true
+  return false
+}
+
+export const isEmptyMdBlockHTML = (element: Element) => { 
+  if (isMdBlockHTML(element) && element.querySelector(".markdown-it-code-beautiful").firstElementChild.getAttribute("is-empty") == "true") return true
   return false
 }
 

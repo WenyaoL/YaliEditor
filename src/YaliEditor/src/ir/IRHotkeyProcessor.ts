@@ -382,8 +382,6 @@ class IRHotkeyProcessor implements KeyProcessor {
         }
 
 
-
-
         this.editor.ir.renderer.refreshStateCache(this.editor.ir.rootElement)
 
         //锁定为聚焦元素
@@ -410,8 +408,6 @@ class IRHotkeyProcessor implements KeyProcessor {
             let sibling = li.previousElementSibling
             let siblingChild: HTMLElement | null = sibling.getElementsByTagName("ol").item(0)
             if (!siblingChild) siblingChild = sibling.getElementsByTagName("ul").item(0)
-
-
 
             //根据兄弟节点是否有儿子进行决策
             if (!siblingChild) {//兄弟节点没有儿子列表

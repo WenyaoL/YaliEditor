@@ -5,18 +5,18 @@
 import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, rectangularSelection, crosshairCursor, highlightActiveLine, keymap } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap } from '@codemirror/language';
-import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
+import { history, defaultKeymap, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 import { Extension } from '@codemirror/state';
-import {myHistory,myHistoryKeymap} from '@/codemirror-plugin/codePlugin/history'
-
+import { myHistory, myHistoryKeymap } from '@/codemirror-plugin/codePlugin/history';
+import { html } from '@codemirror/lang-html';
 
 /**
  * 数字栏设置
  */
-const gutterBasicSetup:Extension = (()=>[
+const gutterBasicSetup: Extension = (() => [
     lineNumbers(),
     highlightActiveLineGutter(),
     foldGutter(),
@@ -24,7 +24,7 @@ const gutterBasicSetup:Extension = (()=>[
 
 
 
-const noLineNumberBasicSetup: Extension = /*@__PURE__*/(() => [
+export const noLineNumberBasicSetup: Extension = /*@__PURE__*/(() => [
     highlightSpecialChars(),
     history(),
     drawSelection(),
@@ -51,27 +51,36 @@ const noLineNumberBasicSetup: Extension = /*@__PURE__*/(() => [
 ])();;
 
 
-const myHistorySetup:(editor: any,uuid:string) => Extension = /*@__PURE__*/((editor,uuid) => [
+export const myHistorySetup: (editor: any, uuid: string) => Extension = /*@__PURE__*/((editor, uuid) => [
     myHistory({
-        editor:editor,
-        uuid:uuid
+        editor: editor,
+        uuid: uuid
     }),
     keymap.of([
         ...myHistoryKeymap,
     ])
 ]);
 
-const myMinimalSetup:Extension = /*@__PURE__*/(() => [
+export const myMinimalSetup: Extension = /*@__PURE__*/(() => [
     highlightSpecialChars(),
-
     drawSelection(),
+    crosshairCursor(),
     syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     keymap.of([
         ...defaultKeymap,
     ])
 ])();
 
+export const HTMLBlockSetup = () => [
+    myMinimalSetup,
+    html(),
+    keymap.of([indentWithTab]),
+]
 
-export{
-    noLineNumberBasicSetup,gutterBasicSetup,myMinimalSetup,myHistorySetup
+export default {
+    noLineNumberBasicSetup, 
+    gutterBasicSetup, 
+    myMinimalSetup,
+    HTMLBlockSetup, 
+    myHistorySetup
 }

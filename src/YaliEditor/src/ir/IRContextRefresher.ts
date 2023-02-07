@@ -54,9 +54,6 @@ class IRContextRefresher {
     }
 
     refreshContext() {
-        //this.refreshLink()
-        //this.refreshImg()
-
         this.refreshTable()
         this.refreshToc()
     }

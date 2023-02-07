@@ -30,7 +30,7 @@ class TurndownParser {
     this.initParagraphRule()
     this.initHrRule()
     this.initBlockMetaRule()
-    this.initHtmlBlockRule()
+    this.initHtmlBlockRule(this.editor)
     this.turndownService.use(tableRule)
 
   }
@@ -69,7 +69,6 @@ class TurndownParser {
       },
       replacement: function (content, node, options) {
         let language: string;
-
         node = node as HTMLElement
         const uuid = node.id
         const text = editor.ir.renderer.codemirrorManager.getTextValue(uuid)
@@ -292,7 +291,7 @@ class TurndownParser {
 
   }
 
-  initHtmlBlockRule() {
+  initHtmlBlockRule(editor: YaLiEditor) {
     this.turndownService.addRule('md-block-html', {
       filter: function (node, options) {
         return (
@@ -300,12 +299,10 @@ class TurndownParser {
         )
       },
       replacement: function (content, node, options) {
-        let html = node.querySelector(".md-htmlblock-panel").innerHTML
-        html = beautify.html_beautify(html,{
-          indent_size:4,
-          end_with_newline:true
-        })
-        return "\n\n" + html + "\n\n"
+        let id = node.querySelector(".markdown-it-code-beautiful").id
+        const text = editor.ir.renderer.codemirrorManager.getTextValue(id)
+        if (!text) return ''
+        return `\n${text}\n`
       }
     })
   }

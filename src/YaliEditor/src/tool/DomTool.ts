@@ -93,9 +93,11 @@ class DomTool {
         const lastFirstElementChild = lastContents.firstElementChild
 
         const df = document.createDocumentFragment()
+
+        
         if(!(clear && !preContents.textContent))df.appendChild(preContents)
         if (insertNode) df.appendChild(insertNode)
-        if(!(clear && !preContents.textContent))df.appendChild(lastContents)
+        if(!(clear && !lastContents.textContent))df.appendChild(lastContents)
 
         boundary.replaceWith(df)
 

@@ -29,6 +29,8 @@ export const ATTR_MD_BLOCK_MATH : string = "math"
 export const ATTR_MD_BLOCK_HR : string = "hr"
 export const ATTR_MD_BLOCK_CODE : string = "code"
 export const ATTR_MD_BLOCK_META : string = "meta"
+export const ATTR_MD_BLOCK_HTML  : string = "html"
+
 
 /**
  * md-inline的属性块
@@ -92,6 +94,7 @@ export default {
     ATTR_MD_BLOCK_HR,
     ATTR_MD_BLOCK_CODE,
     ATTR_MD_BLOCK_META,
+    ATTR_MD_BLOCK_HTML,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

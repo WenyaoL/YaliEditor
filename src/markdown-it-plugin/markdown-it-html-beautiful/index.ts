@@ -5,10 +5,19 @@
  */
 import type MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token";
-import Renderer from "markdown-it/lib/renderer";
 import { toImgElementText } from "../util/formatText"
 import Reg from '../../YaliEditor/src/constant/reg'
 import { escapeHtml } from "markdown-it/lib/common/utils"
+import { EditorState } from "@codemirror/state"
+import { v4 as uuidv4 } from 'uuid';
+import YaLiEditor from "@/YaliEditor/src";
+import { CodemirrorEditorState } from "../markdown-it-codemirror-beautiful/CodemirrorEditorState";
+import { html } from '@codemirror/lang-html'
+import {myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
+import { isMdBlockHTML } from "@/YaliEditor/src/util/inspectElement";
+
+let editor: YaLiEditor = null
+
 
 function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
     const token = tokens[idx];
@@ -46,15 +55,34 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
         return `<div md-block="html-comment" class="html-comment">${comment}</div>`
     }
 
-
-    return `<div md-block="html">
-            <div class="md-htmlblock-tooltip" contenteditable="false"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
-            <div class="md-htmlblock-container"></div>
-            <div class="md-htmlblock-panel" contenteditable="false">${content}</div>
+    const id = uuidv4()
+    let editorState = EditorState.create({
+        doc: content,
+        extensions: editor.ir.renderer.codemirrorManager.createHtmlBlockPlugin(id)
+    })
+    editor.ir.renderer.codemirrorManager.addStateCache(
+        new CodemirrorEditorState(
+            id,
+            editorState,
+            {
+                needSuggestUI: false,
+            }))
+    return `<div md-block="html" contenteditable="false">
+            <div class="md-htmlblock-tooltip"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
+            <pre id=${id} class="md-htmlblock-container markdown-it-code-beautiful"></pre>
+            <div class="md-htmlblock-panel">${content}</div>
             </div>`;
 };
 
-export default function plugin(md: MarkdownIt, options: any) {
 
+
+export default function plugin(md: MarkdownIt, options: any) {
+    editor = options.editor
+    editor.ir.applicationEventPublisher.subscribe("focus-change",(oldFocusBlock:HTMLElement,newFocusBlock:HTMLElement)=>{
+        if(isMdBlockHTML(oldFocusBlock)){
+            const id = oldFocusBlock.querySelector(".markdown-it-code-beautiful")?.id
+            oldFocusBlock.querySelector(".md-htmlblock-panel").innerHTML = editor.ir.renderer.codemirrorManager.getTextValue(id)
+        }
+    })
     md.renderer.rules.html_block = htmlBlock;
 }

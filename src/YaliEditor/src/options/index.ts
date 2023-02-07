@@ -5,17 +5,10 @@
 
 
 //import {Mathjax} from '@/markdown-it-plugin/markdown-it-mathjax-beautiful'
-import list from '@/markdown-it-plugin/markdown-it-list-beautiful'
+
 import emoji from 'markdown-it-emoji'
-import toc from "@/markdown-it-plugin/markdown-it-toc-beautiful"
-import imgplugin from '@/markdown-it-plugin/markdown-it-image-beautiful'
-import link from '@/markdown-it-plugin/markdown-it-link-beautiful'
-
-import _ from 'lodash'
-
-import { basicSetup, minimalSetup } from "codemirror"
-import { noLineNumberBasicSetup, gutterBasicSetup, myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
-import { EditorView, keymap, ViewUpdate } from "@codemirror/view"
+import { myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
+import { keymap} from "@codemirror/view"
 import { indentWithTab } from "@codemirror/commands"
 
 

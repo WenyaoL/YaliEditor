@@ -9,6 +9,7 @@ import {strToElementList,strToElementArray, strToDocumentFragment} from "../util
 import Constants from "../constant/constants"
 import Reg from '../constant/reg'
 import {axiosInstance} from '../axios'
+import { isMdBlockFence, isMdBlockHTML, isMdBlockMath } from '../util/inspectElement';
 class IRPasteProcessor{
 
     public editor:YaliEditor;
@@ -121,8 +122,8 @@ class IRPasteProcessor{
         let sel = rangy.getSelection()
         let markdown = event.clipboardData?.getData('text/markdown')
 
-        let type = this.editor.ir.focueProcessor.getSelectedBlockMdType()
-        if(type == Constants.ATTR_MD_BLOCK_FENCE){
+        let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
+        if(isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockHTML(block)){
             return
         }
 

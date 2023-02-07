@@ -1,6 +1,18 @@
 div.html-comment[md-block="html-comment"] {
     color: #a78405;
-    ;
+}
+
+div[md-block="html"]>.md-htmlblock-container{
+    display: none;
+}
+
+div[md-block="html"].md-focus>.md-htmlblock-panel{
+    display: none;
+}
+
+div[md-block="html"].md-focus>.md-htmlblock-container{
+    display: block;
+    margin-top: 0px;
 }
 
 div[md-block="html"]:hover {

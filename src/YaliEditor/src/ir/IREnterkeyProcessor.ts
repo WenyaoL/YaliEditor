@@ -7,7 +7,7 @@ import Constants from "../constant/constants";
 import {
     IRfindClosestLi,
 } from "../util/findElement";
-import { isMdBlockCode, isMdBlockFence, isMdBlockMath, isMdBlockMeta, isMdBlockParagraph } from '../util/inspectElement'
+import { isMdBlockCode, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockMeta, isMdBlockParagraph } from '../util/inspectElement'
 
 import YaLiEditor from "..";
 import rangy from "rangy";
@@ -31,7 +31,7 @@ class IREnterkeyProcessor implements KeyProcessor {
 
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
 
-        if (isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockCode(block)) return false
+        if (isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockCode(block) || isMdBlockHTML(block)) return false
 
         if (isMdBlockMeta(block)){
             this.editor.domTool.insertTextNodeAtCursor("\n")

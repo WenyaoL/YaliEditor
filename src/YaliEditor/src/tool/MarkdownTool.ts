@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph, isEmptyMdBlockHTML} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import Constants from '../constant/constants'
@@ -179,6 +179,9 @@ class MarkdownTool{
             this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
             return this.nodeDegenerateToP(element)
         }else if(isEmptyMdBlockMath(element)){
+            this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
+            return this.nodeDegenerateToP(element)
+        }else if(isEmptyMdBlockHTML(element)){
             this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
             return this.nodeDegenerateToP(element)
         }

@@ -1,7 +1,7 @@
 import YaLiEditor from '..'
 import Constants from "../constant/constants";
 import Reg from '../constant/reg';
-import { isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockMath, isMdBlockMeta } from '../util/inspectElement';
+import { isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockMeta } from '../util/inspectElement';
 
 class IRInputProcessor{
     
@@ -24,7 +24,7 @@ class IRInputProcessor{
             return;
         }
         const block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
-        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)){
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block) || isMdBlockHTML(block)){
             this.editor.ir.observer.flush()
             return
         }

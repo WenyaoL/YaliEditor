@@ -57,7 +57,7 @@ class IRFocusProcessor {
     if (!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
     
     this.removeFocusMdblock()
-
+    this.editor.ir.applicationEventPublisher.publish("focus-change",this.selectedBlockMdElement,block)
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
   }
@@ -70,6 +70,9 @@ class IRFocusProcessor {
     this.selectedInlineMdElement?.classList.add("md-expand")
   }
 
+  /**
+   * 移除聚焦mdblock元素的class
+   */
   removeFocusMdblock(){
     //移除当前聚焦元素
     if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
@@ -81,7 +84,9 @@ class IRFocusProcessor {
       })
     }
   }
-
+  /**
+   * 移除聚焦mdinline元素的class
+   */
   removeFocusMdinline(){
     //移除当前聚焦元素
     if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
@@ -159,7 +164,7 @@ class IRFocusProcessor {
     if (block == this.selectedBlockMdElement) return
     
     this.removeFocusMdblock()
-
+    this.editor.ir.applicationEventPublisher.publish("focus-change",this.selectedBlockMdElement,block)
     //更新
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")

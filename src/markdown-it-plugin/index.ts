@@ -56,7 +56,7 @@ class MarkdownBeautiful{
     this.md.use(markdownItHrBeautiful)
     this.md.use(markdownItBlockquoteBeautiful)
     this.md.use(markdownItMetaBeautiful)
-    this.md.use(markdownItHTMLBeautiful)
+    this.md.use(markdownItHTMLBeautiful,{editor:this.editor})
     this.md.use(markdownItListBeautiful)
     this.md.use(markdownItTocBeautiful)
     this.md.use(markdownItImageBeautiful,{editor:this.editor})

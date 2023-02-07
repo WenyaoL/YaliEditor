@@ -9,12 +9,13 @@ import { basicSetup, minimalSetup } from "codemirror"
 import { languages } from "@codemirror/language-data"
 import { LanguageDescription } from "@codemirror/language"
 import { javascript } from '@codemirror/lang-javascript'
+import { html } from '@codemirror/lang-html'
 import { CodemirrorEditorState } from './CodemirrorEditorState'
 import { CodemirrorEditorView } from './CodemirrorEditorView'
 import { createComponent, mount } from './SearchInputComponent'
 import { v4 as uuidv4 } from 'uuid';
 import YaLiEditor from "@/YaliEditor/src";
-
+import { noLineNumberBasicSetup, myMinimalSetup, HTMLBlockSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
 import { oneDark, oneDarkHighlightStyle, oneDarkTheme } from '@/codemirror-plugin/codeTheme/dark';
 import { oneLight } from '@/codemirror-plugin/codeTheme/light';
 import { langCanload } from './lang'
@@ -129,6 +130,8 @@ export class CodemirrorManager {
             })
         ])
 
+        loadLanguage("latex")
+
         this.langCanLoad = langCanload
 
     }
@@ -167,12 +170,11 @@ export class CodemirrorManager {
 
 
     /**
-     * 获取指定id的文本信息
+     * 获取指定id的视图的文本信息
      * @param uuid 
      */
     getTextValue(uuid: string) {
         const viewInfo = this.getViewInfo(uuid)
-
         if (viewInfo) {
             let res = viewInfo.view.state.doc.toString()
             return res;
@@ -366,16 +368,27 @@ export class CodemirrorManager {
 
     createMathPlugin(id: string) {
         return this.codemirrorPlugin.concat([EditorView.updateListener.of(viewupdate => {
-            if (viewupdate.state.doc.length === 0) {
-                viewupdate.view.dom.setAttribute("is-empty", "true")
-            }
-            if (viewupdate.state.doc.length > 0) {
-                viewupdate.view.dom.setAttribute("is-empty", "false")
-            }
             if (viewupdate.docChanged) {
                 this.editor.ir.renderer.mathjax.freshMathjax(id, viewupdate.state.doc.toString())
             }
-        })])
+        }), loadLanguage("latex").support])
+    }
+
+    createHtmlBlockPlugin(id: string) {
+        return [
+            EditorView.updateListener.of(viewupdate => {
+                if (viewupdate.state.doc.length === 0) {
+                    viewupdate.view.dom.setAttribute("is-empty", "true")
+                }
+                if (viewupdate.state.doc.length > 0) {
+                    viewupdate.view.dom.setAttribute("is-empty", "false")
+                }
+                if (viewupdate.docChanged) {
+
+                }
+            }),
+            HTMLBlockSetup()
+        ]
     }
 
     /**
@@ -396,6 +409,7 @@ export class CodemirrorManager {
             const uuid = e.id
             let stateInfo = this.getStateCache(uuid)
             if (!stateInfo) return
+
             let view = new EditorView({
                 parent: e,
                 root: document
@@ -462,7 +476,6 @@ export class CodemirrorManager {
     unsafeRefreshEditorViewSyn(root?: HTMLElement) {
         if (!root) root = this.editor.ir.rootElement
         const elements = root.querySelectorAll('.markdown-it-code-beautiful')
-
         for (let index = 0; index < elements.length; index++) {
             let stateCache: CodemirrorEditorState | null = null;
 
@@ -672,5 +685,3 @@ export class CodemirrorManager {
 //import 'highlight.js/styles/vs2015.css'
 
 export default CodemirrorManager;
-
-
