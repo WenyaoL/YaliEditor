@@ -639,35 +639,23 @@ class IRHotkeyProcessor implements KeyProcessor {
      * @param col 
      */
     tableCreate(row: number, col: number) {
+        //先克隆再赋值，否则可能导致拿到的不是旧的范围
+        const cloneRange = this.editor.ir.focueProcessor.sel.getRangeAt(0).cloneRange() as RangyRange
+        rangy.getSelection().setSingleRange(cloneRange)
 
-        //获取编辑器最后更新时的选择
-        const sel = this.editor.ir.focueProcessor.sel
-        //sel.moveToBookmark(this.editor.ir.focueProcessor.bookmark)
-        const r = sel.getRangeAt(0).cloneRange() as RangyRange
-        const start = r.startContainer
-        let e = IRfindClosestMdBlock(start)
+        this.editor.ir.deletekeyProcessor.deleteRang()
 
-        if (!e) {
-            e = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        }
+        const format = createTableStr(row, col)
+        const domF = strToDocumentFragment(this.editor.ir.renderer.render(format))
+        const thDom = domF.querySelector("th") 
 
-        if (!e) return
-
-        if (!r.collapsed) r.deleteContents()
-        r.setEndAfter(e)
-        let content = r.extractContents()
-        let format = createTableStr(row, col)
-        let dom = this.editor.ir.renderer.render(format)
-        content.firstElementChild?.insertAdjacentHTML("beforebegin", dom)
-        let th = content.firstElementChild.getElementsByTagName("th")[0]
-        r.collapseAfter(e)
-        r.insertNode(content)
-
-        //光标重新聚焦表格上
-        r.collapseToPoint(th, 0)
-
-        sel.setSingleRange(r)
-
+        const mdBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+        this.editor.domTool.splitElementAtCursor(mdBlock,domF,true)
+        setTimeout(()=>{
+            this.editor.ir.focueProcessor.setCursor(thDom,0)
+            this.editor.ir.observer.forceFlush()
+        })
+          
     }
 
 

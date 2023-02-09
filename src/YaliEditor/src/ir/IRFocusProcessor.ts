@@ -39,30 +39,37 @@ class IRFocusProcessor {
   /**
    * 刷新所有状态信息
    */
-  update(start?:Node) {
-    if(start){
+  update(start?: Node) {
+    if (start) {
       this.updateFocusElementByStart(start)
-    }else{
+    } else {
       this.updateFocusElement()
     }
     this.updateBookmark()
+  }
+
+  setCursor(start?: Node,offset?:number) {
+    rangy.getNativeSelection().collapse(start,offset)
+    rangy.getSelection().refresh(true)
+    this.sel = rangy.getSelection()
+    this.updateFocusElement()
   }
 
   /**
    * 锁定给定元素为聚焦元素
    * @param block 
    */
-  setFocusElementByMdblock(block?: HTMLElement){
+  setFocusElementByMdblock(block?: HTMLElement) {
     this.sel = rangy.getSelection()
     if (!block) block = IRfindClosestMdBlock(this.sel.getRangeAt(0).startContainer)
-    
+
     this.removeFocusMdblock()
-    this.editor.ir.applicationEventPublisher.publish("focus-change",this.selectedBlockMdElement,block)
+    this.editor.ir.applicationEventPublisher.publish("focus-change", this.selectedBlockMdElement, block)
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")
   }
 
-  setFocusElementByMdinline(inline?:HTMLElement){
+  setFocusElementByMdinline(inline?: HTMLElement) {
     this.sel = rangy.getSelection()
     if (!inline) inline = IRfindClosestMdInline(this.sel.getRangeAt(0).startContainer)
     this.removeFocusMdinline()
@@ -73,7 +80,7 @@ class IRFocusProcessor {
   /**
    * 移除聚焦mdblock元素的class
    */
-  removeFocusMdblock(){
+  removeFocusMdblock() {
     //移除当前聚焦元素
     if (this.selectedBlockMdElement) this.selectedBlockMdElement.classList.remove("md-focus")
     //移除面板上可能残留的聚焦元素
@@ -87,7 +94,7 @@ class IRFocusProcessor {
   /**
    * 移除聚焦mdinline元素的class
    */
-  removeFocusMdinline(){
+  removeFocusMdinline() {
     //移除当前聚焦元素
     if (this.selectedInlineMdElement) this.selectedInlineMdElement.classList.remove("md-expand")
     //移除面板上可能残留的聚焦元素
@@ -104,11 +111,11 @@ class IRFocusProcessor {
    * 给定md-inline并将光标聚焦到上面
    * @param inline 
    */
-  focusMdInline(inline:HTMLElement){
+  focusMdInline(inline: HTMLElement) {
     this.sel = rangy.getSelection()
-    if(isMdInline(inline)){
+    if (isMdInline(inline)) {
       this.setFocusElementByMdinline(inline)
-      this.sel.collapse(inline.lastChild,inline.lastChild.textContent.length)
+      this.sel.collapse(inline.lastChild, inline.lastChild.textContent.length)
     }
   }
 
@@ -159,12 +166,12 @@ class IRFocusProcessor {
   updateFocusMdBlockByStart(start?: Node) {
     if (!start) start = this.sel.getRangeAt(0).startContainer
     const block = IRfindClosestMdBlock(start)
-    
+
     //当前聚焦的md-block元素没变化，不处理
     if (block == this.selectedBlockMdElement) return
-    
+
     this.removeFocusMdblock()
-    this.editor.ir.applicationEventPublisher.publish("focus-change",this.selectedBlockMdElement,block)
+    this.editor.ir.applicationEventPublisher.publish("focus-change", this.selectedBlockMdElement, block)
     //更新
     this.selectedBlockMdElement = block
     this.selectedBlockMdElement?.classList.add("md-focus")

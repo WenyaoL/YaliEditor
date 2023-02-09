@@ -14,14 +14,15 @@
 - `Ctrl+U`：下滑线
 - `Ctrl+]`：增加缩进
 - `Ctrl+[`：减少缩进
-- `Ctrl+Shift+5`：删除线
+- `Ctrl+Shift+%`：删除线
 - `Ctrl+Shift+~`：代码引用
-- `Ctrl+Shift+k`：代码块
+- `Ctrl+Shift+K`：代码块
 - `Ctrl+Shift+M`：数学公式
+- `Ctrl+Shift+H`：HTML编辑块
 - `Ctrl+Shift+Q`：引用
 - `Ctrl+Shift+[`：有序列表
 - `Ctrl+Shift+]`：无序列表
-- `Ctrl+Shift+t`：创建目录
+- `Ctrl+Shift+T`：创建目录
 
 
 

@@ -30,16 +30,18 @@
 
 # YaliEditor
 
-- [Download and Install](#download-and-install)
-- [Introduction](#Introduction)
-  - [IR real-time rendering mode](#ir-real-time-rendering-mode)
-  - [SV split screen mode](#sv-split-screen-mode)
-  - [Only source code mode](#only-source-code-mode)
-  - [Folder Preview](#folder-Preview)
-  - [Theme](#theme)
-  - [Support export](#support-export)
-  - [Render Support](#render-support)
-- [Project setup](#project-setup)
+- [YaliEditor](#yalieditor)
+  - [Download and Install](#download-and-install)
+  - [Introduction](#introduction)
+    - [IR real-time rendering mode](#ir-real-time-rendering-mode)
+    - [SV split screen mode](#sv-split-screen-mode)
+    - [Only source code mode](#only-source-code-mode)
+    - [Folder Preview](#folder-preview)
+    - [Theme](#theme)
+    - [Support export](#support-export)
+    - [Render Support](#render-support)
+    - [Shortcut key](#shortcut-key)
+  - [Project setup](#project-setup)
 
 ## Download and Install
 
@@ -117,13 +119,15 @@ About -->Help Documents
     
 *   `Ctrl+[`：减少缩进
     
-*   `Ctrl+Shift+5`：删除线
+*   `Ctrl+Shift+%`：删除线
     
 *   `Ctrl+Shift+~`：代码引用
     
-*   `Ctrl+Shift+k`：代码块
+*   `Ctrl+Shift+K`：代码块
     
 *   `Ctrl+Shift+M`：数学公式
+
+*   `Ctrl+Shift+H`：HTML编辑块
     
 *   `Ctrl+Shift+Q`：引用
     
@@ -131,7 +135,7 @@ About -->Help Documents
     
 *   `Ctrl+Shift+]`：无序列表
     
-*   `Ctrl+Shift+t`：创建目录
+*   `Ctrl+Shift+T`：创建目录
 
 ## Project setup
 

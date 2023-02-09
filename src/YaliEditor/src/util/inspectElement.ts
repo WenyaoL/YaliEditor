@@ -100,6 +100,16 @@ export const isYaliIR = (element: Element) => {
   return false
 }
 
+export const isMdBorder = (element: Element) => {
+  if (element && element.classList.contains(Constants.CLASS_MD_BORDER)) return true
+  return false
+}
+
+export const isMdMeta = (element: Element) => {
+  if (element && element.classList.contains(Constants.CLASS_MD_META)) return true
+  return false
+}
+
 /**
  * 判断当前段落是否为空
  */
@@ -121,7 +131,7 @@ export const isEmptyMdBlockMath = (element: Element) => {
   return false
 }
 
-export const isEmptyMdBlockHTML = (element: Element) => { 
+export const isEmptyMdBlockHTML = (element: Element) => {
   if (isMdBlockHTML(element) && element.querySelector(".markdown-it-code-beautiful").firstElementChild.getAttribute("is-empty") == "true") return true
   return false
 }

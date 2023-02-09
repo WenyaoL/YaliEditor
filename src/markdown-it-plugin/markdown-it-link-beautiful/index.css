@@ -10,7 +10,14 @@
     color: #5b808d;
 }
 
-.md-expand .md-hiden{
+span[md-inline="link"] .md-border.md-like{
+    display: inline;
+    color: #C7C5C5;
+}
+
+
+
+span[md-inline="link"].md-expand .md-border{
     display: inline;
     color: #C7C5C5;
 }

@@ -9,7 +9,7 @@ import {
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML} from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML } from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
 
 class IRDeletekeyProcessor implements KeyProcessor {
@@ -37,25 +37,27 @@ class IRDeletekeyProcessor implements KeyProcessor {
         }
 
         //退化失败后，mdBlock-Math和mdBlock-Fance将不做任何处理
-        if(!this.filter()) return false
+        if (!this.filter()) return false
 
         //P标签处理
-        if(isMdBlockParagraph(mdBlock)){
+        if (isMdBlockParagraph(mdBlock)) {
             const mdBlockPreviousElement = mdBlock.previousElementSibling
             //临近Hr附近
-            if(this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockHr(mdBlockPreviousElement)){
+            if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockHr(mdBlockPreviousElement)) {
                 mdBlockPreviousElement.remove()
                 return true
             }
 
+            
+
             //尝试删除P节点
-            if(this.editor.domTool.deleteTextEmptyElement(mdBlock)){
-                if(!mdBlockPreviousElement){
+            if (this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
+                if (!mdBlockPreviousElement) {
                     this.editor.ir.focueProcessor.updateFocusMdBlockByStart()
                     return true
                 }
 
-                let text:any = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
+                let text: any = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
                 if (text) {
                     r.collapseAfter(text)
                     sel.setSingleRange(r)
@@ -71,10 +73,10 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 return false
             }
 
-            
+
 
         }
-        
+
 
         //模拟最后字符删除(用于修复link的错误删除)
         let startOff = r.startOffset
@@ -95,24 +97,26 @@ class IRDeletekeyProcessor implements KeyProcessor {
         let start = r.startContainer
         let end = r.endContainer
 
-        if (!this.filter()) { 
+        if (!this.filter()) {
             return false
         }
-
+        let startElement = IRfindClosestMdBlock(start)
+        let endElement = IRfindClosestMdBlock(end)
         //删除一个节点的
         if (r.getNodes().length == 1) {
             r.deleteContents()
+            let startinline = IRfindClosestMdInline(start)
+            this.editor.ir.contextRefresher.refreshImg(startElement, startinline)
             return true
         }
 
         //删除多个节点的
         if (r.getNodes().length > 1) {
-            let startElement = IRfindClosestMdBlock(start)
-            let endElement = IRfindClosestMdBlock(end)
+
 
             //相同的情况
             if (startElement === endElement) {
-                if(isMdBlockTable(startElement)){
+                if (isMdBlockTable(startElement)) {
                     this.editor.domTool.deleteSeletedTextNode()
                     return true
                 }
@@ -121,10 +125,10 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 r.deleteContents()
 
                 let mark = r.getBookmark(this.editor.ir.rootElement)
-                
-                if(isMdBlockParagraph(startElement)) this.editor.markdownTool.reRenderInlineElementAtBlock(startElement)
+
+                if (isMdBlockParagraph(startElement)) this.editor.markdownTool.reRenderInlineElementAtBlock(startElement)
                 else this.editor.markdownTool.reRenderNode(startElement)
-                
+
                 r.moveToBookmark(mark)
 
                 rangy.getSelection().setSingleRange(r)
@@ -145,7 +149,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
     filter() {
         let mdBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if(isMdBlockFence(mdBlock) || isMdBlockMath(mdBlock) || isMdBlockHTML(mdBlock)) return false
+        if (isMdBlockFence(mdBlock) || isMdBlockMath(mdBlock) || isMdBlockHTML(mdBlock)) return false
         return true
     }
 
@@ -159,9 +163,9 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         //单一的删除
         if (rangy.getSelection().isCollapsed) {
-            if(this.deleteCollapsed()) event.preventDefault() 
+            if (this.deleteCollapsed()) event.preventDefault()
         } else {//范围删除
-            if(this.deleteRang()) event.preventDefault()
+            if (this.deleteRang()) event.preventDefault()
         }
     }
 

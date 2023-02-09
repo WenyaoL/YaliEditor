@@ -7,6 +7,14 @@
     max-height: 500px;
 }
 
+.md-image img.errorimg{
+    width:300px;
+}
+
+.md-image span.md-border{
+    display: inline;
+}
+
 .md-expand .md-hiden{
     display: inline;
     color: #C7C5C5;

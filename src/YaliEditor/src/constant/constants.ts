@@ -8,6 +8,7 @@ export const _YALI_VERSION : string =  "YaLier_1.0.0"
 
 export const CLASS_MD_HIDEN : string = "md-hiden"
 export const CLASS_MD_META : string = "md-meta"
+export const CLASS_MD_BORDER :string = "md-border"
 export const CLASS_MARKDOWN_IT_CODE_BEAUTIFUL: string = "markdown-it-code-beautiful"
 
 /**
@@ -43,6 +44,9 @@ export const ATTR_MD_INLINE_EM : string = "em"
 export const ATTR_MD_INLINE_CODE : string = "code"
 export const ATTR_MD_INLINE_DELETELINE : string = "deleteline"
 export const ATTR_MD_INLINE_STRONG : string = "strong"
+
+
+
 
 export const SELECTOR_MD_INLINE_LINK : string = "span[md-inline=link]"
 export const SELECTOR_MD_INLINE_IMG : string = "span[md-inline=img]"
@@ -81,6 +85,7 @@ export default {
     _YALI_VERSION,
     CLASS_MD_HIDEN,
     CLASS_MD_META,
+    CLASS_MD_BORDER,
     CLASS_MARKDOWN_IT_CODE_BEAUTIFUL,
     CLASS_MD_FOCUS,
     CLASS_MD_EXPAND,

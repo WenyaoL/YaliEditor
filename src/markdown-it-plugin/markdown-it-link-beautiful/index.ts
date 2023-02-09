@@ -16,78 +16,47 @@ import type Renderer from "markdown-it/lib/renderer";
  * @param slf 
  * @returns 
  */
-function linkOpen(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
+function linkOpen(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer) {
     const token = tokens[idx]
 
-    let root = document.createElement("span")
-
+    let str = ''
+    const nextToken = tokens[idx + 1];
     //if nextToken.type == "link_close", then text is []()
-    const nextToken = tokens[idx+1];
-    if(nextToken.type == "link_close"){
-        root.setAttribute("md-inline","link")
-        root.setAttribute("md-like","link")
-        root.setAttribute("spellcheck","false")
-        let pre = document.createElement("span")
-        pre.innerText = "["
-        pre.classList.add("md-like")
-        root.appendChild(pre)
-    }else{
-        root.setAttribute("md-inline","link")
-        root.setAttribute("spellcheck","false")
-        let pre = document.createElement("span")
-        pre.innerText = "["
-        pre.classList.add("md-hiden")
-        root.appendChild(pre)
+    if (nextToken.type == "link_close") {
+        str = `<span md-inline="link" md-like="link" spellcheck="false"><span class="md-border md-like">[</span>`
+    } else {
+        str = `<span md-inline="link" spellcheck="false"><span class="md-border">[</span>`
     }
 
-
-
-    let html = root.outerHTML
-    //移除</span>
-    html = html.substring(0,html.length-7);
-    token.attrPush(["class","md-link-a"])
+    token.attrPush(["class", "md-link-a"])
     const aOpen = slf.renderToken(tokens, idx, options);
 
-    return html + aOpen
+    return str + aOpen
 }
 
-function linkClose(tokens:Token[], idx:number, options:Object, env:Object, slf: Renderer){
-    let token = tokens[idx-2]
+function linkClose(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer) {
+    let token = tokens[idx - 2]
     let mdClass = "md-hiden"
-
-    //if token.type !== "link_open" ,then text is []()
-    if(!token ||token.type !== "link_open"){        
-        token = tokens[idx-1];
-        mdClass = "md-like"
+    const preToken = tokens[idx - 1]
+    let str = ''
+    //if token.type == "link_open" ,then text is []()
+    if (preToken.type == "link_open") {
+        str = `<span class="md-border md-like">](</span>`+
+        `<span class="md-like md-link-url md-meta">${preToken.attrGet("href")}</span>` +
+        `<span class="md-border md-like">)</span>`+
+        `</span>`
+    }else{
+        str = `<span class="md-border">](</span>`+
+        `<span class="md-hiden md-link-url md-meta">${tokens[idx - 2].attrGet("href")}</span>` +
+        `<span class="md-border">)</span>`+
+        `</span>`
     }
-
-    let root = document.createElement("span")
-    let mid = document.createElement("span")
-    mid.innerText = "]("
-    mid.classList.add(mdClass)
-    let url = document.createElement("span")
-    url.innerText = token.attrGet("href")
-    url.classList.add(mdClass)
-    url.classList.add("md-link-url")
-    url.classList.add("md-meta")
-
-    let suf = document.createElement("span")
-    suf.innerText = ")"
-    suf.classList.add(mdClass)
-    root.appendChild(mid)
-    root.appendChild(url)
-    root.appendChild(suf)
-    let html = root.outerHTML
-    //移除<span>
-    html = html.substring(6,html.length)
-
     const aClose = slf.renderToken(tokens, idx, options);
 
-
-    return aClose + html
+    return aClose + str
 }
 
-function plugin(md: MarkdownIt, options: any){
+function plugin(md: MarkdownIt, options: any) {
     md.renderer.rules.link_open = linkOpen;
     md.renderer.rules.link_close = linkClose;
 }

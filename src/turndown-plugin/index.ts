@@ -150,12 +150,7 @@ class TurndownParser {
       },
       replacement: (content, node, options) => {
         node = node as HTMLElement
-
-        let res = []
-        node.childNodes.forEach(node => {
-          res.push(node.textContent)
-        })
-        return res.join('')
+        return node.textContent
       }
     })
   }

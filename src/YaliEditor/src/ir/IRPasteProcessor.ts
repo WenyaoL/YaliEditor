@@ -98,6 +98,7 @@ class IRPasteProcessor{
             }
 
             axiosInstance.get(str).then(response=>{
+                const t = Reg.htmlTitleReg.exec(response.data)
                 const res = Reg.htmlTitleReg.exec(response.data).at(0)
                 if(res){
                     const link = this.editor.markdownTool.renderInline(`[${res}](${str})`)
@@ -106,7 +107,7 @@ class IRPasteProcessor{
                     const link = this.editor.markdownTool.renderInline(str)
                     this.editor.domTool.insertElementAtCursor(link)
                 }   
-            }).catch(()=>{
+            }).catch((res)=>{
                 const link = this.editor.markdownTool.renderInline(str)
                 this.editor.domTool.insertElementAtCursor(link)
             })
@@ -121,7 +122,9 @@ class IRPasteProcessor{
     execute(event: ClipboardEvent) {
         let sel = rangy.getSelection()
         let markdown = event.clipboardData?.getData('text/markdown')
-
+        //修改动作前的跟新
+        this.editor.ir.focueProcessor.updateBeforeModify()
+        
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement(false)
         if(isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockHTML(block)){
             return

@@ -6,7 +6,7 @@
 import IR from '.';
 import YaliEditor from '../index'
 import Constants from '../constant/constants';
-import { getAllHeading,isMdBlockCode,isMdBlockFence,isMdBlockMath,isMdBlockMeta,isMdBlockParagraph, isMdInlineImg, isMdInlineLink } from "../util/inspectElement";
+import { getAllHeading, isMdBlockCode, isMdBlockFence, isMdBlockMath, isMdBlockMeta, isMdBlockParagraph, isMdBorder, isMdInlineImg, isMdInlineLink } from "../util/inspectElement";
 import { strToElement, createParagraph } from "../util/createElement";
 import { toTocElementText } from "../util/formatText"
 import rangy from 'rangy';
@@ -43,9 +43,8 @@ class IRContextRefresher {
         }
 
         //补丁类的刷新
-        this.refreshLink()
-        this.refreshImg()
-        this.refreshTable()
+
+        this.refreshContext()
         //this.refreshToc()
 
         //更新焦点元素
@@ -64,37 +63,25 @@ class IRContextRefresher {
      * @param escape 
      * @returns 
      */
-    refreshFocusInline(escape?:boolean) {
+    refreshFocusInline(escape?: boolean) {
         //根据行类型选择是否强制刷新块
-        
-        let {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement(false)
+        let { block, inline } = this.editor.ir.focueProcessor.getSelectedMdElement(false)
         const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
-        
-        
+
         if (!block) return false
 
         //只有P标签才进行刷新
         if (isMdBlockParagraph(block)) {
             const sel = rangy.getSelection()
 
-            //存在md-inline或者likeType对其进行刷新
-            if(likeType || inline){
-                let mark = sel.getBookmark(block)
-                inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
-                
-                if(!inline) return false
-                block.normalize()
-                mark.rangeBookmarks[0].containerNode = block
-                sel.moveToBookmark(mark)
-                this.editor.ir.focueProcessor.updateFocusElement()
-                return true
-            }
+            if (this.refreshImg(block, inline)) return true
+            if (this.refreshLink(block, inline)) return true
 
-            if(escape) return false
+            if (escape) return false
 
             //尝试刷新行内的所有文本
             let mark = sel.getBookmark(block)
-            if(this.editor.markdownTool.reRenderInlineElementAtBlock(block)){
+            if (this.editor.markdownTool.reRenderInlineElementAtBlock(block)) {
                 sel.moveToBookmark(mark)
                 this.editor.ir.focueProcessor.updateFocusElement()
                 return true
@@ -114,15 +101,12 @@ class IRContextRefresher {
      */
     refreshFocusBlock(force?: boolean) {
         let sel = rangy.getSelection()
-
         //获取当前所在的块
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        if (!block || isMdBlockFence(block) || isMdBlockMath(block) ||isMdBlockMeta(block)||isMdBlockCode(block)) return
-
+        if (!block || isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockMeta(block) || isMdBlockCode(block)) return
         let bookmark = sel.getBookmark(block)
-
         //强制刷新
-        if(force){
+        if (force) {
             let turndown = this.editor.markdownTool.turndown(block)
             const res = this.editor.markdownTool.renderBlock(turndown)
             const e = strToElement(res)
@@ -132,14 +116,70 @@ class IRContextRefresher {
             this.editor.ir.focueProcessor.updateFocusElement()
             return
         }
-
-
-        
         block = this.editor.markdownTool.mdBlockTransform(block) as HTMLElement
-        if(!block) return
-        sel.collapse(block,block.childNodes.length)
+        if (!block) return
+        sel.collapse(block, block.childNodes.length)
         this.editor.ir.focueProcessor.updateFocusElement()
     }
+
+    /**
+     * 刷新图片节点
+     */
+    refreshImg(block: HTMLElement, inline: HTMLElement) {
+        if (!isMdInlineImg(inline)) return false;
+
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0)
+        const parent = r.startContainer.parentElement
+
+        if (isMdBorder(parent)) {
+            let mark = sel.getBookmark(block)
+            inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
+            if (!inline) return false
+            block.normalize()
+            mark.rangeBookmarks[0].containerNode = block
+            sel.moveToBookmark(mark)
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        } else if (parent.classList.contains("md-info") && parent.nextElementSibling.textContent == "](") { //修改的是描述信息（并且检测后面的边框完整性）
+            inline.querySelector("img").alt = parent.textContent
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        } else if (parent.classList.contains("md-img-url") && parent.nextElementSibling) { //修改的是链接（并且检测后面的边框完整性）
+            inline.querySelector("img").src = parent.textContent
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        }
+        return false
+    }
+
+    /**
+     * 刷新上下文中链接节点
+     */
+    refreshLink(block: HTMLElement, inline: HTMLElement) {
+        if (!isMdInlineLink(inline)) return false;
+
+        const sel = rangy.getSelection()
+        const r = sel.getRangeAt(0)
+        const parent = r.startContainer.parentElement
+
+        if (isMdBorder(parent)) {
+            let mark = sel.getBookmark(block)
+            inline = this.editor.markdownTool.reRenderInlineElement(inline) as HTMLElement
+            if (!inline) return false
+            block.normalize()
+            mark.rangeBookmarks[0].containerNode = block
+            sel.moveToBookmark(mark)
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        } else if (parent.classList.contains("md-link-url") && parent.nextElementSibling) { //修改的是链接（并且检测后面的边框完整性）
+            inline.querySelector("a").href = encodeURI(parent.textContent)
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        }
+        return false
+    }
+
 
     /**
      * 刷新table（补丁）
@@ -165,34 +205,9 @@ class IRContextRefresher {
     }
 
 
-    /**
-     * 刷新上下文中链接节点
-     */
-    refreshLink() {
-        let root = this.ir.rootElement
-        let links = root.querySelectorAll(Constants.SELECTOR_MD_INLINE_LINK)
-        links.forEach(link => {
-            let a = link.getElementsByTagName("a").item(0)
-            let meta = link.getElementsByClassName("md-hiden md-link-url md-meta").item(0)
-            if (!a || !meta) return
-            a.href = meta.textContent ? meta.textContent : a.href
-        })
-    }
 
-    /**
-     * 刷新上下文中的图片节点
-     */
-    refreshImg() {
-        let root = this.ir.rootElement
-        let imgs = root.querySelectorAll(Constants.SELECTOR_MD_INLINE_IMG)
 
-        imgs.forEach(img => {
-            let url = img.getElementsByClassName("md-img-url md-hiden md-meta").item(0)
-            let i = img.getElementsByTagName("img").item(0)
-            if (!url || !i) return
-            i.src = url.textContent ? url.textContent : i.src
-        })
-    }
+
 
 
 

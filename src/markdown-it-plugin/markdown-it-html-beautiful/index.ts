@@ -69,7 +69,7 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
             {
                 needSuggestUI: false,
             }))
-    return `<div md-block="html" contenteditable="false">
+    return `<div md-block="html" contenteditable="false" class>
             <div class="md-htmlblock-tooltip"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
             <pre id=${id} class="md-htmlblock-container markdown-it-code-beautiful"></pre>
             <div class="md-htmlblock-panel">${content}</div>

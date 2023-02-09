@@ -33,7 +33,7 @@ class MarkdownBeautiful{
     this.codemirrorManager = new CodemirrorManager(this.editor)
     this.md = new MarkdownIt({
       html: true,
-      linkify: true,
+      linkify: false,
       typographer: true,
       breaks:true,
       highlight: this.codemirrorManager.highlighter

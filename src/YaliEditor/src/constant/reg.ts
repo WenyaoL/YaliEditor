@@ -22,7 +22,7 @@ export const dirPathReg = /.*(?=[\/\\][\w \u4e00-\u9fa5]*\.[\w]+$)/
 
 export const alphabetReg = /[a-zA-Z]/;
 
-export const htmlTitleReg = /(?<=<title>)(.*)(?=<\/title>)/;
+export const htmlTitleReg = /(?<=<title.*>)(.*)(?=<\/title>)/;
 export const htmlcommentReg = /^<!-[\s\S]*?-->/
 export const imgBase64Reg = /^data:image\/.*;base64/
 
