@@ -84,20 +84,26 @@ export const isMdBlockHTML = (element: Element) => {
 }
 
 export const isMdBlockOrderList = (element: Element) => {
-  if(!isMdBlock(element)) return false
+  if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_ORDERED_LIST) return true
   return false
 }
 
 export const isMdBlockBulletList = (element: Element) => {
-  if(!isMdBlock(element)) return false
+  if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_BULLET_LIST) return true
   return false
 }
 
 export const isMdBlockListItem = (element: Element) => {
-  if(!isMdBlock(element)) return false
+  if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_LIST_ITEM) return true
+  return false
+}
+
+export const isMdBlockQuote = (element: Element) => {
+  if (!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_BLOCKQUOTE) return true
   return false
 }
 

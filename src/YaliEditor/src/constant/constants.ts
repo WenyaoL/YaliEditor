@@ -34,7 +34,7 @@ export const ATTR_MD_BLOCK_HTML  : string = "html"
 export const ATTR_MD_BLOCK_ORDERED_LIST : string = "ordered_list"
 export const ATTR_MD_BLOCK_BULLET_LIST : string = "bullet_list"
 export const ATTR_MD_BLOCK_LIST_ITEM : string = "list_item"
-
+export const ATTR_MD_BLOCK_BLOCKQUOTE : string = "blockquote"
 
 /**
  * md-inline的属性块
@@ -106,6 +106,7 @@ export default {
     ATTR_MD_BLOCK_ORDERED_LIST,
     ATTR_MD_BLOCK_BULLET_LIST,
     ATTR_MD_BLOCK_LIST_ITEM,
+    ATTR_MD_BLOCK_BLOCKQUOTE,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

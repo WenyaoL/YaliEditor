@@ -208,6 +208,7 @@ class IRUndo {
 
 
     public addIRHistory() {
+        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot = this.editor.ir.rootElement.cloneNode(true) as HTMLElement
@@ -215,7 +216,7 @@ class IRUndo {
         //移除codemirror代码
         this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
         this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
-        const mid = cloneRoot.querySelector(`.${Constants.CLASS_MD_FOCUS}`).getAttribute("mid")
+        const mid = cloneRoot.querySelector(`.${Constants.CLASS_MD_FOCUS}`)?.getAttribute("mid")
         this.editor.markdownTool.removeAllFocusStyle(cloneRoot)
 
         //当前状态到上一状态的不同

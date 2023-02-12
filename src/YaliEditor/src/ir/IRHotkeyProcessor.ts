@@ -14,7 +14,7 @@ import {
 } from "../util/findElement";
 
 import { getAllHeading, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
-import { strToDocumentFragment, strToElement } from '../util/createElement';
+import { createBlockquote, createMdList, strToDocumentFragment, strToElement } from '../util/createElement';
 import Constants from "../constant/constants";
 import { toKeyText, createTableStr, toTocElementText } from "../util/formatText"
 import rangy from "rangy";
@@ -458,8 +458,8 @@ class IRHotkeyProcessor implements KeyProcessor {
 
             //根据兄弟节点是否有儿子进行决策
             if (!siblingChild) {//兄弟节点没有儿子列表
-                //给兄弟节点创建儿子
-                siblingChild = document.createElement(list.tagName.toLowerCase())
+                //给兄弟节点创建儿子     
+                siblingChild = createMdList(list.tagName.toLowerCase())
                 sibling.appendChild(siblingChild)
             }
 
@@ -470,8 +470,9 @@ class IRHotkeyProcessor implements KeyProcessor {
             const bookmark = sel.getBookmark(li)
             if (liChild) {//当前节点有儿子节点
                 siblingChild.appendChild(li)
-                for (let index = 0; index < liChild.childElementCount; index++) {
-                    const element = liChild.children.item(index)
+                const childrenArray = Array.from(liChild.children)
+                for (let index = 0; index < childrenArray.length; index++) {
+                    const element = childrenArray.at(index)
                     siblingChild.appendChild(element)
                 }
                 liChild.remove()
@@ -613,7 +614,7 @@ class IRHotkeyProcessor implements KeyProcessor {
             r.setEndAfter(li.lastElementChild)
             let content = r.extractContents()
 
-            let quote = document.createElement("blockquote")
+            const quote = createBlockquote()
             quote.appendChild(content)
             r.insertNode(quote)
             return
@@ -627,7 +628,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         r.setEndAfter(endE)
         let content = r.extractContents()
 
-        let quote = document.createElement("blockquote")
+        const quote = createBlockquote()
         quote.appendChild(content)
         r.insertNode(quote)
 

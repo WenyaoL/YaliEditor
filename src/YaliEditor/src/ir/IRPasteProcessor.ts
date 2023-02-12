@@ -5,7 +5,7 @@
 
 import YaliEditor from '../index'
 import rangy from "rangy";
-import {strToElementList,strToElementArray, strToDocumentFragment} from "../util/createElement"
+import {strToDocumentFragment} from "../util/createElement"
 import Constants from "../constant/constants"
 import Reg from '../constant/reg'
 import {axiosInstance} from '../axios'
@@ -56,6 +56,7 @@ class IRPasteProcessor{
         if(df.children.length == 1 && df.children.item(0).tagName == "P"){
             const inline = this.editor.markdownTool.renderInline(str)
             this.editor.domTool.insertAdjacentHTMLAtCursor(inline)
+            this.editor.ir.observer.forceFlush()
             return
         }
 
@@ -94,11 +95,10 @@ class IRPasteProcessor{
         if(Reg.urlReg.test(str)){ //link
             if(mdinlineType){ 
                 this.pasteText(str)
+                this.editor.ir.observer.forceFlush()
                 return
             }
-
             axiosInstance.get(str).then(response=>{
-                const t = Reg.htmlTitleReg.exec(response.data)
                 const res = Reg.htmlTitleReg.exec(response.data).at(0)
                 if(res){
                     const link = this.editor.markdownTool.renderInline(`[${res}](${str})`)
@@ -106,13 +106,12 @@ class IRPasteProcessor{
                 }else{
                     const link = this.editor.markdownTool.renderInline(str)
                     this.editor.domTool.insertElementAtCursor(link)
-                }   
+                }
             }).catch((res)=>{
                 const link = this.editor.markdownTool.renderInline(str)
                 this.editor.domTool.insertElementAtCursor(link)
             })
-
-            
+            this.editor.ir.observer.forceFlush()
         }else{
             //将文本当成markdown字符串进行处理
             this.pasteMarkdown(str)
@@ -150,7 +149,7 @@ class IRPasteProcessor{
         //这里会导致系统的输入和粘贴的默认行为得到阻止
         event.preventDefault()
         
-        this.editor.ir.observer.forceFlush()
+        
     }  
 }
 

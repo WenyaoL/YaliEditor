@@ -36,10 +36,37 @@ export const strToDocumentFragment = (src: string) => {
 }
 
 export const createParagraph = () => {
-    let p = document.createElement("p")
-    p.setAttribute("mid",getUniqueKey()+"")
+    const p = document.createElement("p")
+    p.setAttribute("mid", getUniqueKey() + "")
     p.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_PARAGRAPH)
     p.className = ""
     return p
 }
 
+export const createBlockquote = () => {
+    const quote = document.createElement("blockquote")
+    quote.setAttribute("mid", getUniqueKey() + "")
+    quote.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_BLOCKQUOTE)
+    return quote
+}
+
+export const createOrderList = () => {
+    const orderList = document.createElement("ol")
+    orderList.setAttribute("mid", getUniqueKey() + "")
+    orderList.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_ORDERED_LIST)
+    return orderList
+}
+
+export const createBulletList = () => {
+    const bulletList = document.createElement("ul")
+    bulletList.setAttribute("mid", getUniqueKey() + "")
+    bulletList.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_BULLET_LIST)
+    return bulletList
+}
+
+export const createMdList = (name: string) => {
+    if (!name) return
+    name = name.toLowerCase()
+    if (name == "ol") return createOrderList()
+    if (name == "ul") return createBulletList()
+}
