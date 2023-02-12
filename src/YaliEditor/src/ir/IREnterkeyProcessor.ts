@@ -11,6 +11,7 @@ import { isMdBlockCode, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockM
 
 import YaLiEditor from "..";
 import rangy from "rangy";
+import { getUniqueKey } from "@/markdown-it-plugin/markdown-it-key-generator";
 
 class IREnterkeyProcessor implements KeyProcessor {
 
@@ -31,9 +32,9 @@ class IREnterkeyProcessor implements KeyProcessor {
 
         let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
 
-        if (isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockCode(block) || isMdBlockHTML(block)) return false
+        if (isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockHTML(block)) return false
 
-        if (isMdBlockMeta(block)){
+        if (isMdBlockMeta(block) || isMdBlockCode(block)){
             this.editor.domTool.insertTextNodeAtCursor("\n")
             return true
         }
@@ -41,6 +42,8 @@ class IREnterkeyProcessor implements KeyProcessor {
         const li = IRfindClosestLi(block)
         if (li) {
             let { start, end } = this.editor.domTool.splitElementAtCursor(li)
+            end.setAttribute("mid",getUniqueKey()+"")
+            end.querySelector("p").setAttribute("mid",getUniqueKey()+"")
             this.editor.markdownTool.reRenderInlineElementAtBlock(start.firstElementChild as HTMLElement)
             this.editor.markdownTool.reRenderInlineElementAtBlock(end.firstElementChild as HTMLElement)
             sel.collapse(end.firstElementChild, 0)
@@ -51,6 +54,7 @@ class IREnterkeyProcessor implements KeyProcessor {
 
         r = sel.getRangeAt(0).cloneRange()
         const p = document.createElement("p")
+        p.setAttribute("mid",getUniqueKey()+"")
         p.setAttribute("md-block", "paragraph")
         //是否在一般标签的尾部
         if (r.startOffset === r.startContainer.textContent.length) {
@@ -62,7 +66,7 @@ class IREnterkeyProcessor implements KeyProcessor {
             return true
         } else {
             let { start, end } = this.editor.domTool.splitElementAtCursor(block)
-
+            end.setAttribute("mid",getUniqueKey()+"")
             if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
             else this.editor.markdownTool.reRenderBlockElement(start as HTMLElement)
 
@@ -77,7 +81,7 @@ class IREnterkeyProcessor implements KeyProcessor {
     execute(event: KeyboardEvent) {
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
-        if (this.enter()) {
+        if (this.enter()) {  
             event.preventDefault()
         }
         this.editor.ir.observer.flush()

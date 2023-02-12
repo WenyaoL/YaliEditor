@@ -9,6 +9,7 @@ import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} fro
 import rangy from "rangy";
 import Constants from '../constant/constants'
 import {toVNode,patch} from '../snabbdom'
+import { getUniqueKey } from '@/markdown-it-plugin/markdown-it-key-generator';
 
 class MarkdownTool{
 
@@ -130,8 +131,8 @@ class MarkdownTool{
         return this.editor.ir.renderer.md.renderInline(str)
     }
 
-    renderBlock(str:string){
-        return this.editor.ir.renderer.md.render(str)
+    renderBlock(str:string,env:any={"generateId":true}){
+        return this.editor.ir.renderer.md.render(str,env)
     }
 
     /**
@@ -235,13 +236,13 @@ class MarkdownTool{
     mdBlockTransform(block:HTMLElement){
         if(!block) return;
         let turndown = this.turndown(block)
-        const res = this.renderBlock(turndown)
+        const res = this.renderBlock(turndown,{'generateId':false})
         
         const e = strToElement(res) as HTMLElement
         if(!e) return
         //块没发生转换不进行处理
         if(e.tagName == block.tagName || e.innerText.length == 0) return
-
+        e.setAttribute("mid",getUniqueKey()+"")
         block.replaceWith(e)
         if(isMdBlockToc(e)) this.editor.ir.contextRefresher.refreshToc()
         return e

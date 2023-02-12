@@ -1,3 +1,4 @@
+import { getUniqueKey } from '@/markdown-it-plugin/markdown-it-key-generator'
 import Constants from '../constant/constants'
 
 export const strToElement = (src: string) => {
@@ -36,6 +37,7 @@ export const strToDocumentFragment = (src: string) => {
 
 export const createParagraph = () => {
     let p = document.createElement("p")
+    p.setAttribute("mid",getUniqueKey()+"")
     p.setAttribute(Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_PARAGRAPH)
     p.className = ""
     return p

@@ -83,6 +83,24 @@ export const isMdBlockHTML = (element: Element) => {
   return false
 }
 
+export const isMdBlockOrderList = (element: Element) => {
+  if(!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_ORDERED_LIST) return true
+  return false
+}
+
+export const isMdBlockBulletList = (element: Element) => {
+  if(!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_BULLET_LIST) return true
+  return false
+}
+
+export const isMdBlockListItem = (element: Element) => {
+  if(!isMdBlock(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_LIST_ITEM) return true
+  return false
+}
+
 export const isMdInlineImg = (element: Element) => {
   if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_IMG) return true

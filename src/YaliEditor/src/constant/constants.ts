@@ -31,6 +31,9 @@ export const ATTR_MD_BLOCK_HR : string = "hr"
 export const ATTR_MD_BLOCK_CODE : string = "code"
 export const ATTR_MD_BLOCK_META : string = "meta"
 export const ATTR_MD_BLOCK_HTML  : string = "html"
+export const ATTR_MD_BLOCK_ORDERED_LIST : string = "ordered_list"
+export const ATTR_MD_BLOCK_BULLET_LIST : string = "bullet_list"
+export const ATTR_MD_BLOCK_LIST_ITEM : string = "list_item"
 
 
 /**
@@ -100,6 +103,9 @@ export default {
     ATTR_MD_BLOCK_CODE,
     ATTR_MD_BLOCK_META,
     ATTR_MD_BLOCK_HTML,
+    ATTR_MD_BLOCK_ORDERED_LIST,
+    ATTR_MD_BLOCK_BULLET_LIST,
+    ATTR_MD_BLOCK_LIST_ITEM,
     ATTR_MD_INLINE,
     ATTR_MD_INLINE_IMG,
     ATTR_MD_INLINE_LINK,

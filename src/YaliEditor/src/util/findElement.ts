@@ -4,6 +4,7 @@
  */
 import Constants from "../constant/constants";
 import rangy from "rangy";
+import { isYaliIR } from "./inspectElement";
 
 /**
  * find  the closest element 
@@ -12,7 +13,7 @@ import rangy from "rangy";
  * @param className 
  * @returns 
  */
-export const findClosestByClassName = (element: Node|null, className: string,stopClassName: string) => {
+export const findClosestByClassName = (element: Node | null, className: string, stopClassName: string) => {
     if (!element || !stopClassName) {
         return null;
     }
@@ -30,7 +31,7 @@ export const findClosestByClassName = (element: Node|null, className: string,sto
     return null;
 };
 
-export const findClosestByTagName = (element: Node|null, tagName: string,stopClassName: string)=>{
+export const findClosestByTagName = (element: Node | null, tagName: string, stopClassName: string) => {
     if (!element || !stopClassName) {
         return null;
     }
@@ -55,11 +56,11 @@ export const findClosestByTagName = (element: Node|null, tagName: string,stopCla
  * @param topClassName 
  * @returns 
  */
-export const findClosestByTop = (element: Node,topClassName: string) => {
+export const findClosestByTop = (element: Node, topClassName: string) => {
     if (!element) {
         return null;
     }
-    if (element.nodeType === 3) { 
+    if (element.nodeType === 3) {
         element = element.parentElement;
     }
     let e = element as HTMLElement;
@@ -74,7 +75,7 @@ export const findClosestByTop = (element: Node,topClassName: string) => {
         }
     }
     return null;
-    };
+};
 
 /**
  * 查找最近的元素，包含Attribute
@@ -84,7 +85,7 @@ export const findClosestByTop = (element: Node,topClassName: string) => {
  * @param stopClassName 
  * @returns 
  */
-export const findClosestByAttribute = (element: Node, attr: string, value: string,stopClassName: string) => {
+export const findClosestByAttribute = (element: Node, attr: string, value: string, stopClassName: string) => {
     if (!element) {
         return null;
     }
@@ -92,15 +93,15 @@ export const findClosestByAttribute = (element: Node, attr: string, value: strin
         element = element.parentElement;
     }
     let e = element as HTMLElement;
-    if(value === null) value = "";
+    if (value === null) value = "";
     //向外递归（节点为空，或者找到属性节点才停止）
     while (e && !e.classList.contains(stopClassName)) {
         //包含该属性时，标志为true
-        if(value === "" && e.getAttribute(attr) !== null){
+        if (value === "" && e.getAttribute(attr) !== null) {
             return e;
-        }else if (e.getAttribute(attr) === value) {
+        } else if (e.getAttribute(attr) === value) {
             return e
-        }else {
+        } else {
             //递归父节点
             e = e.parentElement;
         }
@@ -113,55 +114,62 @@ export const findClosestByAttribute = (element: Node, attr: string, value: strin
  * 查找IR模式下的最近的元素节点
  * @param element 
  */
-export const findClosest = (element: Node,stopClassName: string)=>{
+export const findClosest = (element: Node, stopClassName: string) => {
     if (!element) {
         return null;
     }
     let e = element
-    e = findClosestByAttribute(e,Constants.ATTR_MD_INLINE,"",stopClassName)
-    if(!e) findClosestByAttribute(e,Constants.ATTR_MD_BLOCK,"",stopClassName)
-    if(!e) findClosestByTop(e,stopClassName)
+    e = findClosestByAttribute(e, Constants.ATTR_MD_INLINE, "", stopClassName)
+    if (!e) findClosestByAttribute(e, Constants.ATTR_MD_BLOCK, "", stopClassName)
+    if (!e) findClosestByTop(e, stopClassName)
     return e
 }
 
 
-export const IRfindClosestMdBlock = (element: Node)=>{
-    if(element.nodeType == 1 && (element as HTMLElement).classList.contains(Constants.IR_CLASS_NAME)){
+
+export const IRfindClosestMdBlock = (element: Node) => {
+    if (element.nodeType == 1 && isYaliIR((element as HTMLElement))) {
         let sel = rangy.getSelection();
         sel.refresh()
-        if(sel.isCollapsed){
-            let node:Element = null;
-            if(sel.focusOffset == 0) node = (element as HTMLElement).children.item((element as HTMLElement).childElementCount-1)
+        if (sel.isCollapsed) {
+            let node: Element = null;
+            if (sel.focusOffset == 0) node = (element as HTMLElement).children.item((element as HTMLElement).childElementCount - 1)
             else node = (element as HTMLElement).children.item(sel.focusOffset)
-            if(node) sel.collapse(node,0)
+            if (node) sel.collapse(node, 0)
+        }
+    } else if (element.nodeType == 3 && isYaliIR((element as HTMLElement).parentElement)) {
+        let sel = rangy.getSelection();
+        sel.refresh()
+        if (sel.isCollapsed) {
+            sel.collapse((element as HTMLElement).nextElementSibling, 0)
         }
     }
 
-    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,"",Constants.IR_CLASS_NAME)
+    return findClosestByAttribute(element, Constants.ATTR_MD_BLOCK, "", Constants.IR_CLASS_NAME)
 }
 
-export const IRfindClosestMdInline = (element: Node)=>{
-    return findClosestByAttribute(element,Constants.ATTR_MD_INLINE,"",Constants.IR_CLASS_NAME)
+export const IRfindClosestMdInline = (element: Node) => {
+    return findClosestByAttribute(element, Constants.ATTR_MD_INLINE, "", Constants.IR_CLASS_NAME)
 }
 
-export const IRfindClosestTop = (element: Node)=>{
-    return findClosestByTop(element,Constants.IR_CLASS_NAME)
+export const IRfindClosestTop = (element: Node) => {
+    return findClosestByTop(element, Constants.IR_CLASS_NAME)
 }
 
-export const IRfindClosestLi = (element: Node)=>{
-    return findClosestByTagName(element,"LI",Constants.IR_CLASS_NAME)
+export const IRfindClosestLi = (element: Node) => {
+    return findClosestByTagName(element, "LI", Constants.IR_CLASS_NAME)
 }
 
-export const IRfindClosestList = (element: Node)=>{
-    let e = findClosestByTagName(element,"OL",Constants.IR_CLASS_NAME)
-    if(!e) e = findClosestByTagName(element,"UL",Constants.IR_CLASS_NAME)
+export const IRfindClosestList = (element: Node) => {
+    let e = findClosestByTagName(element, "OL", Constants.IR_CLASS_NAME)
+    if (!e) e = findClosestByTagName(element, "UL", Constants.IR_CLASS_NAME)
     return e;
 }
 
-export const IRfindClosestParagraph = (element: Node)=>{
-    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_PARAGRAPH,Constants.IR_CLASS_NAME)
+export const IRfindClosestParagraph = (element: Node) => {
+    return findClosestByAttribute(element, Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_PARAGRAPH, Constants.IR_CLASS_NAME)
 }
 
-export const IRfindClosestFence = (element: Node)=>{
-    return findClosestByAttribute(element,Constants.ATTR_MD_BLOCK,Constants.ATTR_MD_BLOCK_FENCE,Constants.IR_CLASS_NAME)
+export const IRfindClosestFence = (element: Node) => {
+    return findClosestByAttribute(element, Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_FENCE, Constants.IR_CLASS_NAME)
 }

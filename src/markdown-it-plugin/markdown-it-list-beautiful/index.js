@@ -1,3 +1,4 @@
+import { getUniqueKey } from "../markdown-it-key-generator";
 
 
 // Lists
@@ -108,7 +109,7 @@ function markTightParagraphs(state, idx) {
       //state.tokens[i].hidden = true;
       state.tokens[i + 2].hidden = false; //紧凑模式下强制显示P标签(设置为false)
       state.tokens[i].hidden = false;
-      state.tokens[i].attrPush(["tight","1"])
+      state.tokens[i].attrPush(["tight", "1"])
       i += 2;
     }
   }
@@ -222,7 +223,7 @@ function list(state, startLine, endLine, silent) {
 
   token.map = listLines = [startLine, 0];
   token.markup = String.fromCharCode(markerCharCode);
-  token.attrPush(["markup",token.markup])
+  token.attrPush(["markup", token.markup])
   //迭代列表项
   // Iterate list items
   //
@@ -387,9 +388,28 @@ function list(state, startLine, endLine, silent) {
 };
 
 
+function bulletListOpenRender(tokens, idx, options, env, slf) {
+  if (env['generateId'])tokens[idx].attrPush(["mid", getUniqueKey()+""])
+  return slf.renderToken(tokens, idx, options)
+}
+
+function orderedListOpenRender(tokens, idx, options, env, slf){
+  if (env['generateId'])tokens[idx].attrPush(["mid", getUniqueKey()+""])
+  return slf.renderToken(tokens, idx, options)
+}
+
+function listItemOpenRender(tokens, idx, options, env, slf){
+  if (env['generateId'])tokens[idx].attrPush(["mid", getUniqueKey()+""])
+  return slf.renderToken(tokens, idx, options)
+}
+
+
 export default function (md) {
   //在规则前面加
   //md.block.ruler.before("list","list-beautiful",list,[ 'paragraph', 'reference', 'blockquote' ])
+  md.renderer.rules.bullet_list_open = bulletListOpenRender
+  md.renderer.rules.ordered_list_open = orderedListOpenRender
+  md.renderer.rules.list_item_open = listItemOpenRender
   //替换(需要添加选项alt)
   md.block.ruler.at("list", list, { alt: ['paragraph', 'reference', 'blockquote'] })
 }

@@ -12,6 +12,7 @@ import IRUndo from "../undo/IRUndo";  //undo组件
 //import IRUndo from "../undo/IRUndoSna"; //undo组件
 import IRContextRefresher from './IRContextRefresher'  //上下文刷新
 import ApplicationEventPublisher from '../event-publisher/ApplicationEventPublisher' //事件发布器
+import IRState from "../state/IRState";
 
 //翻译解析
 import TurndownParser from "../../../turndown-plugin";
@@ -39,6 +40,7 @@ import IRClickProcessor from "./IRClickProcessor";
 
 
 import rangy from "rangy";
+import { getUniqueKey, refreshKeyId } from "@/markdown-it-plugin/markdown-it-key-generator";
 /**
  * IR模式下的控制面板
  */
@@ -50,8 +52,6 @@ class IR {
 
     //编辑面板是否已经被修改
     public isChange: boolean = false;
-    //addundoListener
-    public undoAddListener: (editor: YaLiEditor) => any;
     //渲染器
     public renderer: MarkdownBeautiful;
     //解析器
@@ -91,6 +91,9 @@ class IR {
     public compositionProcessor: IRCompositionProcessor;
     //事件发布器
     public applicationEventPublisher: ApplicationEventPublisher;
+    //IR状态
+    public state:IRState;
+
 
     constructor(editor: YaLiEditor) {
         this.editor = editor;
@@ -114,6 +117,7 @@ class IR {
 
     public init() {
         this.applicationEventPublisher = new ApplicationEventPublisher()
+        this.state = new IRState(this.editor)
 
         this.renderer = new MarkdownBeautiful(this.editor);
         this.parser = new TurndownParser(this.editor);;
@@ -226,9 +230,10 @@ class IR {
      */
     public load(src: string) {
         this.observer.stop()
+        refreshKeyId()
         const res = this.renderer.render(src)
         if (res === '') {
-            this.rootElement.innerHTML = '<p md-block="paragraph" class="md-focus"><br></p>'
+            this.rootElement.innerHTML = `<p mid="${getUniqueKey()}" md-block="paragraph" class="md-focus"></p>`
         } else {
             this.rootElement.innerHTML = res
         }

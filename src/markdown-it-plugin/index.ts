@@ -82,8 +82,8 @@ class MarkdownBeautiful{
     this.codemirrorManager.refreshStateCache(elements)
   }
 
-  render(src:string){
-    return this.md.render(src)
+  render(src:string,env:any={"generateId":true}){
+    return this.md.render(src,env)
   }
 
   setTheme(theme:string){

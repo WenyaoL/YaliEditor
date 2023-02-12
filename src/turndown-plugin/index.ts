@@ -14,6 +14,7 @@ class TurndownParser {
 
   constructor(editor: YaLiEditor) {
     this.editor = editor
+    //移除默认逃逸规则，不进行规则逃逸
     TurndownService.prototype.escape = str => str
     this.turndownService = new TurndownService({
       headingStyle: "atx",

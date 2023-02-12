@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CodemirrorEditorState } from '../markdown-it-codemirror-beautiful/CodemirrorEditorState'
 import { EditorView } from "@codemirror/view"
 import { EditorState, type Extension, Compartment, StateEffect } from "@codemirror/state"
+import { getUniqueKey } from "../markdown-it-key-generator";
 
 interface DocumentOptions {
   InputJax: TeX<unknown, unknown, unknown>;
@@ -231,12 +232,12 @@ class Mathjax {
     };
 
 
-    md.renderer.rules.math_block = (tokens: Token[], idx: number) => {
+    md.renderer.rules.math_block = (tokens: Token[], idx: number, options: Object, env: Object) => {
       const mathdom = renderMath(tokens[idx].content, this.documentOptions, { display: true })
       return `<div class="mathjax-panel">${mathdom}</div>`
     };
 
-    md.renderer.rules.math_open = (tokens: Token[], idx: number) => {
+    md.renderer.rules.math_open = (tokens: Token[], idx: number, options: Object, env: Object) => {
       let content = '', id = uuidv4();
       //hiden value
       if (tokens[idx + 1].type == "math_block") {
@@ -255,11 +256,15 @@ class Mathjax {
           editorState,
           {
             needSuggestUI: false,
-          }))
+          })
+      )
+      if (env['generateId']) return `<div mid="${getUniqueKey()}" class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false">
+      <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
+      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
+
       return `<div class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false">
       <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
-      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>
-      `
+      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
     }
 
     md.renderer.rules.math_close = function (tokens: Token[], idx: number) {

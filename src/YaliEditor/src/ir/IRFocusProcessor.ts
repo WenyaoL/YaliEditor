@@ -228,9 +228,9 @@ class IRFocusProcessor {
       try {
         this.updateFocusElement()
         this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
-        this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
+        if(this.sel.isCollapsed)  this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
       } catch {
-        this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
+        this.modifyBeforeBookmark = null
         this.modifyBeforeSecondBookmark = null
       }
     }

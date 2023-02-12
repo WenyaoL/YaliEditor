@@ -5,9 +5,7 @@
 import { diff_match_patch, patch_obj } from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
-import { IRfindClosestMdBlock, IRfindClosestMdInline } from '../util/findElement'
-import { toVNode, patch } from '../snabbdom'
-import { VNode } from 'snabbdom';
+import Constants from '../constant/constants'
 
 /**
  * 历史记录
@@ -17,14 +15,19 @@ class History {
     //补丁(历史补丁)
     public patch: patch_obj[];
     //光标记录
-    public bookMark: any;
-    public secondBookMark: any;
+    public position: {
+        bookMark?: any,   //一级定位
+        secondBookMark?: any,  //二级定位
+        focusKey?: string  //聚焦的mid
+    }
 
-
-    constructor(patch?: patch_obj[], bookMark?: any, secondBookMark?: any) {
+    constructor(patch?: patch_obj[], position?: {
+        bookMark?: any,
+        secondBookMark?: any,
+        focusKey?: string
+    }) {
         this.patch = patch
-        this.bookMark = bookMark
-        this.secondBookMark = secondBookMark
+        this.position = position
     }
 }
 
@@ -86,6 +89,7 @@ class IRUndo {
     }
 
 
+
     private IRHistoryUndo(history: History) {
 
         //对当前状态应用补丁，将其回退到上一状态
@@ -94,13 +98,10 @@ class IRUndo {
         //重新设置last
         this.lastText = res[0]
 
-        //跟新编译器当前文本
-        this.editor.ir.rootElement.innerHTML = res[0]
+        const cloneNode = this.editor.ir.rootElement.cloneNode(false) as HTMLElement
+        cloneNode.innerHTML = res[0]
 
-        //刷新视图
-        //this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
-        this.editor.ir.renderer.codemirrorManager.unsafeRefreshEditorViewSyn(this.editor.ir.rootElement)
-
+        this.editor.ir.state.diff(this.editor.ir.rootElement, cloneNode)
 
         if (this.cursorTimer) {
             clearTimeout(this.cursorTimer)
@@ -110,23 +111,23 @@ class IRUndo {
         this.cursorTimer = setTimeout(() => {
             //重新设置光标
             let sel = rangy.getSelection()
-            if (history.bookMark) {
-                history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-                sel.moveToBookmark(history.bookMark)
+            if (history.position.bookMark) {
+                history.position.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
+                sel.moveToBookmark(history.position.bookMark)
             }
-            let r = sel.getRangeAt(0)
-            let block = IRfindClosestMdBlock(r.startContainer)
-            //当光标是聚合的时候，开启二级定位，提供更加准确的定位
-            if (block && r.collapsed) {
-                history.secondBookMark.rangeBookmarks[0].containerNode = block
-                sel.moveToBookmark(history.secondBookMark)
+            //二级定位
+            if (sel.isCollapsed && history.position.focusKey && history.position.secondBookMark) {
+                const block = this.editor.ir.rootElement.querySelector(`[mid="${history.position.focusKey}"]`)
+                if (block) {
+                    history.position.secondBookMark.rangeBookmarks[0].containerNode = block
+                    sel.moveToBookmark(history.position.secondBookMark)
+                }
+
             }
 
             this.editor.ir.focueProcessor.updateFocusElement()
             this.cursorTimer = null
         })
-
-        //rangy.getSelection().moveToBookmark(history.bookMark)
     }
 
     /**
@@ -158,18 +159,36 @@ class IRUndo {
         const res = this.dmp.patch_apply(redoPatch, this.lastText)
         //重新设置last
         this.lastText = res[0]
-        //跟新编译器当前文本
-        this.editor.ir.rootElement.innerHTML = res[0]
 
+        const cloneNode = this.editor.ir.rootElement.cloneNode(false) as HTMLElement
+        cloneNode.innerHTML = res[0]
 
-        //刷新disable的视图
-        //this.editor.ir.renderer.codemirrorManager.refreshDisableEditorViewSyn(this.editor.ir.rootElement)
-        //刷新视图
-        //this.editor.ir.renderer.refreshEditorView(this.editor.ir.rootElement);
-        this.editor.ir.renderer.codemirrorManager.unsafeRefreshEditorViewSyn(this.editor.ir.rootElement)
-        //重新设置光标
-        history.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-        rangy.getSelection().moveToBookmark(history.bookMark)
+        this.editor.ir.state.diff(this.editor.ir.rootElement, cloneNode)
+
+        if (this.cursorTimer) {
+            clearTimeout(this.cursorTimer)
+            this.cursorTimer = null
+        }
+
+        this.cursorTimer = setTimeout(() => {
+            //重新设置光标
+            let sel = rangy.getSelection()
+            if (history.position.bookMark) {
+                history.position.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
+                sel.moveToBookmark(history.position.bookMark)
+            }
+            if (sel.isCollapsed && history.position.focusKey && history.position.secondBookMark) {
+                const block = this.editor.ir.rootElement.querySelector(`[mid="${history.position.focusKey}"]`)
+                if (block) {
+                    history.position.secondBookMark.rangeBookmarks[0].containerNode = block
+                    sel.moveToBookmark(history.position.secondBookMark)
+                }
+
+            }
+
+            this.editor.ir.focueProcessor.updateFocusElement()
+            this.cursorTimer = null
+        })
     }
 
     /**
@@ -196,6 +215,7 @@ class IRUndo {
         //移除codemirror代码
         this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
         this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
+        const mid = cloneRoot.querySelector(`.${Constants.CLASS_MD_FOCUS}`).getAttribute("mid")
         this.editor.markdownTool.removeAllFocusStyle(cloneRoot)
 
         //当前状态到上一状态的不同
@@ -205,10 +225,11 @@ class IRUndo {
         if (patch.length === 0) return;
 
         //创建历史记录
-        let mark = this.editor.ir.focueProcessor.getModifyBeforeBookmark()
-        let secondBookMark = this.editor.ir.focueProcessor.getModifyBeforeSecondBookmark()
-
-        const history = new History(patch, mark, secondBookMark)
+        const history = new History(patch, {
+            bookMark: this.editor.ir.focueProcessor.getModifyBeforeBookmark(),
+            secondBookMark: this.editor.ir.focueProcessor.getModifyBeforeSecondBookmark(),
+            focusKey: mid
+        })
 
 
         //跟新lastText为当前状态
@@ -224,61 +245,10 @@ class IRUndo {
         }
         //添加undo应该舍弃掉redo里面的
         this.redoStack = []
+        
+        
         this.editor.ir.isChange = true
-        this.editor.ir.undoAddListener(this.editor)
-
-
-    }
-
-    /**
-     * 对当前undo栈的栈帧历史进行调整，
-     * 将当前状态更改合并到最后一次更改中
-     * 1 <- 2(last)
-     * 1 <- 2 <- 3(now)
-     * 合并成:
-     * 1 <- 3(last)
-     * 
-     * 1(last)
-     * 1 <- 2(now)
-     */
-    adjust() {
-        if (this.undoStack.length <= 0) return
-
-        /*if(this.undoStack.length == 1){
-            this.addIRHistory()
-            return
-        }*/
-
-        const cloneRoot = this.editor.ir.rootElement.cloneNode(true) as HTMLElement
-        this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
-        this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
-
-        const nowText = cloneRoot.innerHTML
-
-        //获取上一个历史状态（1<-2）
-        const lastHistory = this.undoStack.pop()
-
-        const res = this.dmp.patch_apply(lastHistory.patch, this.lastText)
-
-        //当前状态到上上一状态的不同
-        const diff = this.dmp.diff_main(nowText, res[0])
-        //生成补丁
-        const patch = this.dmp.patch_make(nowText, diff)
-
-        //无效合并
-        if (patch.length === 0) {
-            this.undoStack.push(lastHistory)
-            return;
-        }
-
-
-        //跟新lastText为当前状态
-        this.lastText = nowText;
-
-        this.undoStack.push(new History(patch, lastHistory.bookMark, lastHistory.secondBookMark))
-
-        //释放修改锁
-        this.editor.ir.focueProcessor.releaseModifyLock()
+        this.editor.ir.applicationEventPublisher.publish("addIRHistory")
     }
 
 }

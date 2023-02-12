@@ -19,6 +19,7 @@ import { noLineNumberBasicSetup, myMinimalSetup, HTMLBlockSetup } from '@/codemi
 import { oneDark, oneDarkHighlightStyle, oneDarkTheme } from '@/codemirror-plugin/codeTheme/dark';
 import { oneLight } from '@/codemirror-plugin/codeTheme/light';
 import { langCanload } from './lang'
+import { getUniqueKey } from "../markdown-it-key-generator"
 
 /**
  * 创建一个compartment,并和对其修改的run函数
@@ -182,6 +183,19 @@ export class CodemirrorManager {
             return ''
         }
 
+    }
+
+    setTextValue(uuid: string, text: string) {
+        const viewInfo = this.getViewInfo(uuid)
+        if (viewInfo) {
+            viewInfo.view.dispatch({
+                changes: {
+                    from: 0,
+                    to: viewInfo.view.state.doc.length,
+                    insert: text
+                }
+            })
+        }
     }
 
     mountInputComponent(id: string) {
@@ -471,40 +485,50 @@ export class CodemirrorManager {
 
     /**
      * 非安全方式刷新视图,不不会对视图进行销毁，而是将element重新挂上去，性能上更佳
-     * @param root 
+     * @param root 刷新root下的所有视图
      */
     unsafeRefreshEditorViewSyn(root?: HTMLElement) {
         if (!root) root = this.editor.ir.rootElement
         const elements = root.querySelectorAll('.markdown-it-code-beautiful')
         for (let index = 0; index < elements.length; index++) {
-            let stateCache: CodemirrorEditorState | null = null;
-
             const element = elements[index];
-            const uuid = element.id
-            //找到现存的视图的ID
-            const viewInfo = this.getViewInfo(uuid)
-            if (viewInfo) {//存在匹配到的现存视图
-                //提取信息
-                const text = this.extractElementPlainText(element)
-                viewInfo.view.dispatch({
-                    changes: {
-                        from: 0,
-                        to: viewInfo.view.state.doc.length,
-                        insert: text
-                    }
-                })
-                element.replaceWith(viewInfo.element)
-            } else {//无法匹配到现存视图
-                let cache = this.getStateCache(uuid)
-                if (cache) continue;
+            this.unsafeRefreshEditorViewElementSyn(element)
+        }
+        //刷新缓存池
+        this.refreshStateCache(elements)
+    }
+
+    /**
+     * 非安全方式刷新视图,不不会对视图进行销毁，而是将element重新挂上去，性能上更佳
+     * 如果无法匹配到视图，则将提取element元素中的信息，然后创建state并放入缓存池中
+     * @param element 刷新element视图
+     */
+    unsafeRefreshEditorViewElementSyn(element: Element) {
+        let stateCache: CodemirrorEditorState | null = null;
+        const uuid = element.id
+        //找到现存的视图的ID
+        const viewInfo = this.getViewInfo(uuid)
+        if (viewInfo) {//存在匹配到的现存视图
+            //提取信息
+            const text = this.extractElementPlainText(element)
+            viewInfo.view.dispatch({
+                changes: {
+                    from: 0,
+                    to: viewInfo.view.state.doc.length,
+                    insert: text
+                }
+            })
+            element.replaceWith(viewInfo.element)
+        } else {//无法匹配到现存视图
+            let cache = this.getStateCache(uuid)
+            if (!cache) {
                 stateCache = this.extractElementInfo(element)
                 //将数据重新放入缓存
                 this.stateCacheMap.set(uuid, stateCache)
                 element.innerHTML = ""
             }
-        }
 
-        this.refreshStateCache(elements)
+        }
     }
 
 
@@ -574,7 +598,7 @@ export class CodemirrorManager {
         viewInfo.view.destroy()
 
 
-        viewInfo.stateInfo.inputComponent.unmount()
+        if(viewInfo.stateInfo.inputComponent) viewInfo.stateInfo.inputComponent.unmount()
         delete viewInfo.stateInfo.inputComponent
         this.viewMap.delete(uuid)
     }
@@ -650,6 +674,7 @@ export class CodemirrorManager {
 
         //创建容器
         const pre = document.createElement("pre")
+        pre.setAttribute("mid", getUniqueKey() + "")
         pre.classList.add("markdown-it-code-beautiful")
         pre.setAttribute("md-block", "fence")
         pre.setAttribute("contenteditable", "false");

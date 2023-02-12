@@ -3,9 +3,6 @@ import rangy from 'rangy';
 
 export class MultimdTable{
 
-
-
-
   constructor(options){
     var defaults = {
       multiline:  false,

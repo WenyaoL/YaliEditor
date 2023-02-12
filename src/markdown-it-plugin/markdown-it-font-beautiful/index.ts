@@ -2,6 +2,7 @@ import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token";
 import type Renderer from "markdown-it/lib/renderer";
 import { escapeHtml } from "markdown-it/lib/common/utils"
+import { getUniqueKey } from "../markdown-it-key-generator";
 
 
 
@@ -67,8 +68,9 @@ function emOpen(tokens: Token[], idx: number, options: Object, env: Object, slf:
 
 function paragraphOpen(tokens: Token[], idx: number, options: Object, env: Object, slf: Renderer) {
     const token = tokens[idx]
-    token.attrPush(["md-block", "paragraph"])
+    if (env['generateId']) token.attrPush(["mid", getUniqueKey() + ""])
     token.attrPush(["class", ""])
+    token.attrPush(["md-block", "paragraph"])
     return slf.renderToken(tokens, idx, options);
 }
 
@@ -107,7 +109,7 @@ function plugin(md: MarkdownIt, options: any = {}) {
 
     if (options.borderModel) {
         md.renderer.rules.code_inline = codeInlineBorderModel
-        
+
         md.renderer.rules.strong_open = strongOpenBorderModel
         md.renderer.rules.strong_close = strongCloseBorderModel
 
@@ -117,7 +119,7 @@ function plugin(md: MarkdownIt, options: any = {}) {
         md.renderer.rules.s_open = sOpenBorderModel
         md.renderer.rules.s_close = sCloseBorderModel
 
-        
+
     } else {
         md.renderer.rules.code_inline = codeInline;
 

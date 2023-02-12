@@ -13,13 +13,14 @@ import { v4 as uuidv4 } from 'uuid';
 import YaLiEditor from "@/YaliEditor/src";
 import { CodemirrorEditorState } from "../markdown-it-codemirror-beautiful/CodemirrorEditorState";
 import { html } from '@codemirror/lang-html'
-import {myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
+import { myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
 import { isMdBlockHTML } from "@/YaliEditor/src/util/inspectElement";
+import { getUniqueKey } from "../markdown-it-key-generator";
 
 let editor: YaLiEditor = null
 
 
-function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
+function htmlBlock(tokens: Token[], idx: number, options: Object, env: Object) {
     const token = tokens[idx];
     const content = tokens[idx].content
 
@@ -57,7 +58,7 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
 
     const id = uuidv4()
     const extensions = editor.ir.renderer.codemirrorManager.createHtmlBlockPlugin(id)
-    
+
     let editorState = EditorState.create({
         doc: content,
         extensions
@@ -69,6 +70,14 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
             {
                 needSuggestUI: false,
             }))
+    if (env['generateId']) {
+        return `<div mid="${getUniqueKey()}" md-block="html" contenteditable="false" class>
+        <div class="md-htmlblock-tooltip"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
+        <pre id=${id} class="md-htmlblock-container markdown-it-code-beautiful"></pre>
+        <div class="md-htmlblock-panel">${content}</div>
+        </div>`;
+    }
+
     return `<div md-block="html" contenteditable="false" class>
             <div class="md-htmlblock-tooltip"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
             <pre id=${id} class="md-htmlblock-container markdown-it-code-beautiful"></pre>
@@ -80,8 +89,8 @@ function htmlBlock(tokens: Token[], idx: number /*, options, env */) {
 
 export default function plugin(md: MarkdownIt, options: any) {
     editor = options.editor
-    editor.ir.applicationEventPublisher.subscribe("focus-change",(oldFocusBlock:HTMLElement,newFocusBlock:HTMLElement)=>{
-        if(isMdBlockHTML(oldFocusBlock)){
+    editor.ir.applicationEventPublisher.subscribe("focus-change", (oldFocusBlock: HTMLElement, newFocusBlock: HTMLElement) => {
+        if (isMdBlockHTML(oldFocusBlock)) {
             const id = oldFocusBlock.querySelector(".markdown-it-code-beautiful")?.id
             oldFocusBlock.querySelector(".md-htmlblock-panel").innerHTML = editor.ir.renderer.codemirrorManager.getTextValue(id)
         }
