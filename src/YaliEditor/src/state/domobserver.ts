@@ -24,7 +24,7 @@ export class DOMObserver{
         this.dom = dom;
         this.editor = editor;
         //修改分组延时
-        this.groupDelayTime = 500;
+        this.groupDelayTime = 1000;
         this.lastChange = Date.now()
         this.disable = false
         this.isObserving = false

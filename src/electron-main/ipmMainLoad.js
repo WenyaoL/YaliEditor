@@ -167,6 +167,10 @@ class MainIPMEventLoader{
         ipcMain.handle('getRecentDocuments',()=>{
             return this.manager.getRecentDocuments()
         })
+
+        ipcMain.handle('getCurrTheme',()=>{
+            return this.manager.appWindow.theme
+        })
     }
 
 

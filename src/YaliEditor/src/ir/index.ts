@@ -193,6 +193,7 @@ class IR {
     public selectTheme(theme: string) {
         this.renderer.setTheme(theme)
         this.options.theme = theme
+        
         let tables = this.rootElement.getElementsByClassName("markdown-it-table-beautiful")
         for (let index = 0; index < tables.length; index++) {
             const element = tables[index];

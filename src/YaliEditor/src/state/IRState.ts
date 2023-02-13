@@ -1,5 +1,5 @@
 import YaLiEditor from "..";
-import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote } from "../util/inspectElement";
+import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
 
 /**
  * @author liangwenyao
@@ -104,6 +104,7 @@ class IRState {
         else if (isMdBlockBulletList(oldElement) || isMdBlockOrderList(oldElement)) this.diffList(oldElement,newElement)
         else if (isMdBlockCode(oldElement)) this.diffCodeBlock(oldElement,newElement)
         else if (isMdBlockQuote(oldElement)) this.diffBlockquote(oldElement,newElement)
+        else if (isMdBlockTable(oldElement)) this.diffTable(oldElement,newElement)
 
     }
 
@@ -154,6 +155,9 @@ class IRState {
         this.diff(oldElement,newElement)
     }
 
+    diffTable(oldElement:Element,newElement:Element){
+        oldElement.replaceWith(newElement)
+    }
 }
 
 

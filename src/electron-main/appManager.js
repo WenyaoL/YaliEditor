@@ -3,7 +3,7 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 
-import {AppMenu} from './appMenu'
+import AppMenu from './menu'
 import {AppWindow} from './appWindow'
 import {MainIPMEventLoader} from './ipmMainLoad'
 import {openFile} from './common'
@@ -33,6 +33,7 @@ export class AppManager{
             }
         })
         this.mainIPMEventLoader = new MainIPMEventLoader(this)
+
     }
 
     /**
@@ -108,10 +109,9 @@ export class AppManager{
         let index = recentDocuments.findIndex(item=>item.fileName == fileName && item.dirName == dirName)
         if(index>=0){
             recentDocuments = recentDocuments.splice(index,1).concat(recentDocuments)
-            return 
         }else{
             //判断是否越界
-            if(recentDocuments.length >30) recentDocuments.pop()
+            if(recentDocuments.length >15) recentDocuments.pop()
             recentDocuments.unshift({
                 fileName,
                 dirName,
@@ -120,6 +120,7 @@ export class AppManager{
             this.store.set('recentDocuments',recentDocuments)
         }
         
+        this.appMenu.updateMenu()
     }
 
     /**
@@ -127,13 +128,13 @@ export class AppManager{
      * @returns recentDocuments Array
      */
     getRecentDocuments(){
-        
         return this.store.get('recentDocuments',[])
     }
 
     clearRecentDocuments(){
         this.store.set('recentDocuments',[])
         app.clearRecentDocuments()
+        this.appMenu.updateMenu()
     }
 
 }

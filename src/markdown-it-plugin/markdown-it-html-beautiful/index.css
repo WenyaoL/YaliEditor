@@ -15,13 +15,18 @@ div[md-block="html"].md-focus>.md-htmlblock-container{
     margin-top: 0px;
 }
 
+div[md-block="html"].md-focus>.md-htmlblock-tooltip>span>i{
+    transition: all 0.5s;
+    transform: rotate(180deg);
+}
+
 div[md-block="html"]:hover {
     transition: background 0.5s;
     background-color: var(--yali-mathjax-hover--background-color)
 }
 
 div[md-block="html"]:hover>.md-htmlblock-tooltip {
-    background-color: white
+    background-color: var(--yali-background-color)
 }
 
 div[md-block="html"]:hover>.md-htmlblock-tooltip>span {

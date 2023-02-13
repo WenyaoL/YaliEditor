@@ -4,6 +4,7 @@
  */
 import { createStore } from 'vuex'
 import {isEmpty} from '@/utils/common'
+import bus from '../bus'
 export default createStore({
   state: {
     viewEditor:null, //渲染进程的视图编辑器 （SV ONLY模式下的编辑器）

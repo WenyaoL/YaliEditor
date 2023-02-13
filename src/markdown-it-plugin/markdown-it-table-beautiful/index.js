@@ -1,5 +1,6 @@
 import DFA from './lib/dfa'
 import rangy from 'rangy';
+import { getUniqueKey } from '../markdown-it-key-generator';
 
 export class MultimdTable{
 
@@ -404,9 +405,9 @@ export class MultimdTable{
 
       let tip = '<div class="md-table-tip md-hiden">'+deleteButton+centerButton+leftButton+rightButton+'</div>'
       
-      let res = '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
+      if (env['generateId']) return `<div mid="${getUniqueKey()}" class="markdown-it-table-beautiful" md-block="table" contenteditable="false">` +tip+table
 
-      return res
+      return '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
     }
 
     md.renderer.rules.table_close = (tokens, index,options, env, slf)=>{
@@ -833,10 +834,10 @@ export function multimd_table_plugin(md, options){
     let rightButton = '<button class="table-right" onclick="TABLE_RIGHT(this)">'+ '<i class="el-icon-arrow-right"></i>' +'</button>'
 
     let tip = '<div class="md-table-tip md-hiden">'+deleteButton+centerButton+leftButton+rightButton+'</div>'
-    
-    let res = '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
 
-    return res
+    if (env['generateId']) return `<div mid="${getUniqueKey()}" class="markdown-it-table-beautiful" md-block="table" contenteditable="false">` +tip+table
+
+    return '<div class="markdown-it-table-beautiful" md-block="table" contenteditable="false">' +tip+table
   }
 
   md.renderer.rules.table_close = (tokens, index,options, env, slf)=>{
