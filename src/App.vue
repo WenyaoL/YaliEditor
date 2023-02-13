@@ -31,7 +31,7 @@ export default {
 
 <style>
 html {
-  height: 98%;
+  height: 100%;
 }
 
 body {
