@@ -1,6 +1,6 @@
 <template>
-  <ir-markdown v-if="store.state.editModel == 'IR'" :disableEdit="false"/>
-  <sv-markdown v-else-if="store.state.editModel == 'SV'"/>
+  <ir-markdown v-if="store.state.editorModule.editModel == 'IR'" :disableEdit="false"/>
+  <sv-markdown v-else-if="store.state.editorModule.editModel == 'SV'"/>
   <only-markdown v-else/>
 </template>
 
@@ -11,9 +11,6 @@ import IrMarkdown from '@/components/IrMarkdown.vue'
 import {useStore} from 'vuex'
 import {ref} from 'vue'
 const store = useStore()
-
-const editModel = ref(store.state.editModel)
-
 
 </script>
 

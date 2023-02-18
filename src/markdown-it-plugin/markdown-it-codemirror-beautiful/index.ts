@@ -165,6 +165,10 @@ export class CodemirrorManager {
         return this.stateCacheMap.get(id)
     }
 
+    getStateCacheMap(){
+        return this.stateCacheMap
+    }
+
     getViewInfo(uuid: string) {
         return this.viewMap.get(uuid)
     }
@@ -405,6 +409,28 @@ export class CodemirrorManager {
         ]
     }
 
+
+    refreshStateCacheByElement(element: Element) {
+        if(!element.classList.contains('markdown-it-code-beautiful')) return
+        const uuid = element.id
+        let stateInfo = this.getStateCache(uuid)
+        if (!stateInfo) return
+        let view = new EditorView({
+            parent: element,
+            root: document
+        })
+        view.setState(stateInfo.state)
+        //创建视图信息
+        const viewInfo = new CodemirrorEditorView(element, view, stateInfo)
+
+        //根据信息装载Compartment
+        this.loadCompartment(viewInfo)
+
+
+        this.viewMap.set(uuid, viewInfo)
+        this.stateCacheMap.delete(uuid)
+    }
+
     /**
      * refresh cache
      * 刷新缓存，通过缓存区的编辑器状态生成codemirror编辑器,并一一刷新到页面上
@@ -412,33 +438,14 @@ export class CodemirrorManager {
      * 编辑器挂载的容器为页面上的空容器
      * @param elements 页面上的容器
      */
-    refreshStateCache(elements?: NodeListOf<Element>) {
+    refreshAllStateCache(elements?: NodeListOf<Element>) {
 
         if (!elements) {
             elements = this.editor.ir.rootElement.querySelectorAll('.markdown-it-code-beautiful')
         }
 
         elements.forEach(e => {
-
-            const uuid = e.id
-            let stateInfo = this.getStateCache(uuid)
-            if (!stateInfo) return
-
-            let view = new EditorView({
-                parent: e,
-                root: document
-            })
-            view.setState(stateInfo.state)
-            //创建视图信息
-            const viewInfo = new CodemirrorEditorView(e, view, stateInfo)
-
-            //根据信息装载Compartment
-            this.loadCompartment(viewInfo)
-
-
-            this.viewMap.set(uuid, viewInfo)
-            this.stateCacheMap.delete(uuid)
-
+            this.refreshStateCacheByElement(e)
         })
 
     }
@@ -480,7 +487,7 @@ export class CodemirrorManager {
         delete this.viewMap
         this.viewMap = new Map()
 
-        this.refreshStateCache(elements)
+        this.refreshAllStateCache(elements)
     }
 
     /**
@@ -495,7 +502,7 @@ export class CodemirrorManager {
             this.unsafeRefreshEditorViewElementSyn(element)
         }
         //刷新缓存池
-        this.refreshStateCache(elements)
+        this.refreshAllStateCache(elements)
     }
 
     /**
@@ -566,7 +573,7 @@ export class CodemirrorManager {
     initEditorViewSyn(root: HTMLElement) {
         const elements = root.querySelectorAll('.markdown-it-code-beautiful')
         //刷新状态缓存池
-        this.refreshStateCache(elements);
+        this.refreshAllStateCache(elements);
 
         if (this.editor.ir.options.disableEdit) {
             this.disableEditAllView()
@@ -598,7 +605,7 @@ export class CodemirrorManager {
         viewInfo.view.destroy()
 
 
-        if(viewInfo.stateInfo.inputComponent) viewInfo.stateInfo.inputComponent.unmount()
+        if (viewInfo.stateInfo.inputComponent) viewInfo.stateInfo.inputComponent.unmount()
         delete viewInfo.stateInfo.inputComponent
         this.viewMap.delete(uuid)
     }

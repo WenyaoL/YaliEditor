@@ -4,7 +4,7 @@
  */
 
 import YaLiEditor from "..";
-import { BaseEventBinder, IROptions } from "../../types";
+import { BaseEventBinder} from "../../types";
 
 //编辑器基础控件
 import { DOMObserver } from "../state/domobserver";  //dom元素修改监控器
@@ -41,6 +41,7 @@ import IRClickProcessor from "./IRClickProcessor";
 
 import rangy from "rangy";
 import { getUniqueKey, refreshKeyId } from "@/markdown-it-plugin/markdown-it-key-generator";
+import IRPanelConfig from "../options/IRPanelConfig";
 /**
  * IR模式下的控制面板
  */
@@ -48,7 +49,7 @@ class IR {
     //编辑器
     public editor: YaLiEditor;
     //IR面板的设置
-    public options: IROptions
+    public options: IRPanelConfig;
 
     //编辑面板是否已经被修改
     public isChange: boolean = false;
@@ -193,17 +194,6 @@ class IR {
     public selectTheme(theme: string) {
         this.renderer.setTheme(theme)
         this.options.theme = theme
-        
-        let tables = this.rootElement.getElementsByClassName("markdown-it-table-beautiful")
-        for (let index = 0; index < tables.length; index++) {
-            const element = tables[index];
-            if (theme == "dark") {
-                element.lastElementChild.classList.add("table-dark")
-            } else {
-                element.lastElementChild.classList.remove("table-dark")
-            }
-
-        }
     }
 
 
@@ -267,12 +257,16 @@ class IR {
     }
 
     public focus() {
-        window.getSelection().removeAllRanges()
+        /*window.getSelection().removeAllRanges()
         const r = new Range()
         r.setStart(this.rootElement, 0)
-        window.getSelection().addRange(r)
+        r.setEnd(this.rootElement, 0)
+        window.getSelection().addRange(r)*/
         rangy.getSelection().refresh()
         this.rootElement.focus()
+        if(this.rootElement.firstElementChild){
+            (this.rootElement.firstElementChild as HTMLElement)?.focus()
+        }
     }
 }
 

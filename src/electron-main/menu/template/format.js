@@ -1,42 +1,48 @@
 import { BrowserWindow } from 'electron'
 
-export default function () {
+export default function (shortKeymap) {
+    const strong = shortKeymap.get('format.strong')
+    const italic = shortKeymap.get('format.italic')
+    const underline = shortKeymap.get('format.underline')
+    const deleteline = shortKeymap.get('format.deleteline')
+    const inlineCode = shortKeymap.get('format.inline-code')
+
     return {
         label: '格式(O)',
         submenu: [
             {
-                label: '加粗', accelerator: 'ctrl+b', click: () => {
+                label: '加粗', accelerator: strong?strong:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createType', { type: "blod" })
+                        .send('main-createType', { type: "blod" })
                 }
             },
             {
-                label: '下划线', accelerator: 'ctrl+u', click: () => {
+                label: '下划线', accelerator: underline?underline:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createType', { type: "underline" })
+                        .send('main-createType', { type: "underline" })
                 }
             },
             {
-                label: '斜体', accelerator: 'ctrl+i', click: () => {
+                label: '斜体', accelerator: italic?italic:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createType', { type: "italic" })
+                        .send('main-createType', { type: "italic" })
                 }
             },
             {
-                label: '代码', accelerator: 'ctrl+shift+`', click: () => {
+                label: '代码', accelerator: inlineCode?inlineCode:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createType', { type: "codeline" })
+                        .send('main-createType', { type: "codeline" })
                 }
             },
             {
-                label: '删除线', accelerator: 'ctrl+shift+5', click: () => {
+                label: '删除线', accelerator: deleteline?deleteline:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createType', { type: "deleteline" })
+                        .send('main-createType', { type: "deleteline" })
                 }
             },
         ]

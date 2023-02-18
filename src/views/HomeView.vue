@@ -31,8 +31,8 @@
 
 <script lang="ts" setup>
 // @ is an alias to /src
-import LeftMenu from '@/components/menu/LeftMenu.vue';
-import DialogTip from '@/components/dialog-panel/DialogTip.vue';
+import LeftMenu from '@/components/editor-home/LeftMenu.vue';
+import DialogTip from '@/components/editor-home/DialogTip.vue';
 import FileContentView from './FileContentView.vue'
 import ToolPanelView from './ToolPanelView.vue';
 import bus from '../bus'

@@ -3,49 +3,63 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+import PreferenceSettingView from '../views/PreferenceSettingView.vue'
+import KeybindingPanle from '../components/preference-setting/KeybindingPanle.vue'
+import GeneralPanle from '../components/preference-setting/GeneralPanle.vue'
+import SystemPanle from '../components/preference-setting/SystemPanle.vue'
+function getRoutes(type) {
+  return [
+    {
+      path: '/',
+      redirect: type == 'preference' ? '/preference' : '/home'
+    },
+    {
+      path: '/index.html',
+      redirect: type == 'preference' ? '/preference' : '/home'
+    },
+    {
+      path: '/home',
+      component: HomeView
+    },
+    {
+      path: '/preference',
+      component: PreferenceSettingView,
+      children:[
+        {
+          path:'',
+          component:KeybindingPanle
+        },
+        {
+          path:'keybinding',
+          component:KeybindingPanle
+        },
+        {
+          path:'general',
+          component:GeneralPanle
+        },
+        {
+          path:'system',
+          component:SystemPanle,
+        }
+      ]
+    }
+  ]
+}
 
-import FileContentView from '../views/FileContentView'
-import FolderView from '../views/FolderView'
-import DesignDashboard from '../views/DesignDashboard'
+global.yaliEditor={}
+       
+//获取参试
+const params = new URLSearchParams(location.search)
+const type = params.get('type')
 
-import FileTree from '@/components/filetree-panel/FileTree.vue'
-import FileOutlineView from '../views/ContextOutlineView.vue'
-import RecentDocumentsView from '../views/RecentDocumentsView'
+global.yaliEditor.type = type
 
-const routes = [
-  {
-    path: '/',
-    //redirect: '/outline'
-  },
-  /*{
-    path: '/index.html',
-    redirect: '/folder'
-  },
-  {
-    path: '/folder',
-    name: 'folder',
-    component: FileTree
-  },
-  {
-    path: '/designDashboard',
-    name: 'designDashboard',
-    component: DesignDashboard
-  },
-  {
-    path: '/recentDocuments',
-    name: 'recentDocuments',
-    component: RecentDocumentsView
-  },
-  {
-    path: '/outline',
-    name: 'outline',
-    component: FileOutlineView
-  }*/
-]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes: getRoutes(global.yaliEditor.type)
 })
+
 
 export default router

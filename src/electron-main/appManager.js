@@ -4,13 +4,15 @@
  */
 
 import AppMenu from './menu'
-import {AppWindow} from './appWindow'
+import AppWindow from './window/index'
 import {MainIPMEventLoader} from './ipmMainLoad'
-import {openFile} from './common'
+
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
 import Store from 'electron-store'
 import {app} from 'electron'
+import {defaultKeyMap} from './config'
+import AppFileSystem from './fileSystem'
 
 export class AppManager{
 
@@ -18,7 +20,9 @@ export class AppManager{
     constructor(){
         this.appWindow = new AppWindow(this)
         this.appMenu = new AppMenu(this)
+        this.appFileSystem = new AppFileSystem(this)
         this.store = new Store({
+            clearInvalidConfig:true,
             schema:{
                 theme:{
                     type:'string',
@@ -29,6 +33,11 @@ export class AppManager{
                     type:'array',
                     default:[],
                     description:'最近打开文件列表,{fileName:"文件名",dirName:"目录名",description:"文章前几行的文本信息"}'
+                },
+                currKeyMap:{
+                    type:'object',
+                    default:Object.fromEntries(defaultKeyMap.entries()),
+                    description:'快捷键映射'
                 }
             }
         })
@@ -76,7 +85,7 @@ export class AppManager{
                 return 
             }
 
-            openFile(filePath).then(data=>{
+            this.appFileSystem.openFile(filePath).then(data=>{
                 let appWindow = this.appWindow
                 win.loadURL('app://./index.html').then(()=>{
                     //发送数据
@@ -137,5 +146,26 @@ export class AppManager{
         this.appMenu.updateMenu()
     }
 
+    getCurrKeyMap(){
+        const keyObject = this.store.get('currKeyMap')
+        if(!keyObject || keyObject == {}){
+            this.store.set('currKeyMap',Object.fromEntries(defaultKeyMap.entries()))
+            return defaultKeyMap
+        }
+        return new Map(Object.entries(keyObject))
+    }
+
+    setCurrKeyMap(map){
+        //持久化
+        this.store.set("currKeyMap",Object.fromEntries(map.entries()))
+        //通知窗口去更新keyMap
+        this.appWindow.editorWindowManager.updateShortKeyMap(map)
+        this.appMenu.updateMenu()
+    }
+
+
+    clearDataCache(){
+        this.store.clear()
+    }
 }
 

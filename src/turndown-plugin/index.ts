@@ -170,8 +170,8 @@ class TurndownParser {
     this.turndownService.addRule('md-font-underline', {
       filter: 'u',
       replacement: (content, node, options) => {
-        if (options.borderModel) return '<u md-inline="underline">' + content + '</u>'
-        return '<u md-inline="underline">' + content + '</u>'
+        if (options.borderModel) return content
+        return '<u>' + content + '</u>'
       }
     })
 

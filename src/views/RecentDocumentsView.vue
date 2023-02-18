@@ -6,19 +6,19 @@
 </template>
 
 <script lang="ts" setup>
-import RecentDocuments from '@/components/menu/RecentDocuments.vue';
+import RecentDocuments from '@/components/editor-home/RecentDocuments.vue';
 import {computed,onMounted} from 'vue'
 import {useStore} from 'vuex';
 const store = useStore()
-const getFileList = computed(()=>store.state.applicationContext.recentDocuments)
+const getFileList = computed(()=>store.state.editorModule.applicationContext.recentDocuments)
 const getFileListLength = computed(()=>{
-    let recentDocuments = store.state.applicationContext.recentDocuments
+    let recentDocuments = store.state.editorModule.applicationContext.recentDocuments
     return recentDocuments.length
 })
 
 onMounted(() => {
   //获取最近打开文件信息
-  window.electronAPI.getRecentDocuments().then(data=>{
+  store.dispatch('getRecentDocuments').then(data=>{
     store.commit('updateRecentDocuments',data)
   })
 })

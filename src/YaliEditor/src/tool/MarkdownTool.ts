@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph, isEmptyMdBlockHTML} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph, isEmptyMdBlockHTML, isMdBlockHTML} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import Constants from '../constant/constants'
@@ -142,7 +142,21 @@ class MarkdownTool{
      * @returns 返回退化的P标签
      */
     nodeDegenerateToP(element:HTMLElement){
-        let p = createParagraph()
+        const p = createParagraph()
+        element.replaceWith(p)
+        return p
+    }
+
+    nodeTransformToHeading(element:HTMLElement,level:number){
+        const res = this.renderBlock(`${"#".repeat(level)} ${element.textContent}`)
+        const heading = strToElement(res)
+        element.replaceWith(heading)
+        return heading
+    }
+
+    nodeTransformToParagraph(element:HTMLElement){
+        const p = createParagraph()
+        p.innerText = element.textContent
         element.replaceWith(p)
         return p
     }
@@ -159,7 +173,7 @@ class MarkdownTool{
     }
 
     /**
-     * 整个MD-Block块将会被退化成P标签
+     * 整个MD-Block块将会被退化成P标签,输入的md-block必须无显示文本了，否则退化失败
      * @param element 
      * @returns 返回退化的P标签
      */
@@ -188,6 +202,19 @@ class MarkdownTool{
         }
 
         return;
+    }
+
+
+    mdBlockTransformToHeanding(element:HTMLElement,level:number){
+        if(!isMdBlock(element)) return
+        const heading = this.nodeTransformToHeading(element,level)
+        return heading
+    }
+
+    mdBlockTransformToParagraph(element:HTMLElement){
+        if(!isMdBlock(element)) return
+        const p = this.nodeTransformToParagraph(element)
+        return p
     }
 
     /**
@@ -245,6 +272,10 @@ class MarkdownTool{
         e.setAttribute("mid",getUniqueKey()+"")
         block.replaceWith(e)
         if(isMdBlockToc(e)) this.editor.ir.contextRefresher.refreshToc()
+
+        if(isMdBlockHTML(e)) {
+            this.editor.ir.renderer.codemirrorManager.refreshStateCacheByElement(e.querySelector(".markdown-it-code-beautiful"))
+        }
         return e
     }
 

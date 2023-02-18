@@ -1,22 +1,22 @@
 
-import {updateLine,updateBlock,updateMulLine,createToc} from '@/codemirror-plugin/util/Common'
-import {updateLineIR,updateBlockIR,updateMulLineIR, createTocIR} from '@/YaliEditor/src/util/hotkeyProcess' 
+import { updateLine, updateBlock, updateMulLine, createToc } from '@/codemirror-plugin/util/Common'
+import { updateLineIR, updateBlockIR, updateMulLineIR, createTocIR } from '@/YaliEditor/src/util/hotkeyProcess'
 import html2canvas from 'html2canvas'
 import Canvas2Image from './canvas2image'
-import {jsPDF} from 'jspdf'
-import {fixCodemirrorGutterStyle} from '@/codemirror-plugin/util/Common'
+import { jsPDF } from 'jspdf'
+import { fixCodemirrorGutterStyle } from '@/codemirror-plugin/util/Common'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import bus from '../bus'
 
 
-class RendererIPMEventLoader{
+class RendererIPMEventLoader {
 
-    constructor(store){
+    constructor(store) {
         this.store = store
-        this.applicationContext = store.state.applicationContext
+        this.applicationContext = store.state.editorModule.applicationContext
     }
 
-    init(){
+    init() {
         this.initExportFunctions(this.store)
         this.initApplicationContextLoadFunctions(this.store)
         this.initSaveFunctions(this.store)
@@ -27,24 +27,31 @@ class RendererIPMEventLoader{
     /**
      * 导出功能的初始化
      */
-    initExportFunctions(store){
-        window.electronAPI.exportPDF(()=>{
+    initExportFunctions(store) {
+        window.electronAPI.ON.exportPDF(async () => {
             //保存PDF
             let root = document.getElementById("YaliEditor")
             const doc = new jsPDF({
-                unit:'px',
-                orientation: 'p', 
-                format: 'a4' 
+                unit: 'px',
+                orientation: 'p',
+                format: 'a4'
             })
-            doc.addFileToVFS('sourcehansans-normal.ttf',store.state.fonts.normal)
-            doc.addFileToVFS('sourcehansans-bold.ttf',store.state.fonts.bold)
-            doc.addFont('sourcehansans-normal.ttf','sourcehansans', 'normal')
-            doc.addFont('sourcehansans-bold.ttf','sourcehansans', 'bold')
+
+            if (!store.state.editorModule.fonts.normal) {
+                const data = await store.dispatch('getFontsDate')
+                store.state.editorModule.fonts.normal = data.normal
+                doc.addFileToVFS('sourcehansans-normal.ttf', store.state.editorModule.fonts.normal)
+                //doc.addFileToVFS('sourcehansans-bold.ttf', store.state.fonts.bold)
+            }else{
+                doc.addFileToVFS('sourcehansans-normal.ttf', store.state.editorModule.fonts.normal)
+            }
+
+
+            doc.addFont('sourcehansans-normal.ttf', 'sourcehansans', 'normal')
+            //doc.addFont('sourcehansans-bold.ttf', 'sourcehansans', 'bold')
             doc.setFont('sourcehansans', 'normal');
-            doc.setFont('sourcehansans', 'bold');
-
-
-            //root.insertAdjacentHTML('afterbegin','<style>*{font-family:  Arial,sans-serif, serif,"sourcehansans";}</style>')
+            //doc.setFont('sourcehansans', 'bold');
+            
             let el = root.cloneNode(true)
             //给模块赋予字体
             let cList = el.children
@@ -53,13 +60,13 @@ class RendererIPMEventLoader{
                 element.style.fontFamily = "sourcehansans"
             }
             //给编辑器赋予字体
-            let content = el.getElementsByClassName("cm-content")
+            /*let content = el.getElementsByClassName("cm-content")
             for (let index = 0; index < content.length; index++) {
                 const element = content[index];
                 element.style.fontFamily = "sourcehansans"
-            }
+            }*/
 
-            el.insertAdjacentHTML('afterbegin','<style>*{font-family:sourcehansans;}</style>')
+            el.insertAdjacentHTML('afterbegin', '<style>*{font-family:sourcehansans;}</style>')
 
             let mathDom = el.getElementsByClassName("markdown-it-mathjax-beautiful")
             for (let index = 0; index < mathDom.length; index++) {
@@ -70,38 +77,50 @@ class RendererIPMEventLoader{
             //fixCodemirrorGutterStyle(el)
 
             doc.html(el, {
-                jsPDF:doc,
-                margin:[10,1000,10,30],
-                width:400,
-                windowWidth:1200
-            }).save(document.title+'.pdf').then(o=>{
+                jsPDF: doc,
+                margin: [10, 1000, 10, 30],
+                width: 400,
+                windowWidth: 1200
+            }).save(document.title + '.pdf').then(o => {
                 //回复原来字体
                 /*setTimeout(()=>{
                     root.removeChild(root.firstChild)
                 })*/
-                
+
             });
         })
 
-        window.electronAPI.exportIMG(()=>{
+        window.electronAPI.ON.exportIMG(() => {
             //导出图片快照
             const write = document.getElementsByClassName("write").item(0)
-            if(!write) retrun
+            if (!write) retrun
             let e = write
 
             //fixCodemirrorGutterStyle(e)
 
 
-            html2canvas(e,{
-                height:e.scrollHeight,
-                width:e.scrollWidth,
-                scale:3
-            }).then(cva=>{
-                Canvas2Image.saveAsPNG(cva, e.scrollWidth+100, e.scrollHeight,document.title.replace("*",''))
+            html2canvas(e, {
+                windowHeight:760,
+                windowWidth:1200,
+                height: e.scrollHeight+10,
+                width: e.scrollWidth+10,
+                scale: 2,
+                onclone:(cloneDocument)=>{
+                    const codemirrors = cloneDocument.querySelectorAll(".markdown-it-code-beautiful")
+                    codemirrors.forEach(element=>{
+                        const id = element.id
+                        const editor = this.store.state.editorModule.yaliEditor
+                        const manager = editor.ir.renderer.codemirrorManager
+                        const text = manager.getTextValue(id)
+                        element.textContent = text
+                    })
+                }
+            }).then(cva => {
+                Canvas2Image.saveAsPNG(cva, e.scrollWidth + 100, e.scrollHeight, document.title.replace("*", ''))
             })
         })
 
-        window.electronAPI.exportHTML(()=>{
+        window.electronAPI.ON.exportHTML(() => {
             const write = document.getElementsByClassName("write").item(0)
             const clone = write.cloneNode(true)
             //fixCodemirrorGutterStyle(clone)
@@ -113,9 +132,9 @@ class RendererIPMEventLoader{
             }
 
             //导出HTML
-            window.electronAPI.saveHTMLFile({
+            window.electronAPI.SEND.saveHTMLFile({
                 style: style,
-                html:clone.outerHTML
+                html: clone.outerHTML
             })
             //doc.body.innerHTML = write.outerHTML
         })
@@ -125,99 +144,115 @@ class RendererIPMEventLoader{
      * 上下文加载功能的初始化
      * @param {*} store 
      */
-    initApplicationContextLoadFunctions(store){
+    initApplicationContextLoadFunctions(store) {
 
-        //window.electronAPI.initFonts初始化字体 数据
-        window.electronAPI.initFonts((event, fonts)=>{
-            store.commit('initFonts',fonts)
-        })
 
         //跟新上下文
-        window.electronAPI.updateApplicationContext((event, context)=>{
-            if(context.theme){
+        window.electronAPI.ON.setApplicationContext((event, context) => {
+            if (context.theme) {
                 document.documentElement.className = context.theme
-                store.state.yaliEditor.ir.selectTheme(context.theme)
+                store.state.editorModule.yaliEditor.ir.selectTheme(context.theme)
             }
             //跟新上下文
-            store.commit('updateApplicationContext',context)
+            store.commit('updateApplicationContext', context)
+        })
+
+        window.electronAPI.ON.setKeyMap((event,keymap)=>{
+            bus.emit('yali:updateKeyMap',keymap)
         })
     }
 
     /**
      * 保存功能的初始
      */
-    initSaveFunctions(store){
+    initSaveFunctions(store) {
         //保存文件回传处理
-        window.electronAPI.saveFile((event,payload)=>{
+        window.electronAPI.ON.saveFile((event) => {
             //IR模式需要提前转换文本
-            if(store.state.editModel == "IR"){
-                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+            if (store.state.editorModule.editModel == "IR") {
+                store.commit('updateContent', store.state.editorModule.yaliEditor.getMarkdownText())
             }
-            //回传信息
-            if(payload){
-                //回传上下文,设置另存路径(另存为)
-                event.sender.send('saveFile',{
-                    applicationContext:JSON.stringify(this.applicationContext),
-                    path:payload.path,
-                    closeWindow:payload.closeWindow
-                })
-            }else{
-                //保存按键
 
-                //回传上下文
-                event.sender.send('saveFile',{
-                    applicationContext:JSON.stringify(this.applicationContext),
-                    path: null,
-                })
-                store.commit('updateFileState',true) //跟新文件状态为已经保存
-            }
-            
+            //回传上下文
+            event.sender.send('renderer-saveFile', {
+                applicationContext: JSON.stringify(this.applicationContext),
+                savePath: null,
+            })
+            store.commit('updateFileState', true) //跟新文件状态为已经保存
+
+
 
         })
+
+        window.electronAPI.ON.saveAsFile((event, { path }) => {
+            //IR模式需要提前转换文本
+            if (store.state.editorModule.editModel == "IR") {
+                store.commit('updateContent', store.state.editorModule.yaliEditor.getMarkdownText())
+            }
+
+            if (!path) {
+                window.electronAPI.INVOKE.openSaveMsgDialog().then(path => {
+                    //回传上下文
+                    event.sender.send('renderer-saveFile', {
+                        applicationContext: JSON.stringify(this.applicationContext),
+                        savePath: path,
+                    })
+
+                })
+            } else {
+                //回传上下文
+                event.sender.send('renderer-saveFile', {
+                    applicationContext: JSON.stringify(this.applicationContext),
+                    savePath: path,
+                })
+            }
+
+        })
+
     }
 
     /**
      * 其他通用功能
      */
-    initCommonFunctions(store){
+    initCommonFunctions(store) {
         let currElMessageBox = null;
         //打开作者详情
-        window.electronAPI.openAuthorDetails(()=>{
+        window.electronAPI.ON.openAuthorDetails(() => {
             document.getElementById("dialog-author-details-button").click()
         })
 
         //选择主题
-        window.electronAPI.selectTheme((event,payload)=>{
+        window.electronAPI.ON.setTheme((event, payload) => {
             document.documentElement.className = payload.type
-            store.state.yaliEditor.ir.selectTheme(payload.type)
-            store.commit('updateTheme',payload.type)
+            store.state.editorModule.yaliEditor.ir.selectTheme(payload.type)
+            store.commit('updateTheme', payload.type)
         })
 
-        window.electronAPI.checkoutEditModel((event,payload)=>{
-            store.commit('updateEditModel',payload.editModel)
+        window.electronAPI.ON.checkoutEditModel((event, payload) => {
+            store.commit('updateEditModel', payload.editModel)
         })
 
-        window.electronAPI.checkoutSidebarDisplay((event,payload)=>{
+        window.electronAPI.ON.checkoutSidebarDisplay((event, payload) => {
             bus.emit('sideBarChange')
         })
 
         //创建文件树
-        window.electronAPI.createFileTree((event, payload)=>{
-            store.commit('updateTree',payload.tree)
+        window.electronAPI.ON.createFileTree((event, payload) => {
+            store.commit('updateTree', payload.tree)
         })
 
-        window.electronAPI.closeWindow(()=>{
+        window.electronAPI.ON.closeWindow(() => {
             //IR模式需要提前转换文本
-            if(store.state.editModel == "IR"){
-                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+            if (store.state.editorModule.editModel == "IR") {
+                store.commit('updateContent', store.state.editorModule.yaliEditor.getMarkdownText())
             }
 
-            if(this.applicationContext.isSave){
+            if (this.applicationContext.isSave) {
                 //直接关闭窗口
-                window.electronAPI.invokeCloseWin()
+                window.electronAPI.SEND.closeWindow()
             }
 
-            if(currElMessageBox) return
+            if (currElMessageBox) return
 
             //调用消息盒子提示是否要保存文件
             currElMessageBox = ElMessageBox.confirm(
@@ -228,20 +263,23 @@ class RendererIPMEventLoader{
                     confirmButtonText: '保存',
                     cancelButtonText: '丢弃',
                 }
-                ).then(() => {
-                    console.log("关闭并保持文件");
-                    //关闭窗口并保存文件
-                    window.electronAPI.invokeSave({
-                        applicationContext:JSON.stringify(this.applicationContext),
-                        closeWindow:true
-                    })
+            ).then(() => {
+                //关闭窗口并保存文件
+                window.electronAPI.INVOKE.saveFile({
+                    applicationContext: JSON.stringify(this.applicationContext),
+                    path: ''
+                }).then((flag) => {
                     currElMessageBox = null
-                }).catch((action) => {
-                    if(action === 'cancel'){
-                        //直接关闭窗口
-                        window.electronAPI.invokeCloseWin()
-                    }
-                    currElMessageBox = null
+                    if (flag) window.electronAPI.SEND.closeWindow()
+                })
+
+            }).catch((action) => {
+
+                if (action === 'cancel') {
+                    //直接关闭窗口
+                    window.electronAPI.SEND.closeWindow()
+                }
+                currElMessageBox = null
             })
 
         })
@@ -250,77 +288,74 @@ class RendererIPMEventLoader{
     /**
      * 初始化编辑器相关的功能
      */
-    initEditorFunctions(store){
+    initEditorFunctions(store) {
         //单行创建，如：h1
-        window.electronAPI.createLine((event,payload)=>{
+        window.electronAPI.ON.createLine((event, payload) => {
             //标题快捷键信息处理
             //payload.level
             //根据模式进行匹配
-            if(store.state.editModel == "IR"){
-                updateLineIR(store.state.yaliEditor.ir,payload)
-            }else if(store.state.editModel == "SV"){
-                updateLine(store.state.viewEditor,payload)
-            }else{
-                updateLine(store.state.viewEditor,payload)
+            if (store.state.editorModule.editModel == "IR") {
+                updateLineIR(store.state.editorModule.yaliEditor.ir, payload)
+            } else if (store.state.editorModule.editModel == "SV") {
+                updateLine(store.state.editorModule.viewEditor, payload)
+            } else {
+                updateLine(store.state.editorModule.viewEditor, payload)
             }
-            
-
-
         })
-        
+
         //字体创建
-        window.electronAPI.createType((event,payload)=>{
+        window.electronAPI.ON.createType((event, payload) => {
 
             //字体快捷键信息处理
-            if(store.state.editModel == "IR"){
-                updateBlockIR(store.state.yaliEditor.ir,payload)
-            }else if(store.state.editModel == "SV"){
-                updateBlock(store.state.viewEditor,payload)
-            }else{
-                updateBlock(store.state.viewEditor,payload)
+            if (store.state.editorModule.editModel == "IR") {
+                updateBlockIR(store.state.editorModule.yaliEditor.ir, payload)
+            } else if (store.state.editorModule.editModel == "SV") {
+                updateBlock(store.state.editorModule.viewEditor, payload)
+            } else {
+                updateBlock(store.state.editorModule.viewEditor, payload)
             }
-            
+
         })
-        
+
         //块级创建，如:代码块，字体块等
-        window.electronAPI.createBlock((event,payload)=>{
+        window.electronAPI.ON.createBlock((event, payload) => {
 
-            if(store.state.editModel == "IR"){
-                updateBlockIR(store.state.yaliEditor.ir,payload)
-            }else if(store.state.editModel == "SV"){
-                updateBlock(store.state.viewEditor,payload)
-            }else{
-                updateBlock(store.state.viewEditor,payload)
+            if (store.state.editorModule.editModel == "IR") {
+                updateBlockIR(store.state.editorModule.yaliEditor.ir, payload)
+            } else if (store.state.editorModule.editModel == "SV") {
+                updateBlock(store.state.editorModule.viewEditor, payload)
+            } else {
+                updateBlock(store.state.editorModule.viewEditor, payload)
             }
         })
-        
-        //多行创建 如,列表
-        window.electronAPI.createMulLine((event,payload)=>{
 
-            if(store.state.editModel == "IR"){
-                updateMulLineIR(store.state.yaliEditor.ir,payload)
-            }else if(store.state.editModel == "SV"){
-                updateMulLine(store.state.viewEditor,payload)
-            }else{
-                updateMulLine(store.state.viewEditor,payload)
+        //多行创建 如,列表
+        window.electronAPI.ON.createMulLine((event, payload) => {
+
+            if (store.state.editorModule.editModel == "IR") {
+                updateMulLineIR(store.state.editorModule.yaliEditor.ir, payload)
+            } else if (store.state.editorModule.editModel == "SV") {
+                updateMulLine(store.state.editorModule.viewEditor, payload)
+            } else {
+                updateMulLine(store.state.editorModule.viewEditor, payload)
             }
         })
 
         //创建标题
-        window.electronAPI.createToc(()=>{
+        window.electronAPI.ON.createToc(() => {
 
-            if(store.state.editModel == "IR"){
-                createTocIR(store.state.yaliEditor.ir)
-            }else if(store.state.editModel == "SV"){
-                createToc(store.state.viewEditor)
-            }else{
-                createToc(store.state.viewEditor)
+            if (store.state.editorModule.editModel == "IR") {
+                createTocIR(store.state.editorModule.yaliEditor.ir)
+            } else if (store.state.editorModule.editModel == "SV") {
+                createToc(store.state.editorModule.viewEditor)
+            } else {
+                createToc(store.state.editorModule.viewEditor)
             }
 
         })
 
         //创建表格
-        window.electronAPI.createTable(()=>{
+        window.electronAPI.ON.createTable(() => {
             document.getElementById("dialog-form-button").click()
         })
     }
@@ -331,6 +366,6 @@ class RendererIPMEventLoader{
 
 
 
-export {RendererIPMEventLoader}
+export { RendererIPMEventLoader }
 export default RendererIPMEventLoader
 

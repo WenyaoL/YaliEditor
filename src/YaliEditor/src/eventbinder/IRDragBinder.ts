@@ -19,8 +19,8 @@ class IRDragBinder implements BaseEventBinder {
         let img: File & { path: string } = ev.dataTransfer?.files.item(0) as File & { path: string }
 
         if (!img.path) return
-
-        let render = this.editor.ir.renderer.render("![](" + img.path + ")")
+        
+        let render = this.editor.markdownTool.renderInline("![](" + img.path + ")")
 
         let e = strToElement(render)
         if (!e) return false

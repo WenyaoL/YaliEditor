@@ -1,108 +1,125 @@
 import { BrowserWindow } from 'electron'
 
-export default function () {
+export default function (shortKeymap) {
+    
+    const heading1Key = shortKeymap.get("paragraph.heading-1")
+    const heading2Key = shortKeymap.get("paragraph.heading-2")
+    const heading3Key = shortKeymap.get("paragraph.heading-3")
+    const heading4Key = shortKeymap.get("paragraph.heading-4")
+    const heading5Key = shortKeymap.get("paragraph.heading-5")
+    const heading6Key = shortKeymap.get("paragraph.heading-6")
+    const orderListKey = shortKeymap.get('paragraph.order-list')
+    const bulletListKey = shortKeymap.get('paragraph.bullet-list')
+    const tocKey = shortKeymap.get('paragraph.toc')
+    const htmlBlockKey = shortKeymap.get('paragraph.html-block')
+    const mathBlockKey = shortKeymap.get('paragraph.math-block')
+    const reduceIndentListKey = shortKeymap.get('paragraph.reduceIndent-list')
+    const addIndentListKey = shortKeymap.get('paragraph.addIndent-list')
+    const fenceKey = shortKeymap.get('paragraph.code-fence')
+    const quoteBlockKey = shortKeymap.get('paragraph.quote-block')
+
     return {
         label: '段落(P)',
         submenu: [
             {
-                label: '一级标题', accelerator: 'ctrl+1', click: () => {
+                label: '一级标题', accelerator: heading1Key?heading1Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 1 })
+                        .send('main-createLine', { type: "head", level: 1 })
                 }
             },
             {
-                label: '二级标题', accelerator: 'ctrl+2', click: () => {
+                label: '二级标题', accelerator: heading2Key?heading2Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 2 })
+                        .send('main-createLine', { type: "head", level: 2 })
                 }
             },
             {
-                label: '三级标题', accelerator: 'ctrl+3', click: () => {
+                label: '三级标题', accelerator: heading3Key?heading3Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 3 })
+                        .send('main-createLine', { type: "head", level: 3 })
                 }
             },
             {
-                label: '四级标题', accelerator: 'ctrl+4', click: () => {
+                label: '四级标题', accelerator: heading4Key?heading4Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 4 })
+                        .send('main-createLine', { type: "head", level: 4 })
                 }
             },
             {
-                label: '五级标题', accelerator: 'ctrl+5', click: () => {
+                label: '五级标题', accelerator: heading5Key?heading5Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 5 })
+                        .send('main-createLine', { type: "head", level: 5 })
                 }
             },
             {
-                label: '六级标题', accelerator: 'ctrl+6', click: () => {
+                label: '六级标题', accelerator: heading6Key?heading6Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createLine', { type: "head", level: 6 })
-                }
-            },
-            { type: 'separator' },
-            {
-                label: '代码块', accelerator: 'ctrl+shift+k', click: () => {
-                    BrowserWindow.getFocusedWindow()
-                        .webContents
-                        .send('createBlock', { type: "codeblock" })
-                }
-            },
-            {
-                label: '公式块', accelerator: 'ctrl+shift+M', click: () => {
-                    BrowserWindow.getFocusedWindow()
-                        .webContents
-                        .send('createBlock', { type: "mathblock" })
-                }
-            },
-            {
-                label: 'HTML块', accelerator: 'ctrl+shift+H', click: () => {
-                    BrowserWindow.getFocusedWindow()
-                        .webContents
-                        .send('createBlock', { type: "htmlblock" })
+                        .send('main-createLine', { type: "head", level: 6 })
                 }
             },
             { type: 'separator' },
             {
-                label: '有序列表', accelerator: 'ctrl+shift+[', click: () => {
+                label: '代码块', accelerator: fenceKey?fenceKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createMulLine', { type: "list" })
+                        .send('main-createBlock', { type: "codeblock" })
                 }
             },
             {
-                label: '无序列表', accelerator: 'ctrl+shift+]', click: () => {
+                label: '公式块', accelerator: mathBlockKey?mathBlockKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createMulLine', { type: "unlist" })
+                        .send('main-createBlock', { type: "mathblock" })
+                }
+            },
+            {
+                label: 'HTML块', accelerator: htmlBlockKey?htmlBlockKey:'', click: () => {
+                    BrowserWindow.getFocusedWindow()
+                        .webContents
+                        .send('main-createBlock', { type: "htmlblock" })
                 }
             },
             { type: 'separator' },
             {
-                label: '引用', accelerator: 'ctrl+shift+q', click: () => {
+                label: '有序列表', accelerator: orderListKey?orderListKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createMulLine', { type: "quote" })
+                        .send('main-createMulLine', { type: "list" })
                 }
             },
             {
-                label: '目录', accelerator: 'ctrl+shift+t', click: () => {
+                label: '无序列表', accelerator: bulletListKey?bulletListKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createToc')
+                        .send('main-createMulLine', { type: "unlist" })
+                }
+            },
+            { type: 'separator' },
+            {
+                label: '引用', accelerator: quoteBlockKey?quoteBlockKey:'', click: () => {
+                    BrowserWindow.getFocusedWindow()
+                        .webContents
+                        .send('main-createMulLine', { type: "quote" })
+                }
+            },
+            {
+                label: '目录', accelerator: tocKey?tocKey:'', click: () => {
+                    BrowserWindow.getFocusedWindow()
+                        .webContents
+                        .send('main-createToc')
                 }
             },
             {
                 label: '创建表格', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
-                        .send('createTable')
+                        .send('main-createTable')
                 }
             }
         ]

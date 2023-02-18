@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ElPopper} from 'element-plus'
+import {useStore} from 'vuex'
 import path from 'path-browserify'
 
 const props = defineProps<{
@@ -38,9 +38,9 @@ const props = defineProps<{
     description:string
   }[]
 }>()
-
+const store = useStore()
 const openFile = (item)=>{
-  window.electronAPI.openFileInNewWindow({path:path.join(item.dirName,item.fileName)})
+  store.dispatch('openFileInNewWindow',path.join(item.dirName,item.fileName))
 }
 
 </script>
@@ -68,7 +68,10 @@ const openFile = (item)=>{
 }
 
 .recent-document-description{
-  margin: 0; font-size: 14px; color: var(--el-color-info)
+  margin: 0; 
+  font-size: 14px; 
+  color: var(--el-color-info);
+  white-space: pre-line;
 }
 
 span{
@@ -78,7 +81,7 @@ span{
 .recent-document-info{
   margin:0;
   text-overflow:ellipsis;
-  min-width: 236px;
+  min-width: 180px;
 }
 
 .el-divider{

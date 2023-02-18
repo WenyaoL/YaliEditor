@@ -13,29 +13,29 @@ import theme from './template/theme'
 
 export default class AppMenu {
 
-    constructor(manager) {
-        this.manager = manager
+    constructor(app) {
+        this.app = app
     }
 
     init() {
-        Menu.setApplicationMenu(this.build(this.manager.getRecentDocuments()))
+        Menu.setApplicationMenu(this.build(this.app.getRecentDocuments(),this.app.getCurrKeyMap()))
     }
 
-    build(recentDocuments) {
+    build(recentDocuments,shortKeymap) {
         const template = [
-            file(this.manager,recentDocuments),
-            edit(),
-            paragraph(),
-            format(),
-            theme(this.manager),
-            visit(),
-            about(this.manager)
+            file(this.app,recentDocuments),
+            edit(shortKeymap),
+            paragraph(shortKeymap),
+            format(shortKeymap),
+            theme(this.app),
+            visit(shortKeymap),
+            about(this.app)
         ]
         return Menu.buildFromTemplate(template)
     }
 
     updateMenu(){
-        Menu.setApplicationMenu(this.build(this.manager.getRecentDocuments()))
+        Menu.setApplicationMenu(this.build(this.app.getRecentDocuments(),this.app.getCurrKeyMap()))
     }
 
 }

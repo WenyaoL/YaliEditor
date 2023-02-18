@@ -25,23 +25,21 @@ export default {
     setup(){
         const props = reactive({value: 'path',label: 'name',children: 'child',})
         const store = useStore();
-        const applicationContext = store.state.applicationContext
+        const applicationContext = store.state.editorModule.applicationContext
         function isFile(node){
             if(node.child == undefined) return true
             return false
         }
 
         function readFile(data){
-            window.electronAPI.readFile({
-                    path:data.path,  //指定读取路径（当路径缺失时，使用上下文中的路径）
-                }).then(res=>{
+            store.dispatch('readFile',data.path).then(res=>{
                     store.commit('updateApplicationContext',{
                         isSave:true,
                         filePath:data.path,
                         content:res,
                         title:data.name
                     })
-                    window.electronAPI.addRecentDocument({
+                    store.dispatch('addRecentDocument',{
                         filePath:data.path,
                         description:res.substring(0,30)
                     })
@@ -51,12 +49,12 @@ export default {
         function nodeClick(data,node,event){
             if(!isFile(data)) return 
             //IR模式需要提前转换文本
-            if(store.state.editModel == "IR"){
-                store.commit('updateContent',store.state.yaliEditor.getMarkdownText())
+            if(store.state.editorModule.editModel == "IR"){
+                store.commit('updateContent',store.state.editorModule.yaliEditor.getMarkdownText())
             }
             if(applicationContext.isSave){
                 readFile(data)
-                document.getElementsByTagName("title")[0].innerText = data.name
+                document.title = data.name
             }else{
                 //打开信息盒
                 ElMessageBox.confirm(
@@ -69,14 +67,15 @@ export default {
                     }
                     ).then(() => {
                         //保存文件
-                        window.electronAPI.invokeSave({applicationContext:JSON.stringify(applicationContext)})
+                        store.dispatch('saveFile')
+                        
                         ElMessage({
                             message: '成功保存!',
                             type: 'success',
                         })
                         //读取文件
                         readFile(data)
-                        document.getElementsByTagName("title")[0].innerText = data.name
+                        document.title = data.name
                     }).catch((action) => {
                         if(action === 'cancel'){
                             ElMessage({
@@ -85,7 +84,7 @@ export default {
                             })
                             //读取文件,强制覆盖
                             readFile(data)
-                            document.getElementsByTagName("title")[0].innerText = data.name
+                            document.title = data.name
                         }else{
                             
                         }

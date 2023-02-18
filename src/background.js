@@ -7,7 +7,7 @@ import { AppManager } from './electron-main/appManager'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-let win;
+
 let isReady=false;
 
 
@@ -34,7 +34,7 @@ app.on('ready', () => {
   let appManager = new AppManager()
   appManager.init()
 
-  let win = appManager.appWindow.createWindow()
+  let win = appManager.appWindow.editorWindowManager.createWindow()
 
   //加载第一个页面
   appManager.loadFirstPage(win)

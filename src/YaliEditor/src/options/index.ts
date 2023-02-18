@@ -22,7 +22,7 @@ export class EditorConfig {
     public commonConfig: CommonConfig;
     public ir: IRPanelConfig;
 
-    constructor(commonConfig: CommonConfig, ir: IRPanelConfig) {
+    private constructor(commonConfig: CommonConfig, ir: IRPanelConfig) {
         this.commonConfig = commonConfig;
         this.commonConfig.editorConfig = this
 

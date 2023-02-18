@@ -16,6 +16,8 @@ import { html } from '@codemirror/lang-html'
 import { myMinimalSetup } from '@/codemirror-plugin/codeStyle/codePlugin'
 import { isMdBlockHTML } from "@/YaliEditor/src/util/inspectElement";
 import { getUniqueKey } from "../markdown-it-key-generator";
+import {htmlBlockNames,tagOpenReg,tagCloseReg, utagOpenReg,utagCloseReg} from './config';
+
 
 let editor: YaLiEditor = null
 
@@ -23,7 +25,6 @@ let editor: YaLiEditor = null
 function htmlBlock(tokens: Token[], idx: number, options: Object, env: Object) {
     const token = tokens[idx];
     const content = tokens[idx].content
-
     //适配图片
     if (token.content.startsWith("<img")) {
         const p = document.createElement("p")
@@ -53,12 +54,12 @@ function htmlBlock(tokens: Token[], idx: number, options: Object, env: Object) {
     //适配HTML注解元素
     if (Reg.htmlcommentReg.test(content)) {
         const comment = escapeHtml(content)
-        return `<div md-block="html-comment" class="html-comment">${comment}</div>`
+        return `<div mid="${getUniqueKey()}" md-block="html-comment" class="html-comment">${comment}</div>`
     }
 
     const id = uuidv4()
     const extensions = editor.ir.renderer.codemirrorManager.createHtmlBlockPlugin(id)
-
+    
     let editorState = EditorState.create({
         doc: content,
         extensions
@@ -70,6 +71,7 @@ function htmlBlock(tokens: Token[], idx: number, options: Object, env: Object) {
             {
                 needSuggestUI: false,
             }))
+
     if (env['generateId']) {
         return `<div mid="${getUniqueKey()}" md-block="html" contenteditable="false" class>
         <div class="md-htmlblock-tooltip"><span><i class="el-icon-arrow-down"></i>HTML</span></div>
@@ -85,7 +87,19 @@ function htmlBlock(tokens: Token[], idx: number, options: Object, env: Object) {
             </div>`;
 };
 
+function htmlInline(tokens: Token[], idx: number, options: Object, env: Object){
+    const tag = tokens[idx].content
 
+    if(utagOpenReg.test(tag)) return `<u md-inline="underline"><span class="md-border">${escapeHtml(tag)}</span>`
+    if(utagCloseReg.test(tag)) return `<span class="md-border">${escapeHtml(tag)}</span></u>`
+    
+
+    if(tagOpenReg.test(tag)){
+        return `<span md-inline="html"><span class="md-tag">${escapeHtml(tag)}</span>`
+    }
+    
+    return `<span class="md-tag">${escapeHtml(tag)}</span></span>`
+}
 
 export default function plugin(md: MarkdownIt, options: any) {
     editor = options.editor
@@ -96,4 +110,5 @@ export default function plugin(md: MarkdownIt, options: any) {
         }
     })
     md.renderer.rules.html_block = htmlBlock;
+    md.renderer.rules.html_inline = htmlInline;
 }

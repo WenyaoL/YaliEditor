@@ -34,7 +34,7 @@ export default defineComponent({
     },
     setup() {
       const store = useStore();
-      const applicationContext = store.state.applicationContext
+      const applicationContext = store.state.editorModule.applicationContext
       
       // Codemirror EditorView instance ref
       const view = shallowRef()
@@ -45,11 +45,11 @@ export default defineComponent({
       })
       const keys =[
         {key: "Shift-Ctrl-k",run() { 
-          updateBlock(store.state.viewEditor,{type:"codeblock"}); 
+          updateBlock(store.state.editorModule.viewEditor,{type:"codeblock"}); 
           return true
         }},
         {key: "Shift-Ctrl-m",run() { 
-          updateBlock(store.state.viewEditor,{type:"mathblock"}); 
+          updateBlock(store.state.editorModule.viewEditor,{type:"mathblock"}); 
           return true
         }}
       ]
@@ -64,7 +64,7 @@ export default defineComponent({
         basicSetup,
         EditorView.lineWrapping,
       ]
-      if(store.state.applicationContext.theme == "dark"){
+      if(store.state.editorModule.applicationContext.theme == "dark"){
           extensions = extensions.concat([compartment.of(oneDark)])
       }
 
@@ -85,7 +85,7 @@ export default defineComponent({
       }
 
 
-      watch(()=>store.state.applicationContext.theme,(theme)=>{
+      watch(()=>store.state.editorModule.applicationContext.theme,(theme)=>{
         if(theme == "dark"){
           run(oneDark,view.value)
         }else{

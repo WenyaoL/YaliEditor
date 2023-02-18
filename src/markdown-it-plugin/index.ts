@@ -79,7 +79,7 @@ class MarkdownBeautiful{
 
   refreshStateCache(rootElement:HTMLElement){
     const elements = rootElement.querySelectorAll(".markdown-it-code-beautiful")
-    this.codemirrorManager.refreshStateCache(elements)
+    this.codemirrorManager.refreshAllStateCache(elements)
   }
 
   render(src:string,env:any={"generateId":true}){

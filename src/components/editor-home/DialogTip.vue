@@ -68,14 +68,15 @@ const imgPath = "app://./yali.png"
 
 //const imgPath = "public/yali.png"
 const aClick = (event:MouseEvent&{target:HTMLElement})=>{
-  window.electronAPI.openURL({url:event.target.getAttribute("href")})
+  store.dispatch('openURL',event.target.getAttribute("href"))
+
   event.preventDefault()
 }
 
 const createTable = ()=>{
 
-  if(store.state.editModel == "IR"){
-    let yali:YaLiEditor = store.state.yaliEditor
+  if(store.state.editorModule.editModel == "IR"){
+    let yali:YaLiEditor = store.state.editorModule.yaliEditor
     yali.ir.hotkeyProcessor.tableCreate(form.row,form.col)
   }
   

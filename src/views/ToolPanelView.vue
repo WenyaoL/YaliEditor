@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import bus from '../bus'
 
-import FileTree from '@/components/filetree-panel/FileTree.vue'
+import FileTree from '@/components/editor-home/FileTree.vue'
 import ContextOutlineView from './ContextOutlineView.vue'
 import RecentDocumentsView from './RecentDocumentsView.vue'
 import { ref,onMounted } from 'vue'

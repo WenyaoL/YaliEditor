@@ -7,23 +7,18 @@
       <!--<el-divider direction="vertical" style="height:100%;border-left: 2px var(--el-border-color) var(--el-border-style);" />-->
       <el-main>
         <div class="write">
-        <markdown-it-show :content="this.$store.state.applicationContext.content"/>
+        <markdown-it-show :content="store.state.editorModule.applicationContext.content"/>
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
 
-<script>
-import MarkdownItShow from "@/components/markdown-it-panel/MarkdownItShow.vue"
-import CodeMirrorShow from "@/components/codemirror-panel/CodeMirrorShow.vue"
-
-export default {
-    components:{
-        MarkdownItShow,
-        CodeMirrorShow,
-    }
-}
+<script setup>
+import MarkdownItShow from "@/components/editor-home/MarkdownItShow.vue"
+import CodeMirrorShow from "@/components/editor-home/CodeMirrorShow.vue"
+import {useStore} from 'vuex'
+const store = useStore()
 </script>
 
 <style scoped>

@@ -40,3 +40,8 @@ div[md-block="html"]>.md-htmlblock-tooltip>span {
     line-height: 22.4px;
     font-size: 12px;
 }
+
+
+span[md-inline="html"]>.md-tag{
+    color: #a78405;
+}

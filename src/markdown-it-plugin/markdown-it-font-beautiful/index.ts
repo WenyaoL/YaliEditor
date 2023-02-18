@@ -104,6 +104,7 @@ function text(tokens: Token[], idx: number, options: Object, env: Object, slf: R
 
 
 
+
 function plugin(md: MarkdownIt, options: any = {}) {
     md.renderer.rules.paragraph_open = paragraphOpen;
 
@@ -119,7 +120,7 @@ function plugin(md: MarkdownIt, options: any = {}) {
         md.renderer.rules.s_open = sOpenBorderModel
         md.renderer.rules.s_close = sCloseBorderModel
 
-
+        
     } else {
         md.renderer.rules.code_inline = codeInline;
 

@@ -3,97 +3,54 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import { createStore } from 'vuex'
-import {isEmpty} from '@/utils/common'
-import bus from '../bus'
-export default createStore({
-  state: {
-    viewEditor:null, //渲染进程的视图编辑器 （SV ONLY模式下的编辑器）
-    yaliEditor:null,
+import editor from './editor'
+import preference from './preference'
 
-    editModel:"IR",  //编辑模式
-    applicationContext:{   //上下文
-      theme:"light",   //主题
-      title:"undefine",  //标题
-      filePath: null,   //文件路径
-      content:"",
-      preview:"",  
-      tree:[],   //当前文件树
-      isSave:true,
-      outline:[],  //文档大纲
-      recentDocuments:[], //最近打开文件
+const store = createStore({
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {
+    getShortKeyMap(store) {
+      return window.electronAPI.INVOKE.getKeyMap()
     },
-    fonts:{        //jsPDF加载的字体数据
-      normal:'',
-      bold:''  
+    readFile(store, filePath) {
+      return window.electronAPI.INVOKE.readFile({ filePath })
     },
-    
-  },
-  getters: {
-
-  },
-  mutations: {
-    updateContent(state,payload){
-      state.applicationContext.content = payload
+    openURL(store, url) {
+      window.electronAPI.SEND.openURL({ url })
     },
-    updateTree(state,payload){
-      state.applicationContext.tree = payload
+    saveFile(store, savePath) {
+      window.electronAPI.SEND.saveFile({
+        applicationContext: JSON.stringify(store.state.editorModule.applicationContext),
+        savePath
+      })
+      store.commit('updateFileState',true)
     },
-    updatePreview(state,payload){
-      state.applicationContext.preview = payload
+    addRecentDocument(store, { filePath, description }) {
+      window.electronAPI.SEND.addRecentDocument({ filePath, description })
     },
-    updateFilePath(state,payload){
-      state.applicationContext.filePath = payload
+    openFileInNewWindow(store, filePath) {
+      window.electronAPI.SEND.openFileInNewWindow({ filePath })
     },
-    setViewEditor(state,payload){
-      state.viewEditor = payload
+    getRecentDocuments() {
+      return window.electronAPI.INVOKE.getRecentDocuments()
     },
-    setYaliEditor(state,payload){
-      state.yaliEditor = payload
+    getFontsDate() {
+      return window.electronAPI.INVOKE.getFontsData()
     },
-    updateFileState(state,flag){
-      state.applicationContext.isSave = flag
-      if(!flag && !document.title.endsWith("*")){
-        document.title = document.title+"*"
-      }else if(flag && document.title.endsWith("*")){
-        document.title = document.title.slice(0,document.title.length-1)
-      }
+    setShortKeyMap(store, keyMap) {
+      return window.electronAPI.SEND.setKeyMap(keyMap)
     },
-    updateEditModel(state,model){
-      state.editModel = model
-    },
-    updateApplicationContext(state,context){
-      if(isEmpty(context)) return 
-      const application = state.applicationContext
-      //更新上下文
-      if(context.filePath) application.filePath = context.filePath
-      if(context.title){
-        application.title = context.title
-        document.title = context.title
-      } 
-      if(context.content) application.content = context.content
-      if(context.isSave) application.isSave = context.isSave
-      if(!isEmpty(context.tree))application.tree = context.tree
-      if(context.preview) application.preview = context.preview
-      if(context.theme) application.theme = context.theme
-      if(context.recentDocuments) application.recentDocuments = context.recentDocuments
-    },
-    initFonts(state,context){
-      state.fonts = context
-    },
-    updateOutline(state,heading){
-      state.applicationContext.outline = heading
-    },
-    updateTheme(state,theme){
-      state.applicationContext.theme = theme
-    },
-    updateRecentDocuments(state,recentDocuments){
-      state.applicationContext.recentDocuments = recentDocuments
+    clearDataCache(){
+      window.electronAPI.SEND.clearDataCache()
     }
   },
-  actions: {
-
-  },
   modules: {
-
+    editorModule:editor,
+    preferenceModule:preference
   }
 })
+
+
+export default store

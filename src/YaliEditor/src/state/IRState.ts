@@ -1,5 +1,5 @@
 import YaLiEditor from "..";
-import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
+import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockMeta, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
 
 /**
  * @author liangwenyao
@@ -39,7 +39,7 @@ class IRState {
                     const df = this.toMidDocumentFragment(newList, newIndex, index)
                     const list = df.querySelectorAll(".markdown-it-code-beautiful")
                     list.forEach(e => this.editor.ir.renderer.codemirrorManager.unsafeRefreshEditorViewElementSyn(e))
-                    this.editor.ir.renderer.codemirrorManager.refreshStateCache(list)
+                    this.editor.ir.renderer.codemirrorManager.refreshAllStateCache(list)
                     oldRoot.insertBefore(df, oldElement)
                 } else {
                     this.deleteMidElement(oldElement)
@@ -59,7 +59,7 @@ class IRState {
             const df = this.toMidDocumentFragment(newList, newIndex, newList.length)
             const list = df.querySelectorAll(".markdown-it-code-beautiful")
             list.forEach(e => this.editor.ir.renderer.codemirrorManager.unsafeRefreshEditorViewElementSyn(e))
-            this.editor.ir.renderer.codemirrorManager.refreshStateCache(list)
+            this.editor.ir.renderer.codemirrorManager.refreshAllStateCache(list)
             oldRoot.appendChild(df)
         }
 
@@ -105,6 +105,7 @@ class IRState {
         else if (isMdBlockCode(oldElement)) this.diffCodeBlock(oldElement,newElement)
         else if (isMdBlockQuote(oldElement)) this.diffBlockquote(oldElement,newElement)
         else if (isMdBlockTable(oldElement)) this.diffTable(oldElement,newElement)
+        else oldElement.replaceWith(newElement)
 
     }
 
@@ -158,7 +159,9 @@ class IRState {
     diffTable(oldElement:Element,newElement:Element){
         oldElement.replaceWith(newElement)
     }
-}
+
+
+}   
 
 
 export default IRState;

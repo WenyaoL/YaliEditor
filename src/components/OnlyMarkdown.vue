@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import CodeMirrorShow from "@/components/codemirror-panel/CodeMirrorShow.vue"
+import CodeMirrorShow from "@/components/editor-home/CodeMirrorShow.vue"
 </script>
 
 <style>

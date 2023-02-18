@@ -62,6 +62,7 @@ class DomTool {
         r.collapseAfter(last)
         sel.setSingleRange(r)
         last.parentElement.normalize()
+        return last
     }
 
     insertElementBeforeElement(element: Element, insertElement: Element) {

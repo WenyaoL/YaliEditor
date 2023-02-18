@@ -173,12 +173,8 @@ export class MultimdTable{
       tableToken       = new state.Token('table_open', 'table', 1);
       tableToken.meta  = { sep: null, cap: null, tr: [] };
       //tableToken.attrPush(["md-block","table"])
-      if(options.theme=="dark"){
-        tableToken.attrPush(["class","table table-bordered table-striped table-dark"])
-      }else{
-        tableToken.attrPush(["class","table table-bordered table-striped"])
-      }
-      
+
+      tableToken.attrPush(["class","table table-bordered table-striped"])
       
       tableToken.attrPush(["contenteditable","true"])
       

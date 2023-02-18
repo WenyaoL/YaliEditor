@@ -13,15 +13,14 @@ import {
     IRfindClosestMdInline
 } from "../util/findElement";
 
-import { getAllHeading, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
+import { getAllHeading, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
 import { createBlockquote, createMdList, strToDocumentFragment, strToElement } from '../util/createElement';
 import Constants from "../constant/constants";
 import { toKeyText, createTableStr, toTocElementText } from "../util/formatText"
 import rangy from "rangy";
-import IR from '.';
 import { createParagraph } from '../util/createElement'
 import { KeyProcessor } from './KeyProcessor';
-
+import { defaultKeyMap } from '../config/IRConfig'
 
 
 
@@ -30,38 +29,38 @@ import { KeyProcessor } from './KeyProcessor';
 class IRHotkeyProcessor implements KeyProcessor {
     //编辑器
     public editor: YaLiEditor;
-    //快捷键映射表
-    public defaultKeyMap: Object;
 
+    //命令映射
+    private defaultCommandMap: Map<string, Function> = new Map([
+        ["edit.undo", this.undoKey],
+        ["edit.redo", this.redoKey],
+
+        ["paragraph.heading-1", this.headingKey],
+        ["paragraph.heading-2", this.headingKey],
+        ["paragraph.heading-3", this.headingKey],
+        ["paragraph.heading-4", this.headingKey],
+        ["paragraph.heading-5", this.headingKey],
+        ["paragraph.heading-6", this.headingKey],
+
+        ["paragraph.reduceIndent-list", this.reduceIndentKey],
+        ["paragraph.addIndent-list,", this.addIndentKey],
+        ["paragraph.code-fence", this.codeblockKey],
+        ["paragraph.quote-block", this.quoteKey],
+        ["paragraph.order-list", this.listKey],
+        ["paragraph.bullet-list", this.unlistKey],
+        ["paragraph.toc", this.tocKey],
+        ["paragraph.html-block", this.htmlblockKey],
+        ["paragraph.math-block", this.mathKey],
+
+        ["format.inline-code", this.codelineKey],
+        ["format.deleteline", this.deletelineKey],
+        ["format.strong", this.blodKey],
+        ["format.italic", this.italicKey],
+        ["format.underline", this.underlineKey],
+    ])
 
     constructor(editor: YaLiEditor) {
         this.editor = editor
-        this.defaultKeyMap = {
-            "ctrl+1": this.headingKey,
-            "ctrl+2": this.headingKey,
-            "ctrl+3": this.headingKey,
-            "ctrl+4": this.headingKey,
-            "ctrl+5": this.headingKey,
-            "ctrl+6": this.headingKey,
-            "ctrl+z": this.undoKey,
-            "ctrl+y": this.redoKey,
-            "ctrl+b": this.blodKey,
-            "ctrl+i": this.italicKey,
-            "ctrl+u": this.underlineKey,
-            "ctrl+[": this.reduceIndentKey,
-            "ctrl+]": this.addIndentKey,
-            "ctrl+shift+k": this.codeblockKey,
-            "ctrl+shift+q": this.quoteKey,
-            "ctrl+shift+~": this.codelineKey,
-            "ctrl+shift+`": this.codelineKey,
-            "ctrl+shift+%": this.deletelineKey,
-            "ctrl+shift+5": this.deletelineKey,
-            "ctrl+shift+{": this.listKey,
-            "ctrl+shift+}": this.unlistKey,
-            "ctrl+shift+t": this.tocKey,
-            "ctrl+shift+h": this.htmlblockKey,
-            "ctrl+shift+m": this.mathKey
-        }
     }
 
     /**
@@ -81,91 +80,33 @@ class IRHotkeyProcessor implements KeyProcessor {
         this.editor.ir.redo()
     }
 
+
+
     /**
      * 标题快捷键
      * @param event 
      */
-    headingKey(event: KeyboardEvent) {
+    headingKey(event: KeyboardEvent, command?: string) {
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0)
-
         const start = r.startContainer
+        const level = command.charAt(command.length - 1)
 
-        let e = findClosestByAttribute(start, "md-block", "", this.editor.ir.getRootElementClassName())
+        let mdBlock = IRfindClosestMdBlock(start)
 
-        if (!e) {
-            e = findClosestByTop(start, this.editor.ir.getRootElementClassName())
-        }
+        if (!mdBlock) return
 
-        if (!e) return
-
-        //判断是否已经是heading
-        if (e.getAttribute("md-block") === "heading") {
-
-            //已经是heading
-            //判断是否为相同
-            if (e.tagName.charAt(1) != event.key) {
-                //删除现有的
-                const text = e.innerText
-                r.selectNode(e)
-                r.deleteContents()
-                //改成对应的
-                const pre = "#".repeat(parseInt(event.key)) + " "
-                let res = this.editor.ir.renderer.render(pre + text)
-
-                const div = document.createElement('div')
-                div.innerHTML = res;
-
-                //插入新的
-                const node = div.firstElementChild as HTMLElement
-
-                if (!text || text == "\n" || text.length == 0) node.innerHTML = "<br>"
-
-                r.insertNode(node)
-                r.collapseToPoint(node, 1)
-                sel.setSingleRange(r)
-
-                this.editor.ir.applicationEventPublisher.publish("refreshToc")
-                return;
-            }
-
-            //删除现有的
-            const text = e.innerText
-            r.selectNode(e)
-            r.deleteContents()
-
-            //相同撤销
-            const p = createParagraph()
-
-            p.innerText = text;
-            r.insertNode(p)
-            r.collapseToPoint(p, 1)
-            sel.setSingleRange(r)
-            //p.click()
-            this.editor.ir.applicationEventPublisher.publish("refreshToc")
+        const currLevel = mdBlock.tagName.charAt(mdBlock.tagName.length - 1)
+        //当前标签是否和命令转换标签相同，相同:转化成P标签，不同:则转化
+        if (currLevel == level) {
+            mdBlock = this.editor.markdownTool.mdBlockTransformToParagraph(mdBlock) 
         } else {
-            //不存在head
-            //生成元素
-            const turndown = this.editor.ir.parser.turndown(e.outerHTML)
-            const pre = "#".repeat(parseInt(event.key)) + " "
-            const res = this.editor.ir.renderer.render(pre + turndown)
-
-            const div = document.createElement('div')
-            div.innerHTML = res;
-            const node = div.firstElementChild as HTMLElement
-            if (!turndown) node.innerHTML = "<br>"
-            //删除
-            r.selectNode(e)
-            r.deleteContents()
-            //插入新的
-
-            r.insertNode(node)
-            r.collapseToPoint(node, 1)
-            sel.setSingleRange(r)
-            //rangy.getSelection().collapseToEnd()
-            //node.click()
-            this.editor.ir.applicationEventPublisher.publish("refreshToc")
+            mdBlock = this.editor.markdownTool.mdBlockTransformToHeanding(mdBlock, parseInt(level)) as HTMLElement
         }
+        sel.collapse(mdBlock)
+        this.editor.ir.applicationEventPublisher.publish("refreshToc")
+        this.editor.ir.focueProcessor.updateFocusElement()
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -216,6 +157,8 @@ class IRHotkeyProcessor implements KeyProcessor {
         this.editor.ir.focueProcessor.setFocusElementByMdblock(codeBlock as HTMLElement)
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
         this.editor.ir.renderer.codemirrorManager.mountInputComponent(uuid)
+
+        this.editor.ir.observer.forceFlush()
     }
 
     htmlblockKey(event: KeyboardEvent | null) {
@@ -263,6 +206,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
 
         event?.preventDefault()
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -305,7 +249,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         div.contentEditable = "false"
 
         r.insertNode(div)
-
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -330,7 +274,7 @@ class IRHotkeyProcessor implements KeyProcessor {
     }
 
     underlineKey(event: KeyboardEvent | null) {
-        this.typefaceKey(event, '<u md-inline="underline">', '</u>', Constants.ATTR_MD_INLINE_UNDERLINE)
+        this.typefaceKey(event, '<u>', '</u>', Constants.ATTR_MD_INLINE_UNDERLINE)
     }
 
     italicKey(event: KeyboardEvent | null) {
@@ -371,21 +315,15 @@ class IRHotkeyProcessor implements KeyProcessor {
             content = r.extractContents()
             let str = content.textContent
             str = pre + str + suf
-            const res = this.editor.ir.renderer.render(str)
-            const div = document.createElement("div")
-            div.innerHTML = res
-            let font = div.firstElementChild.firstElementChild
-
-            r.insertNode(font)
-            r.collapseToPoint(font, 1)
-
-            sel.setSingleRange(r);
-            if (e.lastChild.nodeType != 3) {
-                let n = document.createTextNode("\u200c")//空白符\u200c
-                e.append(n)
-            }
+            const res = this.editor.markdownTool.renderInline(str)  
+            
+            const inline = this.editor.domTool.insertAdjacentHTMLAtCursor(res)
+            r.selectNodeContents(inline)
+            sel.setSingleRange(r)
+            
             this.editor.ir.focueProcessor.updateFocusElement()
         }
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -435,6 +373,8 @@ class IRHotkeyProcessor implements KeyProcessor {
         this.editor.ir.focueProcessor.setFocusElementByMdblock(mathBlock as HTMLElement)
 
         this.editor.ir.renderer.codemirrorManager.viewFocus(uuid)
+
+        this.editor.ir.observer.forceFlush()
     }
 
 
@@ -483,7 +423,7 @@ class IRHotkeyProcessor implements KeyProcessor {
             }
 
         }
-
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -524,7 +464,7 @@ class IRHotkeyProcessor implements KeyProcessor {
             if (list.children.length === 0) list.remove()
             sel.moveToBookmark(bookmark)
         }
-
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -549,6 +489,8 @@ class IRHotkeyProcessor implements KeyProcessor {
         r.deleteContents()
 
         r.insertNode(div.firstElementChild)
+
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -595,6 +537,8 @@ class IRHotkeyProcessor implements KeyProcessor {
 
         r.deleteContents()
         r.insertNode(div.firstElementChild)
+
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -617,6 +561,7 @@ class IRHotkeyProcessor implements KeyProcessor {
             const quote = createBlockquote()
             quote.appendChild(content)
             r.insertNode(quote)
+            this.editor.ir.observer.forceFlush()
             return
         }
 
@@ -631,7 +576,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         const quote = createBlockquote()
         quote.appendChild(content)
         r.insertNode(quote)
-
+        this.editor.ir.observer.forceFlush()
     }
 
     /**
@@ -648,17 +593,24 @@ class IRHotkeyProcessor implements KeyProcessor {
 
         const format = createTableStr(row, col)
         const domF = strToDocumentFragment(this.editor.ir.renderer.render(format))
-        const thDom = domF.querySelector("th") 
+        const thDom = domF.querySelector("th")
 
         const mdBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
-        this.editor.domTool.splitElementAtCursor(mdBlock,domF,true)
-        setTimeout(()=>{
-            this.editor.ir.focueProcessor.setCursor(thDom,0)
+        this.editor.domTool.splitElementAtCursor(mdBlock, domF, true)
+        setTimeout(() => {
+            this.editor.ir.focueProcessor.setCursor(thDom, 0)
             this.editor.ir.observer.forceFlush()
         })
-          
+
     }
 
+    getCommand(key: string) {
+        if (!key) return
+        key = key.toLowerCase()
+        for (const [k, v] of this.editor.options.commonConfig.defaultKeyMap) {
+            if (v && v.toLowerCase() == key) return k
+        }
+    }
 
     /**
      * 执行
@@ -666,16 +618,14 @@ class IRHotkeyProcessor implements KeyProcessor {
      */
     execute(event: KeyboardEvent) {
         const k = toKeyText(event)
+        const command = this.getCommand(k)
 
-        const f: Function = this.defaultKeyMap[k]
+        const f: Function = this.defaultCommandMap.get(command)
         if (f) {
             //修改动作前的跟新
             this.editor.ir.focueProcessor.updateBeforeModify()
-            f.call(this, event)
-            //this.editor.ir.undoManager.updateBookmark()
+            f.call(this, event, command)
             event.preventDefault()
-            if (f == this.undoKey || f == this.redoKey) return true
-            this.editor.ir.observer.forceFlush()
             return true
         }
 

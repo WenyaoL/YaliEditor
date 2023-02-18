@@ -38,7 +38,7 @@ class IRContextRefresher {
     refresh() {
 
         //强制让IR面板最后留一个空行
-        if (this.editor.ir.rootElement.lastElementChild.tagName != "P") {
+        if (this.editor.ir.rootElement.childElementCount==0 || this.editor.ir.rootElement.lastElementChild.tagName != "P") {
             this.editor.ir.rootElement.appendChild(createParagraph())
         }
 

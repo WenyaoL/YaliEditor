@@ -6,12 +6,12 @@
 </template>
 
 <script lang="ts" setup>
-import FileContextOutline from '@/components/menu/FileContextOutline.vue'
+import FileContextOutline from '@/components/editor-home/FileContextOutline.vue'
 import {useStore} from 'vuex'
 import {computed} from 'vue'
 
-const getOutline = computed(()=>store.state.applicationContext.outline)
-const getOutlineLength = computed(()=>store.state.applicationContext.outline.length)
+const getOutline = computed(()=>store.state.editorModule.applicationContext.outline)
+const getOutlineLength = computed(()=>store.state.editorModule.applicationContext.outline.length)
 const store = useStore()
 
 </script>

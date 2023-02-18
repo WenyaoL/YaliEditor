@@ -1,30 +1,29 @@
 <template>
-  <home-view />
+  <router-view></router-view>
 </template>
 
-<script>
-import HomeView from '@/views/HomeView.vue'
+<script lang="ts">
 import { onMounted } from 'vue'
 import bus from './bus'
 
 export default {
-  components: {
-    HomeView
-  },
   setup() {
-    window.electronAPI.getCurrTheme().then((theme) => {
-      if (theme == "dark") {
+    window.electronAPI.INVOKE.getCurrTheme().then((theme) => {
+      if (global.yaliEditor.type != "preference" && theme == "dark") {
         document.documentElement.classList.add("dark")
       }
       bus.emit('Home-show')
     })
     onMounted(() => {
-      window.electronAPI.loadFonts()
-      /*window.electronAPI.loadRenderApplicationContext().then(payload=>{
-        console.log("加载到的初始上下文",payload);
-        store.commit('initApplication',payload.applicationContext)
-      })*/
+      //window.electronAPI.loadFonts()
+
     })
+
+
+    bus.on('window-close',()=>{
+      window.electronAPI.SEND.closeWindow()
+    })
+
   }
 }
 </script>

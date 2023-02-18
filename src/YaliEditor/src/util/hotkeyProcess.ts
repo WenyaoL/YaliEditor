@@ -13,11 +13,11 @@ import IR from "../ir";
  */
 export function updateLineIR(ir: IR, payload: any) {
     if (payload.type === "head") {
-        const keyboardEvent = new KeyboardEvent("keydown", {
+        /*const keyboardEvent = new KeyboardEvent("keydown", {
             ctrlKey: true,
             key: "" + payload.level
-        })
-        ir.hotkeyProcessor.headingKey(keyboardEvent)
+        })*/
+        ir.hotkeyProcessor.headingKey(null,"paragraph.heading-"+payload.level)
     }
     return
 }

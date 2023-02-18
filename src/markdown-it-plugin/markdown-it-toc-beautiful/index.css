@@ -31,7 +31,7 @@ h1.md-focus::before{
     border: 1px solid;
     border-radius: 3px;
     position: absolute;
-    left: -1.642857143rem;
+    left: -26px;
     top: 1rem;
     float: left;
     font-size: 11px;
@@ -48,7 +48,7 @@ h2.md-focus::before{
     border: 1px solid;
     border-radius: 3px;
     position: absolute;
-    left: -1.642857143rem;
+    left: -26px;
     top: 0.8rem;
     float: left;
     font-size: 11px;
@@ -65,8 +65,8 @@ h3.md-focus::before{
     border: 1px solid;
     border-radius: 3px;
     position: absolute;
-    left: -1.642857143rem;
-    top: 0.7rem;
+    left: -26px;
+    top: 10px;
     float: left;
     font-size: 11px;
     font-weight: 500;
@@ -82,8 +82,8 @@ h4.md-focus::before{
     border: 1px solid;
     border-radius: 3px;
     position: absolute;
-    left: -1.642857143rem;
-    top: .357142857rem;
+    left: -26px;
+    top: 6px;
     float: left;
     font-size: 11px;
     font-weight: 500;
@@ -99,8 +99,8 @@ h5.md-focus::before{
     border: 1px solid;
     border-radius: 3px;
     position: absolute;
-    left: -1.642857143rem;
-    top: .357142857rem;
+    left: -26px;
+    top: 4px;
     float: left;
     font-size: 11px;
     font-weight: 500;
@@ -109,6 +109,23 @@ h5.md-focus::before{
     vertical-align: bottom;
     line-height: normal;
     content: "h5";
+}
+
+h6.md-focus::before{
+    color: #ddd;
+    border: 1px solid;
+    border-radius: 3px;
+    position: absolute;
+    left: -26px;
+    top: 2px;
+    float: left;
+    font-size: 11px;
+    font-weight: 500;
+    padding-left: 2px;
+    padding-right: 2px;
+    vertical-align: bottom;
+    line-height: normal;
+    content: "h6";
 }
 
 .md-toc-h1 {

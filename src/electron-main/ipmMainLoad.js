@@ -2,179 +2,202 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { ipcMain,dialog,BrowserWindow,shell } from "electron";
+import { ipcMain, dialog, BrowserWindow, shell } from "electron";
 
 import common from "./common";
 import path from 'path'
 //import {font} from "@/assets/sourcehansans-normal-normal"
 var context = {
-    fonts:null
+    fonts: null
 }
 
 
-class MainIPMEventLoader{
-    
+class MainIPMEventLoader {
 
-    constructor(manager){
+
+    constructor(app) {
         this.context = {
-            fonts:null
+            fonts: null
         }
-        this.manager = manager
+        this.app = app
     }
 
-    loadOnListener(){
+    loadOnListener() {
         //-------------------------注册监听器 on-------------------------
-        //处理保存事件的回传
-        ipcMain.on('saveFile',(event,payload)=>{
+        //处理文件保存事件
+        ipcMain.on('renderer-saveFile', (event, {applicationContext,savePath}) => {
             //上下文
-            const applicationContext = JSON.parse(payload.applicationContext)
+            applicationContext = JSON.parse(applicationContext)
             //另存路径
-            const path = payload.path
-    
-            if(common.isEmpty(path)){
-                //上下文中是否存在路径
-                if(common.isEmpty(applicationContext.filePath)){
-                    //选择
-                    common.saveFileDialog().then(select=>{
-                        if(select.canceled) return
-                        common.saveFile(select.filePath,
-                            applicationContext.content,
-                            {closeWindow:payload.closeWindow}
-                            )
-                    })
-                }else{
-                    //使用上下文的路径
-                    common.saveFile(applicationContext.filePath,applicationContext.content,{closeWindow:payload.closeWindow})
-                }
+            savePath = savePath?savePath:applicationContext.filePath
+
+            if(!savePath){
+                this.app.appFileSystem.saveFileDialog().then(select => {
+                    if (select.canceled) return
+                    this.app.appFileSystem.saveFile(select.filePath,applicationContext.content)
+                })
             }else{
-                //使用另存路径
-                common.saveFile(path,applicationContext.content,{closeWindow:payload.closeWindow})
+                this.app.appFileSystem.saveFile(savePath, applicationContext.content)
             }
-        })
-    
-        //处理渲染进程的字体加载请求
-        ipcMain.on('loadFonts',(event,payload)=>{
-            //字体数据
-            //event.reply('initFonts',context['fonts'])
-            if(this.context['fonts']){
-                event.reply('initFonts',this.context['fonts'])
-                return
-            }
-            common.readFontFile().then(data=>{
-                this.context['fonts'] = data
-                event.reply('initFonts',data)
-            })
-        })
-    
-        ipcMain.on("saveHTMLFile",(event,payload)=>{
-            const templatePath = path.join(__static,  "templateHTML/TEM.html");
-            const cssDirPath = path.join(__static,  "css");
-            let html = common.openFileSync(templatePath)
-            let cssPath = common.openFileDirSync(cssDirPath).filter(str=>{
-                if(str.search(/app.*css$/i)>-1) return true
-                return false
-            })[0]
-            let css= common.openFileSync(cssPath)
-            let style = '<style>'+css+'</style>'
-            style += style+payload.style
-            html = html.replace("${STYLE}",style).replace("${CONTENT}",payload.html)
-    
-            common.saveFileDialog([{name:'markdown',extensions:['html']}]).then(res=>{
-                if(res.canceled) return
-                common.saveFile(res.filePath,html)
-            })
-        })
-    
-        //关闭窗口
-        ipcMain.on("close-window",(event,payload)=>{
-            let win = BrowserWindow.getFocusedWindow()
-            if(!win) return
-            win.removeAllListeners('close')
-            win.close()
         })
 
-        ipcMain.on("add-recent-document",(event,payload)=>{
-            this.manager.addRecentDocument(payload.filePath,payload.description)
+        ipcMain.on("renderer-clearDataCache",(event)=>{
+            this.app.clearDataCache()
+        })
+
+        ipcMain.on("renderer-setKeyMap",(event,keyMap)=>{
+            this.app.setCurrKeyMap(keyMap)
+        })
+
+        //处理保持HTML文件事件
+        ipcMain.on("renderer-saveHTMLFile", (event, {style,html}) => {
+            const templatePath = path.join(__static, "templateHTML/TEM.html");
+            const cssDirPath = path.join(__static, "css");
+
+            let templateHtml = this.app.appFileSystem.openFileSync(templatePath)
+
+            let cssPath = this.app.appFileSystem.openFileDirSync(cssDirPath).filter(str => {
+                if (str.search(/app.*css$/i) > -1) return true
+                return false
+            })[0]
+            let fileCss = this.app.appFileSystem.openFileSync(cssPath)
+            style = `<style>${fileCss}</style>${style}`
+
+            templateHtml = templateHtml.replace("${STYLE}", style).replace("${CONTENT}", html)
+
+            this.app.appFileSystem.saveFileDialog([{ name: 'markdown', extensions: ['html'] }]).then(res => {
+                if (res.canceled) return
+                this.app.appFileSystem.saveFile(res.filePath, templateHtml)
+            })
+        })
+
+        //关闭窗口
+        ipcMain.on("renderer-closeWindow", (event, payload) => {
+            let win = BrowserWindow.getFocusedWindow()
+            if (!win) return
+            this.app.appWindow.closeWindow(win)
+            //win.destroy()
+        })
+
+        ipcMain.on("renderer-addRecentDocument", (event, payload) => {
+            this.app.addRecentDocument(payload.filePath, payload.description)
         })
 
         //在一个新窗口打开文件
-        ipcMain.on('openFileInNewWindow',(event,payload)=>{
-            //指定路径
-            const filePath = payload.path
+        ipcMain.on('renderer-openFileInNewWindow', (event, {filePath}) => {
             //打开文件
-            const data = common.openFileSync(filePath)
+            const data = this.app.appFileSystem.openFileSync(filePath)
             //加入store,保存最近打开文件
-            this.manager.addRecentDocument(filePath,data.substring(0,30))
+            this.app.addRecentDocument(filePath, data.split("\n",3).join('\n').substring(0,30))
             //open new window
-            const win = this.manager.appWindow.createWindow(path.basename(filePath))
+            const win = this.app.appWindow.editorWindowManager.createWindow(path.basename(filePath))
             //const win = common.openNewWindow()
-            //this.manager.appWindow.addWindow(win)
+            //this.app.appWindow.addWindow(win)
             //加载页面 window load url
-            common.loadUrl(win)
             //页面加载完
-            win.on('ready-to-show',()=>{
-                //发送数据
-                win.webContents.send('updateApplicationContext',{   //上下文
-                    title:path.basename(filePath),
+            win.on('ready-to-show', () => {
+                //发送数据main-setApplicationContext
+                win.webContents.send('main-setApplicationContext', {   //上下文
+                    title: path.basename(filePath),
                     filePath: filePath,   //文件路径(包含文件名)
-                    content:data,
-                    preview:"",  
-                    isSave:true,
-                    theme:this.manager.appWindow.theme,
-                    recentDocuments:this.manager.getRecentDocuments()
+                    content: data,
+                    preview: "",
+                    isSave: true,
+                    theme: this.app.appWindow.theme,
+                    recentDocuments: this.app.getRecentDocuments()
                 })
             })
-
+            common.loadUrl(win)
         })
-    }
 
-    loadHandleListener(){
-        //-------------------------注册处理器 handle-------------------------
-        //处理读取文件内容
-        ipcMain.handle('readFile',(event,payload)=>{
-
-            //指定路径
-            const path = payload.path
-            return common.openFile(path)
-        })
-    
-
-
-        //监听渲染进程的加载渲染上下文请求
-        ipcMain.handle('loadRenderApplicationContext',(event,payload)=>{
-            const applicationContext = common.loadRenderApplicationContext()
-            return {applicationContext:applicationContext}
-        })
-    
-        //弹窗文件保存提醒框（弃用）
-        ipcMain.handle('openSaveMsgDialog',(event,payload)=>{
-            return dialog.showMessageBoxSync(BrowserWindow.getFocusedWindow(),{
-                title:"保存",
-                message:"是否保存更改\n请确保文件保存",
-                buttons:["保存","丢弃"]
-            })
-        })
-        
-    
-        ipcMain.handle('openURL',(event,payload)=>{
+        ipcMain.on('renderer-openURL', (event, payload) => {
             shell.openExternal(payload.url)
         })
-    
-        ipcMain.handle("openHelpDocumentation",()=>{
-            return common.openFileSync(path.join(__static,"docs/Help.md"))
+
+
+        ipcMain.on('update-shortkeymap', (event, { keyMap }) => {
+            this.app.setCurrKeyMap(keyMap)
+
         })
 
-        ipcMain.handle('getRecentDocuments',()=>{
-            return this.manager.getRecentDocuments()
+        ipcMain.on('renderer-test',(event,payload)=>{
+            console.log("test==>",payload);
         })
 
-        ipcMain.handle('getCurrTheme',()=>{
-            return this.manager.appWindow.theme
+    }
+
+    loadHandleListener() {
+        //-------------------------注册处理器 handle-------------------------
+        //处理读取文件内容
+        ipcMain.handle('renderer-readFile', (event, {filePath}) => {
+            return this.app.appFileSystem.openFile(filePath)
         })
+
+        ipcMain.handle('renderer-getFontsData',async (event)=>{
+            if (!this.context['fonts']){
+                this.context['fonts'] = await this.app.appFileSystem.readFontFile()
+            }
+            return this.context['fonts']
+        })
+
+        //监听渲染进程的加载渲染上下文请求（弃用）
+        ipcMain.handle('loadRenderApplicationContext', (event, payload) => {
+            const applicationContext = common.createRenderApplicationContext()
+            if (argv.length == 2) {
+                const filePath = argv[1]
+                //标题
+                applicationContext.title = path.basename(filePath)
+                //文件路径
+                applicationContext.filePath = filePath
+
+                //applicationContext.tree = openFileTreeSync(path.dirname(filePath))
+                if (process.env.WEBPACK_DEV_SERVER_URL) {
+                    applicationContext.filePath = null
+                } else {
+                    //文件内容
+                    applicationContext.content = this.app.appFileSystem.openFileSync(filePath)
+                    //当前文件所在目录文件树
+                    this.app.appFileSystem.createFileTree(path.dirname(filePath), applicationContext.tree)
+                }
+            }
+            return { applicationContext: applicationContext }
+        })
+
+        ipcMain.handle('renderer-saveFile',async (event,{applicationContext,savePath})=>{
+            //上下文
+            applicationContext = JSON.parse(applicationContext)
+            //另存路径
+            savePath = savePath?savePath:applicationContext.filePath
+
+            if(!savePath){
+                const select = await this.app.appFileSystem.saveFileDialog()
+                if (select.canceled) return false
+                this.app.appFileSystem.saveFile(select.filePath,applicationContext.content)
+            }else{
+                this.app.appFileSystem.saveFile(savePath, applicationContext.content)
+            }
+            return true
+        })
+
+        
+
+        ipcMain.handle('renderer-getRecentDocuments', () => {
+            return this.app.getRecentDocuments()
+        })
+
+        ipcMain.handle('renderer-getCurrTheme', () => {
+            return this.app.appWindow.theme
+        })
+
+        //获取快捷键配置信息
+        ipcMain.handle('renderer-getKeyMap', () => {
+            return this.app.getCurrKeyMap()
+        })
+
     }
 
 
-    load(){
+    load() {
         this.loadOnListener()
         this.loadHandleListener()
     }
@@ -184,7 +207,7 @@ class MainIPMEventLoader{
 
 
 
-export {MainIPMEventLoader}
+export { MainIPMEventLoader }
 
 export default MainIPMEventLoader
 

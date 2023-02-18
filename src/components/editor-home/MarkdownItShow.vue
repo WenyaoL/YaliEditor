@@ -24,7 +24,7 @@ import {
   h,
   VNode
 } from 'snabbdom'
-
+import {useStore} from 'vuex'
 
 export default {
   props: {
@@ -34,6 +34,7 @@ export default {
     const markShow = ref<HTMLElement>(null)
     let markdownNode: HTMLElement = null
     let markdownVnode = null
+    const store = useStore()
     const patch = init([
       classModule,
       styleModule,
@@ -64,7 +65,7 @@ export default {
       markShow.value.addEventListener("click", (ev: MouseEvent & { target: HTMLElement }) => {
         ev.preventDefault()
         if (ev.ctrlKey && ev.target.tagName == "A") {
-          window.electronAPI.openURL({ url: ev.target.getAttribute("href") })
+          store.dispatch('openURL',ev.target.getAttribute("href"))
           ev.preventDefault()
         }
       })

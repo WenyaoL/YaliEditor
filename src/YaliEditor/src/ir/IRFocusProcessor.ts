@@ -10,6 +10,7 @@ import Constants from "../constant/constants";
 import rangy from "rangy";
 import YaLiEditor from "..";
 import { isMdInline } from "../util/inspectElement";
+import IRSelectionRange from "../state/IRSelection";
 
 class IRFocusProcessor {
   //当前被选中的md-inline原生
@@ -26,10 +27,9 @@ class IRFocusProcessor {
 
   //修改锁(发生修改操作前应该锁上)
   private modifyLock: boolean;
-  //修改操作之前的bookmark(定位基于整个面板)
-  private modifyBeforeBookmark: any;
-  //修改操作之前的二级bookmark(定位基于整个段落块)
-  private modifyBeforeSecondBookmark: any
+
+  //修改操作之前的IR选择范围
+  public modifyBeforeIRSelectionRange:IRSelectionRange;
 
   constructor(editor: YaLiEditor) {
     this.editor = editor
@@ -223,15 +223,24 @@ class IRFocusProcessor {
    */
   updateBeforeModify() {
     this.sel = rangy.getSelection()
+    const r = this.sel.getRangeAt(0)
     //上锁前跟新修改前的bookmark
     if (!this.modifyLock) {
       try {
-        this.updateFocusElement()
-        this.modifyBeforeBookmark = this.sel.getBookmark(this.editor.ir.rootElement)
-        if(this.sel.isCollapsed)  this.modifyBeforeSecondBookmark = this.sel.getBookmark(this.selectedBlockMdElement)
+        const startBlock = IRfindClosestMdBlock(r.startContainer)
+        const endBlock = IRfindClosestMdBlock(r.endContainer)
+
+        this.modifyBeforeIRSelectionRange = new IRSelectionRange({
+          startMid:startBlock.getAttribute("mid"),
+          startOffset:r.getBookmark(startBlock).start,
+          endMid:endBlock.getAttribute("mid"),
+          endOffset:r.getBookmark(endBlock).end
+        },{
+          bookMark:this.sel.getBookmark(this.editor.ir.rootElement),
+          secondBookMark:this.sel.isCollapsed?this.sel.getBookmark(startBlock):null
+        })
       } catch {
-        this.modifyBeforeBookmark = null
-        this.modifyBeforeSecondBookmark = null
+        this.modifyBeforeIRSelectionRange = null
       }
     }
     this.modifyLock = true
@@ -251,13 +260,7 @@ class IRFocusProcessor {
     return this.lastBookmark
   }
 
-  getModifyBeforeBookmark() {
-    return this.modifyBeforeBookmark
-  }
-
-  getModifyBeforeSecondBookmark() {
-    return this.modifyBeforeSecondBookmark
-  }
+ 
 
   getSelectedBlockMdElement(refresh: boolean = true) {
     if (refresh) this.updateFocusElement()

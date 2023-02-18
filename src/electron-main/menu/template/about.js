@@ -2,31 +2,31 @@ import { BrowserWindow, shell  } from 'electron'
 import common from '../../common'
 import path from 'path'
 
-export default function (manager) {
+export default function (app) {
     return {
         label: '关于(A)',
         submenu: [
             {
                 label: '作者', click: () => {
-                    BrowserWindow.getFocusedWindow().webContents.send("openAuthorDetails")
+                    BrowserWindow.getFocusedWindow().webContents.send("main-openAuthorDetails")
                 }
             },
             {
                 label: '帮助文档', click: () => {
                     //打开文件
                     const filePath = path.join(__static, "docs/Help.md")
-                    const data = common.openFileSync(filePath)
+                    const data = app.appFileSystem.openFileSync(filePath)
                     //open new window
-                    const win = manager.appWindow.createWindow(path.basename(filePath))
+                    const win = app.appWindow.editorWindowManager.createWindow(path.basename(filePath))
                     //加载页面 window load url
                     common.loadUrl(win).then(() => {
-                        win.webContents.send('updateApplicationContext', {   //上下文
+                        win.webContents.send('main-setApplicationContext', {   //上下文
                             title: path.basename(filePath),
                             filePath: filePath,   //文件路径
                             content: data,
                             preview: "",
                             isSave: true,
-                            theme: manager.appWindow.theme
+                            theme: app.appWindow.theme
                         })
                     })
                 }
@@ -35,19 +35,19 @@ export default function (manager) {
                 label: '开发文档', click: () => {
                     //打开文件
                     const filePath = path.join(__static, "docs/Development.md")
-                    const data = common.openFileSync(filePath)
+                    const data = app.appFileSystem.openFileSync(filePath)
                     //open new window
-                    const win = manager.appWindow.createWindow(path.basename(filePath))
+                    const win = app.appWindow.editorWindowManager.createWindow(path.basename(filePath))
                     //加载页面 window load url
                     common.loadUrl(win).then(() => {
                         //发送数据
-                        win.webContents.send('updateApplicationContext', {   //上下文
+                        win.webContents.send('main-setApplicationContext', {   //上下文
                             title: path.basename(filePath),
                             filePath: filePath,   //文件路径
                             content: data,
                             preview: "",
                             isSave: true,
-                            theme: manager.appWindow.theme
+                            theme: app.appWindow.theme
                         })
                     })
                 }

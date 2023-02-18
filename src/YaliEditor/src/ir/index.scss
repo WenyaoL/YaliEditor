@@ -9,18 +9,19 @@
 
 }
 
-.YaLi-ir::after {
+/*.YaLi-ir::after {
     content: "";
     font-size: 0;
     display: block;
     height: 0;
-}
+}*/
 
 .YaLi-ir h1,
 .YaLi-ir h2,
 .YaLi-ir h3,
 .YaLi-ir h4,
-.YaLi-ir h5 {
+.YaLi-ir h5,
+.YaLi-ir h6 {
     position: relative;
     margin-block-start: 0.67em;
     margin-block-end: 0.67em;
@@ -173,7 +174,7 @@
         content: '~~';
         color: var(--yali-font-before-color);
     }
-    */
+    
     u.md-expand::before {
         content: '<u>';
         color: var(--yali-font-before-color);
@@ -182,7 +183,7 @@
     u.md-expand::after {
         content: '</u>';
         color: var(--yali-font-before-color);
-    }
+    }*/
 
     p:empty::after {
         content: '\200B';

@@ -6,6 +6,7 @@ import { diff_match_patch, patch_obj } from 'diff-match-patch';
 import YaLiEditor from '..';
 import rangy from 'rangy';
 import Constants from '../constant/constants'
+import IRSelectionRange from '../state/IRSelection';
 
 /**
  * 历史记录
@@ -15,19 +16,11 @@ class History {
     //补丁(历史补丁)
     public patch: patch_obj[];
     //光标记录
-    public position: {
-        bookMark?: any,   //一级定位
-        secondBookMark?: any,  //二级定位
-        focusKey?: string  //聚焦的mid
-    }
+    public selectionRange: IRSelectionRange
 
-    constructor(patch?: patch_obj[], position?: {
-        bookMark?: any,
-        secondBookMark?: any,
-        focusKey?: string
-    }) {
+    constructor(patch?: patch_obj[], selectionRange?: IRSelectionRange) {
         this.patch = patch
-        this.position = position
+        this.selectionRange = selectionRange
     }
 }
 
@@ -103,6 +96,8 @@ class IRUndo {
 
         this.editor.ir.state.diff(this.editor.ir.rootElement, cloneNode)
 
+        this.editor.ir.applicationEventPublisher.publish("refreshToc")
+
         if (this.cursorTimer) {
             clearTimeout(this.cursorTimer)
             this.cursorTimer = null
@@ -111,18 +106,15 @@ class IRUndo {
         this.cursorTimer = setTimeout(() => {
             //重新设置光标
             let sel = rangy.getSelection()
-            if (history.position.bookMark) {
-                history.position.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-                sel.moveToBookmark(history.position.bookMark)
-            }
-            //二级定位
-            if (sel.isCollapsed && history.position.focusKey && history.position.secondBookMark) {
-                const block = this.editor.ir.rootElement.querySelector(`[mid="${history.position.focusKey}"]`)
-                if (block) {
-                    history.position.secondBookMark.rangeBookmarks[0].containerNode = block
-                    sel.moveToBookmark(history.position.secondBookMark)
-                }
+            const selectionRange = history.selectionRange
 
+            if(!selectionRange){
+                this.cursorTimer = null
+                return
+            }
+
+            if(selectionRange.mark){
+                sel.moveToBookmark(selectionRange.mark.bookMark)
             }
 
             this.editor.ir.focueProcessor.updateFocusElement()
@@ -164,6 +156,7 @@ class IRUndo {
         cloneNode.innerHTML = res[0]
 
         this.editor.ir.state.diff(this.editor.ir.rootElement, cloneNode)
+        this.editor.ir.applicationEventPublisher.publish("refreshToc")
 
         if (this.cursorTimer) {
             clearTimeout(this.cursorTimer)
@@ -173,17 +166,15 @@ class IRUndo {
         this.cursorTimer = setTimeout(() => {
             //重新设置光标
             let sel = rangy.getSelection()
-            if (history.position.bookMark) {
-                history.position.bookMark.rangeBookmarks[0].containerNode = this.editor.ir.rootElement
-                sel.moveToBookmark(history.position.bookMark)
-            }
-            if (sel.isCollapsed && history.position.focusKey && history.position.secondBookMark) {
-                const block = this.editor.ir.rootElement.querySelector(`[mid="${history.position.focusKey}"]`)
-                if (block) {
-                    history.position.secondBookMark.rangeBookmarks[0].containerNode = block
-                    sel.moveToBookmark(history.position.secondBookMark)
-                }
+            const selectionRange = history.selectionRange
 
+            if(!selectionRange){
+                this.cursorTimer = null
+                return
+            }
+
+            if(selectionRange.mark){
+                sel.moveToBookmark(selectionRange.mark.bookMark)
             }
 
             this.editor.ir.focueProcessor.updateFocusElement()
@@ -226,11 +217,7 @@ class IRUndo {
         if (patch.length === 0) return;
 
         //创建历史记录
-        const history = new History(patch, {
-            bookMark: this.editor.ir.focueProcessor.getModifyBeforeBookmark(),
-            secondBookMark: this.editor.ir.focueProcessor.getModifyBeforeSecondBookmark(),
-            focusKey: mid
-        })
+        const history = new History(patch, this.editor.ir.focueProcessor.modifyBeforeIRSelectionRange)
 
 
         //跟新lastText为当前状态
