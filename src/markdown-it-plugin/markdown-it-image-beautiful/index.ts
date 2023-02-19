@@ -24,9 +24,7 @@ let currFilePath = null
 function resolvePath(src: string, deCode: boolean) {
   if (!src) return { 'src': src }
 
-  let res = {}
-
-  res['src'] = src
+  let res = {'src': src}
 
   //decode
   if (deCode) res['decodeSrc'] = decodeURI(src)
@@ -35,8 +33,9 @@ function resolvePath(src: string, deCode: boolean) {
   //相对路径解析
   if (res['decodeSrc'] && Reg.relativeFilePathReg.test(res['decodeSrc'])) {
     editor.ir.applicationEventPublisher.publish("GET-CurrFilePath")
-    const currdir = Reg.dirPathReg.exec(currFilePath).at(0)
-    res['data-map'] = path.join(currdir, res['decodeSrc'])
+    if(!currFilePath) return res
+    const currdir = Reg.dirPathReg.exec(currFilePath)[0]
+    res['data-map'] = path.join(currdir?currdir:'', res['decodeSrc'])
   }
 
   return res
@@ -57,15 +56,23 @@ function image(tokens: Token[], idx: number, options: Object, env: Object, slf: 
   token.attrPush(["onerror", "irImgerror(event)"])
   token.attrPush(["onload", "irImgload(event)"])
 
-  let src = token.attrGet("src")
-  let resolvedPath = null
+  let src = token.attrGet("src")||''
+  let resolvedPath:any = null
   if (Reg.imgBase64Reg.test(src)) {
     resolvedPath = {
       "src": src,
       'decodeSrc': src
     }
   } else {
-    resolvedPath = resolvePath(src, true)
+    try{
+      resolvedPath = resolvePath(src, true)
+    }catch(error){
+      resolvedPath = {
+        "src": src,
+        'decodeSrc': src
+      }
+    }
+    
   }
 
   //相对路径
@@ -103,7 +110,7 @@ function plugin(md: MarkdownIt, options: any) {
       img.classList.add("errorimg")
       img.removeAttribute("loading")
       img.src = errorImgData
-      img.previousElementSibling.className = "md-like"
+      img.previousElementSibling!.className = "md-like"
     }
     //img.onerror = null; //防止闪图
   }

@@ -2,9 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { argv } from 'process';
 import {  BrowserWindow,dialog } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import {CAN_READ_EXTENSION} from '../config'
 
-export const CAN_READ_EXTENSION = ['.md', '.txt', '.markdown', '.mkd', '.mdown', '.mkdn']
 
 class AppFileSystem {
     constructor(app) {

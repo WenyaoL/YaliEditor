@@ -26,6 +26,11 @@ export const htmlTitleReg = /(?<=<title.*>)(.*)(?=<\/title>)/;
 export const htmlcommentReg = /^<!--[\s\S]*/
 export const imgBase64Reg = /^data:image\/.*;base64/
 
+export const imgReg = /\.(bmp|jpeg|jpg|gif|png|svg)$/
+
+export const markdownReg = /\.(md|txt|markdown|mkd|mdown|mkdn)$/
+
+
 export default {
     httpReg,
     httpsReg,
@@ -40,5 +45,7 @@ export default {
     alphabetReg,
     htmlTitleReg,
     htmlcommentReg,
-    imgBase64Reg
+    imgBase64Reg,
+    imgReg,
+    markdownReg
 }

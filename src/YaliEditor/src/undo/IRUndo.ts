@@ -236,7 +236,7 @@ class IRUndo {
         
         
         this.editor.ir.isChange = true
-        this.editor.ir.applicationEventPublisher.publish("addIRHistory")
+        this.editor.ir.applicationEventPublisher.publish("yali::addIRHistory")
     }
 
 }

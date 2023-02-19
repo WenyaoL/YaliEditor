@@ -42,6 +42,7 @@ import IRClickProcessor from "./IRClickProcessor";
 import rangy from "rangy";
 import { getUniqueKey, refreshKeyId } from "@/markdown-it-plugin/markdown-it-key-generator";
 import IRPanelConfig from "../options/IRPanelConfig";
+import IRDragProcessor from "./IRDragProcessor";
 /**
  * IR模式下的控制面板
  */
@@ -86,6 +87,8 @@ class IR {
     public copyProcessor: IRCopyProcessor;
     //粘贴处理器
     public pasteProcessor: IRPasteProcessor;
+    //拖拽处理器
+    public dragProcessor: IRDragProcessor;
     //上下文刷新器
     public contextRefresher: IRContextRefresher;
     //打字处理器
@@ -135,6 +138,7 @@ class IR {
         this.tabkeyProcessor = new IRTabProcessor(this.editor)
         this.copyProcessor = new IRCopyProcessor(this.editor)
         this.pasteProcessor = new IRPasteProcessor(this.editor)
+        this.dragProcessor = new IRDragProcessor(this.editor)
         this.contextRefresher = new IRContextRefresher(this.editor)
         this.compositionProcessor = new IRCompositionProcessor(this.editor)
 

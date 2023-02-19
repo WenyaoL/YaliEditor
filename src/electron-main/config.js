@@ -49,3 +49,6 @@ export const defaultApplicationContext = (()=>{
         recentDocuments: [], //最近打开文件
     }
 })()
+
+
+export const CAN_READ_EXTENSION = ['.md', '.txt', '.markdown', '.mkd', '.mdown', '.mkdn']

@@ -52,10 +52,14 @@ export default {
       yali.ir.applicationEventPublisher.subscribe("GET-CurrFilePath", () => {
         yali.ir.applicationEventPublisher.publish("RETURN-CurrFilePath", store.state.editorModule.applicationContext.filePath)
       })
-      yali.ir.applicationEventPublisher.subscribe("addIRHistory",()=>{
+      yali.ir.applicationEventPublisher.subscribe("yali::addIRHistory",()=>{
         store.commit('updateFileState', false)
       })
       
+      yali.ir.applicationEventPublisher.subscribe('yali::openFile',(filePath)=>{
+        store.dispatch('openFileInNewWindow',filePath)
+      })
+
       yali.render(store.state.editorModule.applicationContext.content)
       store.commit('setYaliEditor', yali)
       store.dispatch('getShortKeyMap').then(keyMap=>{

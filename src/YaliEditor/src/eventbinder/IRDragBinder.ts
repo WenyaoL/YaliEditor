@@ -6,6 +6,7 @@ import YaLiEditor from "..";
 import { BaseEventBinder } from "../../types";
 import { strToElement } from '../util/createElement'
 import rangy from "rangy";
+import Reg from "../constant/reg";
 
 class IRDragBinder implements BaseEventBinder {
     editor: YaLiEditor;
@@ -15,28 +16,11 @@ class IRDragBinder implements BaseEventBinder {
 
     }
 
-    dropImg(ev: DragEvent) {
-        let img: File & { path: string } = ev.dataTransfer?.files.item(0) as File & { path: string }
-
-        if (!img.path) return
-        
-        let render = this.editor.markdownTool.renderInline("![](" + img.path + ")")
-
-        let e = strToElement(render)
-        if (!e) return false
-        let sel = rangy.getSelection()
-        let r = sel.getRangeAt(0).cloneRange()
-        r.insertNode(e)
-        this.editor.ir.observer.forceFlush()
-        return true
-    }
+    
 
     bindDrog(element: HTMLElement) {
         element.addEventListener("drop", (ev) => {
-            ev.preventDefault()
-
-            if (this.dropImg(ev)) return
-
+            this.editor.ir.dragProcessor.execute(ev)
         })
     }
 
