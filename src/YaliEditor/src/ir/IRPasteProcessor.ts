@@ -92,7 +92,7 @@ class IRPasteProcessor {
                 return
             }
             axiosInstance.get(str).then(response => {
-                const res = Reg.htmlTitleReg.exec(response.data).at(0)
+                const res = Reg.htmlTitleReg.exec(response.data)[0]
                 if (res) {
                     const link = this.editor.markdownTool.renderInline(`[${res}](${str})`)
                     this.editor.domTool.insertElementAtCursor(link)
@@ -100,8 +100,8 @@ class IRPasteProcessor {
                     const link = this.editor.markdownTool.renderInline(str)
                     this.editor.domTool.insertElementAtCursor(link)
                 }
-            }).catch((res) => {
-                const link = this.editor.markdownTool.renderInline(str)
+            }).catch((err) => {
+                const link = this.editor.markdownTool.renderInline(`[${str}](${str})`)
                 this.editor.domTool.insertElementAtCursor(link)
             })
             this.editor.ir.observer.forceFlush()
