@@ -119,6 +119,16 @@ export const isMdInlineLink = (element: Element) => {
   return false
 }
 
+export const isMdInlineFont = (element: Element) =>{
+  if(!isMdInline(element)) return false
+  const attr = element.getAttribute(Constants.ATTR_MD_INLINE)
+  if (attr == Constants.ATTR_MD_INLINE_CODE || 
+    attr == Constants.ATTR_MD_INLINE_EM || 
+    attr == Constants.ATTR_MD_INLINE_STRONG ||
+    attr == Constants.ATTR_MD_INLINE_UNDERLINE) return true
+  return false
+}
+
 export const isYaliIR = (element: Element) => {
   if (element && element.classList.contains(Constants.IR_CLASS_NAME)) return true
   return false

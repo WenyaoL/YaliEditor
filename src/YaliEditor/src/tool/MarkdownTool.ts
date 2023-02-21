@@ -183,7 +183,7 @@ class MarkdownTool{
         if(element.innerText.length == 0 || element.innerText == "\n"){
             //P标签需要分类讨论
             if(element.tagName == "P" && !element.previousElementSibling  && !element.nextElementSibling && element.parentElement
-            &&element.parentElement.tagName == "BLOCKQUOTE"){
+            && (element.parentElement.tagName == "BLOCKQUOTE" || element.parentElement.tagName == "LI")){
                 //父标签是BLOCKQUOTE，父标签退化
                 return this.nodeDegenerateToP(element.parentElement)
             }else if(element.tagName != "P"){        

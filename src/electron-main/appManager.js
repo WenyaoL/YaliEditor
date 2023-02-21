@@ -63,7 +63,7 @@ export class AppManager{
             win.loadURL(process.env.WEBPACK_DEV_SERVER_URL).then(()=>{
               if (!process.env.IS_TEST) win.webContents.openDevTools()
               //发送数据
-              win.webContents.send('updateApplicationContext',{   //上下文
+              win.webContents.send('main-setApplicationContext',{   //上下文
                 title:"Yalier",
                 isSave:true,
                 theme:this.appWindow.theme
@@ -76,7 +76,7 @@ export class AppManager{
             if(!filePath){
                 win.loadURL('app://./index.html').then(()=>{
                     //发送数据
-                    win.webContents.send('updateApplicationContext',{   //上下文
+                    win.webContents.send('main-setApplicationContext',{   //上下文
                         title:"Yalier",
                         isSave:true,
                         theme:this.appWindow.theme
@@ -89,7 +89,7 @@ export class AppManager{
                 let appWindow = this.appWindow
                 win.loadURL('app://./index.html').then(()=>{
                     //发送数据
-                    win.webContents.send('updateApplicationContext',{   //上下文
+                    win.webContents.send('main-setApplicationContext',{   //上下文
                         title:path.basename(filePath),
                         filePath: filePath,   //文件路径
                         content:data,

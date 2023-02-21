@@ -9,8 +9,9 @@ import {
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML } from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML, isMdInline, isMdInlineFont, isMdInlineLink, isMdBlockListItem } from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
+import { sortBy } from 'lodash';
 
 class IRDeletekeyProcessor implements KeyProcessor {
 
@@ -48,7 +49,14 @@ class IRDeletekeyProcessor implements KeyProcessor {
                 return true
             }
 
-            
+            //临近LI附件
+            if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockListItem(mdBlockPreviousElement)) {
+                mdBlock.remove()
+                r.setStartAfter(mdBlockPreviousElement.lastElementChild)
+                r.setEndAfter(mdBlockPreviousElement.lastElementChild)
+                sel.setSingleRange(r)
+                return true
+            }
 
             //尝试删除P节点
             if (this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
@@ -78,17 +86,28 @@ class IRDeletekeyProcessor implements KeyProcessor {
         }
 
 
-        //模拟最后字符删除(用于修复link的错误删除)
+        //模拟最后字符删除
         let startOff = r.startOffset
+
+        //模拟最后字符删除(用于修复link的错误删除)
         if (start.nodeType == 3 && startOff == 1 && start.previousSibling && start.previousSibling.nodeType == 1) {
             let sib = start.previousSibling as HTMLElement
-            if (sib.getAttribute(CONSTANTS.ATTR_MD_INLINE) == CONSTANTS.ATTR_MD_INLINE_LINK) {
+            if (isMdInlineLink(sib)) {
                 r.setStart(start, startOff - 1)
                 r.deleteContents()
                 this.editor.ir.focueProcessor.focusMdInline(sib)
                 return true
+            }else if(isMdInlineFont(sib)){
+                r.setStart(start, startOff - 1)
+                r.deleteContents()
+                r.setStartAfter(sib.lastChild)
+                r.setEndAfter(sib.lastChild)
+                sel.setSingleRange(r)
+                this.editor.ir.focueProcessor.focusMdInline(sib)
+                return true
             }
         }
+
         return false;
     }
 

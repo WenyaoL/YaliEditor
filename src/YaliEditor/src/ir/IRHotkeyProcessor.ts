@@ -43,7 +43,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         ["paragraph.heading-6", this.headingKey],
 
         ["paragraph.reduceIndent-list", this.reduceIndentKey],
-        ["paragraph.addIndent-list,", this.addIndentKey],
+        ["paragraph.addIndent-list", this.addIndentKey],
         ["paragraph.code-fence", this.codeblockKey],
         ["paragraph.quote-block", this.quoteKey],
         ["paragraph.order-list", this.listKey],
@@ -619,7 +619,6 @@ class IRHotkeyProcessor implements KeyProcessor {
     execute(event: KeyboardEvent) {
         const k = toKeyText(event)
         const command = this.getCommand(k)
-
         const f: Function = this.defaultCommandMap.get(command)
         if (f) {
             //修改动作前的跟新

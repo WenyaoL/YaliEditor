@@ -7,7 +7,7 @@ import { AppManager } from './electron-main/appManager'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-
+//
 let isReady=false;
 
 

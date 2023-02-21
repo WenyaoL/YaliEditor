@@ -92,6 +92,7 @@ export const findClosestByAttribute = (element: Node, attr: string, value: strin
     if (element.nodeType === 3) {
         element = element.parentElement;
     }
+    
     let e = element as HTMLElement;
     if (value === null) value = "";
     //向外递归（节点为空，或者找到属性节点才停止）
