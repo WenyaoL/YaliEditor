@@ -92,7 +92,7 @@ export const findClosestByAttribute = (element: Node, attr: string, value: strin
     if (element.nodeType === 3) {
         element = element.parentElement;
     }
-    
+
     let e = element as HTMLElement;
     if (value === null) value = "";
     //向外递归（节点为空，或者找到属性节点才停止）
@@ -165,6 +165,10 @@ export const IRfindClosestList = (element: Node) => {
     let e = findClosestByTagName(element, "OL", Constants.IR_CLASS_NAME)
     if (!e) e = findClosestByTagName(element, "UL", Constants.IR_CLASS_NAME)
     return e;
+}
+
+export const IRfindClosestQuote = (element: Node) => {
+    return findClosestByAttribute(element, Constants.ATTR_MD_BLOCK, Constants.ATTR_MD_BLOCK_BLOCKQUOTE, Constants.IR_CLASS_NAME)
 }
 
 export const IRfindClosestParagraph = (element: Node) => {

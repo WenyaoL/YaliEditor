@@ -9,23 +9,26 @@ import {EditorConfig} from './options'
 import MarkdownTool from './tool/MarkdownTool'
 import DomTool from './tool/DomTool'
 import './ir/index.scss'
+import './index.css'
 //import 'bootstrap/dist/css/bootstrap.min.css'
 //import 'bootstrap/dist/js/bootstrap.min'
 
 import _ from 'lodash'
+import EditorTool from './tool/EditorTool';
 class YaLiEditor {
     public readonly version: string;
     public options : EditorConfig;
     public rootElement : HTMLElement;
     public ir : IR;
+    public editorTool:EditorTool;
     public markdownTool:MarkdownTool;
     public domTool:DomTool
 
-    constructor(id: string | HTMLElement, options?: EditorConfig){
+    constructor(src: string | HTMLElement, options?: EditorConfig){
         this.version = _YALI_VERSION;
 
-        if (typeof id === "string") {
-            id = document.getElementById(id);
+        if (typeof src === "string") {
+            src = document.getElementById(src);
         }
         
         
@@ -35,17 +38,19 @@ class YaLiEditor {
 
         
         
-        this.init(id,this.options)
+        this.init(src,this.options)
     }
 
-    private init(id: HTMLElement, options: EditorConfig){
-        this.rootElement = id;
-        const div = document.createElement("div")
-        div.id = "yali-tool-tip"
-        this.rootElement.appendChild(div)
-        this.ir = new IR(this);
+    private init(src: HTMLElement, options: EditorConfig){
+        this.rootElement = src;
+        
+        
+
+        this.editorTool = new EditorTool(this)
         this.markdownTool = new MarkdownTool(this)
         this.domTool = new DomTool(this)
+
+        this.ir = new IR(this);
         this.ir.init()
     }
 

@@ -33,7 +33,7 @@ class TurndownParser {
     this.initBlockMetaRule()
     this.initHtmlBlockRule(this.editor)
     this.turndownService.use(tableRule)
-
+    this.initEmojiRule()
   }
 
   /**
@@ -64,7 +64,8 @@ class TurndownParser {
       filter: function (node, options) {
         let flag = (
           node.nodeName === 'PRE' &&
-          node.classList.contains("markdown-it-code-beautiful")
+          node.classList.contains("markdown-it-code-beautiful") &&
+          node.getAttribute("md-block") == "fence"
         )
         return flag
       },
@@ -73,7 +74,7 @@ class TurndownParser {
         node = node as HTMLElement
         const uuid = node.id
         const text = editor.ir.renderer.codemirrorManager.getTextValue(uuid)
-        if (!text) return ''
+        
         const input = node.lastElementChild.getElementsByTagName("input").item(0)
         if (input) language = input.value.trim()
         else language = node.getAttribute("lang")
@@ -299,6 +300,22 @@ class TurndownParser {
         const text = editor.ir.renderer.codemirrorManager.getTextValue(id)
         if (!text) return ''
         return `\n${text}\n`
+      }
+    })
+  }
+
+
+  initEmojiRule(){
+    this.turndownService.addRule('md-inline-emoji', {
+      filter: function (node, options) {
+        return (
+          node.nodeName === 'SPAN' && (node as HTMLElement).getAttribute("md-inline") == "emoji"
+        )
+      },
+      replacement: function (content, node, options) {
+        const markup = node.querySelector(".emoji-markup")
+        if(markup) return markup.textContent
+        return ''
       }
     })
   }

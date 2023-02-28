@@ -222,14 +222,14 @@ class Mathjax {
 
 
     // set MathJax as the renderer for markdown-it-simplemath
-    md.inline.ruler.after("escape", "math_inline", math_inline);
+    //md.inline.ruler.after("escape", "math_inline", math_inline);
     md.block.ruler.after("blockquote", "math_block", math_block, {
       alt: ["paragraph", "reference", "blockquote", "list"],
     });
 
-    md.renderer.rules.math_inline = (tokens: Token[], idx: number) => {
+    /*md.renderer.rules.math_inline = (tokens: Token[], idx: number) => {
       return renderMath(tokens[idx].content, this.documentOptions, { display: false })
-    };
+    };*/
 
 
     md.renderer.rules.math_block = (tokens: Token[], idx: number, options: Object, env: Object) => {
@@ -258,13 +258,9 @@ class Mathjax {
             needSuggestUI: false,
           })
       )
-      if (env['generateId']) return `<div mid="${getUniqueKey()}" class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false">
-      <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
-      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
+      if (env['generateId']) return `<div mid="${getUniqueKey()}" class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false"><div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div><div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
 
-      return `<div class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false">
-      <div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div>
-      <div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
+      return `<div class="markdown-it-mathjax-beautiful" md-block="math" contenteditable="false"><div class="md-mathblock-tool" contenteditable="false"><span class="md-mathblock-tip">公式</span></div><div class="md-mathblock-input markdown-it-code-beautiful" id="${id}"></div>`
     }
 
     md.renderer.rules.math_close = function (tokens: Token[], idx: number) {

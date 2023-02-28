@@ -42,7 +42,7 @@ class RendererIPMEventLoader {
                 store.state.editorModule.fonts.normal = data.normal
                 doc.addFileToVFS('sourcehansans-normal.ttf', store.state.editorModule.fonts.normal)
                 //doc.addFileToVFS('sourcehansans-bold.ttf', store.state.fonts.bold)
-            }else{
+            } else {
                 doc.addFileToVFS('sourcehansans-normal.ttf', store.state.editorModule.fonts.normal)
             }
 
@@ -51,7 +51,7 @@ class RendererIPMEventLoader {
             //doc.addFont('sourcehansans-bold.ttf', 'sourcehansans', 'bold')
             doc.setFont('sourcehansans', 'normal');
             //doc.setFont('sourcehansans', 'bold');
-            
+
             let el = root.cloneNode(true)
             //给模块赋予字体
             let cList = el.children
@@ -100,14 +100,14 @@ class RendererIPMEventLoader {
 
 
             html2canvas(e, {
-                windowHeight:760,
-                windowWidth:1200,
-                height: e.scrollHeight+10,
-                width: e.scrollWidth+10,
+                windowHeight: 760,
+                windowWidth: 1200,
+                height: e.scrollHeight + 10,
+                width: e.scrollWidth + 10,
                 scale: 2,
-                onclone:(cloneDocument)=>{
+                onclone: (cloneDocument) => {
                     const codemirrors = cloneDocument.querySelectorAll(".markdown-it-code-beautiful")
-                    codemirrors.forEach(element=>{
+                    codemirrors.forEach(element => {
                         const id = element.id
                         const editor = this.store.state.editorModule.yaliEditor
                         const manager = editor.ir.renderer.codemirrorManager
@@ -157,8 +157,8 @@ class RendererIPMEventLoader {
             store.commit('updateApplicationContext', context)
         })
 
-        window.electronAPI.ON.setKeyMap((event,keymap)=>{
-            bus.emit('yali:updateKeyMap',keymap)
+        window.electronAPI.ON.setKeyMap((event, keymap) => {
+            bus.emit('yali:updateKeyMap', keymap)
         })
     }
 
@@ -173,12 +173,26 @@ class RendererIPMEventLoader {
                 store.commit('updateContent', store.state.editorModule.yaliEditor.getMarkdownText())
             }
 
-            //回传上下文
-            event.sender.send('renderer-saveFile', {
-                applicationContext: JSON.stringify(this.applicationContext),
-                savePath: null,
-            })
-            store.commit('updateFileState', true) //跟新文件状态为已经保存
+            if (!this.applicationContext.filePath) {
+                window.electronAPI.INVOKE.saveFile({
+                    applicationContext: JSON.stringify(this.applicationContext),
+                    savePath: null,
+                }).then((info) => {
+                    if (info.savePath){
+                        store.commit('updateFilePath', info.savePath)
+                        store.commit('updateTitle', info.title)
+                    }
+                })
+            } else {
+                //回传上下文
+                event.sender.send('renderer-saveFile', {
+                    applicationContext: JSON.stringify(this.applicationContext),
+                    savePath: null,
+                })
+                store.commit('updateFileState', true) //跟新文件状态为已经保存
+            }
+
+
 
 
 

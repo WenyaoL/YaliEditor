@@ -4,12 +4,8 @@
  */
 import { EditorState, type Extension, Compartment, StateEffect } from "@codemirror/state"
 import { EditorView, keymap, ViewUpdate } from "@codemirror/view"
-import { indentWithTab } from "@codemirror/commands"
-import { basicSetup, minimalSetup } from "codemirror"
 import { languages } from "@codemirror/language-data"
 import { LanguageDescription } from "@codemirror/language"
-import { javascript } from '@codemirror/lang-javascript'
-import { html } from '@codemirror/lang-html'
 import { CodemirrorEditorState } from './CodemirrorEditorState'
 import { CodemirrorEditorView } from './CodemirrorEditorView'
 import { createComponent, mount } from './SearchInputComponent'
@@ -20,6 +16,13 @@ import { oneDark, oneDarkHighlightStyle, oneDarkTheme } from '@/codemirror-plugi
 import { oneLight } from '@/codemirror-plugin/codeTheme/light';
 import { langCanload } from './lang'
 import { getUniqueKey } from "../markdown-it-key-generator"
+import { escapeHtml, unescapeAll } from "markdown-it/lib/common/utils"
+import MarkdownIt from "markdown-it"
+import Renderer from "markdown-it/lib/renderer"
+import Token from "markdown-it/lib/token"
+
+
+
 
 /**
  * 创建一个compartment,并和对其修改的run函数
@@ -132,6 +135,13 @@ export class CodemirrorManager {
         ])
 
         loadLanguage("latex")
+        loadLanguage("c++")
+        loadLanguage("java")
+        loadLanguage("python")
+        loadLanguage("php")
+        loadLanguage("html")
+        loadLanguage("css")
+        loadLanguage("js")
 
         this.langCanLoad = langCanload
 
@@ -165,7 +175,7 @@ export class CodemirrorManager {
         return this.stateCacheMap.get(id)
     }
 
-    getStateCacheMap(){
+    getStateCacheMap() {
         return this.stateCacheMap
     }
 
@@ -228,6 +238,11 @@ export class CodemirrorManager {
                 stateInfo.langCompartment.run(stateInfo.languageDescription.support, codemirrorEditorView.view)
             } else {
                 stateInfo.langCompartment.run([], codemirrorEditorView.view)
+                setTimeout(() => {
+                    if(stateInfo.languageDescription && stateInfo.languageDescription.support){
+                        stateInfo.langCompartment.run(stateInfo.languageDescription.support, codemirrorEditorView.view)
+                    }
+                }, 1000);
             }
         }
 
@@ -411,7 +426,7 @@ export class CodemirrorManager {
 
 
     refreshStateCacheByElement(element: Element) {
-        if(!element.classList.contains('markdown-it-code-beautiful')) return
+        if (!element.classList.contains('markdown-it-code-beautiful')) return
         const uuid = element.id
         let stateInfo = this.getStateCache(uuid)
         if (!stateInfo) return
@@ -712,6 +727,136 @@ export class CodemirrorManager {
     }
 }
 
+
+function fence(state, startLine, endLine, silent) {
+    var marker, len, params, nextLine, mem, token, markup,
+        haveEndMarker = false,
+        pos = state.bMarks[startLine] + state.tShift[startLine],
+        max = state.eMarks[startLine];
+
+    // if it's indented more than 3 spaces, it should be a code block
+    if (state.sCount[startLine] - state.blkIndent >= 4) { return false; }
+
+    if (pos + 3 > max) { return false; }
+
+    marker = state.src.charCodeAt(pos);
+
+    if (marker !== 0x7E/* ~ */ && marker !== 0x60 /* ` */) {
+        return false;
+    }
+
+    // scan marker length
+    mem = pos;
+    pos = state.skipChars(pos, marker);
+
+    len = pos - mem;
+
+    if (len < 3) { return false; }
+
+    markup = state.src.slice(mem, pos);
+    params = state.src.slice(pos, max);
+
+    if (marker === 0x60 /* ` */) {
+        if (params.indexOf(String.fromCharCode(marker)) >= 0) {
+            return false;
+        }
+    }
+
+    // Since start is found, we can report success here in validation mode
+    if (silent) { return true; }
+
+    // search end of block
+    nextLine = startLine;
+
+    for (; ;) {
+        nextLine++;
+        if (nextLine >= endLine) {
+            // unclosed block should be autoclosed by end of document.
+            // also block seems to be autoclosed by end of parent
+            break;
+        }
+
+        pos = mem = state.bMarks[nextLine] + state.tShift[nextLine];
+        max = state.eMarks[nextLine];
+
+        if (pos < max && state.sCount[nextLine] < state.blkIndent) {
+            // non-empty line with negative indent should stop the list:
+            // - ```
+            //  test
+            break;
+        }
+
+        if (state.src.charCodeAt(pos) !== marker) { continue; }
+
+        if (state.sCount[nextLine] - state.blkIndent >= 4) {
+            // closing fence should be indented less than 4 spaces
+            continue;
+        }
+
+        pos = state.skipChars(pos, marker);
+
+        // closing code fence must be at least as long as the opening one
+        if (pos - mem < len) { continue; }
+
+        // make sure tail has spaces only
+        pos = state.skipSpaces(pos);
+
+        if (pos < max) { continue; }
+
+        haveEndMarker = true;
+        // found!
+        break;
+    }
+
+    // If a fence has heading spaces, they should be removed from its inner block
+    len = state.sCount[startLine];
+
+    state.line = nextLine + (haveEndMarker ? 1 : 0);
+
+    token = state.push('fence', 'code', 0);
+    token.info = params;
+    token.content = state.getLines(startLine + 1, nextLine, len, true);
+    token.markup = markup;
+    token.map = [startLine, state.line];
+
+    return true;
+};
+
+function fenceRender(tokens: Token[], idx: number, options: any, env: Object, slf: Renderer) {
+    var token = tokens[idx],
+        info = token.info ? unescapeAll(token.info).trim() : '',
+        langName = '',
+        langAttrs = '',
+        highlighted, i, arr, tmpAttrs, tmpToken;
+
+    if (info) {
+        arr = info.split(/(\s+)/g);
+        langName = arr[0];
+        langAttrs = arr.slice(2).join('');
+    }
+    
+    if(token.map[1]-token.map[0] == 1){
+        
+        return `<div md-block="fence" md-like="fence"><span class="fence-meta">${token.markup}</span><span class="lang">${langName}</span></div>`
+    }
+
+
+    if (options.highlight) {
+        highlighted = options.highlight(token.content, langName, langAttrs) || escapeHtml(token.content);
+    } else {
+        highlighted = escapeHtml(token.content);
+    }
+    return highlighted + '\n';
+}
+
+
+
+export function CodemirrorPlugin(md:MarkdownIt,options: any) {
+    //editor = options.editor
+    
+    md.block.ruler.at("fence", fence, { alt: ['paragraph', 'reference', 'blockquote', 'list'] })
+    md.renderer.rules.fence = fenceRender
+}
 
 // 引入个性化的vs2015样式
 //import 'highlight.js/styles/vs2015.css'

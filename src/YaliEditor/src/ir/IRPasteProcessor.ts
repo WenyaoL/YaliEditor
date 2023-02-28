@@ -100,11 +100,13 @@ class IRPasteProcessor {
                     const link = this.editor.markdownTool.renderInline(str)
                     this.editor.domTool.insertElementAtCursor(link)
                 }
+                this.editor.ir.observer.forceFlush()
             }).catch((err) => {
                 const link = this.editor.markdownTool.renderInline(`[${str}](${str})`)
                 this.editor.domTool.insertElementAtCursor(link)
+                this.editor.ir.observer.forceFlush()
             })
-            this.editor.ir.observer.forceFlush()
+            this.editor.ir.observer.flush()
         } else {
             //将文本当成markdown字符串进行处理
             this.pasteMarkdown(str)
@@ -137,7 +139,7 @@ class IRPasteProcessor {
             } else {
                 this.pasteTextPlainAfterDelete(text)
             }
-            this.editor.ir.contextRefresher.refreshFocusInline(true)
+            this.editor.ir.contextRefresher.refreshFocusInline()
         }
         //这里会导致系统的输入和粘贴的默认行为得到阻止
         event.preventDefault()

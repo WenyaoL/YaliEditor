@@ -172,7 +172,9 @@ class MainIPMEventLoader {
             if(!savePath){
                 const select = await this.app.appFileSystem.saveFileDialog()
                 if (select.canceled) return false
-                this.app.appFileSystem.saveFile(select.filePath,applicationContext.content)
+                const err = await this.app.appFileSystem.saveFile(select.filePath,applicationContext.content)
+                if(!err) return {savePath:select.filePath,title:path.basename(select.filePath)}
+                return {err}
             }else{
                 this.app.appFileSystem.saveFile(savePath, applicationContext.content)
             }

@@ -107,6 +107,7 @@ function text(tokens: Token[], idx: number, options: Object, env: Object, slf: R
 
 function plugin(md: MarkdownIt, options: any = {}) {
     md.renderer.rules.paragraph_open = paragraphOpen;
+    //md.renderer.rules.text = text;
 
     if (options.borderModel) {
         md.renderer.rules.code_inline = codeInlineBorderModel

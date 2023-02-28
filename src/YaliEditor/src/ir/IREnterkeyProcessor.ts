@@ -5,9 +5,9 @@
 import { KeyProcessor } from "./KeyProcessor";
 import Constants from "../constant/constants";
 import {
-    IRfindClosestLi,
+    IRfindClosestLi, IRfindClosestQuote,
 } from "../util/findElement";
-import { isMdBlockCode, isMdBlockFence, isMdBlockHTML, isMdBlockMath, isMdBlockMeta, isMdBlockParagraph } from '../util/inspectElement'
+import { isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockListItem, isMdBlockMath, isMdBlockMeta, isMdBlockParagraph, isMdBlockQuote, isMdInlineEmoji, isMdInlineFont, isMdInlineImg, isMdInlineLink } from '../util/inspectElement'
 
 import YaLiEditor from "..";
 import rangy from "rangy";
@@ -30,58 +30,56 @@ class IREnterkeyProcessor implements KeyProcessor {
             this.editor.ir.deletekeyProcessor.deleteRang()
         }
 
-        let block = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+        let mdBlock = this.editor.ir.focueProcessor.getSelectedBlockMdElement()
+        let mdInline = this.editor.ir.focueProcessor.getSelectedInlineMdElement()
 
-        if (isMdBlockFence(block) || isMdBlockMath(block) || isMdBlockHTML(block)) return false
-
-        if (isMdBlockMeta(block) || isMdBlockCode(block)){
-            this.editor.domTool.insertTextNodeAtCursor("\n")
-            return true
-        }
-
-        const li = IRfindClosestLi(block)
-        if (li) {
-            let { start, end } = this.editor.domTool.splitElementAtCursor(li)
-            end.setAttribute("mid",getUniqueKey()+"")
-            end.querySelector("p").setAttribute("mid",getUniqueKey()+"")
-            this.editor.markdownTool.reRenderInlineElementAtBlock(start.firstElementChild as HTMLElement)
-            this.editor.markdownTool.reRenderInlineElementAtBlock(end.firstElementChild as HTMLElement)
-            sel.collapse(end.firstElementChild, 0)
+        if(isMdInlineEmoji(mdInline) && this.editor.ir.state.emojiEnter(mdBlock, mdInline, event)){
+            this.editor.ir.observer.flush()
             return true
         }
 
 
-
-        r = sel.getRangeAt(0).cloneRange()
-        const p = document.createElement("p")
-        p.setAttribute("mid",getUniqueKey()+"")
-        p.setAttribute("md-block", "paragraph")
-        //是否在一般标签的尾部
-        if (r.startOffset === r.startContainer.textContent.length) {
-            this.editor.domTool.insertElementAfterElement(block, p)
-            sel.collapse(p, 0)
+        if (isMdBlockParagraph(mdBlock) && this.editor.ir.state.paragraphEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
             return true
-        } else if (r.startOffset === 0) {
-            this.editor.domTool.insertElementBeforeElement(block, p)
+        } else if (isMdBlockHeading(mdBlock) && this.editor.ir.state.headingEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
             return true
-        } else {
-            let { start, end } = this.editor.domTool.splitElementAtCursor(block)
-            end.setAttribute("mid",getUniqueKey()+"")
-            if (isMdBlockParagraph(start)) this.editor.markdownTool.reRenderInlineElementAtBlock(start as HTMLElement)
-            else this.editor.markdownTool.reRenderBlockElement(start as HTMLElement)
-
-            if (isMdBlockParagraph(end)) this.editor.markdownTool.reRenderInlineElementAtBlock(end as HTMLElement)
-            else end = this.editor.markdownTool.reRenderBlockElement(end as HTMLElement) as HTMLElement
-
-            sel.collapse(end, 0)
+        } else if (isMdBlockFence(mdBlock) && this.editor.ir.state.fenceEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockMath(mdBlock) && this.editor.ir.state.mathBlockEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockHTML(mdBlock) && this.editor.ir.state.htmlBlockEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockMeta(mdBlock) && this.editor.ir.state.metaBlockEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockCode(mdBlock) && this.editor.ir.state.codeBlockEnter(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
             return true
         }
+
+
+        const li = IRfindClosestLi(mdBlock)
+        const quote = IRfindClosestQuote(mdBlock)
+        if (isMdBlockListItem(li) && this.editor.ir.state.listItmeEnter(li, mdInline)) { 
+            this.editor.ir.observer.flush()
+            return true 
+        }else if(isMdBlockQuote(quote) && this.editor.ir.state.quoteBlockEnter(quote,mdInline)) { 
+            this.editor.ir.observer.flush()
+            return true 
+        }
+
+        return false
     }
 
     execute(event: KeyboardEvent) {
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
-        if (this.enter()) {  
+        if (this.enter()) {
             event.preventDefault()
         }
         this.editor.ir.observer.flush()

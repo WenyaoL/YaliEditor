@@ -63,7 +63,7 @@ class IRContextRefresher {
      * @param escape 
      * @returns 
      */
-    refreshFocusInline(escape?: boolean) {
+    refreshFocusInline() {
         //根据行类型选择是否强制刷新块
         let { block, inline } = this.editor.ir.focueProcessor.getSelectedMdElement(false)
         const likeType = this.editor.ir.focueProcessor.getSelectedInlineBeLikeType()
@@ -74,10 +74,8 @@ class IRContextRefresher {
         if (isMdBlockParagraph(block)) {
             const sel = rangy.getSelection()
 
-            if (this.refreshImg(block, inline)) return true
-            if (this.refreshLink(block, inline)) return true
-
-            if (escape) return false
+            if (this.editor.ir.state.imgRefresh(block, inline)) return true
+            if (this.editor.ir.state.linkRefresh(block, inline)) return true
 
             //尝试刷新行内的所有文本
             let mark = sel.getBookmark(block)

@@ -54,9 +54,19 @@ class AppFileSystem {
     }
 
     saveFile(filePath, data) {
-        fs.writeFile(filePath, data, 'utf8', err => {
+        fs.writeFile(filePath, data, 'utf-8', err => {
             if (err) console.log(err)
         })
+    }
+
+    saveFilePromise(filePath, data){
+        return new Promise((resolve, reject) => {
+            fs.writeFile(filePath,data,'utf-8',err=>{
+                if(err) reject(err)
+                resolve(null)
+            })
+        })
+        
     }
 
     saveFileDialog(filter) {

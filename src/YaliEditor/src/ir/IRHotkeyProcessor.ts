@@ -13,7 +13,7 @@ import {
     IRfindClosestMdInline
 } from "../util/findElement";
 
-import { getAllHeading, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph } from '../util/inspectElement';
+import { getAllHeading, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockParagraph, isMdInlineCode, isMdInlineFont } from '../util/inspectElement';
 import { createBlockquote, createMdList, strToDocumentFragment, strToElement } from '../util/createElement';
 import Constants from "../constant/constants";
 import { toKeyText, createTableStr, toTocElementText } from "../util/formatText"
@@ -286,6 +286,7 @@ class IRHotkeyProcessor implements KeyProcessor {
      * @param event 
      * @param pre 
      * @param suf 
+     * @param type transform type
      * @returns 
      */
     typefaceKey(event: KeyboardEvent | null, pre: string, suf: string, type?: string) {
@@ -299,16 +300,19 @@ class IRHotkeyProcessor implements KeyProcessor {
 
         //撤销原有字体
         let inline = IRfindClosestMdInline(start)
-        if (start == end && inline != null) {
-            let text = inline.textContent
+        if (isMdInlineFont(inline)) {
+
+            //如果相同类型撤销
             if (type == inline.getAttribute(Constants.ATTR_MD_INLINE)) {
-                inline.replaceWith(text)
+                const parent = inline.parentElement
+                inline.replaceWith(this.editor.markdownTool.getFontContent(inline))
+                parent.normalize()
                 return
             }
-            /*let previousSibling = inline.previousSibling
-            let nextSibling = inline.nextSibling
-            if(previousSibling && nextSibling && previousSibling.nodeType==3 && nextSibling.nodeType==3){
-            }*/
+            //if the font is mdinline-code, do not thing
+            if(isMdInlineCode(inline)){
+                return
+            }
         }
 
         if (!r.collapsed) {
@@ -620,6 +624,7 @@ class IRHotkeyProcessor implements KeyProcessor {
         const k = toKeyText(event)
         const command = this.getCommand(k)
         const f: Function = this.defaultCommandMap.get(command)
+        
         if (f) {
             //修改动作前的跟新
             this.editor.ir.focueProcessor.updateBeforeModify()

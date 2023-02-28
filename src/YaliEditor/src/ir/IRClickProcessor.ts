@@ -59,6 +59,10 @@ export class IRClickProcessor {
             this.ctrlKeyClick(event)
         }
         this.click(event)
+
+        const fence = this.editor.ir.rootElement.querySelector(`div[md-like="fence"]`)
+        this.editor.ir.state.fenceEnter(fence)
+
         event.preventDefault()
         //this.editor.ir.focueProcessor.updateFocusElementByStart(r.startContainer)
         const {block,inline} = this.editor.ir.focueProcessor.getSelectedMdElement(false)

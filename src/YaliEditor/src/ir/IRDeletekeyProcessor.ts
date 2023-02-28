@@ -9,7 +9,7 @@ import {
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML, isMdInline, isMdInlineFont, isMdInlineLink, isMdBlockListItem } from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML, isMdInline, isMdInlineFont, isMdInlineLink, isMdBlockListItem, isMdInlineImg, isMdBlockMeta, isMdBlockCode, isMdBlockHeading, isMdInlineEmoji } from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
 import { sortBy } from 'lodash';
 
@@ -28,85 +28,57 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
 
         let mdBlock = IRfindClosestMdBlock(start)
-
+        let mdInline = IRfindClosestMdInline(start)
         //尝试退化成P
         let p = this.editor.markdownTool.mdBlockDegenerateToP(mdBlock)
         if (p) {
             r.collapseToPoint(p, 0)
             sel.setSingleRange(r)
+            this.editor.ir.focueProcessor.updateFocusElement()
+            return true
+        }
+        
+        //
+        //退化失败后，mdBlock-Math和mdBlock-Fance将不做任何处理
+        if (isMdInlineLink(mdInline) && this.editor.ir.state.linkDelete(mdBlock, mdInline)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdInlineImg(mdInline) && this.editor.ir.state.imgDelete(mdBlock, mdInline)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdInlineFont(mdInline) && this.editor.ir.state.fontDelete(mdBlock, mdInline)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdInlineEmoji(mdInline) && this.editor.ir.state.emojiDelete(mdBlock, mdInline)) {
+            this.editor.ir.observer.flush()
             return true
         }
 
-        //退化失败后，mdBlock-Math和mdBlock-Fance将不做任何处理
-        if (!this.filter()) return false
-
-        //P标签处理
-        if (isMdBlockParagraph(mdBlock)) {
-            const mdBlockPreviousElement = mdBlock.previousElementSibling
-            //临近Hr附近
-            if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockHr(mdBlockPreviousElement)) {
-                mdBlockPreviousElement.remove()
-                return true
-            }
-
-            //临近LI附件
-            if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockListItem(mdBlockPreviousElement)) {
-                mdBlock.remove()
-                r.setStartAfter(mdBlockPreviousElement.lastElementChild)
-                r.setEndAfter(mdBlockPreviousElement.lastElementChild)
-                sel.setSingleRange(r)
-                return true
-            }
-
-            //尝试删除P节点
-            if (this.editor.domTool.deleteTextEmptyElement(mdBlock)) {
-                if (!mdBlockPreviousElement) {
-                    this.editor.ir.focueProcessor.updateFocusMdBlockByStart()
-                    return true
-                }
-
-                let text: any = this.editor.markdownTool.getParagraphLastTextNode(mdBlockPreviousElement as HTMLElement)
-                if (text) {
-                    r.collapseAfter(text)
-                    sel.setSingleRange(r)
-                    return true
-                }
-
-                //选择下一个字符
-                text = this.editor.markdownTool.getLastTextNode(mdBlockPreviousElement)
-                if (text) {
-                    this.editor.domTool.selectedNodeLast(text)
-                    return true
-                }
-                return false
-            }
-
-
-
+        
+        if (isMdBlockParagraph(mdBlock) && this.editor.ir.state.paragraphDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockHeading(mdBlock) && this.editor.ir.state.headingDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockFence(mdBlock) && this.editor.ir.state.fenceDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockMath(mdBlock) && this.editor.ir.state.mathBlockDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockHTML(mdBlock) && this.editor.ir.state.htmlBlockDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockMeta(mdBlock) && this.editor.ir.state.metaBlockDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
+        } else if (isMdBlockCode(mdBlock) && this.editor.ir.state.codeBlockDelete(mdBlock, mdInline, event)) {
+            this.editor.ir.observer.flush()
+            return true
         }
 
 
-        //模拟最后字符删除
-        let startOff = r.startOffset
-
-        //模拟最后字符删除(用于修复link的错误删除)
-        if (start.nodeType == 3 && startOff == 1 && start.previousSibling && start.previousSibling.nodeType == 1) {
-            let sib = start.previousSibling as HTMLElement
-            if (isMdInlineLink(sib)) {
-                r.setStart(start, startOff - 1)
-                r.deleteContents()
-                this.editor.ir.focueProcessor.focusMdInline(sib)
-                return true
-            }else if(isMdInlineFont(sib)){
-                r.setStart(start, startOff - 1)
-                r.deleteContents()
-                r.setStartAfter(sib.lastChild)
-                r.setEndAfter(sib.lastChild)
-                sel.setSingleRange(r)
-                this.editor.ir.focueProcessor.focusMdInline(sib)
-                return true
-            }
-        }
 
         return false;
     }
@@ -126,6 +98,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
             r.deleteContents()
             let startinline = IRfindClosestMdInline(start)
             this.editor.ir.contextRefresher.refreshImg(startElement, startinline)
+            this.editor.markdownTool.reRenderInlineElementAtBlock(startElement)
             return true
         }
 
@@ -182,7 +155,13 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
         //单一的删除
         if (rangy.getSelection().isCollapsed) {
-            if (this.deleteCollapsed()) event.preventDefault()
+
+            
+            if (this.deleteCollapsed()) {
+
+                
+                event.preventDefault()
+            }
         } else {//范围删除
             if (this.deleteRang()) event.preventDefault()
         }
@@ -191,7 +170,8 @@ class IRDeletekeyProcessor implements KeyProcessor {
 
     public execute(event: KeyboardEvent & { target: HTMLElement }) {
         if (event.key != "Backspace") return false
-
+        if(event.target.tagName == "INPUT") return false
+        
         //修改动作前的跟新
         this.editor.ir.focueProcessor.updateBeforeModify()
         try {

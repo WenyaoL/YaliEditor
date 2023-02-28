@@ -12,6 +12,7 @@
     "strictNullChecks": false,
     "allowJs": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "paths": {
@@ -31,7 +32,14 @@
   ],
   "exclude": [
     "node_modules",
-    "src/markdown-it-plugin/markdown-it-list-beautiful",
+    "src/markdown-it-plugin/markdown-it-list-beautiful/**/*",
+    "src/markdown-it-plugin/markdown-it-table-beautiful/**/*",
+    "src/markdown-it-plugin/markdown-it-emoji/**/*",
+    "src/electron-main/**/*",
+    "src/electron-renderer/**/*",
+    "src/store/**/*",
+    "src/utils/**/*",
+    "src/background.js"
     //"src/main.ts",
   ],
   "files": [

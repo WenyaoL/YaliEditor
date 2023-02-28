@@ -14,7 +14,10 @@ pre.markdown-it-code-beautiful{
   z-index: 1;
 }
   
-
+div[md-like="fence"]{
+  color: #a78405;
+  width: max-content;
+}
     
 .markdown-it-code-beautiful{
   position: relative;

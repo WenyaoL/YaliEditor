@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
 
-import CodemirrorManager from './markdown-it-codemirror-beautiful'
+import CodemirrorManager, {CodemirrorPlugin} from './markdown-it-codemirror-beautiful'
 import markdownItFontBeautiful from './markdown-it-font-beautiful'
 import markdownItCodeblockBeautiful from './markdown-it-codeblock-beautiful'
 import markdownItBlockquoteBeautiful from './markdown-it-blockquote-beautiful'
@@ -13,6 +13,8 @@ import markdownItImageBeautiful from './markdown-it-image-beautiful'
 import markdownItLinkBeautiful from './markdown-it-link-beautiful'
 import { MultimdTable} from './markdown-it-table-beautiful'
 import {Mathjax} from './markdown-it-mathjax-beautiful'
+import emoji from './markdown-it-emoji'
+
 
 import './index.scss'
 import YaLiEditor from '@/YaliEditor/src';
@@ -38,6 +40,7 @@ class MarkdownBeautiful{
       breaks:true,
       highlight: this.codemirrorManager.highlighter
     })
+    this.md.use(CodemirrorPlugin)
 
     this.table = new MultimdTable({
       multiline:  true,
@@ -51,6 +54,8 @@ class MarkdownBeautiful{
     this.mathjax = new Mathjax(this.editor)
     this.md.use(this.mathjax.plugin)
     
+    //
+
     this.md.use(markdownItFontBeautiful,{borderModel:this.editor.options.ir.borderModel})
     this.md.use(markdownItCodeblockBeautiful)
     this.md.use(markdownItHrBeautiful)
@@ -62,6 +67,8 @@ class MarkdownBeautiful{
     this.md.use(markdownItImageBeautiful,{editor:this.editor})
     this.md.use(markdownItLinkBeautiful)
     
+    this.md.use(emoji)
+
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{
       this.md.use(mdp.plugin,mdp.options)
     })

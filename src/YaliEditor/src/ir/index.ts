@@ -43,6 +43,8 @@ import rangy from "rangy";
 import { getUniqueKey, refreshKeyId } from "@/markdown-it-plugin/markdown-it-key-generator";
 import IRPanelConfig from "../options/IRPanelConfig";
 import IRDragProcessor from "./IRDragProcessor";
+import { isMdBlockParagraph } from "../util/inspectElement";
+import {createParagraph} from '../util/createElement'
 /**
  * IR模式下的控制面板
  */
@@ -239,6 +241,7 @@ class IR {
         })
         this.contextRefresher.refreshContext()
         setTimeout(() => {
+            if(isMdBlockParagraph(this.rootElement.lastElementChild)) this.rootElement.appendChild(createParagraph())
             this.observer.start()
             this.focus()
         }, 200)

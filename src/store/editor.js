@@ -38,6 +38,12 @@ const editor = {
         updatePreview(state, payload) {
             state.applicationContext.preview = payload
         },
+        updateTitle(state, title) {
+            if (title) {
+                state.applicationContext.title = title
+                document.title = title
+            }
+        },
         updateFilePath(state, payload) {
             state.applicationContext.filePath = payload
         },

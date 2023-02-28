@@ -1,15 +1,95 @@
 import YaLiEditor from "..";
 import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockMeta, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
 
+import linkCtrl from "./linkCtrl";
+import imgCtrl from "./imgCtrl";
+import fontCtrl from "./fontCtrl";
+
+import paragraphCtrl from './paragraphCtrl';
+import headingCtrl from "./headingCtrl";
+import metaBlockCtrl from "./metaBlockCtrl";
+import mathBlockCtrl from "./mathBlockCtrl";
+import fenceCtrl from "./fenceCtrl";
+import htmlBlockCtrl from "./htmlBlockCtrl";
+import codeBlockCtrl from "./codeBlockCtrl";
+import listCtrl from "./listCtrl";
+import quoteBlockCtrl from "./quoteBlockCtrl";
+import emojiCtrl from "./emojiCtrl";
+
+
+const ctrl=[
+    linkCtrl,
+    imgCtrl,
+    fontCtrl,
+    emojiCtrl,
+
+    paragraphCtrl,
+    headingCtrl,
+    metaBlockCtrl,
+    mathBlockCtrl,
+    fenceCtrl,
+    htmlBlockCtrl,
+    codeBlockCtrl,
+
+    listCtrl,
+    quoteBlockCtrl,
+]
+
+class BaseState{
+    [x: string]: any;
+
+    linkDelete:any;
+    imgDelete:any;
+    fontDelete:any;
+
+    paragraphDelete:any;
+    headingDelete:any;
+    metaBlockDelete:any;
+    mathBlockDelete:any;
+    fenceDelete:any;
+    htmlBlockDelete:any;
+    codeBlockDelete:any;
+
+    linkInput:any;
+    imgInput:any;
+    fontInput:any;
+
+    paragraphInput:any;
+    headingInput:any;
+    metaBlockInput:any;
+    mathBlockInput:any;
+    fenceInput:any;
+    htmlBlockInput:any;
+    codeBlockInput:any;
+
+    paragraphEnter:any;
+    headingEnter:any;
+    metaBlockEnter:any;
+    mathBlockEnter:any;
+    fenceEnter:any;
+    htmlBlockEnter:any;
+    codeBlockEnter:any;
+    
+    listItmeEnter:any;
+    quoteBlockEnter:any;
+
+    imgRefresh:any;
+    linkRefresh:any;
+    fontRefresh:any;
+}
+
+
 /**
  * @author liangwenyao
  * @since 2023-2-10
  */
-class IRState {
+class IRState extends BaseState{
+    
 
     public editor: YaLiEditor;
-
+    
     constructor(editor: YaLiEditor) {
+        super()
         this.editor = editor
     }
 
@@ -162,6 +242,11 @@ class IRState {
 
 
 }   
+
+for (let index = 0; index < ctrl.length; index++) {
+    ctrl[index](IRState);
+}
+
 
 
 export default IRState;

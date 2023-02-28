@@ -4,7 +4,7 @@
  */
 
 import YaliEditor from '../index'
-import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph, isEmptyMdBlockHTML, isMdBlockHTML} from '../util/inspectElement'
+import {isMdBlock, isEmptyMdBlockFence, isMdBlockParagraph, isMdBlockToc, isMdBlockMath, isEmptyMdBlockMath, isEmptyMdBlockParagraph, isEmptyMdBlockHTML, isMdBlockHTML, isMdInlineFont, isMdBlockFence} from '../util/inspectElement'
 import { strToElement,createParagraph,strToNodeArray, strToDocumentFragment} from "../util/createElement";
 import rangy from "rangy";
 import Constants from '../constant/constants'
@@ -24,11 +24,13 @@ class MarkdownTool{
      * @param element 
      * @returns 
      */
-    turndown(element:HTMLElement,escape:boolean = true){
-        let turndown = this.editor.ir.parser.turndown(element.outerHTML)
+    turndown(element:HTMLElement | string,escape:boolean = true){
+        if(typeof element == "string"){
+            return this.editor.ir.parser.turndown(element)
+        }
         //P标签翻译出的markdown语法会被转义，去除头部的转义符
-        if(escape && !this.editor.options.ir.borderModel) turndown = turndown.replace(/(\\)(?=[\[\]`*.>#$])/g,"")
-        return turndown
+        //if(escape && !this.editor.options.ir.borderModel) turndown = turndown.replace(/(\\)(?=[\[\]`*.>#$])/g,"")
+        return this.editor.ir.parser.turndown(element.outerHTML)
     }
 
     /**
@@ -87,7 +89,7 @@ class MarkdownTool{
     reRenderInlineElementAtBlock(block:HTMLElement,force?: boolean){
         if(!block) return false;
         const childCount = block.childElementCount
-        let turndown = this.turndown(block)
+        let turndown = this.turndown(block.innerHTML)
         const res = this.renderInline(turndown)
 
         //强制渲染
@@ -121,7 +123,10 @@ class MarkdownTool{
     reRenderBlockElement(block:HTMLElement){
         if(!block || !isMdBlock(block)) return false;
         let turndown = this.turndown(block)
+
         const res = this.renderBlock(turndown)
+
+        
         const e = strToElement(res)
         block.replaceWith(e)
         return e
@@ -161,6 +166,10 @@ class MarkdownTool{
         return p
     }
 
+    nodeTransformToFence(element:HTMLElement){
+
+    }
+
     mdInlineDegenerateToText(inline:HTMLElement){
         if(!inline) return
         let turndown = this.turndown(inline)
@@ -179,14 +188,17 @@ class MarkdownTool{
      */
     mdBlockDegenerateToP(element:HTMLElement){
         if(!element) return;
+
         //不存在任何文本标签将会被退化
         if(element.innerText.length == 0 || element.innerText == "\n"){
             //P标签需要分类讨论
-            if(element.tagName == "P" && !element.previousElementSibling  && !element.nextElementSibling && element.parentElement
+            if(element.tagName == "P" 
+            && (!element.previousElementSibling)  
+            && (!element.nextElementSibling) && element.parentElement
             && (element.parentElement.tagName == "BLOCKQUOTE" || element.parentElement.tagName == "LI")){
                 //父标签是BLOCKQUOTE，父标签退化
                 return this.nodeDegenerateToP(element.parentElement)
-            }else if(element.tagName != "P"){        
+            }else if(element.tagName != "P"){       
                 if(isEmptyMdBlockFence(element)) this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
                 return this.nodeDegenerateToP(element)
             }
@@ -200,7 +212,6 @@ class MarkdownTool{
             this.editor.ir.renderer.codemirrorManager.viewDestroy(element.id)
             return this.nodeDegenerateToP(element)
         }
-
         return;
     }
 
@@ -232,11 +243,15 @@ class MarkdownTool{
 
     /**
      * 给定一个mdblock,参试将改block替换成fence
+     * 替换条件：空的MdBlock-Paragraph,一个mdLike-fence
      * @param block 
      * @param fence 
      */
     replaceMdBlockFence(block:HTMLElement,fence:Element){
         if(isEmptyMdBlockParagraph(block)){ 
+            block.replaceWith(fence)
+            return fence
+        }else if(isMdBlockFence(block) && block.hasAttribute(Constants.ATTR_MD_LIKE)){
             block.replaceWith(fence)
             return fence
         }
@@ -324,6 +339,20 @@ class MarkdownTool{
         
         return element.lastChild
     }
+
+    getFontContent(element:HTMLElement){
+        if(!isMdInlineFont(element)) return ''
+
+        const children = Array.from(element.childNodes)
+        let res = ''
+        children.forEach(node=>{
+            if(node.nodeType == 3){
+                res+=node.textContent
+            }
+        })
+        return res
+    }
+
 
     /**
      * 给定元素，通过元素来判断是否需要对光标进行偏移或者选择

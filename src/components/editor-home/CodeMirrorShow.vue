@@ -74,9 +74,9 @@ export default defineComponent({
       }
 
       const updateContent = (text)=>{
-        let title = document.getElementsByTagName("title")[0].innerText
+        let title = document.title
         if(title.charAt(title.length-1) !== "*"){
-          document.getElementsByTagName("title")[0].innerText = title+"*"
+          document.title = title+"*"
         }
         //跟新文件状态
         store.commit('updateFileState',false)

@@ -49,7 +49,7 @@ export class EditorConfig {
 
         editor
             .ir
-            .addMarkdownItPlugins({ plugin: emoji })
+            //.addMarkdownItPlugins({ plugin: emoji })
             .addCodemirrorPlugins(myMinimalSetup)
             .addCodemirrorPlugins(keymap.of([indentWithTab]))
             .end()

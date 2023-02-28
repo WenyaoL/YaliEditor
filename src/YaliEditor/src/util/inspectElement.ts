@@ -29,6 +29,12 @@ export const isMdBlockFence = (element: Element) => {
   return false
 }
 
+export const isMdLikeFence = (element: Element) => {
+  if (!element) return false
+  if (element.getAttribute(Constants.ATTR_MD_LIKE) == Constants.ATTR_MD_BLOCK_FENCE) return true
+  return false
+}
+
 export const isMdBlockMath = (element: Element) => {
   if (!isMdBlock(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_BLOCK) == Constants.ATTR_MD_BLOCK_MATH) return true
@@ -113,19 +119,37 @@ export const isMdInlineImg = (element: Element) => {
   return false
 }
 
+export const isMdInlineEmoji = (element: Element) => {
+  if (!isMdInline(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_EMOJI) return true
+  return false
+}
+
+export const isMdLikeEmoji = (element: Element) => {
+  if (element.getAttribute(Constants.ATTR_MD_LIKE) == Constants.ATTR_MD_INLINE_EMOJI) return true
+  return false
+}
+
+
 export const isMdInlineLink = (element: Element) => {
   if (!isMdInline(element)) return false
   if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_LINK) return true
   return false
 }
 
-export const isMdInlineFont = (element: Element) =>{
-  if(!isMdInline(element)) return false
+export const isMdInlineFont = (element: Element) => {
+  if (!isMdInline(element)) return false
   const attr = element.getAttribute(Constants.ATTR_MD_INLINE)
-  if (attr == Constants.ATTR_MD_INLINE_CODE || 
-    attr == Constants.ATTR_MD_INLINE_EM || 
+  if (attr == Constants.ATTR_MD_INLINE_CODE ||
+    attr == Constants.ATTR_MD_INLINE_EM ||
     attr == Constants.ATTR_MD_INLINE_STRONG ||
     attr == Constants.ATTR_MD_INLINE_UNDERLINE) return true
+  return false
+}
+
+export const isMdInlineCode = (element: Element) => {
+  if (!isMdInline(element)) return false
+  if (element.getAttribute(Constants.ATTR_MD_INLINE) == Constants.ATTR_MD_INLINE_CODE) return true
   return false
 }
 
@@ -156,7 +180,9 @@ export const isEmptyMdBlockParagraph = (element: HTMLElement) => {
  * 判断当前fence块文本是否为空
  */
 export const isEmptyMdBlockFence = (element: Element) => {
-  if (isMdBlockFence(element) && element.firstElementChild.getAttribute("is-empty") == "true") return true
+  if (isMdBlockFence(element) && element.firstElementChild?.getAttribute("is-empty") == "true") {
+    return true
+  }
   return false
 }
 

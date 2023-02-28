@@ -8,9 +8,6 @@
 import { ref, onMounted, onUnmounted, onBeforeUnmount, watch } from 'vue'
 import { useStore } from 'vuex'
 import YaLiEditor from '@/YaliEditor/src'
-import Constants from '@/YaliEditor/src/constant/constants'
-import ContextMenu from '@imengyu/vue3-context-menu'
-import { createCommonItems } from './tipitemsCommon'
 import { exec } from './utils'
 
 import { getCurrentInstance } from 'vue';
