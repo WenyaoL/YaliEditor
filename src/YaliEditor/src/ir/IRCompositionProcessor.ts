@@ -51,7 +51,7 @@ export class IRCompositionProcessor{
             return true
         }
 
-
+        
 
         if (isMdBlockParagraph(mdBlock) && this.editor.ir.state.paragraphInput(mdBlock, mdInline, event)) {
             this.editor.ir.observer.flush()
@@ -75,7 +75,7 @@ export class IRCompositionProcessor{
             this.editor.ir.observer.flush()
             return true
         }
-
+        this.editor.ir.observer.flush()
         //根据输入位置发布不同的事件
         /*let type = this.editor.ir.focueProcessor.getSelectedBlockMdType()
         if(type === Constants.ATTR_MD_BLOCK_HEADING){

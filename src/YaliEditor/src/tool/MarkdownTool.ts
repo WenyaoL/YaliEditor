@@ -63,7 +63,7 @@ class MarkdownTool{
     reRenderInlineElement(inline:HTMLElement){
         if(!inline) return
         let turndown = this.turndown(inline)
-
+        
         
         const res = this.renderInline(turndown)
 

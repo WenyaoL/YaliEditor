@@ -3,11 +3,11 @@
 const htmlBlockCtrl = IRState => {
     
     IRState.prototype.htmlBlockDelete = function (mdBlock) {
-        return true
+        return false
     }
 
     IRState.prototype.htmlBlockEnter = function(mdBlock){
-        return true
+        return false
     }
 
     IRState.prototype.htmlBlockInput = function(mdBlock,mdInline,event){

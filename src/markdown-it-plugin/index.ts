@@ -11,6 +11,7 @@ import markdownItListBeautiful from './markdown-it-list-beautiful'
 import markdownItTocBeautiful from "./markdown-it-toc-beautiful"
 import markdownItImageBeautiful from './markdown-it-image-beautiful'
 import markdownItLinkBeautiful from './markdown-it-link-beautiful'
+import markdownItParagraphBeautiful from './markdown-it-paragraph-beautiful'
 import { MultimdTable} from './markdown-it-table-beautiful'
 import {Mathjax} from './markdown-it-mathjax-beautiful'
 import emoji from './markdown-it-emoji'
@@ -66,7 +67,7 @@ class MarkdownBeautiful{
     this.md.use(markdownItTocBeautiful)
     this.md.use(markdownItImageBeautiful,{editor:this.editor})
     this.md.use(markdownItLinkBeautiful)
-    
+    this.md.use(markdownItParagraphBeautiful)
     this.md.use(emoji)
 
     this.editor.ir.options.markdownItPlugins.forEach(mdp=>{

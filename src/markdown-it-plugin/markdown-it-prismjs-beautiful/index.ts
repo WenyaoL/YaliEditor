@@ -48,10 +48,9 @@ export const prismHighlighter =(str:string,lang:string)=>{
     //loadLanguages(lowerCaseLang)
     loadLanguage(lowerCaseLang)
     let gammer = Prism.languages[lowerCaseLang]
-    console.log("要加载的语言",lowerCaseLang);
-    console.log("加载的gammer",gammer);
+
     //console.log(java);
-    console.log(Prism.languages.javascript);
+
     if(gammer){
         let html = Prism.highlight(str,gammer,lowerCaseLang)
         html = '<pre class="line-numbers"><code>' + html + '</code></pre>'

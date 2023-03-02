@@ -4,7 +4,7 @@
  * @github https://github.com/WenyaoL/YaliEditor
  */
 import YaLiEditor from '@/YaliEditor/src';
-import TurndownService from 'turndown';
+import TurndownService from './lib/turndown';
 import tableRule from './table'
 import beautify from 'js-beautify'
 
@@ -175,10 +175,16 @@ class TurndownParser {
         return '<u>' + content + '</u>'
       }
     })
-
+    
     //粗体字
     this.turndownService.addRule('md-font-strong', {
-      filter: 'strong',
+      filter: function (node, options) {
+        let flag = (
+          node.nodeName === 'STRONG' &&
+          node.getAttribute('md-inline') === "strong"
+        )
+        return flag
+      },
       replacement: (content, node, options) => {
         if (options.borderModel) return content
         return options.strongDelimiter + content + options.strongDelimiter
@@ -186,7 +192,7 @@ class TurndownParser {
     })
 
     //斜体
-    this.turndownService.addRule('md-font-strong', {
+    this.turndownService.addRule('md-font-em', {
       filter: 'em',
       replacement: (content, node, options) => {
         if (options.borderModel) return content

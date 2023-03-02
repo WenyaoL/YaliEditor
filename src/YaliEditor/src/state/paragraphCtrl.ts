@@ -113,12 +113,10 @@ const paragraphCtrl = IRState => {
     }
 
     IRState.prototype.paragraphInput = function (mdBlock:HTMLElement, mdInline, event) {
+        if(event.data == " ") return false
+
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0)
-
-        if (event.data == " ") {
-            return true
-        }
         const mark = r.getBookmark(mdBlock)
         const expectLength = mdBlock.textContent.length
 
@@ -141,6 +139,8 @@ const paragraphCtrl = IRState => {
             sel.collapse(mdBlock, mdBlock.childNodes.length)
         }
         this.editor.ir.focueProcessor.updateFocusElement()
+
+        
         return block
     }
 

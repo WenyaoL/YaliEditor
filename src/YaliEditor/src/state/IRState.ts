@@ -191,7 +191,9 @@ class IRState extends BaseState{
 
 
     diffParagraph(oldElement: Element, newElement: Element) {
-        if (oldElement.textContent != newElement.textContent) oldElement.replaceWith(newElement)
+        if (oldElement.textContent != newElement.textContent) {
+            oldElement.replaceWith(newElement)
+        }
     }
 
     diffHeading(oldElement: Element, newElement: Element) {
