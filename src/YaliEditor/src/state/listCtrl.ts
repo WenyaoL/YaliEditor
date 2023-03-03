@@ -1,5 +1,7 @@
 import { getUniqueKey } from "@/markdown-it-plugin/markdown-it-key-generator"
 import rangy from "rangy"
+import YaLiEditor from ".."
+import { isMdBlockFence, isMdBlockMath, isMdBlockParagraph } from "../util/inspectElement"
 
 const listCtrl = IRState => {
 
@@ -16,12 +18,30 @@ const listCtrl = IRState => {
     }
 
 
-    IRState.prototype.listItmeDelete = function () {
-        return true
+    IRState.prototype.listItmeDelete = function (li:HTMLElement) {
+        const editor =  this.editor as YaLiEditor
+        const block = editor.ir.focueProcessor.getSelectedBlockMdElement(false)
+
+        if(block && isMdBlockParagraph(block) && this.editor.domTool.isTextEmptyElement(block) && !block.nextElementSibling && !block.previousElementSibling){
+            const ul = li.parentElement
+            li.remove()
+            if(ul.childElementCount == 0){
+                const p = editor.markdownTool.nodeDegenerateToP(ul)
+                p.focus()
+            }
+            return true
+        }
+
+        return false
     }
 
     IRState.prototype.listItmeEnter = function (li) {
         
+        const editor =  this.editor as YaLiEditor
+        const block = editor.ir.focueProcessor.getSelectedBlockMdElement(false)
+
+        if(isMdBlockFence(block) || isMdBlockMath(block)) return false
+
         const sel = rangy.getSelection()
         let { start, end } = this.editor.domTool.splitElementAtCursor(li)
         

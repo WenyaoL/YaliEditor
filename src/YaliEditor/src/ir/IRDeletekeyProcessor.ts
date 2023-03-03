@@ -4,12 +4,14 @@
  */
 import YaliEditor from '../index'
 import {
+    IRfindClosestLi,
     IRfindClosestMdBlock,
-    IRfindClosestMdInline
+    IRfindClosestMdInline,
+    IRfindClosestQuote
 } from '../util/findElement';
 import CONSTANTS from "../constant/constants";
 import rangy from "rangy";
-import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML, isMdInline, isMdInlineFont, isMdInlineLink, isMdBlockListItem, isMdInlineImg, isMdBlockMeta, isMdBlockCode, isMdBlockHeading, isMdInlineEmoji } from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockTable, isMdBlockParagraph, isMdBlockMath, isMdBlockHr, isMdBlockHTML, isMdInline, isMdInlineFont, isMdInlineLink, isMdBlockListItem, isMdInlineImg, isMdBlockMeta, isMdBlockCode, isMdBlockHeading, isMdInlineEmoji, isMdBlockQuote } from "../util/inspectElement";
 import { KeyProcessor } from './KeyProcessor'
 import { sortBy } from 'lodash';
 
@@ -37,9 +39,7 @@ class IRDeletekeyProcessor implements KeyProcessor {
             this.editor.ir.focueProcessor.updateFocusElement()
             return true
         }
-        
-        //
-        //退化失败后，mdBlock-Math和mdBlock-Fance将不做任何处理
+
         if (isMdInlineLink(mdInline) && this.editor.ir.state.linkDelete(mdBlock, mdInline)) {
             this.editor.ir.observer.flush()
             return true
@@ -78,7 +78,17 @@ class IRDeletekeyProcessor implements KeyProcessor {
             return true
         }
 
+        const li = IRfindClosestLi(mdBlock)
+        const quote = IRfindClosestQuote(mdBlock)
+        if (isMdBlockListItem(li) && this.editor.ir.state.listItmeDelete(li, mdInline)) { 
+            this.editor.ir.observer.flush()
+            return true 
+        }else if(isMdBlockQuote(quote) && this.editor.ir.state.quoteBlockDelete(quote,mdInline)) { 
+            this.editor.ir.observer.flush()
+            return true 
+        }
 
+        this.editor.ir.focueProcessor.updateFocusElement()
 
         return false;
     }

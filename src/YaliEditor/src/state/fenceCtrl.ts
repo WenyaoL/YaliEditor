@@ -74,6 +74,7 @@ const fenceCtrl = IRState => {
     }
 
     IRState.prototype.fenceEnter = function (mdBlock: HTMLElement) {
+        
         const editorTool = (this.editor.editorTool as EditorTool)
         if (isMdBlockFence(mdBlock) && mdBlock.hasAttribute(constants.ATTR_MD_LIKE)) {
             //创建代码块

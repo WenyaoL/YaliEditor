@@ -57,7 +57,7 @@
     p {
         position: relative;
         min-height: 22.4px;
-        white-space: pre-wrap;
+        /*white-space: pre-wrap;*/
         padding-bottom: 6px;
         padding-top: 6px;
         margin-block-start: 0;
@@ -87,9 +87,14 @@
             background-color: var(--yali-code-font-background-color);
             font-size: large;
         }
+
+        
+        
     }
 
-
+    ul[md-block="bullet_list"],ul[md-block="ordered_list"]{
+        padding-inline-start: 25px;
+    }
 
 
     p.md-focus::before {
@@ -97,7 +102,7 @@
         border: 1px solid;
         border-radius: 3px;
         position: absolute;
-        left: -1.357143rem;
+        left: -21px;
         top: 10px;
         font-size: 11px;
         font-weight: 500;
@@ -107,6 +112,24 @@
         line-height: normal;
         content: "P";
     }
+
+    pre[md-block="fence"].md-focus::before {
+        color: var(--yali-md-focus-before-color);
+        border: 1px solid;
+        border-radius: 3px;
+        position: absolute;
+        left: -21px;
+        top: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        line-height: normal;
+        content: "F";
+    }
+
+    
 
     pre {
         border-radius: 5px;

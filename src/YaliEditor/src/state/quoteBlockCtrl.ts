@@ -3,15 +3,16 @@
 const quoteBlockCtrl = IRState => {
     
     IRState.prototype.quoteBlockDelete = function (mdBlock) {
-        return true
+        return false
     }
 
     IRState.prototype.quoteBlockEnter = function(mdBlock){
-        return true
+        
+        return false
     }
 
     IRState.prototype.quoteBlockInput = function(mdBlock,mdInline,event){
-        return true
+        return false
     }
 }
 

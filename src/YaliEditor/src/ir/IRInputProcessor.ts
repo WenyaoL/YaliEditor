@@ -35,7 +35,8 @@ class IRInputProcessor {
         if (event.isComposing) {
             return;
         }
-
+        
+        
         const mdBlock = this.editor.ir.focueProcessor.selectedBlockMdElement
         const mdInline = this.editor.ir.focueProcessor.selectedInlineMdElement
         //根据输入位置发布不同的事件
@@ -83,7 +84,6 @@ class IRInputProcessor {
         }
 
         this.editor.ir.observer.flush()
-
     }
 
 }

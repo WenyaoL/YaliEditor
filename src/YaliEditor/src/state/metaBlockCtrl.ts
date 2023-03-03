@@ -12,7 +12,7 @@ const metaBlockCtrl = IRState => {
     }
 
     IRState.prototype.metaBlockInput = function(mdBlock,mdInline,event){
-        return true
+        return false
     }
 }
 

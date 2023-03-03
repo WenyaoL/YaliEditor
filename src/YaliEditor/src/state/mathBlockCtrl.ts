@@ -10,7 +10,7 @@ const mathBlockCtrl = IRState => {
     }
 
     IRState.prototype.mathBlockInput = function(mdBlock,mdInline,event){
-        return true
+        return false
     }
 }
 

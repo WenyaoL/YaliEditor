@@ -1,5 +1,5 @@
 import YaLiEditor from "..";
-import { isMdBlockFence, isMdBlockHr, isMdBlockListItem, isMdBlockParagraph, isMdInlineFont, isMdInlineLink } from "../util/inspectElement";
+import { isMdBlockFence, isMdBlockHr, isMdBlockListItem, isMdBlockMath, isMdBlockParagraph, isMdInlineFont, isMdInlineLink } from "../util/inspectElement";
 import IRState from "./IRState";
 import rangy from "rangy";
 import { createParagraph } from "../util/createElement";
@@ -8,12 +8,19 @@ import { IRfindClosestLi } from "../util/findElement";
 
 const paragraphCtrl = IRState => {
 
-    IRState.prototype.paragraphDelete = function (mdBlock) {
+    IRState.prototype.paragraphDelete = function (mdBlock: HTMLElement) {
 
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0).cloneRange() as RangyRange
         const start = r.startContainer
         const mdBlockPreviousElement = mdBlock.previousElementSibling
+
+
+
+        //在listItem下，交付给listItem处理
+        if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockListItem(mdBlock.parentElement)) {
+            return false
+        }
 
         //临近Hr附近
         if (this.editor.domTool.isTextEmptyElement(mdBlock) && isMdBlockHr(mdBlockPreviousElement)) {
@@ -37,7 +44,7 @@ const paragraphCtrl = IRState => {
             editor.ir.renderer.codemirrorManager.viewFocus(mdBlockPreviousElement.id)
             return true
         }
-        
+
         if (this.editor.ir.rootElement.childElementCount == 1 && this.editor.domTool.isTextEmptyElement(mdBlock)) {
             return true
         }
@@ -112,8 +119,8 @@ const paragraphCtrl = IRState => {
         }
     }
 
-    IRState.prototype.paragraphInput = function (mdBlock:HTMLElement, mdInline, event) {
-        if(event.data == " ") return false
+    IRState.prototype.paragraphInput = function (mdBlock: HTMLElement, mdInline, event) {
+        if (event.data == " ") return false
 
         const sel = rangy.getSelection()
         const r = sel.getRangeAt(0)
@@ -121,31 +128,33 @@ const paragraphCtrl = IRState => {
         const expectLength = mdBlock.textContent.length
 
         const block = this.paragraphRefresh(mdBlock, mdInline) as HTMLElement
-        if (block){ 
+        if (block) {
             (mark as any).containerNode = block
             //compute expectLength
-            if(block.textContent.length != expectLength){
-                const bias = block.textContent.length-expectLength
-                mark.end = mark.end+bias
-                mark.start = mark.start+bias
+            if (block.textContent.length != expectLength) {
+                const bias = block.textContent.length - expectLength
+                mark.end = mark.end + bias
+                mark.start = mark.start + bias
             }
         }
 
         try {
             r.moveToBookmark(mark)
             sel.setSingleRange(r)
-            
+
         } catch (err) {
             sel.collapse(mdBlock, mdBlock.childNodes.length)
         }
         this.editor.ir.focueProcessor.updateFocusElement()
 
-        
+
         return block
     }
 
-    IRState.prototype.paragraphRefresh = function (mdBlock:HTMLElement, mdInline) {
+    IRState.prototype.paragraphRefresh = function (mdBlock: HTMLElement, mdInline) {
         if (!isMdBlockParagraph(mdBlock)) return false
+
+        const editor = this.editor as YaLiEditor
 
         //尝试刷新行内的所有文本
         if (this.editor.markdownTool.reRenderInlineElementAtBlock(mdBlock)) {
@@ -155,12 +164,18 @@ const paragraphCtrl = IRState => {
 
         //尝试对整个块进行转换
         mdBlock = this.editor.markdownTool.mdBlockTransform(mdBlock) as HTMLElement
-        
-        
+
         if (!mdBlock) return false
-        /*if(mdBlock.hasAttribute("md-like")){
-            (this.editor as YaLiEditor).editorTool.createSuggestionPopper(mdBlock,[{value:"fsasdfasdf"}])
-        }*/
+
+        if (isMdBlockMath(mdBlock)) {
+            const container = mdBlock.querySelector(".markdown-it-code-beautiful")
+            editor.ir.renderer.codemirrorManager.refreshStateCacheByElement(container)
+            editor.ir.focueProcessor.updateFocusMdBlockByStart(mdBlock)
+            setTimeout(() => {
+                editor.ir.renderer.codemirrorManager.viewFocus(container.id)
+            })
+        }
+
         return mdBlock
     }
 }
