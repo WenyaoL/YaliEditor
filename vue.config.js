@@ -5,7 +5,7 @@ module.exports = defineConfig({
   publicPath:'./',
   configureWebpack:{
     entry: {
-      app: './src/main.ts' //main.js顺手改成ts就好，出的错处理一下
+      app: './src/electron-renderer/main.ts' //main.js顺手改成ts就好，出的错处理一下
     },
     module: {
       rules: [
@@ -28,7 +28,7 @@ module.exports = defineConfig({
     electronBuilder: {
       //nodeIntegration: true,
       //disableMainProcessTypescript: false,
-      //mainProcessFile:'src/background.ts',
+      mainProcessFile:'src/electron-main/background.js',
       contextIsolation: true,
       customFileProtocol: './',
       preload: 'src/electron-main/preload.js',

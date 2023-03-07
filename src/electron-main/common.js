@@ -2,11 +2,6 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import fs from 'fs'
-import path from 'path'
-import { argv } from 'process';
-import { app, protocol, BrowserWindow, Menu, dialog } from 'electron'
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import { defaultApplicationContext } from './config';
 
 export const CAN_READ_EXTENSION = ['.md', '.txt', '.markdown', '.mkd', '.mdown', '.mkdn']

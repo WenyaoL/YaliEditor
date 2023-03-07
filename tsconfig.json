@@ -22,27 +22,21 @@
     },
   },
   "include": [
-    "src/bus/*",
-    "src/codemirror-plugin/**/*",
-    "src/components/**/*",
-    "src/markdown-it-plugin/**/*",
-    "src/turndown-plugin/**/*",
-    "src/views/**/*",
-    "src/YaliEditor/**/*",
+    "src/electron-renderer/**/*"
   ],
   "exclude": [
     "node_modules",
-    "src/markdown-it-plugin/markdown-it-list-beautiful/**/*",
-    "src/markdown-it-plugin/markdown-it-table-beautiful/**/*",
-    "src/markdown-it-plugin/markdown-it-emoji/**/*",
     "src/electron-main/**/*",
-    "src/electron-renderer/**/*",
-    "src/store/**/*",
-    "src/utils/**/*",
-    "src/background.js"
-    //"src/main.ts",
+    "src/electron-renderer/YaliEditor/plugin/markdown-it-plugin/markdown-it-list-beautiful/**/*",
+    "src/electron-renderer/YaliEditor/plugin/markdown-it-plugin/markdown-it-table-beautiful/**/*",
+    "src/electron-renderer/YaliEditor/plugin/markdown-it-plugin/markdown-it-emoji/**/*",
+    "src/electron-renderer/YaliEditor/plugin/turndown-plugin/lib/*",
+    "src/electron-renderer/YaliEditor/plugin/turndown-plugin/table.js",
+    "src/electron-renderer/store/**/*",
+    "src/electron-renderer/utils/**/*",
+    "src/electron-renderer/ipc/*",
   ],
   "files": [
-    "./src/shims-vue.d.ts"
+    "src/electron-renderer/shims-vue.d.ts"
   ]
 }

@@ -5,11 +5,11 @@
 
 import AppMenu from './menu'
 import AppWindow from './window/index'
-import {MainIPMEventLoader} from './ipmMainLoad'
+import {MainIPCEventLoader} from './ipc/ipcMainLoad'
 
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
-import Store from 'electron-store'
+import store from './store'
 import {app} from 'electron'
 import {defaultKeyMap} from './config'
 import AppFileSystem from './fileSystem'
@@ -18,30 +18,11 @@ export class AppManager{
 
 
     constructor(){
+        this.store = store
         this.appWindow = new AppWindow(this)
         this.appMenu = new AppMenu(this)
         this.appFileSystem = new AppFileSystem(this)
-        this.store = new Store({
-            clearInvalidConfig:true,
-            schema:{
-                theme:{
-                    type:'string',
-                    default:'light',
-                    description:'主题类型'
-                },
-                recentDocuments:{
-                    type:'array',
-                    default:[],
-                    description:'最近打开文件列表,{fileName:"文件名",dirName:"目录名",description:"文章前几行的文本信息"}'
-                },
-                currKeyMap:{
-                    type:'object',
-                    default:Object.fromEntries(defaultKeyMap.entries()),
-                    description:'快捷键映射'
-                }
-            }
-        })
-        this.mainIPMEventLoader = new MainIPMEventLoader(this)
+        this.mainIPMEventLoader = new MainIPCEventLoader(this)
 
     }
 

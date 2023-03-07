@@ -13,7 +13,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
+  "main": "./electron-main/background.js",
   "dependencies": {
     "@codemirror/lang-markdown": "^6.0.0",
     "@codemirror/language-data": "^6.1.0",
@@ -28,6 +28,7 @@
     "element-plus": "^2.2.9",
     "fuzzaldrin": "^2.1.0",
     "highlight.js": "^11.6.0",
+    "i18n": "^0.15.1",
     "js-beautify": "^1.14.7",
     "jspdf": "^2.5.1",
     "juice": "^8.1.0",

@@ -1,0 +1,230 @@
+@import '../../../assets/theme/light.scss';
+@import '../../../assets/theme/var.scss';
+
+.YaLi-ir {
+    outline: none;
+    padding-bottom: 120px;
+    margin: auto 30px;
+    min-height: 80%;
+
+}
+
+/*.YaLi-ir::after {
+    content: "";
+    font-size: 0;
+    display: block;
+    height: 0;
+}*/
+
+.YaLi-ir h1,
+.YaLi-ir h2,
+.YaLi-ir h3,
+.YaLi-ir h4,
+.YaLi-ir h5,
+.YaLi-ir h6 {
+    position: relative;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+}
+
+.YaLi-ir {
+    h1 {
+        font-size: 2em;
+        border-bottom: 1px solid #eee;
+    }
+
+    h2 {
+        font-size: 1.75em;
+        border-bottom: 1px solid #eee;
+    }
+
+    h3 {
+        font-size: 1.5em;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1.0em;
+    }
+
+    h6 {
+        font-size: 0.8em;
+    }
+
+    p {
+        position: relative;
+        min-height: 22.4px;
+        /*white-space: pre-wrap;*/
+        padding-bottom: 6px;
+        padding-top: 6px;
+        margin-block-start: 0;
+        margin-block-end: 0;
+
+        u {
+            //color: palevioletred;
+            color: var(--yali-underline-font-color);
+        }
+
+        strong {
+            color: var(--yali-bold-font-color);
+        }
+
+        em {
+            color: var(--yali-italic-font-color);
+        }
+
+        s {
+            color: var(--yali-deleteline-font-color);
+        }
+
+        code {
+            border: 1px solid var(--yali-code-font-border-color);
+            border-radius: 3px;
+            color: var(--yali-code-font-color);
+            background-color: var(--yali-code-font-background-color);
+            font-size: large;
+        }
+
+        
+        
+    }
+
+    ul[md-block="bullet_list"],ul[md-block="ordered_list"]{
+        padding-inline-start: 25px;
+    }
+
+
+    p.md-focus::before {
+        color: var(--yali-md-focus-before-color);
+        border: 1px solid;
+        border-radius: 3px;
+        position: absolute;
+        left: -21px;
+        top: 10px;
+        font-size: 11px;
+        font-weight: 500;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        line-height: normal;
+        content: "P";
+    }
+
+    pre[md-block="fence"].md-focus::before {
+        color: var(--yali-md-focus-before-color);
+        border: 1px solid;
+        border-radius: 3px;
+        position: absolute;
+        left: -21px;
+        top: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        line-height: normal;
+        content: "F";
+    }
+
+    
+
+    pre {
+        border-radius: 5px;
+        background-color: var(--yali-pre-background-color);
+        color: #000;
+    }
+
+    blockquote {
+        padding: 0 15px;
+        color: var(--yali-blockquote-color);
+        border-left: 4px solid var(--yali-blockquote-border-color);
+        margin-left: 10px;
+
+    }
+
+}
+
+.YaLi-ir {
+
+    .md-border {
+        display: none;
+    }
+
+    strong.md-expand span.md-border {
+        display: inline;
+        color: var(--yali-font-before-color);
+    }
+
+    em.md-expand span.md-border {
+        display: inline;
+        color: var(--yali-font-before-color);
+    }
+
+    code.md-expand span.md-border {
+        display: inline;
+    }
+
+    s.md-expand span.md-border {
+        display: inline;
+        color: var(--yali-font-before-color);
+    }
+
+    u.md-expand span.md-border {
+        display: inline;
+        color: var(--yali-font-before-color);
+    }
+
+
+
+    /*飞边界模式下的CSS
+    code.md-expand::before,code.md-expand::after{
+        content: '`';
+    }
+
+    strong.md-expand::before,strong.md-expand::after{
+        content: '**';
+        color: var(--yali-font-before-color);
+    }
+
+    em.md-expand::before,em.md-expand::after{
+        content: '*';
+        color: var(--yali-font-before-color);
+    }
+
+    s.md-expand::before,s.md-expand::after{
+        content: '~~';
+        color: var(--yali-font-before-color);
+    }
+    
+    u.md-expand::before {
+        content: '<u>';
+        color: var(--yali-font-before-color);
+    }
+
+    u.md-expand::after {
+        content: '</u>';
+        color: var(--yali-font-before-color);
+    }*/
+
+    p:empty::after {
+        content: '\200B';
+        /* */
+    }
+
+    h1:empty::after,
+    h2:empty::after,
+    h3:empty::after,
+    h4:empty::after,
+    h5:empty::after,
+    h6:empty::after {
+        content: '\200B';
+    }
+}
+
+:not(.cm-editor *)::selection {
+    background-color: var(--yali-selection-background-color);
+    color: var(--yali-selection-color);
+}
