@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import MiniTileBar from '../components/preference-setting/MiniTitleBar.vue'
 import SideBar from '../components/preference-setting/SideBar.vue'
-import KeybindingPanle from '../components/preference-setting/KeybindingPanle.vue'
+import KeybindingPanle from '../components/preference-setting/KeybindingPanel.vue'
 const props = defineProps<{}>()
 </script>
 

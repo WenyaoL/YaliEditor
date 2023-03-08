@@ -1,7 +1,8 @@
 import { BrowserWindow } from 'electron'
 
-export default function (shortKeymap) {
-    
+export default function (app,shortKeymap) {
+    const i18n = app.appI18n
+
     const heading1Key = shortKeymap.get("paragraph.heading-1")
     const heading2Key = shortKeymap.get("paragraph.heading-2")
     const heading3Key = shortKeymap.get("paragraph.heading-3")
@@ -19,45 +20,45 @@ export default function (shortKeymap) {
     const quoteBlockKey = shortKeymap.get('paragraph.quote-block')
 
     return {
-        label: '段落(P)',
+        label: i18n.t('PARAGRAPH_'),
         submenu: [
             {
-                label: '一级标题', accelerator: heading1Key?heading1Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_1'), accelerator: heading1Key?heading1Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 1 })
                 }
             },
             {
-                label: '二级标题', accelerator: heading2Key?heading2Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_2'), accelerator: heading2Key?heading2Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 2 })
                 }
             },
             {
-                label: '三级标题', accelerator: heading3Key?heading3Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_3'), accelerator: heading3Key?heading3Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 3 })
                 }
             },
             {
-                label: '四级标题', accelerator: heading4Key?heading4Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_4'), accelerator: heading4Key?heading4Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 4 })
                 }
             },
             {
-                label: '五级标题', accelerator: heading5Key?heading5Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_5'), accelerator: heading5Key?heading5Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 5 })
                 }
             },
             {
-                label: '六级标题', accelerator: heading6Key?heading6Key:'', click: () => {
+                label: i18n.t('PARAGRAPH_heading_6'), accelerator: heading6Key?heading6Key:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createLine', { type: "head", level: 6 })
@@ -65,21 +66,21 @@ export default function (shortKeymap) {
             },
             { type: 'separator' },
             {
-                label: '代码块', accelerator: fenceKey?fenceKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_codeBlock'), accelerator: fenceKey?fenceKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createBlock', { type: "codeblock" })
                 }
             },
             {
-                label: '公式块', accelerator: mathBlockKey?mathBlockKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_mathBlock'), accelerator: mathBlockKey?mathBlockKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createBlock', { type: "mathblock" })
                 }
             },
             {
-                label: 'HTML块', accelerator: htmlBlockKey?htmlBlockKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_htmlBlock'), accelerator: htmlBlockKey?htmlBlockKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createBlock', { type: "htmlblock" })
@@ -87,14 +88,14 @@ export default function (shortKeymap) {
             },
             { type: 'separator' },
             {
-                label: '有序列表', accelerator: orderListKey?orderListKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_orderList'), accelerator: orderListKey?orderListKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createMulLine', { type: "list" })
                 }
             },
             {
-                label: '无序列表', accelerator: bulletListKey?bulletListKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_bulletList'), accelerator: bulletListKey?bulletListKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createMulLine', { type: "unlist" })
@@ -102,21 +103,21 @@ export default function (shortKeymap) {
             },
             { type: 'separator' },
             {
-                label: '引用', accelerator: quoteBlockKey?quoteBlockKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_quoteBlock'), accelerator: quoteBlockKey?quoteBlockKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createMulLine', { type: "quote" })
                 }
             },
             {
-                label: '目录', accelerator: tocKey?tocKey:'', click: () => {
+                label: i18n.t('PARAGRAPH_toc'), accelerator: tocKey?tocKey:'', click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createToc')
                 }
             },
             {
-                label: '创建表格', click: () => {
+                label: i18n.t('PARAGRAPH_createTable'), click: () => {
                     BrowserWindow.getFocusedWindow()
                         .webContents
                         .send('main-createTable')

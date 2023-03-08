@@ -1,14 +1,15 @@
 
-export default function () {
+export default function (app) {
+    const i18n = app.appI18n
     const editMenus = {
-        label: '编辑(E)',
+        label: i18n.t('EDIT_'),
         submenu: [
-            { label: '复制', role: 'copy', accelerator: 'ctrl+c' },
-            { label: '粘贴', role: 'paste', accelerator: 'ctrl+v' },
-            { label: '剪切', role: 'cut', accelerator: 'ctrl+x' },
-            { label: '删除', role: 'delete', accelerator: 'ctrl+d' },
-            { label: '全选', role: 'selectall', accelerator: 'ctrl+a' },
-            { label: '撤销', role: 'undo', accelerator: 'ctrl+z' },
+            { label: i18n.t('EDIT_copy'), role: 'copy', accelerator: 'ctrl+c' },
+            { label: i18n.t('EDIT_paste'), role: 'paste', accelerator: 'ctrl+v' },
+            { label: i18n.t('EDIT_cut'), role: 'cut', accelerator: 'ctrl+x' },
+            { label: i18n.t('EDIT_delete'), role: 'delete', accelerator: 'ctrl+d' },
+            { label: i18n.t('EDIT_selectall'), role: 'selectall', accelerator: 'ctrl+a' },
+            { label: i18n.t('EDIT_undo'), role: 'undo', accelerator: 'ctrl+z' },
         ]
     }
     return editMenus

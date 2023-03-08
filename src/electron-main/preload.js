@@ -20,6 +20,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
         getKeyMap: () => ipcRenderer.invoke('renderer-getKeyMap'),
         //获取字体数据
         getFontsData: () => ipcRenderer.invoke('renderer-getFontsData'),
+        //获取当前locale
+        getCurrLocale: () => ipcRenderer.invoke('renderer-getCurrLocale'),
+        
     },
 
     //--------------------------------------发送（send），无返回值-----------------------------------
@@ -42,6 +45,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
         clearDataCache: (payload) => ipcRenderer.send('renderer-clearDataCache', payload),
 
+        updateCurrLocale:(payload) => ipcRenderer.send('renderer-updateCurrLocale', payload),
+
     },
 
     //--------------------------------------监听（listener）-----------------------------------
@@ -62,6 +67,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
         saveAsFile: (callback) => ipcRenderer.on('main-saveAsFile', callback),
 
         setKeyMap: (callback) => ipcRenderer.on('main-setKeyMap', callback),
+
+        setCurrLocale:(callback) => ipcRenderer.on('main-setCurrLocale', callback),
 
         //渲染进程绑定标题快捷键(单行式快捷键)
         createLine: (callback) => ipcRenderer.on('main-createLine', callback),

@@ -24,11 +24,11 @@ export default class AppMenu {
     build(recentDocuments,shortKeymap) {
         const template = [
             file(this.app,recentDocuments),
-            edit(shortKeymap),
-            paragraph(shortKeymap),
-            format(shortKeymap),
+            edit(this.app,shortKeymap),
+            paragraph(this.app,shortKeymap),
+            format(this.app,shortKeymap),
             theme(this.app),
-            visit(shortKeymap),
+            visit(this.app,shortKeymap),
             about(this.app)
         ]
         return Menu.buildFromTemplate(template)

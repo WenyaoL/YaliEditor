@@ -1,16 +1,17 @@
 import { BrowserWindow } from 'electron'
 
-export default function (shortKeymap) {
+export default function (app,shortKeymap) {
+    const i18n = app.appI18n
 
     const ONLY =  shortKeymap.get("model.ONLY")
     const SV =  shortKeymap.get("model.SV")
     const IR =  shortKeymap.get("model.IR")
 
     return {
-        label: '视图(V)',
+        label: i18n.t('VISIT_'),
         submenu: [
             {
-                label: '显示/隐藏侧边栏', click: () => {
+                label: i18n.t('VISIT_show_or_hide_sidebar'), click: () => {
                     BrowserWindow
                         .getFocusedWindow()
                         .webContents
@@ -18,12 +19,12 @@ export default function (shortKeymap) {
                 }
             },
             { type: 'separator' },
-            { label: '放大', role: 'zoomIn' },
-            { label: '缩小', role: 'zoomOut' },
-            { label: '重置缩放', role: 'resetZoom' },
+            { label: i18n.t('VISIT_zoom_in'), role: 'zoomIn' },
+            { label: i18n.t('VISIT_zoom_out'), role: 'zoomOut' },
+            { label: i18n.t('VISIT_resetZoom'), role: 'resetZoom' },
             { type: 'separator' },
             {
-                label: '源码模式',accelerator:ONLY?ONLY:null, click: () => {
+                label: i18n.t('Origin_Model'),accelerator:ONLY?ONLY:null, click: () => {
                     BrowserWindow
                         .getFocusedWindow()
                         .webContents
@@ -31,7 +32,7 @@ export default function (shortKeymap) {
                 }
             },
             {
-                label: 'SV模式', accelerator:SV?SV:null, click: () => {
+                label: i18n.t('SV_Model'), accelerator:SV?SV:null, click: () => {
                     BrowserWindow
                         .getFocusedWindow()
                         .webContents
@@ -39,7 +40,7 @@ export default function (shortKeymap) {
                 }
             },
             {
-                label: 'IR模式', accelerator:IR?IR:null, click: () => {
+                label: i18n.t('IR_Model'), accelerator:IR?IR:null, click: () => {
                     BrowserWindow
                         .getFocusedWindow()
                         .webContents
@@ -48,7 +49,7 @@ export default function (shortKeymap) {
             },
             { type: 'separator' },
             {
-                label: '全屏', type: 'checkbox', click: () => {
+                label: i18n.t('VISIT_fullScreen'), type: 'checkbox', click: () => {
                     let isFull = BrowserWindow.getFocusedWindow().isFullScreen()
                     BrowserWindow.getFocusedWindow().setFullScreen(!isFull)
                 }

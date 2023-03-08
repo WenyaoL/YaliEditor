@@ -6,6 +6,7 @@ import Canvas2Image from './canvas2image'
 import { jsPDF } from 'jspdf'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import bus from '../bus'
+import i18n from '../vue-i18n'
 
 
 class RendererIPMEventLoader {
@@ -239,6 +240,12 @@ class RendererIPMEventLoader {
             document.documentElement.className = payload.type
             store.state.editorModule.yaliEditor.ir.selectTheme(payload.type)
             store.commit('updateTheme', payload.type)
+        })
+
+        window.electronAPI.ON.setCurrLocale((event, locale)=>{
+            if(i18n.global.availableLocales.indexOf(locale) == -1) return
+            global.yaliEditor.locale = locale
+            i18n.global.locale = locale
         })
 
         window.electronAPI.ON.checkoutEditModel((event, payload) => {

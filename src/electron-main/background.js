@@ -4,17 +4,13 @@ import { app, protocol, BrowserWindow} from 'electron'
 import path from 'path'
 import { AppManager } from './appManager'
 
-
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
 let isReady=false;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
-
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -48,9 +44,6 @@ app.on('ready', () => {
   isReady = true;*/
 
 })
-
-
-
 
 app.on('open-file',async (event,path)=>{
   event.preventDefault()

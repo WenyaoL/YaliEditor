@@ -4,11 +4,12 @@ import path from 'path'
 import { isOsx } from '../../config'
 
 export default function (app, recentlyUsedFiles) {
-    const fileMenus = { label: '文件(F)', submenu: [] }
+    const i18n = app.appI18n
+    const fileMenus = { label: i18n.t('FILE_'), submenu: [] }
 
     fileMenus.submenu.push(
         {
-            label: '新建',//标签名
+            label: i18n.t('FILE_new'),//标签名
             accelerator: 'ctrl+n',//快捷键
             click: () => {
                 //open new window
@@ -25,7 +26,7 @@ export default function (app, recentlyUsedFiles) {
         },
         { type: 'separator' },
         {
-            label: '打开',
+            label: i18n.t('FILE_open_file'),
             accelerator: 'ctrl+o',
             click: async () => {
                 //打开文件对话框
@@ -56,7 +57,7 @@ export default function (app, recentlyUsedFiles) {
             }
         },
         {
-            label: '打开文件夹',
+            label: i18n.t('FILE_open_folder'),
             click: () => {
                 const select = app.appFileSystem.openFileDirDialogSync()
                 if (select != undefined) {
@@ -71,7 +72,7 @@ export default function (app, recentlyUsedFiles) {
 
     if (!isOsx) {
         const recentdocumentsMenu = {
-            label: '最近打开文件',
+            label: i18n.t('FILE_recentdocuments'),
             submenu: []
         }
 
@@ -87,7 +88,7 @@ export default function (app, recentlyUsedFiles) {
         })
 
         recentdocumentsMenu.submenu.push({
-            label: "清空最近文件",
+            label: i18n.t('FILE_clear_recentdocuments'),
             click: () => {
                 app.clearRecentDocuments()
             }
@@ -108,7 +109,7 @@ export default function (app, recentlyUsedFiles) {
     fileMenus.submenu.push(
         { type: 'separator' },
         {
-            label: '保存',
+            label: i18n.t('FILE_save'),
             accelerator: 'ctrl+s',
             click: () => {
                 //触发保存事件
@@ -117,7 +118,7 @@ export default function (app, recentlyUsedFiles) {
                     .send('main-saveFile')
             }
         }, {
-        label: '另存为',
+        label: i18n.t('FILE_save_as'),
         accelerator: 'ctrl+shift+s',
         click: async () => {
             //打开文件对话框
@@ -128,16 +129,16 @@ export default function (app, recentlyUsedFiles) {
     },
         { type: 'separator' },
         {
-            label: '导出',
+            label: i18n.t('FILE_export'),
             submenu: [
-                { label: 'PDF', click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportPDF') } },
-                { label: '图片(png)', click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportIMG') } },
-                { label: 'HTML', click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportHTML') } },
+                { label: i18n.t('FILE_export_PDF'), click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportPDF') } },
+                { label: i18n.t('FILE_export_img'), click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportIMG') } },
+                { label: i18n.t('FILE_export_HTML'), click: () => { BrowserWindow.getFocusedWindow().webContents.send('main-exportHTML') } },
             ]
         },
         { type: 'separator' },
         {
-            label: '爱好设置',
+            label: i18n.t('FILE_preferences'),
             click: () => {
 
                 const win = app.appWindow.settingWindowManager.createUnframeWindow('Yali preference setting')
@@ -146,7 +147,7 @@ export default function (app, recentlyUsedFiles) {
         },
         { type: 'separator' },
         {
-            label: '加载',
+            label: i18n.t('FILE_load'),
             accelerator: 'ctrl+l',
             click: async () => {
                 //打开文件对话框
@@ -169,7 +170,7 @@ export default function (app, recentlyUsedFiles) {
             }
         },
         {
-            label: '关闭',
+            label: i18n.t('FILE_close'),
             accelerator: 'ctrl+w',
             click: () => {
                 let win = BrowserWindow.getFocusedWindow()

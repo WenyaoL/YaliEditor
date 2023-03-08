@@ -3,16 +3,17 @@ import common from '../../common'
 import path from 'path'
 
 export default function (app) {
+    const i18n = app.appI18n
     return {
-        label: '关于(A)',
+        label: i18n.t('ABOUT_'),
         submenu: [
             {
-                label: '作者', click: () => {
+                label: i18n.t('ABOUT_author'), click: () => {
                     BrowserWindow.getFocusedWindow().webContents.send("main-openAuthorDetails")
                 }
             },
             {
-                label: '帮助文档', click: () => {
+                label: i18n.t('ABOUT_Help'), click: () => {
                     //打开文件
                     const filePath = path.join(__static, "docs/Help.md")
                     const data = app.appFileSystem.openFileSync(filePath)
@@ -32,7 +33,7 @@ export default function (app) {
                 }
             },
             {
-                label: '开发文档', click: () => {
+                label: i18n.t('ABOUT_History'), click: () => {
                     //打开文件
                     const filePath = path.join(__static, "docs/Development.md")
                     const data = app.appFileSystem.openFileSync(filePath)
@@ -53,12 +54,12 @@ export default function (app) {
                 }
             },
             {
-                label: 'Github', click: () => {
+                label: i18n.t('ABOUT_Github'), click: () => {
                     shell.openExternal('https://github.com/WenyaoL/YaliEditor')
                 }
             },
             {
-                label: '打开开发者工具', click: () => {
+                label: i18n.t('ABOUT_openDevTools'), click: () => {
                     BrowserWindow.getFocusedWindow().webContents.openDevTools()
                 }
             },

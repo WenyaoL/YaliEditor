@@ -54,14 +54,8 @@ bus.on('preference::saveSetting',async () => {
 
 <template>
     <div>
-        <h3 class="key-heading">快捷键</h3>
-        <p>这里是设置YaliEditor快捷键的地方!!!<br />
-            Yalier已经为你们设置了一套默认的快捷键(*^_^*)。当然你们也可以根据自己的风格定义快捷键.<br />
-            <strong>请确保全部小写,按键顺序为ctrl,shift,alt,如:ctrl+shift+alt+k<br />
-                暂时不支持按键直接配置，请输入字符串进行配置
-            </strong>
-
-        </p>
+        <h3 class="key-heading">{{ $t('KeybindingPanel.key_heading') }}</h3>
+        <p v-html="$t('KeybindingPanel.key_info')"></p>
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="description" label="Description" width="250" />
             <el-table-column prop="key" label="Key" width="240" />

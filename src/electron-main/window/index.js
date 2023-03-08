@@ -61,6 +61,13 @@ class AppWindow {
         })
     }
 
+    updateLocale(locale){
+        this.editorWindowManager.getAllWindow().forEach(({id,win})=>{
+            win.webContents.send('main-setCurrLocale',locale)
+        })
+
+        if(this.settingWindowManager._windows)this.settingWindowManager._windows.webContents.send('main-setCurrLocale',locale)
+    }
 
     getThemeColor() {
         if (this.theme == "light") return "#ffffff"

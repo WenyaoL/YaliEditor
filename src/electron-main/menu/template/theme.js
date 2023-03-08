@@ -1,18 +1,19 @@
 import {nativeTheme } from 'electron'
 
 export default function (app) {
+    const i18n = app.appI18n
     return {
-        label: '主题(T)',
+        label: i18n.t('THEME_'),
         submenu: [
             {
-                label: 'light', type: 'radio', checked: app.appWindow.theme == "light", click: () => {
+                label: i18n.t('THEME_light'), type: 'radio', checked: app.appWindow.theme == "light", click: () => {
                     app.appWindow.checkoutTheme("light")
                     nativeTheme.themeSource = "light"
 
                 }
             },
             {
-                label: 'dark', type: 'radio', checked: app.appWindow.theme == "dark", click: () => {
+                label: i18n.t('THEME_dark'), type: 'radio', checked: app.appWindow.theme == "dark", click: () => {
                     app.appWindow.checkoutTheme('dark')
                     nativeTheme.themeSource = "dark"
                 }

@@ -117,7 +117,10 @@ class MainIPCEventLoader {
 
         ipcMain.on('update-shortkeymap', (event, { keyMap }) => {
             this.app.setCurrKeyMap(keyMap)
+        })
 
+        ipcMain.on('renderer-updateCurrLocale',(event, locale)=>{
+            this.app.setCurrLocale(locale)
         })
 
         ipcMain.on('renderer-test',(event,payload)=>{
@@ -194,6 +197,11 @@ class MainIPCEventLoader {
         //获取快捷键配置信息
         ipcMain.handle('renderer-getKeyMap', () => {
             return this.app.getCurrKeyMap()
+        })
+
+        //获取快捷键配置信息
+        ipcMain.handle('renderer-getCurrLocale', () => {
+            return this.app.getCurrLocale()
         })
 
     }

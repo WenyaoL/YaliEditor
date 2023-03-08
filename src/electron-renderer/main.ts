@@ -24,7 +24,10 @@ async function bootstarp() {
     const type = params.get('type')
     global.yaliEditor.type = type
 
+    global.yaliEditor.locale = await window.electronAPI.INVOKE.getCurrLocale()
+
     const store = (await import('./store')).default
+    const i18n = (await import('./vue-i18n')).default
     const router = (await import('./router')).default
     const RendererIPMEventLoader = (await import('./ipc/RendererIPMEventLoader')).default
 
@@ -33,14 +36,15 @@ async function bootstarp() {
         loader.init()
     })
 
-    return {store,router}
+    return {store,router,i18n}
 }
 
 
-bootstarp().then(({store,router})=>{
+bootstarp().then(({store,router,i18n})=>{
     app.use(ElementPlus)
         .use(store)
         .use(router)
+        .use(i18n)
         .use(ContextMenu)
     app.mount('#app')
 })

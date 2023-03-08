@@ -5,9 +5,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PreferenceSettingView from '../views/PreferenceSettingView.vue'
-import KeybindingPanle from '../components/preference-setting/KeybindingPanle.vue'
-import GeneralPanle from '../components/preference-setting/GeneralPanle.vue'
-import SystemPanle from '../components/preference-setting/SystemPanle.vue'
+import KeybindingPanle from '../components/preference-setting/KeybindingPanel.vue'
+import GeneralPanle from '../components/preference-setting/GeneralPanel.vue'
+import SystemPanle from '../components/preference-setting/SystemPanel.vue'
 function getRoutes(type) {
   return [
     {

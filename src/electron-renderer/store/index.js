@@ -44,6 +44,9 @@ const store = createStore({
     },
     clearDataCache(){
       window.electronAPI.SEND.clearDataCache()
+    },
+    updateLocale(store, locale){
+      window.electronAPI.SEND.updateCurrLocale(locale)
     }
   },
   modules: {

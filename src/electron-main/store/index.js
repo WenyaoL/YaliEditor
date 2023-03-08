@@ -17,6 +17,11 @@ const store = new Store({
             type:'object',
             default:Object.fromEntries(defaultKeyMap.entries()),
             description:'快捷键映射'
+        },
+        currLocale:{
+            type:'string',
+            default:'zh',
+            description:'current locale'
         }
     }
 })

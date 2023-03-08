@@ -5,6 +5,7 @@
 
 import AppMenu from './menu'
 import AppWindow from './window/index'
+import AppI18n from './i18n'
 import {MainIPCEventLoader} from './ipc/ipcMainLoad'
 
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -22,8 +23,8 @@ export class AppManager{
         this.appWindow = new AppWindow(this)
         this.appMenu = new AppMenu(this)
         this.appFileSystem = new AppFileSystem(this)
+        this.appI18n = new AppI18n(this)
         this.mainIPMEventLoader = new MainIPCEventLoader(this)
-
     }
 
     /**
@@ -144,6 +145,15 @@ export class AppManager{
         this.appMenu.updateMenu()
     }
 
+    getCurrLocale(){
+        return this.appI18n.currLocale
+    }
+
+    setCurrLocale(locale){
+        if(!this.appI18n.setLocale(locale)) return
+        this.appWindow.updateLocale(locale)
+        this.appMenu.updateMenu()
+    }
 
     clearDataCache(){
         this.store.clear()

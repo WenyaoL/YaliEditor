@@ -52,3 +52,5 @@ export const defaultApplicationContext = (()=>{
 
 
 export const CAN_READ_EXTENSION = ['.md', '.txt', '.markdown', '.mkd', '.mdown', '.mkdn']
+
+export const LOAD_LOCALE = ['zh','en']
