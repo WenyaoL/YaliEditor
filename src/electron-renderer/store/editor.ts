@@ -2,8 +2,6 @@
  * @author liangwenyao
  * @github https://github.com/WenyaoL/YaliEditor
  */
-import { createStore } from 'vuex'
-import { isEmpty } from '../utils/common'
 
 const editor = {
     state: () => ({
@@ -65,7 +63,7 @@ const editor = {
             state.editModel = model
         },
         updateApplicationContext(state, context) {
-            if (isEmpty(context)) return
+            if (!context || context=={}) return
             const application = state.applicationContext
             //更新上下文
             Object.assign(application, context)

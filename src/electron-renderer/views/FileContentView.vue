@@ -4,7 +4,7 @@
   <only-markdown v-else/>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import SvMarkdown from '../components/SvMarkdown.vue'
 import OnlyMarkdown from '../components/OnlyMarkdown.vue'
 import IrMarkdown from '../components/IrMarkdown.vue'

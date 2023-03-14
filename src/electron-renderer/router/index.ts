@@ -8,7 +8,8 @@ import PreferenceSettingView from '../views/PreferenceSettingView.vue'
 import KeybindingPanle from '../components/preference-setting/KeybindingPanel.vue'
 import GeneralPanle from '../components/preference-setting/GeneralPanel.vue'
 import SystemPanle from '../components/preference-setting/SystemPanel.vue'
-function getRoutes(type) {
+
+function getRoutes(type):any[] {
   return [
     {
       path: '/',
@@ -46,7 +47,6 @@ function getRoutes(type) {
     }
   ]
 }
-
 
 
 const router = createRouter({

@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import YaliEditor from './yaliEditor-panel/YaliEditor.vue'
 const props = defineProps({
   disableEdit: Boolean

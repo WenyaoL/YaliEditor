@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue';
 import {useRouter} from 'vue-router'
 
@@ -20,7 +20,6 @@ const currActiveItem = ref('快捷键')
 function settingItemClick(item){
     currActiveItem.value = item.name
     router.push(item.path)
-    
 }
 </script>
 

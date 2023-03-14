@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import MarkdownItShow from "./editor-home/MarkdownItShow.vue"
 import CodeMirrorShow from "./editor-home/CodeMirrorShow.vue"
 import {useStore} from 'vuex'

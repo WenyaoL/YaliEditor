@@ -6,7 +6,7 @@ import { createStore } from 'vuex'
 import editor from './editor'
 import preference from './preference'
 
-const store = createStore({
+const store = createStore<any>({
   state: {},
   getters: {},
   mutations: {},

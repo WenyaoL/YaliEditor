@@ -42,6 +42,7 @@
     - [Render Support](#render-support)
     - [Shortcut key](#shortcut-key)
   - [Project setup](#project-setup)
+    - [Help](#help)
 
 ## Download and Install
 
@@ -50,6 +51,8 @@ Download address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.
 Support window 64-bit
 
 Support Window 32-bit
+
+
 
 ## Introduction
 
@@ -149,3 +152,17 @@ npm run install
 #build
 npm run electron:build
 ```
+
+
+### Help
+
+我也不想当乞丐，但是我实在是太穷了，求求各位大哥，V我1块钱，就当是可怜可怜我
+
+I don't want to be a beggar, but I'm really too poor. I beg you, brothers, to help me, just take pity on me
+
+![help](./docs/imgs/help.jpg)
+
+###other
+
+技术提问,+Q:835946631,+q群:215169418
+Java，Vue前端等问题都可以找我，我有时间会立刻答复

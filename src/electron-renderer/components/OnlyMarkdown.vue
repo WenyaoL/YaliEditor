@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import CodeMirrorShow from "./editor-home/CodeMirrorShow.vue"
 </script>
 

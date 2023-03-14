@@ -11,7 +11,7 @@
   
 </template>
 
-<script>
+<script lang="ts">
 import {ref,reactive,onMounted} from 'vue'
 import {Document,Folder,} from '@element-plus/icons-vue'
 import { useStore } from 'vuex';

@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import {Close} from '@element-plus/icons-vue'
 import bus from '../../bus'
 import {useStore} from 'vuex'

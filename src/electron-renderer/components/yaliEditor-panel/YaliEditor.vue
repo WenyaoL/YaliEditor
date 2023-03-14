@@ -1,5 +1,4 @@
 <template>
-
   <div id="YaliEditor" ref="ccode" @contextmenu.prevent="onContextmenu"></div>
 </template>
 
