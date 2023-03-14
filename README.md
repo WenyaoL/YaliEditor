@@ -160,7 +160,7 @@ npm run electron:build
 
 I don't want to be a beggar, but I'm really too poor. I beg you, brothers, to help me, just take pity on me
 
-<img src="./docs/imgs/help.jpg" alt="help" style="zoom: 25%;" />
+<img src="./docs/imgs/help.jpg" alt="help" width="300px" />
 
 ###other
 
