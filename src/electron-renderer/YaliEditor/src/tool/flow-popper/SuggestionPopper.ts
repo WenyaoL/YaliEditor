@@ -1,5 +1,3 @@
-import YaLiEditor from "../..";
-import { createPopper, Instance } from '@popperjs/core';
 import EditorTool from "../EditorTool";
 import BasePopper from "./BasePopper";
 
@@ -51,7 +49,6 @@ class SuggestionPopper extends BasePopper {
         this.clearData()
         const popper = this.floatElement
         const ul = document.createElement("ul")
-        popper.appendChild(ul)
         suggestions.forEach((suggestion, index) => {
             const li = document.createElement("li")
             li.classList.add("suggestion-item")
@@ -69,7 +66,7 @@ class SuggestionPopper extends BasePopper {
             else li.innerText = suggestion.value
             ul.appendChild(li)
         })
-
+        popper.appendChild(ul)
         this.itemCount = ul.childElementCount
 
         // 启用事件侦听器

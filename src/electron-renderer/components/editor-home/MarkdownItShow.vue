@@ -6,12 +6,10 @@
 
 <script lang="ts">
 import { onMounted, ref, watch } from 'vue';
-//import { highlighter } from '@/codemirror-main/codeStyle/codeStyle';
 // 引入默认样式
 //import 'highlight.js/scss/default.scss'
-// 引入个性化的vs2015样式
-//import 'highlight.js/styles/vs2015.css'
-import 'highlight.js/scss/github.scss'
+//个性化样式
+//import 'highlight.js/scss/github.scss'
 import md from '../../YaliEditor/src/plugin/markdown-it-plugin/def'
 import {
   init,
@@ -84,8 +82,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import 'highlight.js/styles/vs2015.css';
-
 div {
   text-align: left;
 }

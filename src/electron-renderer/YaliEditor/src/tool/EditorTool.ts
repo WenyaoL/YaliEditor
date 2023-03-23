@@ -1,6 +1,6 @@
 import YaLiEditor from "..";
 import { createPopper, Instance } from '@popperjs/core';
-import { langCanload } from './data/lang'
+import  langCanload  from './data/lang.json'
 import IconTables from './file-icon'
 import type Icon from './file-icon/type/icon'
 import './file-icon/index.css'
@@ -52,8 +52,8 @@ class EditorTool {
                 : langCanload
 
             results = results.map((langInfo: any) => {
-                const iconClass = IconTables.matchLanguage(langInfo.value) as unknown as Icon
-
+                langInfo.html = `<i class="icon ${langInfo.icon} ${langInfo.color}"></i><span>${langInfo.value}</span>`
+                /*const iconClass = IconTables.matchLanguage(langInfo.value) as unknown as Icon
                 if (!iconClass) {
                     langInfo.html = `<i class="icon icon-file-text medium-blue"></i><span>${langInfo.value}</span>`
                 } else {
@@ -62,7 +62,7 @@ class EditorTool {
                     } else {
                         langInfo.html = `<i class="icon ${iconClass.icon}"></i><span>${langInfo.value}</span>`
                     }
-                }
+                }*/
 
                 langInfo.eventListener = {
                     click: function (event: MouseEvent) {

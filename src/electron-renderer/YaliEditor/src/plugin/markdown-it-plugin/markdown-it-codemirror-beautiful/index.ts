@@ -14,7 +14,7 @@ import YaLiEditor from "../../../";
 import { noLineNumberBasicSetup, myMinimalSetup, HTMLBlockSetup } from '../../codemirror-plugin/codeStyle/codePlugin'
 import { oneDark, oneDarkHighlightStyle, oneDarkTheme } from '../../codemirror-plugin/codeTheme/dark';
 import { oneLight } from '../../codemirror-plugin/codeTheme/light';
-import { langCanload } from './lang'
+import  langCanload  from './lang.json'
 import { getUniqueKey } from "../markdown-it-key-generator"
 import { escapeHtml, unescapeAll } from "markdown-it/lib/common/utils"
 import MarkdownIt from "markdown-it"

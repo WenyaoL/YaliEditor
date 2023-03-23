@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import bus from '../bus'
 import i18n from '../vue-i18n'
+import hljs from 'highlight.js';
 
 
 class RendererIPMEventLoader {
@@ -54,40 +55,20 @@ class RendererIPMEventLoader {
 
             let el = root.cloneNode(true)
             //给模块赋予字体
-            let cList = el.children
-            for (let index = 0; index < cList.length; index++) {
-                const element = cList[index]
-                element.style.fontFamily = "sourcehansans"
-            }
-            //给编辑器赋予字体
-            /*let content = el.getElementsByClassName("cm-content")
-            for (let index = 0; index < content.length; index++) {
-                const element = content[index];
-                element.style.fontFamily = "sourcehansans"
-            }*/
-
-            el.insertAdjacentHTML('afterbegin', '<style>*{font-family:sourcehansans;}</style>')
+            el.insertAdjacentHTML('afterbegin', '<style>.html2pdf__container *{font-family:sourcehansans;}\n.html2pdf__overlay *{font-family:sourcehansans;}</style>')
 
             let mathDom = el.getElementsByClassName("markdown-it-mathjax-beautiful")
             for (let index = 0; index < mathDom.length; index++) {
                 const element = mathDom[index];
                 element.remove()
             }
-
-            //fixCodemirrorGutterStyle(el)
-
+            //会在body下面生成一个html2pdf的块
             doc.html(el, {
                 jsPDF: doc,
                 margin: [10, 1000, 10, 30],
                 width: 400,
-                windowWidth: 1200
-            }).save(document.title + '.pdf').then(o => {
-                //回复原来字体
-                /*setTimeout(()=>{
-                    root.removeChild(root.firstChild)
-                })*/
-
-            });
+                windowWidth: 1200,
+            }).save(document.title + '.pdf').then(o => {});
         })
 
         window.electronAPI.ON.exportIMG(() => {
@@ -111,8 +92,12 @@ class RendererIPMEventLoader {
                         const id = element.id
                         const editor = this.store.state.editorModule.yaliEditor
                         const manager = editor.ir.renderer.codemirrorManager
-                        const text = manager.getTextValue(id)
-                        element.textContent = text
+                        let text = manager.getTextValue(id)
+                        const lang = element.getAttribute("lang")
+                        if (lang && hljs.getLanguage(lang)) {
+                            text = hljs.highlight(text, {language: lang,ignoreIllegals: true}).value
+                        }
+                        element.outerHTML = `<pre class="hljs" style="white-space: pre-wrap;"><code class="language-${lang}">${text}</code></pre>`
                     })
                 }
             }).then(cva => {

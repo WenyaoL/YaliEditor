@@ -1,0 +1,897 @@
+[
+    {
+        "value": "c",
+        "icon": "c-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cpp",
+        "icon": "cpp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "c++",
+        "icon": "cpp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cassandra",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cql",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "css",
+        "icon": "css3-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "xhtml",
+        "icon": "html5-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "html",
+        "icon": "html5-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "java",
+        "icon": "java-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "ecmascript",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "js",
+        "icon": "js-icon",
+        "color": "medium-yellow"
+    },
+    {
+        "value": "node",
+        "icon": "js-icon",
+        "color": "medium-yellow"
+    },
+    {
+        "value": "javascript",
+        "icon": "js-icon",
+        "color": "medium-yellow"
+    },
+    {
+        "value": "json5",
+        "icon": "json5-icon",
+        "color": "dark-yellow"
+    },
+    {
+        "value": "json",
+        "icon": "json-icon",
+        "color": "medium-cyan"
+    },
+    {
+        "value": "jsx",
+        "icon": "jsx-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "mariadb sql",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "markdown",
+        "icon": "markdown-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ms sql",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "mysql",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "php",
+        "icon": "php-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "plsql",
+        "icon": "sql-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "postgresql",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "python",
+        "icon": "python-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "rust",
+        "icon": "rust-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "sql",
+        "icon": "sql-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "sqlite",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "tsx",
+        "icon": "tsx-icon",
+        "color": "light-blue"
+    },
+    {
+        "value": "ts",
+        "icon": "ts-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "typescript",
+        "icon": "ts-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "webassembly",
+        "icon": "wasm-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "rss",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "wsdl",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "xsd",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "xml",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "apl",
+        "icon": "apl-icon",
+        "color": "dark-cyan"
+    },
+    {
+        "value": "asciiarmor",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "pgp",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "asn.1",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "asterisk",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "brainfuck",
+        "icon": "brain-icon",
+        "color": "dark-pink"
+    },
+    {
+        "value": "cobol",
+        "icon": "cobol-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "csharp",
+        "icon": "csharp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cs",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "c#",
+        "icon": "csharp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "clojure",
+        "icon": "clojure-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "clojurescript",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "closure stylesheets (gss)",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cmake",
+        "icon": "cmake-icon",
+        "color": "medium-green"
+    },
+    {
+        "value": "coffee",
+        "icon": "coffee-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "coffee-script",
+        "icon": "coffee-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "coffeescript",
+        "icon": "coffee-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "lisp",
+        "icon": "cl-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "common lisp",
+        "icon": "cl-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "cypher",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "cython",
+        "icon": "cython-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "crystal",
+        "icon": "crystal-icon",
+        "color": "medium-cyan"
+    },
+    {
+        "value": "d",
+        "icon": "dlang-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "dart",
+        "icon": "dart-icon",
+        "color": "medium-cyan"
+    },
+    {
+        "value": "diff",
+        "icon": "diff-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "dockerfile",
+        "icon": "docker-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "dtd",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "dylan",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ebnf",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ecl",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "edn",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "eiffel",
+        "icon": "eiffel-icon",
+        "color": "medium-cyan"
+    },
+    {
+        "value": "elm",
+        "icon": "elm-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "erlang",
+        "icon": "erlang-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "esper",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "factor",
+        "icon": "factor-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "fcl",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "forth",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "fortran",
+        "icon": "fortran-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "fsharp",
+        "icon": "fsharp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "f#",
+        "icon": "fsharp-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "gas",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "gherkin",
+        "icon": "cucumber-icon",
+        "color": "medium-green"
+    },
+    {
+        "value": "go",
+        "icon": "go-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "groovy",
+        "icon": "groovy-icon",
+        "color": "light-blue"
+    },
+    {
+        "value": "haskell",
+        "icon": "haskell-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "haxe",
+        "icon": "haxe-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "hxml",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "http",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "idl",
+        "icon": "idl-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "jsonld",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "json-ld",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "jinja2",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "julia",
+        "icon": "julia-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "kotlin",
+        "icon": "kotlin-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "less",
+        "icon": "css3-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "ls",
+        "icon": "ls-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "livescript",
+        "icon": "ls-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "lua",
+        "icon": "lua-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "mirc",
+        "icon": "mirc-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "mathematica",
+        "icon": "mathematica-icon",
+        "color": "dark-red"
+    },
+    {
+        "value": "modelica",
+        "icon": "modelica-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "mumps",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "mbox",
+        "icon": "at-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "nginx",
+        "icon": "nginx-icon",
+        "color": "medium-green"
+    },
+    {
+        "value": "nsis",
+        "icon": "nsis-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "ntriples",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objective-c",
+        "icon": "objc-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objc",
+        "icon": "objc-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objective-c",
+        "icon": "objc-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objective-c++",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objc++",
+        "icon": "objc-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "objective-c++",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ocaml",
+        "icon": "ocaml-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "octave",
+        "icon": "octave-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "oz",
+        "icon": "oz-icon",
+        "color": "medium-yellow"
+    },
+    {
+        "value": "pascal",
+        "icon": "pascal-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "perl",
+        "icon": "perl-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "pig",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "powershell",
+        "icon": "powershell-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ini",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "properties",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "properties files",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "protobuf",
+        "icon": "database-icon",
+        "color": "dark-cyan"
+    },
+    {
+        "value": "puppet",
+        "icon": "puppet-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "q",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "rscript",
+        "icon": "r-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "r",
+        "icon": "r-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "rpm changes",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "rpm spec",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "jruby",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "macruby",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "rake",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "rb",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "rbx",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "ruby",
+        "icon": "ruby-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "sas",
+        "icon": "sas-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "sass",
+        "icon": "sass-icon",
+        "color": "light-pink"
+    },
+    {
+        "value": "scala",
+        "icon": "scala-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "scheme",
+        "icon": "scheme-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "scss",
+        "icon": "sass-icon",
+        "color": "light-pink"
+    },
+    {
+        "value": "bash",
+        "icon": "terminal-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "sh",
+        "icon": "terminal-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "zsh",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "shell",
+        "icon": "terminal-icon",
+        "color": "medium-purple"
+    },
+    {
+        "value": "sieve",
+        "icon": "filter-icon",
+        "color": "medium-red"
+    },
+    {
+        "value": "smalltalk",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "solr",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "sml",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "sparul",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "sparql",
+        "icon": "sparql-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "excel",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "formula",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "spreadsheet",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "squirrel",
+        "icon": "squirrel-icon",
+        "color": "medium-maroon"
+    },
+    {
+        "value": "stylus",
+        "icon": "stylus-icon",
+        "color": "medium-green"
+    },
+    {
+        "value": "swift",
+        "icon": "swift-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "stex",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "tex",
+        "icon": "tex-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "latex",
+        "icon": "tex-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "systemverilog",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "tcl",
+        "icon": "tcl-icon",
+        "color": "dark-orange"
+    },
+    {
+        "value": "textile",
+        "icon": "textile-icon",
+        "color": "medium-orange"
+    },
+    {
+        "value": "tiddlywiki",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "tiki wiki",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "toml",
+        "icon": "toml-icon",
+        "color": "medium-green"
+    },
+    {
+        "value": "troff",
+        "icon": "manpage-icon",
+        "color": "dark-green"
+    },
+    {
+        "value": "ttcn",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "ttcn_cfg",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "turtle",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "web idl",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "vb.net",
+        "icon": "vs-icon",
+        "color": "medium-blue"
+    },
+    {
+        "value": "vbscript",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "velocity",
+        "icon": "velocity-icon",
+        "color": "dark-blue"
+    },
+    {
+        "value": "verilog",
+        "icon": "verilog-icon",
+        "color": "dark-green"
+    },
+    {
+        "value": "vhdl",
+        "icon": "vhdl-icon",
+        "color": "dark-green"
+    },
+    {
+        "value": "xquery",
+        "icon": "sql-icon",
+        "color": "dark-red"
+    },
+    {
+        "value": "yacas",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "yml",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "yaml",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "z80",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "mscgen",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "xù",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    },
+    {
+        "value": "msgenny",
+        "icon": "icon-file-text",
+        "color": "medium-blue"
+    }
+]
