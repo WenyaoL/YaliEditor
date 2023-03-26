@@ -32,6 +32,7 @@
     "src/electron-renderer/YaliEditor/src/plugin/turndown-plugin/lib/*",
     "src/electron-renderer/YaliEditor/src/plugin/turndown-plugin/table.js",
     "src/electron-renderer/ipc/*",
+    "src/electron-renderer/components/preference-setting/keybinding/atom-keymap/**/*",
   ],
   "files": [
     "src/electron-renderer/shims-vue.d.ts"

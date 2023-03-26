@@ -29,6 +29,7 @@
     "EDIT_delete":"删除",
     "EDIT_selectall":"全选",
     "EDIT_undo":"撤销",
+    "EDIT_redo":"重做",
     
     "PARAGRAPH_":"段落(P)",
     "PARAGRAPH_heading_1":"一级标题",
@@ -42,6 +43,8 @@
     "PARAGRAPH_htmlBlock":"HTML块",
     "PARAGRAPH_orderList":"有序列表",
     "PARAGRAPH_bulletList":"无序列表",
+    "PARAGRAPH_increaseIndent":"增加缩进",
+    "PARAGRAPH_decreaseIndent":"减小缩进",
     "PARAGRAPH_quoteBlock":"引用块",
     "PARAGRAPH_toc":"目录",
     "PARAGRAPH_createTable":"创建表格",

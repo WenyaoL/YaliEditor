@@ -21,8 +21,8 @@
     },
     {
         "value": "cql",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "sql-icon",
+        "color": "dark-blue"
     },
     {
         "value": "css",
@@ -46,7 +46,7 @@
     },
     {
         "value": "ecmascript",
-        "icon": "icon-file-text",
+        "icon": "js-icon",
         "color": "medium-blue"
     },
     {
@@ -81,8 +81,8 @@
     },
     {
         "value": "mariadb sql",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "sql-icon",
+        "color": "medium-orange"
     },
     {
         "value": "markdown",
@@ -91,13 +91,13 @@
     },
     {
         "value": "ms sql",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "sql-icon",
+        "color": "medium-orange"
     },
     {
         "value": "mysql",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "sql-icon",
+        "color": "medium-orange"
     },
     {
         "value": "php",
@@ -111,8 +111,8 @@
     },
     {
         "value": "postgresql",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "sql-icon",
+        "color": "medium-red"
     },
     {
         "value": "python",
@@ -131,7 +131,7 @@
     },
     {
         "value": "sqlite",
-        "icon": "icon-file-text",
+        "icon": "sqlite-icon",
         "color": "medium-blue"
     },
     {
@@ -156,22 +156,22 @@
     },
     {
         "value": "rss",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "rss-icon",
+        "color": "medium-orange"
     },
     {
         "value": "wsdl",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "medium-red"
     },
     {
         "value": "xsd",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "dark-blue"
     },
     {
         "value": "xml",
-        "icon": "icon-file-text",
+        "icon": "code-icon",
         "color": "medium-blue"
     },
     {
@@ -191,8 +191,8 @@
     },
     {
         "value": "asn.1",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "manpage-icon",
+        "color": "dark-green"
     },
     {
         "value": "asterisk",
@@ -216,7 +216,7 @@
     },
     {
         "value": "cs",
-        "icon": "icon-file-text",
+        "icon": "csharp-icon",
         "color": "medium-blue"
     },
     {
@@ -231,7 +231,7 @@
     },
     {
         "value": "clojurescript",
-        "icon": "icon-file-text",
+        "icon": "clojure-icon",
         "color": "medium-blue"
     },
     {
@@ -271,7 +271,7 @@
     },
     {
         "value": "cypher",
-        "icon": "icon-file-text",
+        "icon": "neo4j-icon",
         "color": "medium-blue"
     },
     {
@@ -306,28 +306,28 @@
     },
     {
         "value": "dtd",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "medium-cyan"
     },
     {
         "value": "dylan",
-        "icon": "icon-file-text",
+        "icon": "code-icon",
         "color": "medium-blue"
     },
     {
         "value": "ebnf",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "bnf-icon",
+        "color": "medium-red"
     },
     {
         "value": "ecl",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "cl-icon",
+        "color": "medium-orange"
     },
     {
         "value": "edn",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "database-icon",
+        "color": "medium-purple"
     },
     {
         "value": "eiffel",
@@ -361,7 +361,7 @@
     },
     {
         "value": "forth",
-        "icon": "icon-file-text",
+        "icon": "code-icon",
         "color": "medium-blue"
     },
     {
@@ -411,13 +411,13 @@
     },
     {
         "value": "hxml",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "haxe-icon",
+        "color": "medium-orange"
     },
     {
         "value": "http",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "database-icon",
+        "color": "medium-red"
     },
     {
         "value": "idl",
@@ -426,18 +426,18 @@
     },
     {
         "value": "jsonld",
-        "icon": "icon-file-text",
+        "icon": "jsonld-icon",
         "color": "medium-blue"
     },
     {
         "value": "json-ld",
-        "icon": "icon-file-text",
+        "icon": "jsonld-icon",
         "color": "medium-blue"
     },
     {
         "value": "jinja2",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "jinja-icon",
+        "color": "medium-red"
     },
     {
         "value": "julia",
@@ -486,8 +486,8 @@
     },
     {
         "value": "mumps",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "medium-red"
     },
     {
         "value": "mbox",
@@ -526,7 +526,7 @@
     },
     {
         "value": "objective-c++",
-        "icon": "icon-file-text",
+        "icon": "objc-icon",
         "color": "medium-blue"
     },
     {
@@ -536,7 +536,7 @@
     },
     {
         "value": "objective-c++",
-        "icon": "icon-file-text",
+        "icon": "objc-icon",
         "color": "medium-blue"
     },
     {
@@ -566,8 +566,8 @@
     },
     {
         "value": "pig",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "medium-pink"
     },
     {
         "value": "powershell",
@@ -576,13 +576,13 @@
     },
     {
         "value": "ini",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "config-icon",
+        "color": "medium-yellow"
     },
     {
         "value": "properties",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "config-icon",
+        "color": "medium-purple"
     },
     {
         "value": "properties files",
@@ -601,7 +601,7 @@
     },
     {
         "value": "q",
-        "icon": "icon-file-text",
+        "icon": "kx-icon",
         "color": "medium-blue"
     },
     {
@@ -691,8 +691,8 @@
     },
     {
         "value": "zsh",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "terminal-icon",
+        "color": "medium-purple"
     },
     {
         "value": "shell",
@@ -716,8 +716,8 @@
     },
     {
         "value": "sml",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "code-icon",
+        "color": "medium-red"
     },
     {
         "value": "sparul",
@@ -731,8 +731,8 @@
     },
     {
         "value": "excel",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "excel-icon",
+        "color": "medium-green"
     },
     {
         "value": "formula",
@@ -811,18 +811,18 @@
     },
     {
         "value": "ttcn",
-        "icon": "icon-file-text",
+        "icon": "ttcn3-icon",
         "color": "medium-blue"
     },
     {
         "value": "ttcn_cfg",
-        "icon": "icon-file-text",
+        "icon": "ttcn3-icon",
         "color": "medium-blue"
     },
     {
         "value": "turtle",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "database-icon",
+        "color": "medium-cyan"
     },
     {
         "value": "web idl",
@@ -866,18 +866,18 @@
     },
     {
         "value": "yml",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "yaml-icon",
+        "color": "medium-red"
     },
     {
         "value": "yaml",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "yaml-icon",
+        "color": "medium-red"
     },
     {
         "value": "z80",
-        "icon": "icon-file-text",
-        "color": "medium-blue"
+        "icon": "asm-zilog-icon",
+        "color": "medium-yellow"
     },
     {
         "value": "mscgen",

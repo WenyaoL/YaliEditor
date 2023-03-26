@@ -29,6 +29,7 @@
     "EDIT_delete":"delete",
     "EDIT_selectall":"selectall",
     "EDIT_undo":"undo",
+    "EDIT_redo":"redo",
     
     "PARAGRAPH_":"&Paragraph",
     "PARAGRAPH_heading_1":"Heading-1",
@@ -42,6 +43,8 @@
     "PARAGRAPH_htmlBlock":"HTML Block",
     "PARAGRAPH_orderList":"OrderList",
     "PARAGRAPH_bulletList":"BulletList",
+    "PARAGRAPH_increaseIndent":"Increase Indent",
+    "PARAGRAPH_decreaseIndent":"Decrease Indent",
     "PARAGRAPH_quoteBlock":"Quote Block",
     "PARAGRAPH_toc":"Catalog",
     "PARAGRAPH_createTable":"Create Table",

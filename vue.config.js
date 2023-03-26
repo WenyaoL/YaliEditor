@@ -5,7 +5,7 @@ module.exports = defineConfig({
   publicPath:'./',
   configureWebpack:{
     entry: {
-      app: './src/electron-renderer/main.ts' //main.js顺手改成ts就好，出的错处理一下
+      app: './src/electron-renderer/main.ts'
     },
     module: {
       rules: [

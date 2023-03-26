@@ -104,7 +104,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
         //关闭应用窗口监听
         closeWindow: (callback) => ipcRenderer.on('main-closeWindow', callback),
 
-
+        //handle errorMessage from main process
+        handleErrorMessage: (callback) => ipcRenderer.on('main-handleErrorMessage',callback),
 
         //测试接口
         test: (callback) => ipcRenderer.on('test', callback),

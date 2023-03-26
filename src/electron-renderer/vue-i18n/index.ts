@@ -5,10 +5,7 @@ const messages = {
         KeybindingPanel:{
             key_heading:"shortKey",
             key_info:`Here is the place to set the YaliEditor shortcut key!!!<br />
-            Yalier has set a default set of shortcut keys for you(* ^ _ ^ *).Of course, you can also define shortcut keys according to your own style.<br />
-            <strong>Please make sure all lowercase keys are in the order of ctrl, shift, alt, such as ctrl+shift+alt+k<br />
-            The direct configuration of keys is temporarily not supported. Please enter a string to configure
-            </strong>`
+            Yalier has set a default set of shortcut keys for you(* ^ _ ^ *).Of course, you can also define shortcut keys according to your own style.`
         },
         SystemPanel:{
             system_heading:'System',
@@ -18,16 +15,24 @@ const messages = {
             system_clear_button:'Clear cached data',
             system_clear_button_info:'(This will cause Yali to reset to the default state at the time of installation)',
             system_i18n_info:'Set regional language'
+        },
+        closeWindow:{
+            close_info:'Do you want to save the changes? If you do not save, the changes will be discarded',
+            close_save:'save',
+            close_discard:'discard',
+        },
+        leftMenu:{
+            catalogue:'catalogue',
+            folder:'folder',
+            fold:'fold/expand',
+            recentDocuments:'RecentDocuments'
         }
     },
     zh: {
         KeybindingPanel:{
             key_heading:"快捷键",
             key_info:`这里是设置YaliEditor快捷键的地方!!!<br />
-            Yalier已经为你们设置了一套默认的快捷键(*^_^*)。当然你们也可以根据自己的风格定义快捷键.<br />
-            <strong>请确保全部小写,按键顺序为ctrl,shift,alt,如:ctrl+shift+alt+k<br />
-                暂时不支持按键直接配置，请输入字符串进行配置
-            </strong>`
+            Yalier已经为你们设置了一套默认的快捷键(*^_^*)。当然你们也可以根据自己的风格定义快捷键.`
         },
         SystemPanel:{
             system_heading:'系统',
@@ -37,6 +42,17 @@ const messages = {
             system_clear_button:'清除缓存数据',
             system_clear_button_info:'(这会导致Yali重置到安装时的默认状态)',
             system_i18n_info:'设置地区语言'
+        },
+        closeWindow:{
+            close_info:'是否保存更改,不保存将丢弃更改',
+            close_save:'保存',
+            close_discard:'丢弃',
+        },
+        leftMenu:{
+            catalogue:'目录',
+            folder:'文件夹',
+            fold:'折叠/展开',
+            recentDocuments:'最近打开'
         }
     }
 }
@@ -47,5 +63,6 @@ const i18n = createI18n({
     fallbackLocale: 'en', // set fallback locale
     messages, // set locale messages
 })
+
 
 export default i18n

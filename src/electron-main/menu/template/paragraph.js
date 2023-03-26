@@ -101,6 +101,21 @@ export default function (app,shortKeymap) {
                         .send('main-createMulLine', { type: "unlist" })
                 }
             },
+            {
+                label: i18n.t('PARAGRAPH_increaseIndent'), accelerator:addIndentListKey?addIndentListKey:'', click: () => {
+                    BrowserWindow.getFocusedWindow()
+                        .webContents
+                        .send('main-createMulLine', { type: "addIndent" })
+                }
+            },
+            {
+                label: i18n.t('PARAGRAPH_decreaseIndent'), accelerator: reduceIndentListKey?reduceIndentListKey:'', click: () => {
+                    BrowserWindow.getFocusedWindow()
+                        .webContents
+                        .send('main-createMulLine', { type: "reduceIndent" })
+                }
+            },
+
             { type: 'separator' },
             {
                 label: i18n.t('PARAGRAPH_quoteBlock'), accelerator: quoteBlockKey?quoteBlockKey:'', click: () => {

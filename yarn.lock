@@ -1322,6 +1322,13 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@hfelix/electron-localshortcut@^4.0.1":
+  "integrity" "sha512-tfmRcokNSGuMaOH67/acYQjtUHKGwsKrLrzYn14LD2lw4N69rdD2qH4f9trJLj7P2yyx90Ll9jP8jr1Jq7B6jA=="
+  "resolved" "https://registry.npmjs.org/@hfelix/electron-localshortcut/-/electron-localshortcut-4.0.1.tgz"
+  "version" "4.0.1"
+  dependencies:
+    "debug" "^4.3.3"
+
 "@humanwhocodes/config-array@^0.5.0":
   "integrity" "sha512-FagtKFz74XrTl7y6HCzQpwDfXP0yhxe9lHLD1UZxjvZIcbyRz8zTFF/yYNfSfzU414eDwZ1SrO0Qvtyf+wFMQg=="
   "resolved" "https://registry.npmmirror.com/@humanwhocodes/config-array/-/config-array-0.5.0.tgz"

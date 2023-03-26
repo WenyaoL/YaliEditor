@@ -6,22 +6,22 @@
   > 
     <el-menu-item index="1" @click="changePanel('ContextOutline')">
       <el-icon><Notebook /></el-icon>
-      <template #title>大纲</template>
+      <template #title>{{ $t('leftMenu.catalogue') }}</template>
     </el-menu-item>
     <el-menu-item index="2" @click="changePanel('FileTree')">
       <el-icon><folder /></el-icon>
-      <template #title>文件夹</template>
+      <template #title>{{ $t('leftMenu.folder') }}</template>
     </el-menu-item>
 
     <el-menu-item index="3" @click="changePanel('RecentDocuments')">
       <el-icon><Document /></el-icon>
-      <template #title>最近打开</template>
+      <template #title>{{ $t('leftMenu.recentDocuments') }}</template>
     </el-menu-item>
 
     <el-menu-item index="4" @click="fold">
       <el-icon v-show="sideBarFlag=='fold'"><Expand /></el-icon>
       <el-icon v-show="sideBarFlag=='expand'"><Fold /></el-icon>
-      <template #title>折叠</template>
+      <template #title>{{ $t('leftMenu.fold') }}</template>
     </el-menu-item>
 
 

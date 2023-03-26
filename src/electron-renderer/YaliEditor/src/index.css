@@ -31,3 +31,7 @@
 .yali-suggestionFloat .suggestion-item:hover{
     background-color: #f6f6f6;
 }
+
+:not(.cm-editor *)::selection {
+    background-color: var(--yali-selection-background-color);
+}

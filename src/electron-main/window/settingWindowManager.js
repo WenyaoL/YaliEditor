@@ -11,7 +11,7 @@ class SettingWindowManager{
 
     createUnframeWindow(title) {
 
-        if(this._id != -1 && this._windows){
+        if(this._id != -1 && this._windows && !this._windows.isDestroyed()){
             this._windows.moveTop()
             this._windows.center()
             return null

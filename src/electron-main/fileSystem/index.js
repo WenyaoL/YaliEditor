@@ -1,8 +1,9 @@
 import fs from 'fs'
+import fsPromises from 'fs/promises'
 import path from 'path'
 import { argv } from 'process';
-import {  BrowserWindow,dialog } from 'electron'
-import {CAN_READ_EXTENSION} from '../config'
+import { BrowserWindow, dialog } from 'electron'
+import { CAN_READ_EXTENSION } from '../config'
 
 
 class AppFileSystem {
@@ -40,7 +41,7 @@ class AppFileSystem {
         return data
     }
 
-    async openFile(filePath) {
+    openFile(filePath) {
         if (this.isFile(filePath)) {
             return new Promise((resolve, reject) => {
                 fs.readFile(path.normalize(filePath), { encoding: 'utf8', flag: 'r' }, (err, data) => {
@@ -53,25 +54,65 @@ class AppFileSystem {
         }
     }
 
+    handleError(err) {
+        BrowserWindow.getFocusedWindow().webContents.send('main-handleErrorMessage', err.message)
+    }
+
+    saveAsTemporaryFile(filePath, data) {
+        return fsPromises
+            .writeFile(path.join(path.dirname(filePath), "~" + path.basename(filePath)), data, 'utf-8')
+            .catch(err => console.log(err))
+    }
+
+    /**
+     * Check access rights
+     * @param {*} filePath 
+     * @param {*} mode 
+     * @returns 
+     */
+    accessSync(filePath, mode) {
+        try {
+            fs.accessSync(filePath, mode)
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
     saveFile(filePath, data) {
+        //exists but can't write
+        if(this.isExists(filePath) && !this.accessSync(filePath, fs.constants.W_OK)){
+            this.handleError(new Error("No Write access"))
+            //create ~tmp file
+            this.saveAsTemporaryFile(filePath, data)
+        }
+
         fs.writeFile(filePath, data, 'utf-8', err => {
-            if (err) console.log(err)
+            if (err) {
+                this.handleError(err)
+                this.saveAsTemporaryFile(filePath, data)
+            }
         })
     }
 
-    saveFilePromise(filePath, data){
-        return new Promise((resolve, reject) => {
-            fs.writeFile(filePath,data,'utf-8',err=>{
-                if(err) reject(err)
-                resolve(null)
-            })
+
+
+    saveFilePromise(filePath, data) {
+        //exists but can't write
+        if (this.isExists(filePath) && !this.accessSync(filePath, fs.constants.W_OK)) {
+            this.handleError(new Error("No Write access"))
+            //create ~tmp file
+            return this.saveAsTemporaryFile(filePath, data)
+        }
+
+        return fsPromises.writeFile(filePath, data, 'utf-8').catch(err=>{
+            this.handleError(err)
+            //create ~tmp file
+            this.saveAsTemporaryFile(filePath, data)
         })
-        
     }
 
     saveFileDialog(filter) {
-
-
         if (filter) {
             return dialog.showSaveDialog({
                 filters: filter
@@ -85,6 +126,15 @@ class AppFileSystem {
 
     isFile(path) {
         return fs.lstatSync(path).isFile()
+    }
+
+    isExists(path){
+        try {
+            fs.accessSync(path,fs.constants.F_OK)
+        } catch (error) {
+            return false
+        }
+        return true
     }
 
     openFileDirSync(dirPath) {

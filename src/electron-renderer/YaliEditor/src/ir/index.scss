@@ -222,7 +222,3 @@
     }
 }
 
-:not(.cm-editor *)::selection {
-    background-color: var(--yali-selection-background-color);
-    color: var(--yali-selection-color);
-}

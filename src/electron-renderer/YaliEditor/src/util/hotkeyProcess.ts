@@ -80,6 +80,10 @@ export function updateMulLineIR(ir: IR, payload: any) {
         ir.hotkeyProcessor.listKey(null)
     } else if (payload.type == "quote") {
         ir.hotkeyProcessor.quoteKey(null)
+    } else if (payload.type == "addIndent"){
+        ir.hotkeyProcessor.addIndentKey(null)
+    } else if (payload.type == "reduceIndent"){
+        ir.hotkeyProcessor.reduceIndentKey(null)
     }
 }
 

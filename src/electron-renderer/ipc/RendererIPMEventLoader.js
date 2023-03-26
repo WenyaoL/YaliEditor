@@ -23,6 +23,7 @@ class RendererIPMEventLoader {
         this.initSaveFunctions(this.store)
         this.initCommonFunctions(this.store)
         this.initEditorFunctions(this.store)
+        this.initErrorHandleFunctions(this.store)
     }
 
     /**
@@ -261,12 +262,12 @@ class RendererIPMEventLoader {
 
             //调用消息盒子提示是否要保存文件
             currElMessageBox = ElMessageBox.confirm(
-                '是否保存更,不保存将丢弃更改',
-                '保存',
+                i18n.global.t('closeWindow.close_info'),
+                i18n.global.t('closeWindow.close_save'),
                 {
                     distinguishCancelAndClose: true,
-                    confirmButtonText: '保存',
-                    cancelButtonText: '丢弃',
+                    confirmButtonText: i18n.global.t('closeWindow.close_save'),
+                    cancelButtonText: i18n.global.t('closeWindow.close_discard'),
                 }
             ).then(() => {
                 //关闭窗口并保存文件
@@ -365,6 +366,12 @@ class RendererIPMEventLoader {
         })
     }
 
+
+    initErrorHandleFunctions(store){
+        window.electronAPI.ON.handleErrorMessage((event,errorMessage)=>{
+            bus.emit('dialog:errorMessage',errorMessage)
+        })
+    }
 }
 
 

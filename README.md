@@ -28,21 +28,21 @@
 <p align="center">This project is still in the development stage! Like this project? Please suggest your needs to help it improve!
 </p>
 
-# YaliEditor
+# YaliEditor啊手动阀手动阀啊手动阀啊手动阀手动阀
 
 - [YaliEditor](#yalieditor)
-  - [Download and Install](#download-and-install)
-  - [Introduction](#introduction)
-    - [IR real-time rendering mode](#ir-real-time-rendering-mode)
-    - [SV split screen mode](#sv-split-screen-mode)
-    - [Only source code mode](#only-source-code-mode)
-    - [Folder Preview](#folder-preview)
-    - [Theme](#theme)
-    - [Support export](#support-export)
-    - [Render Support](#render-support)
-    - [Shortcut key](#shortcut-key)
-  - [Project setup](#project-setup)
-    - [Help](#help)
+    - [Download and Install](#download-and-install)
+    - [Introduction](#introduction)
+        - [IR real-time rendering mode](#ir-real-time-rendering-mode)
+        - [SV split screen mode](#sv-split-screen-mode)
+        - [Only source code mode](#only-source-code-mode)
+        - [Folder Preview](#folder-preview)
+        - [Theme](#theme)
+        - [Support export](#support-export)
+        - [Render Support](#render-support)
+        - [Shortcut key](#shortcut-key)
+    - [Project setup](#project-setup)
+        - [Help](#help)
 
 ## Download and Install
 
@@ -51,8 +51,6 @@ Download address：[Releases · WenyaoL/YaliEditor (github.com)](https://github.
 Support window 64-bit
 
 Support Window 32-bit
-
-
 
 ## Introduction
 
@@ -85,10 +83,11 @@ Themes now support light and dark modes
 ### Support export
 
 - Support pdf export
-
+    
 - Support png format image export
-
+    
 - Support html export
+    
 
 ### Render Support
 
@@ -100,45 +99,46 @@ The code block implementation uses codemirror 6, which supports syntax highlight
 
 About -->Help Documents
 
-*   `Ctrl+1`：一级标题
+* `Ctrl+1`：一级标题
     
-*   `Ctrl+2`：二级标题
+* `Ctrl+2`：二级标题
     
-*   `Ctrl+3`：三级标题
+* `Ctrl+3`：三级标题
     
-*   `Ctrl+4`：四级标题
+* `Ctrl+4`：四级标题
     
-*   `Ctrl+5`：五级标题
+* `Ctrl+5`：五级标题
     
-*   `Ctrl+6`：六级标题
+* `Ctrl+6`：六级标题
     
-*   `Ctrl+B`：加粗
+* `Ctrl+B`：加粗
     
-*   `Ctrl+I`：斜体
+* `Ctrl+I`：斜体
     
-*   `Ctrl+U`：下滑线
+* `Ctrl+U`：下滑线
     
-*   `Ctrl+]`：增加缩进
+* `Ctrl+]`：增加缩进
     
-*   `Ctrl+[`：减少缩进
+* `Ctrl+[`：减少缩进
     
-*   `Ctrl+Shift+%`：删除线
+* `Ctrl+Shift+%`：删除线
     
-*   `Ctrl+Shift+~`：代码引用
+* `Ctrl+Shift+~`：代码引用
     
-*   `Ctrl+Shift+K`：代码块
+* `Ctrl+Shift+K`：代码块
     
-*   `Ctrl+Shift+M`：数学公式
-
-*   `Ctrl+Shift+H`：HTML编辑块
+* `Ctrl+Shift+M`：数学公式
     
-*   `Ctrl+Shift+Q`：引用
+* `Ctrl+Shift+H`：HTML编辑块
     
-*   `Ctrl+Shift+[`：有序列表
+* `Ctrl+Shift+Q`：引用
     
-*   `Ctrl+Shift+]`：无序列表
+* `Ctrl+Shift+[`：有序列表
     
-*   `Ctrl+Shift+T`：创建目录
+* `Ctrl+Shift+]`：无序列表
+    
+* `Ctrl+Shift+T`：创建目录
+    
 
 ## Project setup
 
@@ -153,16 +153,15 @@ npm run install
 npm run electron:build
 ```
 
-
 ### Help
 
 我也不想当乞丐，但是我实在是太穷了，求求各位大哥，V我1块钱，就当是可怜可怜我
 
-I don't want to be a beggar, but I'm really too poor. I beg you, brothers, to help me, just take pity on me
+I don’t want to be a beggar, but I’m really too poor. I beg you, brothers, to help me, just take pity on me
 
-<img src="./docs/imgs/help.jpg" alt="help" width="300px" />
+![./docs/imgs/help.jpg](./docs/imgs/help.jpg)
 
 ###other
 
-技术提问,+Q:835946631,+q群:215169418
+技术提问,+Q:835946631,+q群:215169418  
 Java，Vue前端等问题都可以找我，我有时间会立刻答复
