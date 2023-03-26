@@ -28,21 +28,21 @@
 <p align="center">This project is still in the development stage! Like this project? Please suggest your needs to help it improve!
 </p>
 
-# YaliEditor啊手动阀手动阀啊手动阀啊手动阀手动阀
+# YaliEditor
 
 - [YaliEditor](#yalieditor)
-    - [Download and Install](#download-and-install)
-    - [Introduction](#introduction)
-        - [IR real-time rendering mode](#ir-real-time-rendering-mode)
-        - [SV split screen mode](#sv-split-screen-mode)
-        - [Only source code mode](#only-source-code-mode)
-        - [Folder Preview](#folder-preview)
-        - [Theme](#theme)
-        - [Support export](#support-export)
-        - [Render Support](#render-support)
-        - [Shortcut key](#shortcut-key)
-    - [Project setup](#project-setup)
-        - [Help](#help)
+  - [Download and Install](#download-and-install)
+  - [Introduction](#introduction)
+    - [IR real-time rendering mode](#ir-real-time-rendering-mode)
+    - [SV split screen mode](#sv-split-screen-mode)
+    - [Only source code mode](#only-source-code-mode)
+    - [Folder Preview](#folder-preview)
+    - [Theme](#theme)
+    - [Support export](#support-export)
+    - [Render Support](#render-support)
+    - [Shortcut key](#shortcut-key)
+  - [Project setup](#project-setup)
+    - [Help](#help)
 
 ## Download and Install
 
