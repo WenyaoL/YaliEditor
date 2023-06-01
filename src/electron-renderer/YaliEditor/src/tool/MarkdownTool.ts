@@ -420,7 +420,8 @@ class MarkdownTool{
             const element = es[index];
             let input = element.getElementsByTagName("input").item(0)
             if(input) element.setAttribute("lang",input.getAttribute("lang"))
-            element.innerHTML = ""
+            //使用textContent清除儿子节点性能更佳
+            element.textContent = ""
         }
     }
 
@@ -431,7 +432,20 @@ class MarkdownTool{
         expand.forEach(e=>e.classList.remove(Constants.CLASS_MD_EXPAND))
     }
 
+    transformAllCodemirror6Element(root:HTMLElement){
+        //要遍历查询时querySelectorAll更佳
+        let es = root.querySelectorAll(`.${Constants.CLASS_MARKDOWN_IT_CODE_BEAUTIFUL}`)
+        for (let index = 0; index < es.length; index++) {
+            const element = es[index];
 
+            let input = element.getElementsByTagName("input").item(0)
+            if(input) element.setAttribute("lang",input.getAttribute("lang"))
+
+            let text = this.editor.ir.renderer.codemirrorManager.getTextValue(element.id)            
+            element.replaceChildren(document.createTextNode(text))
+
+        }
+    }
 }
 
 export default MarkdownTool

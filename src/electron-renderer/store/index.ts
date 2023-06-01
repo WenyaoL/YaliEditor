@@ -5,6 +5,8 @@
 import { createStore } from 'vuex'
 import editor from './editor'
 import preference from './preference'
+import {asyncRoutes} from '../router'
+import {changeI18nLocale} from '../vue-i18n'
 
 const store = createStore<any>({
   state: {},
@@ -47,6 +49,16 @@ const store = createStore<any>({
     },
     updateLocale(store, locale){
       window.electronAPI.SEND.updateCurrLocale(locale)
+    },
+    generateRoutes(store,type){
+      const result = []
+      asyncRoutes.forEach(route=>{
+        route.name == type ? result.push(route):null
+      })
+      return result
+    },
+    updateI18nLocale(store,locale){
+      changeI18nLocale(locale)
     }
   },
   modules: {

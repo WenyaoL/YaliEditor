@@ -72,8 +72,7 @@ class IRUndo {
     }
 
     setRootOrigin(root: HTMLElement) {
-        this.editor.markdownTool.removeAllCodemirror6Element(root)
-        this.editor.markdownTool.fixCodemirror6Element(root)
+        this.editor.markdownTool.transformAllCodemirror6Element(root)
         this.editor.markdownTool.removeAllFocusStyle(root)
         this.lastText = root.innerHTML
         this.hasUndo = false;
@@ -199,14 +198,12 @@ class IRUndo {
 
 
     public addIRHistory() {
-        
         //释放修改锁
         this.editor.ir.focueProcessor.releaseModifyLock()
         const cloneRoot = this.editor.ir.rootElement.cloneNode(true) as HTMLElement
 
         //移除codemirror代码
-        this.editor.markdownTool.removeAllCodemirror6Element(cloneRoot)
-        this.editor.markdownTool.fixCodemirror6Element(cloneRoot)
+        this.editor.markdownTool.transformAllCodemirror6Element(cloneRoot)
         this.editor.markdownTool.removeAllFocusStyle(cloneRoot)
 
         //当前状态到上一状态的不同
@@ -236,6 +233,7 @@ class IRUndo {
         
         this.editor.ir.isChange = true
         this.editor.ir.applicationEventPublisher.publish("yali::addIRHistory")
+
     }
 
 }

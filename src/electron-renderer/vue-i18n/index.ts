@@ -59,10 +59,13 @@ const messages = {
 
 
 const i18n = createI18n({
-    locale: global.yaliEditor.locale, // set locale
+    locale: "en", // set locale
     fallbackLocale: 'en', // set fallback locale
     messages, // set locale messages
 })
 
+export const changeI18nLocale = (locale:string)=>{
+    i18n.global.locale = locale as any
+}
 
 export default i18n

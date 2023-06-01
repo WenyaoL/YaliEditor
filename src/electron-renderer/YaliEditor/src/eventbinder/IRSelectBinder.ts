@@ -23,8 +23,8 @@ class IRSelectBinder implements BaseEventBinder {
   }
 
   bindClick(element: HTMLElement) {
-    element.addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
-        this.editor.ir.clickProcessor.execute(event)
+    element.addEventListener("click", (event: MouseEvent ) => {
+        this.editor.ir.clickProcessor.execute(event as MouseEvent  & { target: HTMLElement })
     })
   }
 

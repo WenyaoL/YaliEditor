@@ -10,13 +10,20 @@ const deleteCache = (event) => {
     store.dispatch('clearDataCache')
 }
 
-const currLocale = ref(global.yaliEditor.locale)
+const currLocale = ref<string>(global.yaliEditor.locale)
 const localeOptions = ref(['zh','en'])
 
-watch(currLocale,(newVal)=>{
-    i18n.global.locale = newVal
-    global.yaliEditor.locale = newVal
-    store.dispatch('updateLocale',newVal)
+watch(currLocale,(val,oldVal)=>{
+    if(val == 'en') {
+        global.yaliEditor.locale = val
+        store.dispatch('updateI18nLocale','en')
+        store.dispatch('updateLocale','en')
+    }else if(val == 'zh'){
+        global.yaliEditor.locale = val
+        store.dispatch('updateI18nLocale','zh')
+        store.dispatch('updateLocale','zh')
+    }
+    
 })
 
 </script>

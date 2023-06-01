@@ -54,7 +54,7 @@ export class IRClickProcessor {
 
     execute(event: MouseEvent  & { target: HTMLElement }) {
         this.editor.ir.focueProcessor.update()
-
+        
         if (event.ctrlKey) {
             this.ctrlKeyClick(event)
         }

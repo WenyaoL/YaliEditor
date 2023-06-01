@@ -1,5 +1,5 @@
 import YaLiEditor from "..";
-import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockMath, isMdBlockMeta, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
+import { isMdBlockBulletList, isMdBlockCode, isMdBlockFence, isMdBlockHeading, isMdBlockHTML, isMdBlockListItem, isMdBlockMath, isMdBlockMeta, isMdBlockOrderList, isMdBlockParagraph, isMdBlockQuote, isMdBlockTable } from "../util/inspectElement";
 
 import linkCtrl from "./linkCtrl";
 import imgCtrl from "./imgCtrl";
@@ -185,10 +185,15 @@ class IRState extends BaseState{
         else if (isMdBlockCode(oldElement)) this.diffCodeBlock(oldElement,newElement)
         else if (isMdBlockQuote(oldElement)) this.diffBlockquote(oldElement,newElement)
         else if (isMdBlockTable(oldElement)) this.diffTable(oldElement,newElement)
+        else if (isMdBlockListItem(oldElement)) this.diffListItem(oldElement,newElement)
         else oldElement.replaceWith(newElement)
-
     }
 
+    diffListItem(oldElement: Element, newElement: Element){
+        if (oldElement.textContent != newElement.textContent) {
+            oldElement.replaceWith(newElement)
+        }
+    }
 
     diffParagraph(oldElement: Element, newElement: Element) {
         if (oldElement.textContent != newElement.textContent) {
@@ -227,7 +232,7 @@ class IRState extends BaseState{
     }
 
     diffList(oldElement:Element,newElement:Element){
-        oldElement.replaceWith(newElement)
+        this.diff(oldElement,newElement)
     }
 
     diffCodeBlock(oldElement:Element,newElement:Element){
